@@ -8,8 +8,8 @@ using System.Windows.Forms;
 [assembly: AssemblyTitle("Red Tune")]
 [assembly: AssemblyDescription("Питание, кривая и настройки ноутбуков на AMD Ryzen")]
 [assembly: AssemblyProduct("Red Tune")]
-[assembly: AssemblyVersion("0.4.1.0")]
-[assembly: AssemblyFileVersion("0.4.1.0")]
+[assembly: AssemblyVersion("0.4.2.0")]
+[assembly: AssemblyFileVersion("0.4.2.0")]
 
 namespace RedTune
 {
@@ -279,6 +279,19 @@ namespace RedTune
             // --asus-check <file>: what would be sent to an ASUS laptop's firmware, on the pretended Vivobook of the report (Asus.Check); no driver is touched
             i = at("--asus-check");
             if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Asus.Check(), new System.Text.UTF8Encoding(true)); return 0; }
+            // --fan-check <file>: the deciding part of the app's fan curves on made-up temperatures (FanControl.Check); the firmware is not touched
+            i = at("--fan-check");
+            if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], FanControl.Check(), new System.Text.UTF8Encoding(true)); return 0; }
+            // --fan-live-test <file> [seconds of load]: the fan curves on the real fans (FanControl.LiveTest) — WRITES fan speeds to the
+            // firmware for about two minutes, loads every core, then gives the fans back. Only with the user's word.
+            i = at("--fan-live-test");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                int loadS = 40; if (i + 2 < args.Length) int.TryParse(args[i + 2], out loadS);
+                AppDomain.CurrentDomain.UnhandledException += (o, e) => { try { FanControl.ReleaseAll(); } catch { } };
+                System.IO.File.WriteAllText(args[i + 1], FanControl.LiveTest(Math.Max(10, Math.Min(120, loadS))), new System.Text.UTF8Encoding(true));
+                return 0;
+            }
             // --motion-check <file>: the movement of rows that come and go on the pages (PagePng.MotionCheck), a check on a page of its own; pictures go beside the file
             i = at("--motion-check");
             if (i >= 0 && i + 1 < args.Length) { Theme.Init(100); L.Set("ru"); PagePng.MotionCheck(args[i + 1]); return 0; }

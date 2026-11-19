@@ -1,26 +1,37 @@
-# Third-party components
+# Third-party components and acknowledgements
 
-Red Tune ships these components unchanged, next to its own executable. Their licenses apply to them;
-Red Tune itself is licensed under GPL-3.0 (see `LICENSE`). All three are modules for the PawnIO driver:
-small programs the driver runs to reach the hardware. Everything else in the build is Red Tune's own code.
+Red Tune itself is licensed under GPL-3.0 (see `LICENSE`). This file has two parts: what ships with the program
+that is not Red Tune's own, and the projects Red Tune learned the hardware's interfaces from.
+
+## 1. What ships with Red Tune
+
+Three files, unchanged, next to the executable. All three are modules for the PawnIO driver: small programs the
+driver runs to reach the hardware. Their license applies to them. Everything else in the build is Red Tune's own code.
 
 | Component | Where in the build | What it is used for | Author | License | Source |
 |---|---|---|---|---|---|
-| PawnIO module RyzenSMU | `ram\RyzenSMU.bin` | Reaching the SMU through the PawnIO driver: the Curve Optimizer, the AMD power limits, the power table, the processor temperature; taken from ryzen-smu-cli 0.1.5 (sp00n build from CoreCycler 0.11) | namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
-| PawnIO module AMDFamily17 | `ram\AMDFamily17.bin` | Reading SMN registers through the PawnIO driver: the memory timings; taken from ZenStates-Core 1.79, which carries it | namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
+| PawnIO module RyzenSMU | `ram\RyzenSMU.bin` | Reaching the processor's system management unit through the PawnIO driver: the Curve Optimizer, the power limits, the power table, the processor temperature; taken from ryzen-smu-cli 0.1.5 (sp00n build from CoreCycler 0.11) | namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
+| PawnIO module AMDFamily17 | `ram\AMDFamily17.bin` | Reading the processor's registers through the PawnIO driver: the memory timings; taken from ZenStates-Core 1.79, which carries it | namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
 | PawnIO module SmbusPIIX4 | `ram\SmbusPIIX4.bin` | The SMBus of the AMD chipset through the PawnIO driver: the temperature of the memory modules; taken from ZenStates-Core 1.79, which carries it | Steve-Tech, namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
 
-## Code adapted from other projects
+Not shipped, installed by you if you want them:
 
-| Project | What | License |
+- **PawnIO** (the driver itself) — from https://pawnio.eu/, with its own signed installer.
+- **Prime95** — optional for the auto-tune, which has a load of its own; point Red Tune to it on the «Components» page.
+
+## 2. Where the knowledge of the hardware came from
+
+Laptop firmware and the processor's management unit are not documented by their makers. What Red Tune knows about
+them — which call, which number, which address, in which order — was learned by reading the open projects below and
+then checked on real hardware. No source file of these projects is part of Red Tune: the code that uses this
+knowledge was written for Red Tune. They are named here as thanks, and so that anyone can see where a number comes
+from. All of them are under licenses compatible with Red Tune's GPL-3.0.
+
+| Project | What was learned from it | License |
 |---|---|---|
-| LenovoLegionToolkit-Plugins, CustomFanCurve plugin | The fan curve logic in `src\FanControl.cs` (curve math, safety net, hysteresis, smoothing) | GPL-3.0 — https://github.com/LenovoLegionToolkit-Team/LenovoLegionToolkit-Plugins |
-| Lenovo Legion Toolkit | Lenovo WMI feature IDs and how they are used (power limits, fans, modes) | GPL-3.0 — https://github.com/BartoszCichecki/LenovoLegionToolkit |
-| G-Helper | `src\Asus.cs`: how ASUS's firmware is called through the driver `\\.\ATKACPI` (the DSTS and DEVS methods), the device numbers and the values of the performance modes, the charge limit, the keyboard backlight, the Fn lock and the fan speeds | GPL-3.0 — https://github.com/seerge/g-helper |
-| Linux kernel, `asus-wmi` driver | The same device numbers and values, checked against it (`src\Asus.cs`, the list in `src\Diag.cs`) | GPL-2.0-or-later — https://github.com/torvalds/linux |
-| ZenStates-Core | `src\Smu.cs`: SMU message numbers and mailbox addresses per processor family, the mailbox exchange, the curve's core numbering, the power table layouts (memory clocks). `src\Ram\LiveTimings.cs`: the register map of the memory timings | GPL-3.0 — https://github.com/irusanov/ZenStates-Core |
-
-## Not included
-
-- **PawnIO** (the driver) is installed separately from https://pawnio.eu/ — it has its own signed installer.
-- **Prime95** (used by the auto-tune) is not shipped; point Red Tune to it on the «Компоненты» / «Components» page.
+| [Lenovo Legion Toolkit](https://github.com/BartoszCichecki/LenovoLegionToolkit) | Lenovo's firmware interface in Windows: the WMI classes and feature numbers for power modes, limits, the fan table and the overclocking values, the energy driver's codes for the keyboard, the battery and the Fn keys | GPL-3.0 |
+| [LenovoLegionToolkit-Plugins](https://github.com/LenovoLegionToolkit-Team/LenovoLegionToolkit-Plugins), CustomFanCurve | That a program can drive the fans itself by giving the firmware a speed, and the set of extras on the fan page with their thresholds. The controller (`src\FanControl.cs`) is Red Tune's own design | GPL-3.0 |
+| [ZenStates-Core](https://github.com/irusanov/ZenStates-Core) | The processor's management unit: message numbers and mailbox addresses per processor family, the layouts of the power table, the numbering of cores for the curve; the register map of the memory timings | GPL-3.0 |
+| [RyzenAdj](https://github.com/FlyGoat/RyzenAdj) | The same for the laptop processors: the messages for the STAPM, fast and slow limits and where their values sit in the power table | LGPL-3.0 |
+| [G-Helper](https://github.com/seerge/g-helper) | ASUS's firmware interface in Windows: the call through the driver `\\.\ATKACPI`, the device numbers and the values of the performance modes, the charge limit, the keyboard backlight, the Fn lock and the fan speeds | GPL-3.0 |
+| [Linux kernel](https://github.com/torvalds/linux), `asus-wmi` driver | The same ASUS device numbers and values, checked one against the other | GPL-2.0-or-later |

@@ -44,7 +44,7 @@ namespace RedTune
         public string TunePlan = "";            // the id of the Windows power plan made for tuning (WinPower.MakeTuningPlan), to find it again
         public string TuneLoad = "p95";         // the heavy load of the auto-tune: "p95" Prime95, "own" the program's own test (Stress), on trial
         public string TuneMode = "daily";       // 18.11: what the quick tune looks for: "daily" a deep curve for everyday use, "strict" one that holds with any set of busy cores
-        // fan curve extras (FanControl), the plugin's defaults: safety net and emergency on, the rest off
+        // fan curve extras (FanControl): safety net and emergency on, the rest off
         public bool FanSafety = true, FanCritical = true, FanHyst, FanEma, FanGlide, FanBoost, FanSync, FanPredict; public bool SyncBrightness; // 18.11: one screen brightness for all power plans (BrightnessSync), off by default
         // on-screen notifications
         public bool OsdOn = true, OsdTopmost = false, OsdAllMonitors = false;

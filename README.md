@@ -131,9 +131,10 @@ Checks that write nothing to the hardware:
 | `RedTune.exe --lang-check out.txt` | how much of the interface each language covers |
 | `RedTune.exe --comp-graph-check out.txt`, `--eq-strips-check`, `--motion-check`, `--sound-undo-check`, `--ui-edit-check` | the interface driven by mouse messages in a window of its own |
 | `RedTune.exe --simulate-tune …` | the auto-tune against a made-up processor |
+| `RedTune.exe --fan-check out.txt` | the fan curves' logic against made-up temperatures |
 
 Translations: `tools\lang` holds the scripts and the translated texts (`tr\<code>.json`); `node build.js <repo>` writes `lang\<code>.txt`, which the build embeds.
 
 ## License
 
-GPL-3.0 — see [LICENSE](LICENSE). The third-party parts that ship with Red Tune, and the projects whose code or findings it builds on, are listed with their licenses in [THIRD-PARTY.md](THIRD-PARTY.md).
+GPL-3.0 — see [LICENSE](LICENSE). The three third-party files that ship with Red Tune, and the open projects it learned the hardware's interfaces from, are listed with their licenses in [THIRD-PARTY.md](THIRD-PARTY.md).
