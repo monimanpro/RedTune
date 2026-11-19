@@ -292,6 +292,40 @@ namespace RedTune
                 System.IO.File.WriteAllText(args[i + 1], FanControl.LiveTest(Math.Max(10, Math.Min(120, loadS))), new System.Text.UTF8Encoding(true));
                 return 0;
             }
+            // --sound-paint-time <file> [scale %]: what one whole paint of the sound page's live pictures costs, ms (the
+            // equalizer with 12 bands and a spectrum, the compressor in three bands with a made-up sound, the level meter)
+            i = at("--sound-paint-time");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                int zoom = 150; if (i + 2 < args.Length) int.TryParse(args[i + 2], out zoom);
+                Theme.Init(zoom); L.Set("ru");
+                var eq = new EqGraph { Width = Theme.S(1100), Height = Theme.S(320) };
+                var comp = new CompGraph { Location = new System.Drawing.Point(0, eq.Height), Width = Theme.S(1100) };
+                var meter = new LevelMeter { Location = new System.Drawing.Point(0, eq.Height + comp.Height), Width = Theme.S(1100) };
+                using (var f = new Form { ShowInTaskbar = false, StartPosition = FormStartPosition.Manual, Location = new System.Drawing.Point(-4000, -4000), ClientSize = new System.Drawing.Size(eq.Width, eq.Height + comp.Height + meter.Height) })
+                {
+                    f.Controls.Add(eq); f.Controls.Add(comp); f.Controls.Add(meter); f.Show(); Application.DoEvents();
+                    for (int b = eq.P.Bands.Count; b < 12; b++) eq.P.Bands.Add(new EqBand { Type = 1, Freq = (float)(40 * Math.Pow(2, b)), Gain = (b % 3 - 1) * 3, Q = 1 });
+                    var db = new double[AudioFx.SpectrumSize / 2 + 1]; for (int k = 0; k < db.Length; k++) db[k] = -24 - 9 * Math.Log(k + 1, 2);
+                    eq.Rate = 48000; eq.Feed(db);
+                    comp.P.Split = 250; comp.P.Split2 = 4000; comp.Demo(); meter.Set(true, 0.3f, 0.35f, -4, -1);
+                    Func<Control, double> time = c =>
+                    {
+                        using (var bmp = new System.Drawing.Bitmap(c.Width, c.Height))
+                        {
+                            c.DrawToBitmap(bmp, new System.Drawing.Rectangle(0, 0, c.Width, c.Height));
+                            var sw = System.Diagnostics.Stopwatch.StartNew();
+                            for (int k = 0; k < 30; k++) c.DrawToBitmap(bmp, new System.Drawing.Rectangle(0, 0, c.Width, c.Height));
+                            return sw.Elapsed.TotalMilliseconds / 30;
+                        }
+                    };
+                    double te = time(eq), tct = time(comp); comp.SetView(true); double tcf = time(comp); double tm = time(meter);
+                    System.IO.File.WriteAllText(args[i + 1], string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                        "scale {0} %, one whole paint, ms:\r\nequalizer (12 bands, spectrum) {1:0.0}\r\ncompressor, monitor over time {2:0.0}\r\ncompressor, monitor by frequencies {3:0.0}\r\nlevel meter {4:0.0}\r\nall three, every moment (a moment = 33 ms) {5:0.0}\r\n",
+                        zoom, te, tct, tcf, tm, te + Math.Max(tct, tcf) + tm), new System.Text.UTF8Encoding(true));
+                }
+                return 0;
+            }
             // --motion-check <file>: the movement of rows that come and go on the pages (PagePng.MotionCheck), a check on a page of its own; pictures go beside the file
             i = at("--motion-check");
             if (i >= 0 && i + 1 < args.Length) { Theme.Init(100); L.Set("ru"); PagePng.MotionCheck(args[i + 1]); return 0; }
@@ -304,6 +338,7 @@ namespace RedTune
             {
                 var s0 = args.Contains("--fresh") ? new Settings() : Store.LoadSettings(); if (args.Contains("--expert")) s0.Expert = true; if (args.Contains("--strict")) s0.TuneMode = "strict"; if (args.Contains("--daily")) s0.TuneMode = "daily"; // the auto-tune page in a mode (not saved)
                 int li = at("--lang"); if (li >= 0 && li + 1 < args.Length) s0.Language = args[li + 1]; // --lang <code>: the page in that language
+                int zi = at("--ui-scale"), zv; if (zi >= 0 && zi + 1 < args.Length && int.TryParse(args[zi + 1], out zv) && zv >= 50 && zv <= 400) s0.UiScale = zv; // --ui-scale <percent>: a sharper picture (not saved)
                 Comp.S = s0; Theme.Init(s0.UiScale); L.Set(s0.Language); Hw.Detect(); PagePng.Render(args[i + 1], args[i + 2], s0); return 0;
             }
             // --lang-check <file>: for every language, how many of the pairs its file covers and which Russian texts are

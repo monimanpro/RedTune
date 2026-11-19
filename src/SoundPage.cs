@@ -27,8 +27,7 @@ namespace RedTune
             mk = new Slider(-12, 24, 0, "дБ"), ceil = new Slider(-120, 0, -1, ""), split = new Slider(80, 600, 250, "Гц"), split2 = new Slider(1200, 12000, 4000, "Гц");
         // 19.11 (the user's wish): the compressor on the whole sound or in two or three bands, each with settings of its own.
         // band: which of SoundParams.Parts the sliders, the points and the dials show (0 the bass, 1 the middle, 2 the top)
-        readonly Segmented partsSeg = new Segmented("Одна", "Две", "Три"), bandSeg = new Segmented("Низ", "Середина", "Верх");
-        int band, bandNames = 3;
+        readonly Segmented partsSeg = new Segmented("Одна", "Две", "Три"), bandSeg = new Segmented("Низ", "Середина", "Верх");        int band, bandNames = 3;
         readonly Row devRow, onRow, volRow, presetRow, eqRow, compRow, limRow, nahimicRow, removeRow, split1Row, split2Row, bandRow, partsRow, thrRow, ratioRow, mkRow;
         bool fitting, rowsBands, rowsSplits, rowsDials; // rows*: the rows of the bands / of the splits are needed (the picture has no room for them)
         readonly EqGraph graph = new EqGraph();
@@ -202,6 +201,7 @@ namespace RedTune
             cgraph.Changed += (o, e) =>
             {
                 if (loading || dev == null) return;
+                TickIfDue();
                 band = cgraph.Band; // the number of bands changed in the picture may have moved it
                 loading = true;
                 var q = p.Parts[band];
@@ -362,6 +362,8 @@ namespace RedTune
             ceil.Enabled = p.Limit;
             graph.Invalidate();
             cgraph.Dim = !p.Comp; cgraph.Invalidate();
+            // a slider of the page dragged: the pictures follow at once, not when the mouse rests (see EqGraph.Fire)
+            graph.Update(); cgraph.Update();
         }
 
         // for the off-screen render: the compressor's picture with a sound in it, scrolled into view
@@ -390,6 +392,7 @@ namespace RedTune
         void Changed()
         {
             if (loading || dev == null) return;
+            TickIfDue();
             p.Eq = eqT.Checked; p.Comp = compT.Checked; p.Limit = limT.Checked;
             int parts = p.PartCount;
             p.Preamp = pre.Value; p.Ceil = ceil.Value / 10f; p.Split = parts >= 2 ? split.Value : 0; p.Split2 = parts >= 3 ? split2.Value : 0;
@@ -522,9 +525,18 @@ namespace RedTune
             });
         }
 
+        // The moments of the sound come from a timer, and Windows hands a timer its turn only when no other message waits —
+        // like a paint. While a point is dragged or a dial turned the mouse never leaves the queue empty, so the spectrum
+        // and the monitor stood still (20.11, the user: the curves move, the picture lags). Every change by the mouse also
+        // takes the moment of the sound that is due.
+        readonly System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+        long lastTick = -1000;
+        void TickIfDue() { if (clock.ElapsedMilliseconds - lastTick >= tick.Interval - 3) Tick(); }
+
         void Tick()
         {
             if (dev == null || !Visible) return;
+            lastTick = clock.ElapsedMilliseconds;
             ticks++;
             var m = state.Attached ? AudioFx.Meters(dev.Id) : null;
             if (m != null && m.Beat != lastBeat) { lastBeat = m.Beat; quiet = 0; } else if (quiet < 1000) quiet++;
@@ -952,7 +964,10 @@ namespace RedTune
             return Part.None;
         }
 
-        void Fire() { Invalidate(); var h = Changed; if (h != null) h(this, EventArgs.Empty); }
+        // a change by the mouse (a drag, a dial, the wheel) is painted at once: Windows paints a window only when no other
+        // message waits, and a fast mouse sends its moves without a pause — the picture stood still while it was dragged
+        // and moved again only when the mouse stopped (20.11, the user: «двигаешь и даже не видишь, куда двигаешь»)
+        void Fire() { Invalidate(); var h = Changed; if (h != null) h(this, EventArgs.Empty); Update(); }
 
         static float Tenth(double v) { return (float)(Math.Round(v * 10) / 10); }
 
@@ -1118,7 +1133,7 @@ namespace RedTune
             if (!on) { if (live) { live = false; hCount = 0; nowIn = -100; nowLv = -140; nowGr = nowLim = 0; Invalidate(); } return; }
             Push(Db(inPeak), Db(outPeak), grDb, limDb); nowLv = levelDb;
             live = true;
-            Invalidate();
+            Invalidate(); // the whole picture every moment (20.11, the user: no caches, everything live)
         }
 
         // the same moment per band, for the monitor by frequencies (before Feed, which draws): the level each band reads
@@ -1160,45 +1175,89 @@ namespace RedTune
         protected override void OnEnabledChanged(EventArgs e) { base.OnEnabledChanged(e); Invalidate(); }
 
         // the monitor by frequencies (see ByFreq): the columns of the bands at work, the splits between them
-        void PaintBands(Graphics g, Rectangle hist, Color limC, bool lim)
+        // the last ten seconds as lines: what comes in, what goes out, what the compressor and the limiter take off, the
+        // threshold (all of it moves, so it is drawn through ILive: GDI+ or the graphics card)
+        void HistTime(ILive cv, Rectangle hist, Color line, Color lit, Color limC, bool lim)
+        {
+            if (live && hCount > 1)
+            {
+                int n = hCount; float dx = hist.Width / (float)(Hist - 1);
+                var pin = new List<PointF>(); var pout = new PointF[n]; var pgr = new List<PointF>(); var pall = new List<PointF>();
+                pin.Add(new PointF(hist.Right - (n - 1) * dx, hist.Bottom)); pgr.Add(new PointF(hist.Right - (n - 1) * dx, hist.Y)); pall.Add(pgr[0]);
+                for (int k = 0; k < n; k++)
+                {
+                    int at = Hist - n + k; float x = hist.Right - (n - 1 - k) * dx;
+                    pin.Add(new PointF(x, Y(hIn[at]))); pout[k] = new PointF(x, Y(hOut[at]));
+                    pgr.Add(new PointF(x, hist.Y + hist.Height * (float)(Clamp(-hGr[at], 0, Hi - Lo) / (Hi - Lo))));
+                    pall.Add(new PointF(x, hist.Y + hist.Height * (float)(Clamp(-hGr[at] - hLim[at], 0, Hi - Lo) / (Hi - Lo))));
+                }
+                pin.Add(new PointF(hist.Right, hist.Bottom)); pgr.Add(new PointF(hist.Right, hist.Y)); pall.Add(new PointF(hist.Right, hist.Y));
+                cv.FillPoly(Color.FromArgb(Dim ? 20 : 40, Theme.Text), pin.ToArray());
+                cv.Lines(Color.FromArgb(Dim ? 90 : 210, Theme.Text), Theme.S(1.4f), pout);
+                // from the top down: what the compressor takes off, and under it what the limiter adds to that
+                if (lim)
+                {
+                    cv.FillPoly(Color.FromArgb(80, limC), pall.ToArray());
+                    cv.Lines(limC, Theme.S(1.4f), pall.Skip(1).Take(n).ToArray());
+                }
+                if (!Dim)
+                {
+                    if (lim) cv.FillPoly(Theme.Card, pgr.ToArray()); // the compressor's part is not tinted by the limiter's colour
+                    cv.FillPoly(Color.FromArgb(70, line), pgr.ToArray());
+                    cv.Lines(line, Theme.S(1.4f), pgr.Skip(1).Take(n).ToArray());
+                }
+            }
+            bool lh = hot == Part.Line || drag == Part.Line;
+            cv.Line(Dim ? Theme.Muted : lh ? lit : line, Theme.S(lh ? 1.8f : 1.2f), hist.X, Y(Q.Thr), hist.Right, Y(Q.Thr), true);
+        }
+
+        // the monitor by frequencies; stage: 1 what stands under the levels (the bands' ground, the decade lines), 2 the
+        // levels and what is taken off (they move: through cv), 4 what lies over them (thresholds, names, S and M, the
+        // splits). A paint by the program does all three at once; the graphics card gets 1 and 4 as pictures.
+        void PaintBands(Graphics g, Rectangle hist, Color limC, bool lim, int stage, ILive cv)
         {
             int n = P.PartCount; float pad = Theme.S(5);
+            bool under = (stage & 1) != 0, moving = (stage & 2) != 0, top = (stage & 4) != 0;
             // the frequency scale: a line per decade, the numbers along the bottom edge
-            using (var pen = new Pen(Theme.Border)) foreach (var f in new[] { 100, 1000, 10000 }) g.DrawLine(pen, FX(f), hist.Y, FX(f), hist.Bottom);
+            if (under) using (var pen = new Pen(Theme.Border)) foreach (var f in new[] { 100, 1000, 10000 }) g.DrawLine(pen, FX(f), hist.Y, FX(f), hist.Bottom);
             foreach (var z in Zones())
             {
                 float x0 = FX(z.From), x1 = FX(z.To); var q = P.Parts[z.Part];
                 bool sel = n == 1 || z.Part == Band, over = !Dim && zoneHot == z.Part && (hot == Part.Zone || hot == Part.Line) && drag == Part.None;
                 Color col = Dim ? Theme.Muted : n == 1 ? Theme.Accent : PartColor[z.Part];
-                using (var b = new SolidBrush(Color.FromArgb(Dim ? 8 : sel ? 34 : over ? 24 : 12, col))) g.FillRectangle(b, x0, hist.Y, x1 - x0, hist.Height);
+                if (under) using (var b = new SolidBrush(Color.FromArgb(Dim ? 8 : sel ? 34 : over ? 24 : 12, col))) g.FillRectangle(b, x0, hist.Y, x1 - x0, hist.Height);
                 float bx = x0 + pad, bw = Math.Max(Theme.S(2), x1 - x0 - 2 * pad);
                 // from the bottom: the level the band reads now
-                if (live && bLv[z.Part] > Lo)
+                if (moving && live && bLv[z.Part] > Lo)
                 {
                     float y = Y(bLv[z.Part]);
-                    using (var b = new SolidBrush(Color.FromArgb(Dim ? 20 : sel ? 60 : 38, Theme.Text))) g.FillRectangle(b, bx, y, bw, hist.Bottom - y);
-                    using (var pen = new Pen(Color.FromArgb(Dim ? 90 : sel ? 220 : 140, Theme.Text), Theme.S(1.4f))) g.DrawLine(pen, bx, y, bx + bw, y);
+                    cv.FillRect(Color.FromArgb(Dim ? 20 : sel ? 60 : 38, Theme.Text), bx, y, bw, hist.Bottom - y);
+                    cv.Line(Color.FromArgb(Dim ? 90 : sel ? 220 : 140, Theme.Text), Theme.S(1.4f), bx, y, bx + bw, y);
                 }
                 // from the top: what is taken off the band, and under it what the limiter adds to that (as in the last seconds)
-                if (live)
+                if (moving && live)
                 {
                     double gr = Dim ? 0 : -bGr[z.Part], all = gr + (lim ? -nowLim : 0);
                     float hg = hist.Height * (float)(Clamp(gr, 0, Hi - Lo) / (Hi - Lo)), ha = hist.Height * (float)(Clamp(all, 0, Hi - Lo) / (Hi - Lo));
                     if (lim && ha - hg > 0.5f)
                     {
-                        using (var b = new SolidBrush(Color.FromArgb(80, limC))) g.FillRectangle(b, bx, hist.Y + hg, bw, ha - hg);
-                        using (var pen = new Pen(limC, Theme.S(1.4f))) g.DrawLine(pen, bx, hist.Y + ha, bx + bw, hist.Y + ha);
+                        cv.FillRect(Color.FromArgb(80, limC), bx, hist.Y + hg, bw, ha - hg);
+                        cv.Line(limC, Theme.S(1.4f), bx, hist.Y + ha, bx + bw, hist.Y + ha);
                     }
                     if (hg > 0.5f)
                     {
-                        using (var b = new SolidBrush(Color.FromArgb(sel ? 90 : 60, col))) g.FillRectangle(b, bx, hist.Y, bw, hg);
-                        using (var pen = new Pen(col, Theme.S(1.4f))) g.DrawLine(pen, bx, hist.Y + hg, bx + bw, hist.Y + hg);
+                        cv.FillRect(Color.FromArgb(sel ? 90 : 60, col), bx, hist.Y, bw, hg);
+                        cv.Line(col, Theme.S(1.4f), bx, hist.Y + hg, bx + bw, hist.Y + hg);
                     }
                 }
-                // its threshold
-                bool lh = sel && (hot == Part.Line || drag == Part.Line) && (drag == Part.Line || zoneHot == z.Part);
-                // (lighter than the band's colour: the colour itself was lost over the grey of the level)
-                using (var dash = new Pen(Dim ? Theme.Muted : lh ? Color.White : Lighter(Lighter(col)), Theme.S(lh ? 2f : sel ? 1.6f : 1.3f)) { DashStyle = DashStyle.Dash }) g.DrawLine(dash, x0, Y(q.Thr), x1, Y(q.Thr));
+                // its threshold (with the moving parts: dragging it must not make the pictures of the card anew)
+                if (moving)
+                {
+                    bool lh = sel && (hot == Part.Line || drag == Part.Line) && (drag == Part.Line || zoneHot == z.Part);
+                    // (lighter than the band's colour: the colour itself was lost over the grey of the level)
+                    cv.Line(Dim ? Theme.Muted : lh ? Color.White : Lighter(Lighter(col)), Theme.S(lh ? 2f : sel ? 1.6f : 1.3f), x0, Y(q.Thr), x1, Y(q.Thr), true);
+                }
+                if (!top) continue;
                 // a band that does not go out now (its M, or another band's S): its column under a veil
                 bool silent = (Silent >> z.Part & 1) != 0;
                 if (silent) using (var b = new SolidBrush(Color.FromArgb(165, Theme.Card))) g.FillRectangle(b, x0, hist.Y, x1 - x0, hist.Height);
@@ -1228,6 +1287,7 @@ namespace RedTune
                 }
                 else Theme.Text1(g, name, Theme.Small, new Rectangle((int)x0, ty, (int)(x1 - x0), th), ink, Mid);
             }
+            if (!top) return;
             // the numbers of the scale
             foreach (var f in hist.Width > Theme.S(520) ? new[] { 50, 100, 200, 500, 1000, 2000, 5000, 10000 } : new[] { 100, 1000, 10000 })
                 Theme.Text1(g, f >= 1000 ? f / 1000 + "k" : f.ToString(), Theme.Small, new Rectangle((int)FX(f) - Theme.S(30), hist.Bottom - Theme.S(19), Theme.S(60), Theme.S(18)), Theme.Muted, TextFormatFlags.HorizontalCenter);
@@ -1255,6 +1315,66 @@ namespace RedTune
         string RatioText { get { return Q.Ratio.ToString("0.#", CultureInfo.InvariantCulture) + " : 1"; } }
         string CeilText { get { return (P.Ceil > -0.05f ? "0" : "−" + (-P.Ceil).ToString("0.0", CultureInfo.InvariantCulture)) + " дБ"; } }
 
+        // the transfer curve with its fill, the other bands, the threshold, the ceiling and the three points; the dot of the
+        // sound now only with withDot
+        void CurveBlock(Graphics g, Rectangle c, bool withDot)
+        {
+            Color line = Dim ? Theme.Muted : P.PartCount == 1 ? Theme.Accent : PartColor[Math.Max(0, Math.Min(2, Band))];
+            Color lit = Dim ? Theme.Muted : Lighter(line);
+            Color limC = Theme.Warning; bool lim = P.Limit, ch = hot == Part.Ceil || drag == Part.Ceil;
+            float cy = Y(P.Ceil);
+            var clip = g.Clip;
+            int steps = Math.Max(40, c.Width / 2);
+            var curve = new PointF[steps + 1];
+            for (int i = 0; i <= steps; i++) { double x = Lo + (Hi - Lo) * i / steps; curve[i] = new PointF(X(x), Y(Out(x))); }
+            // with the limiter on the curve goes flat at the ceiling; what the compressor alone gives stays as a dashed line above it
+            var real = curve;
+            if (lim) { real = new PointF[curve.Length]; for (int i = 0; i < curve.Length; i++) real[i] = new PointF(curve[i].X, Math.Max(curve[i].Y, cy)); }
+            g.SetClip(c);
+            using (var path = new GraphicsPath())
+            {
+                path.AddLines(real);
+                path.AddLine(real[steps], new PointF(c.Right, c.Bottom)); path.AddLine(new PointF(c.Right, c.Bottom), new PointF(c.X, c.Bottom)); path.CloseFigure();
+                using (var b = new SolidBrush(Color.FromArgb(Dim ? 14 : 30, line))) g.FillPath(b, path);
+            }
+            using (var dash = new Pen(Color.FromArgb(Dim ? 60 : 110, Theme.Text2)) { DashStyle = DashStyle.Dash }) g.DrawLine(dash, X(Q.Thr), c.Y, X(Q.Thr), c.Bottom);
+            // the other bands at work, thin, each in its colour
+            foreach (int other in P.ActiveParts)
+            {
+                if (other == Band) continue;
+                var q = P.Parts[other]; var pts = new PointF[steps + 1];
+                for (int i = 0; i <= steps; i++) { double x = Lo + (Hi - Lo) * i / steps; double o = x + GrOf(q, x) + q.Makeup; pts[i] = new PointF(X(x), lim ? Math.Max(Y(o), cy) : Y(o)); }
+                using (var pen = new Pen(Color.FromArgb(Dim ? 70 : 170, Dim ? Theme.Muted : PartColor[other]), Theme.S(1.4f)) { LineJoin = LineJoin.Round }) g.DrawLines(pen, pts);
+            }
+            if (lim) using (var pen = new Pen(Color.FromArgb(Dim ? 70 : 120, line), Theme.S(1.4f)) { DashStyle = DashStyle.Dash, LineJoin = LineJoin.Round }) g.DrawLines(pen, curve);
+            using (var pen = new Pen(line, Theme.S(2)) { LineJoin = LineJoin.Round }) g.DrawLines(pen, real);
+            g.Clip = clip;
+            // the ceiling itself (it may lie on the very top edge of the plot, so it is drawn unclipped)
+            if (lim) using (var pen = new Pen(ch ? Color.FromArgb(0xf6, 0xd0, 0x7a) : limC, Theme.S(ch ? 2.2f : 1.5f))) g.DrawLine(pen, c.X, cy, c.Right, cy);
+            if (withDot) { g.SetClip(c); NowDot(new GdiLive(g), c); g.Clip = clip; }
+
+            foreach (var p in new[] { Part.Makeup, Part.Ratio, Part.Thr })
+            {
+                var k = KnobAt(p); bool h = p == hot || p == drag;
+                float size = Theme.S(h ? 19 : 16);
+                int a = 0, b2 = curve.Length - 1;
+                while (a + 1 < curve.Length && curve[a + 1].X < k.X - size) a++;
+                while (b2 - 1 >= 0 && curve[b2 - 1].X > k.X + size) b2--;
+                var piece = new PointF[Math.Max(0, b2 - a + 1)]; if (piece.Length > 0) Array.Copy(curve, a, piece, 0, piece.Length);
+                Theme.GlassKnob(g, k.X, k.Y, size, 1f, h ? lit : line, Theme.S(4.5f), Dim, 180f, null, -1f, piece);
+            }
+        }
+
+        // the sound now: from where it would be without the compressor down to where it is
+        void NowDot(ILive cv, Rectangle c)
+        {
+            if (!live || Dim || nowLv <= Lo) return;
+            float x = X(nowLv), y0 = Y(nowLv + Q.Makeup), y1 = Y(nowLv + nowGr + Q.Makeup + nowLim);
+            if (y1 - y0 > 1.5f) cv.Line(Color.FromArgb(170, Theme.Text), Theme.S(1.4f), x, y0, x, y1);
+            float d = Theme.S(7);
+            cv.Ellipse(Theme.Text, x - d / 2, y1 - d / 2, d, d);
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
@@ -1271,6 +1391,10 @@ namespace RedTune
             Color lit = Dim ? Theme.Muted : Lighter(line);
             Color limC = Theme.Warning; bool lim = P.Limit, ch = hot == Part.Ceil || drag == Part.Ceil;
             float cy = Y(P.Ceil);
+            // a paint of a part of the picture (Windows uncovering it) skips what lies outside its clip
+            var want = e.ClipRectangle;
+            bool doCurve = want.IntersectsWith(Rectangle.Inflate(c, Theme.S(14), Theme.S(14))), doHist = hist.Width > 0 && want.IntersectsWith(Rectangle.Inflate(hist, 2, 2));
+            var clip = g.Clip;
 
             // the scale: the same dB for the levels in (across) and out (up), a line every 12
             using (var pen = new Pen(Theme.Border))
@@ -1292,94 +1416,24 @@ namespace RedTune
             }
 
             // the curve
-            int steps = Math.Max(40, c.Width / 2);
-            var curve = new PointF[steps + 1];
-            for (int i = 0; i <= steps; i++) { double x = Lo + (Hi - Lo) * i / steps; curve[i] = new PointF(X(x), Y(Out(x))); }
-            // with the limiter on the curve goes flat at the ceiling; what the compressor alone gives stays as a dashed line above it
-            var real = curve;
-            if (lim) { real = new PointF[curve.Length]; for (int i = 0; i < curve.Length; i++) real[i] = new PointF(curve[i].X, Math.Max(curve[i].Y, cy)); }
-            var clip = g.Clip; g.SetClip(c);
-            using (var path = new GraphicsPath())
-            {
-                path.AddLines(real);
-                path.AddLine(real[steps], new PointF(c.Right, c.Bottom)); path.AddLine(new PointF(c.Right, c.Bottom), new PointF(c.X, c.Bottom)); path.CloseFigure();
-                using (var b = new SolidBrush(Color.FromArgb(Dim ? 14 : 30, line))) g.FillPath(b, path);
-            }
-            using (var dash = new Pen(Color.FromArgb(Dim ? 60 : 110, Theme.Text2)) { DashStyle = DashStyle.Dash }) g.DrawLine(dash, X(Q.Thr), c.Y, X(Q.Thr), c.Bottom);
-            // the other bands at work, thin, each in its colour
-            foreach (int other in P.ActiveParts)
-            {
-                if (other == Band) continue;
-                var q = P.Parts[other]; var pts = new PointF[steps + 1];
-                for (int i = 0; i <= steps; i++) { double x = Lo + (Hi - Lo) * i / steps; double o = x + GrOf(q, x) + q.Makeup; pts[i] = new PointF(X(x), lim ? Math.Max(Y(o), cy) : Y(o)); }
-                using (var pen = new Pen(Color.FromArgb(Dim ? 70 : 170, Dim ? Theme.Muted : PartColor[other]), Theme.S(1.4f)) { LineJoin = LineJoin.Round }) g.DrawLines(pen, pts);
-            }
-            if (lim) using (var pen = new Pen(Color.FromArgb(Dim ? 70 : 120, line), Theme.S(1.4f)) { DashStyle = DashStyle.Dash, LineJoin = LineJoin.Round }) g.DrawLines(pen, curve);
-            using (var pen = new Pen(line, Theme.S(2)) { LineJoin = LineJoin.Round }) g.DrawLines(pen, real);
-            g.Clip = clip;
-            // the ceiling itself (it may lie on the very top edge of the plot, so it is drawn unclipped)
-            if (lim) using (var pen = new Pen(ch ? Color.FromArgb(0xf6, 0xd0, 0x7a) : limC, Theme.S(ch ? 2.2f : 1.5f))) g.DrawLine(pen, c.X, cy, c.Right, cy);
-            g.SetClip(c);
-            // the sound now: from where it would be without the compressor down to where it is
-            if (live && !Dim && nowLv > Lo)
-            {
-                float x = X(nowLv), y0 = Y(nowLv + Q.Makeup), y1 = Y(nowLv + nowGr + Q.Makeup + nowLim);
-                if (y1 - y0 > 1.5f) using (var pen = new Pen(Color.FromArgb(170, Theme.Text), Theme.S(1.4f))) g.DrawLine(pen, x, y0, x, y1);
-                float d = Theme.S(7);
-                using (var b = new SolidBrush(Theme.Text)) g.FillEllipse(b, x - d / 2, y1 - d / 2, d, d);
-            }
-            g.Clip = clip;
-
-            foreach (var p in new[] { Part.Makeup, Part.Ratio, Part.Thr })
-            {
-                var k = KnobAt(p); bool h = p == hot || p == drag;
-                float size = Theme.S(h ? 19 : 16);
-                int a = 0, b2 = curve.Length - 1;
-                while (a + 1 < curve.Length && curve[a + 1].X < k.X - size) a++;
-                while (b2 - 1 >= 0 && curve[b2 - 1].X > k.X + size) b2--;
-                var piece = new PointF[Math.Max(0, b2 - a + 1)]; if (piece.Length > 0) Array.Copy(curve, a, piece, 0, piece.Length);
-                Theme.GlassKnob(g, k.X, k.Y, size, 1f, h ? lit : line, Theme.S(4.5f), Dim, 180f, null, -1f, piece);
-            }
+            if (doCurve) CurveBlock(g, c, true);
 
             // the last ten seconds
             if (hist.Width > 0)
             {
-                g.SetClip(hist);
-                if (ByFreq) PaintBands(g, hist, limC, lim);
-                else if (live && hCount > 1)
+                if (doHist)
                 {
-                    int n = hCount; float dx = hist.Width / (float)(Hist - 1);
-                    var pin = new List<PointF>(); var pout = new PointF[n]; var pgr = new List<PointF>(); var pall = new List<PointF>();
-                    pin.Add(new PointF(hist.Right - (n - 1) * dx, hist.Bottom)); pgr.Add(new PointF(hist.Right - (n - 1) * dx, hist.Y)); pall.Add(pgr[0]);
-                    for (int k = 0; k < n; k++)
-                    {
-                        int at = Hist - n + k; float x = hist.Right - (n - 1 - k) * dx;
-                        pin.Add(new PointF(x, Y(hIn[at]))); pout[k] = new PointF(x, Y(hOut[at]));
-                        pgr.Add(new PointF(x, hist.Y + hist.Height * (float)(Clamp(-hGr[at], 0, Hi - Lo) / (Hi - Lo))));
-                        pall.Add(new PointF(x, hist.Y + hist.Height * (float)(Clamp(-hGr[at] - hLim[at], 0, Hi - Lo) / (Hi - Lo))));
-                    }
-                    pin.Add(new PointF(hist.Right, hist.Bottom)); pgr.Add(new PointF(hist.Right, hist.Y)); pall.Add(new PointF(hist.Right, hist.Y));
-                    using (var path = new GraphicsPath()) { path.AddLines(pin.ToArray()); path.CloseFigure(); using (var b = new SolidBrush(Color.FromArgb(Dim ? 20 : 40, Theme.Text))) g.FillPath(b, path); }
-                    using (var pen = new Pen(Color.FromArgb(Dim ? 90 : 210, Theme.Text), Theme.S(1.4f)) { LineJoin = LineJoin.Round }) g.DrawLines(pen, pout);
-                    // from the top down: what the compressor takes off, and under it what the limiter adds to that
-                    if (lim)
-                    {
-                        using (var path = new GraphicsPath()) { path.AddLines(pall.ToArray()); path.CloseFigure(); using (var b = new SolidBrush(Color.FromArgb(80, limC))) g.FillPath(b, path); }
-                        using (var pen = new Pen(limC, Theme.S(1.4f)) { LineJoin = LineJoin.Round }) g.DrawLines(pen, pall.Skip(1).Take(n).ToArray());
-                    }
-                    if (!Dim)
-                    {
-                        if (lim) using (var path = new GraphicsPath()) { path.AddLines(pgr.ToArray()); path.CloseFigure(); using (var b = new SolidBrush(Theme.Card)) g.FillPath(b, path); } // the compressor's part is not tinted by the limiter's colour
-                        using (var path = new GraphicsPath()) { path.AddLines(pgr.ToArray()); path.CloseFigure(); using (var b = new SolidBrush(Color.FromArgb(70, line))) g.FillPath(b, path); }
-                        using (var pen = new Pen(line, Theme.S(1.4f)) { LineJoin = LineJoin.Round }) g.DrawLines(pen, pgr.Skip(1).Take(n).ToArray());
-                    }
-                }
-                bool lh = hot == Part.Line || drag == Part.Line;
-                if (!ByFreq) using (var dash = new Pen(Dim ? Theme.Muted : lh ? lit : line, Theme.S(lh ? 1.8f : 1.2f)) { DashStyle = DashStyle.Dash }) g.DrawLine(dash, hist.X, Y(Q.Thr), hist.Right, Y(Q.Thr));
+                g.SetClip(hist);
+                var gl = new GdiLive(g);
+                if (ByFreq) PaintBands(g, hist, limC, lim, 7, gl);
+                else HistTime(gl, hist, line, lit, limC, lim);
                 g.Clip = clip;
                 if (lim) using (var pen = new Pen(ch ? Color.FromArgb(0xf6, 0xd0, 0x7a) : limC, Theme.S(ch ? 2.2f : 1.5f))) g.DrawLine(pen, hist.X, cy, hist.Right, cy);
+                }
                 // which monitor: the two words at the right end of the line under it
                 var vt = ViewRect(false);
+                if (want.IntersectsWith(new Rectangle(hist.X - Theme.S(4), c.Bottom + 2, Width - hist.X + Theme.S(4), Theme.S(28))))
+                {
                 foreach (bool fr in new[] { false, true })
                 {
                     var vr = ViewRect(fr); bool on = ByFreq == fr, vh = hot == (fr ? Part.ViewFreq : Part.ViewTime);
@@ -1401,6 +1455,7 @@ namespace RedTune
                     Theme.Text1(g, it.Key, Theme.Small, new Rectangle(lx + sw + Theme.S(6), ly, w, Theme.S(18)), Theme.Muted);
                     lx += sw + Theme.S(6) + w + Theme.S(8);
                 }
+                }
             }
 
             // the dials
@@ -1420,6 +1475,7 @@ namespace RedTune
                 for (int k = 0; k < DialCount; k++)
                 {
                     bool off = Dim || !DialOn(k), h = !off && (hot == parts[k] || drag == parts[k]); var at = DialAt(k); var cell = DialCell(k);
+                    if (!want.IntersectsWith(new Rectangle(cell.X, at.Y - nameUp - Theme.S(2), cell.Width, nameUp + valueDown + Theme.S(26)))) continue;
                     // all eight in one colour while they work (the user: the splits too, grey only when not at work)
                     Color dc = h ? lit : line;
                     // 19.11 (the user's order): the name on top, the dial under it, the value under the dial, all on one middle
@@ -1432,7 +1488,7 @@ namespace RedTune
 
             // the bands: how many, and the one being set
             var bc = BandsCol;
-            if (bc.Width > 0)
+            if (bc.Width > 0 && want.IntersectsWith(bc))
             {
                 int n = P.PartCount; var act = P.ActiveParts;
                 int bandsTop = (int)Math.Round(BandsTopF);
@@ -1497,7 +1553,8 @@ namespace RedTune
             else if (Silent != 0) hint = "Сейчас слышны не все полосы: включено прослушивание (S или M на мониторе «По частотам»)";
             else hint = "Точки тянутся мышью: порог — влево-вправо, степень сжатия (справа) и усиление после (слева) — вверх-вниз. Колесо на точке порога меняет колено";
             int hintX = bc.Width > 0 ? bc.X : c.X;
-            Theme.Text1(g, hint, Theme.Small, new Rectangle(hintX, c.Bottom + Theme.S(28), Width - hintX - Theme.S(14), Theme.S(22)), Theme.Text2, TextFormatFlags.EndEllipsis);
+            var hintR = new Rectangle(hintX, c.Bottom + Theme.S(28), Width - hintX - Theme.S(14), Theme.S(22));
+            if (want.IntersectsWith(hintR)) Theme.Text1(g, hint, Theme.Small, hintR, Theme.Text2, TextFormatFlags.EndEllipsis);
         }
     }
 
@@ -1604,7 +1661,10 @@ namespace RedTune
             return best;
         }
 
-        void Fire() { Invalidate(); var h = Changed; if (h != null) h(this, EventArgs.Empty); }
+        // a change by the mouse (a drag, a dial, the wheel) is painted at once: Windows paints a window only when no other
+        // message waits, and a fast mouse sends its moves without a pause — the picture stood still while it was dragged
+        // and moved again only when the mouse stopped (20.11, the user: «двигаешь и даже не видишь, куда двигаешь»)
+        void Fire() { Invalidate(); var h = Changed; if (h != null) h(this, EventArgs.Empty); Update(); }
 
         internal static string Hz(double f) { return f >= 1000 ? (f / 1000).ToString(f >= 10000 ? "0.#" : "0.##", CultureInfo.InvariantCulture) + " кГц" : f.ToString("0", CultureInfo.InvariantCulture) + " Гц"; }
         static string Gain(double g) { return (g > 0.04 ? "+" : g < -0.04 ? "−" : "") + Math.Abs(g).ToString("0.0", CultureInfo.InvariantCulture) + " дБ"; }
@@ -1765,10 +1825,55 @@ namespace RedTune
                 spec[px] = now > spec[px] ? spec[px] + (now - spec[px]) * 0.6f : spec[px] + (now - spec[px]) * 0.12f;
             }
             specOn = true;
+            // the whole picture every moment, as it always was: 20.11 the user tried the plot alone with its still parts
+            // kept as pictures and the point felt late under the mouse, and wanted the equalizer back as it was (the
+            // compressor keeps its cached curve)
             Invalidate();
         }
 
         protected override void OnEnabledChanged(EventArgs e) { base.OnEnabledChanged(e); Invalidate(); }
+
+        void SpectrumFill(ILive cv, Rectangle r)
+        {
+            if (!specOn || spec == null || spec.Length != r.Width) return;
+            var pts = new List<PointF> { new PointF(r.X, r.Bottom) };
+            for (int px = 0; px < spec.Length; px += 2) pts.Add(new PointF(r.X + px, r.Bottom - r.Height * Math.Max(0f, Math.Min(1f, (spec[px] + 84f) / 84f))));
+            pts.Add(new PointF(r.Right, r.Bottom));
+            cv.FillPoly(Color.FromArgb(34, Theme.Text), pts.ToArray());
+        }
+
+        // the dashed curve of the band under the mouse, the whole curve with its fill, and the points
+        void CurveAndKnobs(Graphics g, Rectangle r, Color line)
+        {
+            var clip = g.Clip; g.SetClip(r);
+            int steps = Math.Max(40, r.Width / 2);
+            if (hot >= 0 && hot < P.Bands.Count)
+            {
+                var one = new PointF[steps + 1];
+                for (int i = 0; i <= steps; i++) { double f = MinF * Math.Pow(MaxF / MinF, i / (double)steps); one[i] = new PointF(X(f), Y(AudioFx.Response(P, f, Rate, hot))); }
+                using (var pen = new Pen(Color.FromArgb(120, Theme.Text2), Theme.S(1.2f)) { DashStyle = DashStyle.Dash }) g.DrawLines(pen, one);
+            }
+            var curve = new PointF[steps + 1];
+            for (int i = 0; i <= steps; i++) { double f = MinF * Math.Pow(MaxF / MinF, i / (double)steps); curve[i] = new PointF(X(f), Y(AudioFx.Response(P, f, Rate) - P.Preamp)); }
+            using (var path = new GraphicsPath())
+            {
+                path.AddLines(curve);
+                path.AddLine(curve[steps], new PointF(curve[steps].X, Y(0))); path.AddLine(new PointF(curve[steps].X, Y(0)), new PointF(curve[0].X, Y(0))); path.CloseFigure();
+                using (var b = new SolidBrush(Color.FromArgb(Dim ? 18 : 36, line))) g.FillPath(b, path);
+            }
+            using (var pen = new Pen(line, Theme.S(2)) { LineJoin = LineJoin.Round }) g.DrawLines(pen, curve);
+            g.Clip = clip;
+            for (int i = 0; i < P.Bands.Count; i++)
+            {
+                var k = Knob(i); bool h = i == hot;
+                float size = Theme.S(h ? 19 : 16);
+                int a = 0, b = curve.Length - 1;
+                while (a + 1 < curve.Length && curve[a + 1].X < k.X - size) a++;
+                while (b - 1 >= 0 && curve[b - 1].X > k.X + size) b--;
+                var piece = new PointF[Math.Max(0, b - a + 1)]; if (piece.Length > 0) Array.Copy(curve, a, piece, 0, piece.Length);
+                Theme.GlassKnob(g, k.X, k.Y, size, 1f, h ? Theme.AccentHover : line, Theme.S(4.5f), Dim, 180f, null, -1f, piece);
+            }
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -1800,47 +1905,11 @@ namespace RedTune
                 }
             }
 
+            // what plays now (-84 dB at the bottom of the plot, 0 dB at its top), then the curve and its points
             var clip = g.Clip; g.SetClip(r);
-            // what plays now: -84 dB at the bottom of the plot, 0 dB at its top
-            if (specOn && spec != null && spec.Length == r.Width)
-            {
-                var pts = new List<PointF> { new PointF(r.X, r.Bottom) };
-                for (int px = 0; px < spec.Length; px += 2) pts.Add(new PointF(r.X + px, r.Bottom - r.Height * Math.Max(0f, Math.Min(1f, (spec[px] + 84f) / 84f))));
-                pts.Add(new PointF(r.Right, r.Bottom));
-                using (var path = new GraphicsPath()) { path.AddLines(pts.ToArray()); path.CloseFigure(); using (var b = new SolidBrush(Color.FromArgb(34, Theme.Text))) g.FillPath(b, path); }
-            }
-
-            // the band under the mouse alone, then the whole curve
-            int steps = Math.Max(40, r.Width / 2);
-            if (hot >= 0 && hot < P.Bands.Count)
-            {
-                var one = new PointF[steps + 1];
-                for (int i = 0; i <= steps; i++) { double f = MinF * Math.Pow(MaxF / MinF, i / (double)steps); one[i] = new PointF(X(f), Y(AudioFx.Response(P, f, Rate, hot))); }
-                using (var pen = new Pen(Color.FromArgb(120, Theme.Text2), Theme.S(1.2f)) { DashStyle = DashStyle.Dash }) g.DrawLines(pen, one);
-            }
-            var curve = new PointF[steps + 1];
-            for (int i = 0; i <= steps; i++) { double f = MinF * Math.Pow(MaxF / MinF, i / (double)steps); curve[i] = new PointF(X(f), Y(AudioFx.Response(P, f, Rate) - P.Preamp)); }
-            using (var path = new GraphicsPath())
-            {
-                path.AddLines(curve);
-                path.AddLine(curve[steps], new PointF(curve[steps].X, Y(0))); path.AddLine(new PointF(curve[steps].X, Y(0)), new PointF(curve[0].X, Y(0))); path.CloseFigure();
-                using (var b = new SolidBrush(Color.FromArgb(Dim ? 18 : 36, line))) g.FillPath(b, path);
-            }
-            using (var pen = new Pen(line, Theme.S(2)) { LineJoin = LineJoin.Round }) g.DrawLines(pen, curve);
+            SpectrumFill(new GdiLive(g), r);
             g.Clip = clip;
-
-            for (int i = 0; i < P.Bands.Count; i++)
-            {
-                var k = Knob(i); bool h = i == hot;
-                // 19.11: the glass shows the curve that really runs under it (the sum of all bands), not a dash of its own:
-                // a knob the curve passes by is empty. The piece of the curve around the knob is handed over.
-                float size = Theme.S(h ? 19 : 16);
-                int a = 0, b = curve.Length - 1;
-                while (a + 1 < curve.Length && curve[a + 1].X < k.X - size) a++;
-                while (b - 1 >= 0 && curve[b - 1].X > k.X + size) b--;
-                var piece = new PointF[Math.Max(0, b - a + 1)]; if (piece.Length > 0) Array.Copy(curve, a, piece, 0, piece.Length);
-                Theme.GlassKnob(g, k.X, k.Y, size, 1f, h ? Theme.AccentHover : line, Theme.S(4.5f), Dim, 180f, null, -1f, piece);
-            }
+            CurveAndKnobs(g, r, line);
 
             DrawStrips(g, line);
 

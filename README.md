@@ -75,7 +75,7 @@ Everything that starts with Windows in one list: Run keys, startup folders, sche
 - **Laptop firmware.** Where a laptop's firmware offers a management interface in Windows (Lenovo's WMI classes, ASUS's system control driver), Red Tune uses it for power modes, limits, fans and device settings. Without one, those rows are hidden and the processor limits go the direct way.
 - **Windows power plans** are read and written through Windows' own power API. Changes in the plan block wait for a button; nothing is written while you are still choosing.
 - **The graphics card** is tuned through NVIDIA's own driver interfaces.
-- **Sound** is an audio processing object: the kind of plug-in Windows' audio engine loads for a device. Red Tune registers it, places it in the device's chain of effects, and talks to it through a small shared file (settings in, meters and a spectrum back). The processing takes about one percent of a single processor core.
+- **Sound** is an audio processing object: the kind of plug-in Windows' audio engine loads for a device. Red Tune registers it, places it in the device's chain of effects, and talks to it through a small shared file (settings in, meters and a spectrum back). The processing takes about one percent of a single processor core. The page's live pictures redraw only what moves and slow to 15 frames a second while the window is not the active one.
 - **Memory timings** are read from the processor's registers and written through AMD's overclocking interface in the BIOS, where it exists.
 - **No network.** Red Tune does not connect to the internet. The only links (PawnIO, Prime95) open in your browser when you click them.
 
@@ -132,7 +132,6 @@ Checks that write nothing to the hardware:
 | `RedTune.exe --comp-graph-check out.txt`, `--eq-strips-check`, `--motion-check`, `--sound-undo-check`, `--ui-edit-check` | the interface driven by mouse messages in a window of its own |
 | `RedTune.exe --simulate-tune …` | the auto-tune against a made-up processor |
 | `RedTune.exe --fan-check out.txt` | the fan curves' logic against made-up temperatures |
-
 Translations: `tools\lang` holds the scripts and the translated texts (`tr\<code>.json`); `node build.js <repo>` writes `lang\<code>.txt`, which the build embeds.
 
 ## License

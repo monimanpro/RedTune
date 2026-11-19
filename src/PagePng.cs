@@ -472,6 +472,7 @@ namespace RedTune
                     // the page follows the active preset when it shows, so with a late tab the preset is picked late too
                     if (lateTab && !string.IsNullOrEmpty(pre)) { var first = late; late = () => { pp.ShowPreset(pre); if (first != null) first(); }; }
                     if (Environment.GetEnvironmentVariable("RT_DC") == "1") pp.ShowCfgSource(true); // the plan block on its battery side
+                    if (Environment.GetEnvironmentVariable("RT_FAN_ON") == "1") { var before0 = late; late = () => { if (before0 != null) before0(); pp.PretendFanCurveOn(); }; } // the fan curve switched on in the editor (not saved)
                     var cfgPlanName = Environment.GetEnvironmentVariable("RT_CFG_PLAN"); // RT_CFG_PLAN=<name>: the plan block shows that plan (picked late: the page follows its preset when it shows)
                     if (!string.IsNullOrEmpty(cfgPlanName)) { var before = late; late = () => { if (before != null) before(); pp.ShowCfgPlan(cfgPlanName); }; }
                     page = pp;
@@ -527,6 +528,13 @@ namespace RedTune
                         sheet.Save(file, System.Drawing.Imaging.ImageFormat.Png);
                     }
                     return;
+                }
+                // RT_SCROLL=<n>: the page scrolled down by n (at 100 %) first, for a part lower than the window can reach
+                int down; var sc = page as ScrollableControl;
+                if (sc != null && int.TryParse(Environment.GetEnvironmentVariable("RT_SCROLL") ?? "", out down) && down > 0)
+                {
+                    sc.AutoScrollPosition = new Point(0, Theme.S(down));
+                    var t1 = DateTime.Now.AddMilliseconds(500); while (DateTime.Now < t1) { Application.DoEvents(); System.Threading.Thread.Sleep(20); }
                 }
                 using (var bmp = new Bitmap(f.ClientSize.Width, f.ClientSize.Height))
                 {

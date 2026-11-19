@@ -303,6 +303,9 @@ namespace RedTune
         bool Wanted(Control c) { bool w; return !wish.TryGetValue(c, out w) || w; }
         void Want(Control c, bool on) { wish[c] = on; int t; c.Visible = on && (!tabOf.TryGetValue(c, out t) || t == tab); }
 
+        // the off-screen render (RT_FAN_ON=1): the custom fan curve switched on in the editor, as if clicked; nothing is saved
+        internal void PretendFanCurveOn() { fanOn.Checked = true; }
+
         public void ShowTab(int i)
         {
             if (i < 0 || i > 4) return;
