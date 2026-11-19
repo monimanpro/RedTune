@@ -700,7 +700,7 @@ namespace RedTune
                                 else if (v is string[]) k.SetValue(Fx + n, rest, RegistryValueKind.MultiString);
                                 else k.SetValue(Fx + n, rest[0], RegistryValueKind.String);
                             }
-                        Store.Log("звук: эффекты Nahimic убраны из цепочки устройства " + id.ToString("B"));
+                        Store.Log("звук: эффекты производителя убраны из цепочки устройства " + id.ToString("B"));
                         return null;
                     }
                     using (var keep = Registry.LocalMachine.OpenSubKey(keepPath))
@@ -721,7 +721,7 @@ namespace RedTune
                     }
                 }
                 try { Registry.LocalMachine.DeleteSubKeyTree(keepPath, false); } catch { }
-                Store.Log("звук: эффекты Nahimic возвращены в цепочку устройства " + id.ToString("B"));
+                Store.Log("звук: эффекты производителя возвращены в цепочку устройства " + id.ToString("B"));
                 return null;
             }
             catch (Exception ex) { return ex.Message; }

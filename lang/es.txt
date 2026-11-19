@@ -1130,6 +1130,22 @@ w	b9901533	Silencio: esta banda no se oye, las demás suenan. Es para escuchar: 
 w	03c9d5bd	Ahora no se oyen todas las bandas: la escucha está activada (S o M en el monitor “Por frecuencias”)
 w	fad83bfd	05 Nuevo
 w	d9f878b3	01 Mío
+w	96ea2048	Las funciones de ASUS aún no se han probado en un portátil real
+w	ade0bed6	Están escritas a partir del informe de un solo modelo. Si un interruptor no funcionó, envía el informe desde “Componentes”: la respuesta del firmware está en el registro
+w	cd7189bc	Modo de rendimiento
+w	b4bbef0e	Rendimiento
+w	b90efa8e	Silencioso: menos ruido; rendimiento: más potencia
+w	62baa453	Límite de carga
+w	3e4a1a5e	La batería se carga hasta este nivel y dura más años. 100 % significa sin límite
+w	6fa964cb	Teclado
+w	5a237c8b	Brillo de la iluminación de las teclas
+w	f9419550	Activado: F1–F12 funcionan sin Fn, los iconos con Fn
+w	8e444a78	Velocidades ahora
+w	265388e6	El firmware no respondió
+w	d415d056	El firmware lo aceptó
+w	c71418b0	No se pudo: el controlador de ASUS no respondió
+w	6848e86f	El firmware no lo aceptó, respuesta 
+w	1293a69a	Las funciones de ASUS están escritas a partir del informe de un solo modelo (Vivobook M3401) y aún no se han probado en un portátil real
 w	aa1eb8c2	En el tiempo
 w	4875ee04	Por frecuencias
 w	2676c66f	Todo el sonido
@@ -1153,9 +1169,9 @@ w	7f13b6ce	ms
 w	3eeaafdc	no se creó el archivo de ajustes compartido
 w	d93d52e3	regsvr32 no respondió
 w	68333e90	el dispositivo no tiene sección de efectos de Windows
-w	19655e15	Efectos de Nahimic
+w	95da5eb1	Efectos del fabricante
 w	28e63132	Van antes de Red Tune y se suman a él. Desactívalos para oír solo Red Tune: se pueden recuperar aquí mismo
-w	1e2e9b43	Sacados de la cadena de este dispositivo. Nahimic sigue instalado como estaba; el interruptor devuelve los efectos
+w	f99c29a4	Sacados de la cadena de este dispositivo. El programa del fabricante sigue instalado como estaba; el interruptor devuelve los efectos
 w	b7fa2672	Recuperar
 w	5c64a063	Reiniciando el sonido de Windows…
 w	5f11b887	no se conservaron las listas de efectos originales
@@ -1174,6 +1190,9 @@ f	b3b51806	00 Ajuste
 f	b4420304	Listo
 f	7f2234e3	Superado
 f	f8c51341	 s · 
+f	b35add7a	Ventilador del procesador: 
+f	e098e42d	 · segundo: 
+f	75937636	 · el firmware de este modelo no permite ajustar la curva de los ventiladores
 f	396205d1	 — con la red
 f	d753034e	 — tipo de plan
 f	615c1bca	Para el autoajuste: 
@@ -1874,7 +1893,8 @@ f	6e94c261	no hay archivo
 f	127e2749	regsvr32: código 
 f	d85fdc01	el efecto no está registrado: 
 f	d62cae0b	el efecto final del dispositivo lo ocupa otro (
-f	206adc50	Red Tune devolverá los efectos de Nahimic a la cadena del dispositivo «
-f	f5fa4c6b	Red Tune sacará los efectos de Nahimic de la cadena del dispositivo «
+f	31fb9f74	Red Tune devolverá los efectos del fabricante a la cadena del dispositivo «
+f	59c3cdfb	Red Tune sacará los efectos del fabricante de la cadena del dispositivo «
+f	81b1f022	el programa del fabricante, 
 f	8c7b9989	» y reiniciará el servicio de sonido de Windows. El sonido se cortará un par de segundos.\n\n
-f	dcc7d8c7	El sonido cambiará y lo más probable es que suene bastante más fuerte: Nahimic baja el nivel y hace parte del ajuste de los altavoces. Baja antes el volumen. Las listas de efectos se conservan como estaban; el interruptor las devuelve.
+f	e553f0aa	El sonido cambiará y lo más probable es que suene bastante más fuerte: los efectos del fabricante bajan el nivel y hacen parte del ajuste de los altavoces. Baja antes el volumen. Las listas de efectos se conservan como estaban; el interruptor las devuelve.

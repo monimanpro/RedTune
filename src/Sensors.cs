@@ -88,7 +88,8 @@ namespace RedTune
             }
             else
             {
-                Cpu.FanRpm = Gpu.FanRpm = -1;
+                if (Hw.AsusFw) { Cpu.FanRpm = Asus.FanRpm(Asus.CpuFan); Gpu.FanRpm = Asus.FanRpm(Asus.GpuFan); } // ASUS: the firmware tells the speeds
+                else Cpu.FanRpm = Gpu.FanRpm = -1;
                 if (tctl) Cpu.TempC = Tctl.Read();
                 else try { zones.Collect(); var k = zones.Max(0); Cpu.TempC = double.IsNaN(k) || k < 250 || k > 400 ? -1 : (int)Math.Round(k - 273.15); }
                 catch { Cpu.TempC = -1; }

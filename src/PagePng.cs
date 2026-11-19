@@ -457,7 +457,7 @@ namespace RedTune
                     var sound = new SoundPage(s); page = sound;
                     if (Environment.GetEnvironmentVariable("RT_COMP_DEMO") == "1") late = () => sound.DemoComp();
                 }
-                else if (what == "device") page = new DevicePage(s); // 18.11: «Устройство» (reads the laptop's settings when it shows, sets nothing)
+                else if (what == "device") page = Hw.AsusFw ? (Page)new AsusDevicePage(s) : new DevicePage(s); // 18.11: «Устройство» (reads the laptop's settings when it shows, sets nothing)
                 else if (what == "power")
                 {
                     // 18.11: the power page and its tabs (RT_TAB=0..4); the fan control is made but never started, nothing is written

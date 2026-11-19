@@ -176,7 +176,7 @@ namespace RedTune
         void Fill()
         {
             var c = sensors.Cpu;
-            bool fans = Hw.Features; // fan speeds come from Lenovo's interface; elsewhere there is nothing to show
+            bool fans = Hw.Features || Hw.AsusFw; // fan speeds come from Lenovo's or ASUS's interface; elsewhere there is nothing to show
             cpu.Subtitle = c.Name + (c.Cores > 0 ? " · " + c.Cores + " ядер / " + c.Threads + " потока" : "");
             // 16.11: the load is a bar on the title's line (StatCard.Head), the rest as before
             var cpuLoad = M("Загрузка", N(c.LoadPct, "0") + " %", c.LoadPct / 100);

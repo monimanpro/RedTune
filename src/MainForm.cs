@@ -89,6 +89,7 @@ namespace RedTune
             fans = new FanControl(power, settings);
             if (Hw.Fans) fans.Start(); // the app's own fan curves need the firmware to take RPM
             AmdPower.ApplySaved(settings, "запуск"); // AMD laptops without Lenovo: the saved limits
+            if (Hw.AsusFw && !Safety.SafeStart) Asus.ApplySaved(settings); // ASUS: the charge limit and the mode picked here (the firmware does not keep them)
             if (Hw.PageFits("gpu")) { GpuStore.Load(); GpuStore.ApplySaved(settings, "запуск"); } // the NVIDIA curve (the driver forgets it on reboot)
             AudioFx.Init(); // 18.11: the sound settings into the file the effect reads, for the devices it is attached to
             keys.Start();
@@ -199,7 +200,7 @@ namespace RedTune
                     case "comp": p = new ComponentsPage(settings); break;
                     case "about": p = new AboutPage(); break;
                     case "power": p = Hw.LenovoPower ? (Page)new PowerPage(power, curve, fans, settings) : new AmdPowerPage(settings); break; // without Lenovo: the AMD limits
-                    case "device": p = new DevicePage(settings); break;
+                    case "device": p = Hw.AsusFw ? (Page)new AsusDevicePage(settings) : new DevicePage(settings); break; // each firmware has its own page
                     case "sound": p = new SoundPage(settings); break;
                     case "gpu": p = new GpuPage(settings); break;
                     case "startup": p = new StartupPage(); break;

@@ -14,7 +14,7 @@ namespace RedTune
     {
         public static string Maker = "", MachineType = "", Model = "", Bios = "", Cpu = "", Sim = "";
         public static string[] Gpus = new string[0];
-        public static bool Amd, Intel, GameZone, Features, FanWrite, Aod;
+        public static bool Amd, Intel, GameZone, Features, FanWrite, Aod, AsusFw; // AsusFw (19.11): ASUS's firmware interface answers (Asus.cs)
         // 16.11: a desktop PC (a board in a case, a mini PC), not a laptop: the texts say «компьютер» (L.T), the rows
         // about the charger and the battery are hidden, a failed memory setting is undone with the board's Clear CMOS
         public static bool Desktop, Battery;
@@ -79,6 +79,7 @@ namespace RedTune
             Features = Has("LENOVO_OTHER_METHOD");
             if (Features) try { FanWrite = Lenovo.GetFeature(FanControl.CpuFanId) != int.MinValue; } catch { FanWrite = false; }
             Aod = Amd && Has("AMD_ACPI");
+            if (!GameZone && !Features) try { AsusFw = Asus.Available; } catch { AsusFw = false; } // ASUS's own driver, on ASUS laptops only
 
             Sim = (Environment.GetEnvironmentVariable("RT_HW_SIM") ?? "").Trim().ToLowerInvariant();
             if (Sim.Length > 0)
@@ -87,6 +88,9 @@ namespace RedTune
                 if (k.Contains("intel")) { Amd = false; Intel = true; Aod = false; Cpu = "Intel Core (симуляция)"; }
                 if (k.Contains("nolenovo")) { GameZone = Features = FanWrite = false; Maker = "Other"; }
                 if (k.Contains("nofans")) FanWrite = false;
+                // asus: the Vivobook Pro 14 OLED of the report the ASUS support was written from (its firmware's answers, nothing reaches a driver)
+                AsusFw = false;
+                if (k.Contains("asus")) { Asus.Simulate(); AsusFw = true; GameZone = Features = FanWrite = false; Maker = "ASUSTeK COMPUTER INC."; MachineType = "Vivobook_ASUSLaptop M3401QA_M3401QA"; Model = "1.0"; }
                 if (k.Contains("onechip")) Chips = 1;
                 if (k.Contains("noaod")) Aod = false;
                 // igpu: Radeon graphics only (a thin AMD laptop); radeonrx: plus a Radeon discrete card
@@ -176,7 +180,7 @@ namespace RedTune
                 case "power": return LenovoPower ? "Режимы и лимиты Lenovo проверены только на Legion R7000P; у этой модели набор и диапазоны могут отличаться"
                     : "Запись лимитов проверена только на Dragon Range; на этом семействе — нет";
                 case "ram": return "Показ таймингов работает везде; запись проверена только на Legion R7000P и на других моделях заблокирована";
-                case "device": return "Функции Lenovo проверены только на Legion R7000P; у этой модели часть может отсутствовать";
+                case "device": return AsusFw ? "Функции ASUS написаны по отчёту одной модели (Vivobook M3401) и на настоящем ноутбуке ещё не проверены" : "Функции Lenovo проверены только на Legion R7000P; у этой модели часть может отсутствовать";
                 case "gpu": return "Кривая видеокарты проверена на RTX 5070 Laptop (драйвер 621); на этой видеокарте ещё нет";
                 default: return "";
             }
@@ -210,7 +214,7 @@ namespace RedTune
         // memory timings through AMD's overclocking interface in the BIOS
         public static bool Ram { get { return Aod; } }
         // keyboard light, battery, USB, Fn keys: Lenovo's interface
-        public static bool Device { get { return GameZone || Features; } }
+        public static bool Device { get { return GameZone || Features || AsusFw; } }
 
         // sections that can make a PC unstable: shown only with Settings → «Экспертные функции» (Settings.Expert)
         // 13.11: «Питание» is always in the menu: without Lenovo it reads the limits and picks the Windows plan for
@@ -244,7 +248,7 @@ namespace RedTune
                 case "curve": return OldCore ? "процессор на ядрах Zen 2 или старше: Curve Optimizer у него нет" : "процессор не AMD Ryzen";
                 case "dist": return "один чиплет: разводить программы не по чему";
                 case "ram": return !Amd ? "процессор не AMD" : "в BIOS нет интерфейса разгона AMD (AMD_ACPI)";
-                case "device": return "нет интерфейса прошивки Lenovo";
+                case "device": return "нет интерфейса прошивки Lenovo или ASUS";
                 default: return "";
             }
         }
@@ -283,6 +287,7 @@ namespace RedTune
             sb.AppendLine("Процессор: " + Cpu + " (" + Cores + " " + Pl(Cores, "ядро", "ядра", "ядер") + ", " + Threads + " " + Pl(Threads, "поток", "потока", "потоков") + ", чиплетов: " + Chips + ")");
             sb.AppendLine("Видеокарты: " + (Gpus.Length > 0 ? string.Join("; ", Gpus) : "—"));
             sb.AppendLine("Lenovo GameZone: " + YesNo(GameZone) + " · функции по ID: " + YesNo(Features) + " · запись оборотов вентиляторов: " + YesNo(FanWrite));
+            sb.AppendLine("Прошивка ASUS: " + YesNo(AsusFw) + (AsusFw ? " · режимы: " + YesNo(Asus.HasModes) + " · предел заряда: " + YesNo(Asus.Has(Asus.BatteryLimit)) + " · подсветка клавиатуры: " + YesNo(Asus.Has(Asus.KbdLight)) + " · блокировка Fn: " + YesNo(Asus.Has(Asus.FnLock)) + " · вентиляторы: " + Asus.FanRpm(Asus.CpuFan) + " / " + Asus.FanRpm(Asus.GpuFan) : ""));
             sb.AppendLine("Интерфейс разгона AMD (AMD_ACPI): " + YesNo(Aod));
             if (GameZone) sb.AppendLine("Лимиты своего режима: " + Limits.Describe());
             if (Sim.Length > 0) sb.AppendLine("Симуляция: " + Sim);

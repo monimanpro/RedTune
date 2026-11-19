@@ -8,8 +8,8 @@ using System.Windows.Forms;
 [assembly: AssemblyTitle("Red Tune")]
 [assembly: AssemblyDescription("Питание, кривая и настройки ноутбуков на AMD Ryzen")]
 [assembly: AssemblyProduct("Red Tune")]
-[assembly: AssemblyVersion("0.4.0.0")]
-[assembly: AssemblyFileVersion("0.4.0.0")]
+[assembly: AssemblyVersion("0.4.1.0")]
+[assembly: AssemblyFileVersion("0.4.1.0")]
 
 namespace RedTune
 {
@@ -276,6 +276,9 @@ namespace RedTune
             i = at("--whea-scan");
             if (i >= 0 && i + 2 < args.Length) { Hw.Detect(); var hits = Load.WheaHits(DateTime.Parse(args[i + 1])); System.IO.File.WriteAllText(args[i + 2], string.Join("\r\n", hits.Select(h => h.Text + " | core " + h.Core)) + "\r\ncount " + hits.Count + "\r\n", new System.Text.UTF8Encoding(true)); return 0; }
 
+            // --asus-check <file>: what would be sent to an ASUS laptop's firmware, on the pretended Vivobook of the report (Asus.Check); no driver is touched
+            i = at("--asus-check");
+            if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Asus.Check(), new System.Text.UTF8Encoding(true)); return 0; }
             // --motion-check <file>: the movement of rows that come and go on the pages (PagePng.MotionCheck), a check on a page of its own; pictures go beside the file
             i = at("--motion-check");
             if (i >= 0 && i + 1 < args.Length) { Theme.Init(100); L.Set("ru"); PagePng.MotionCheck(args[i + 1]); return 0; }

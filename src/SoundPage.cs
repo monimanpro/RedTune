@@ -179,7 +179,7 @@ namespace RedTune
             Row("Потолок", null, ceil);
 
             Section("Система");
-            nahimicRow = Row("Эффекты Nahimic", null, nahimicT);
+            nahimicRow = Row("Эффекты производителя", null, nahimicT);
             nahimicT.CheckedChanged += (o, e) => { if (!loading) SwitchNahimic(nahimicT.Checked); };
             removeRow = Row("Убрать обработку с устройства", "Red Tune уберёт свой обработчик из цепочки эффектов этого устройства; настройки останутся", remove);
 
@@ -418,7 +418,7 @@ namespace RedTune
             bool nahimic = state.Nahimic;
             var text = "Red Tune добавит свой обработчик звука в цепочку эффектов Windows для устройства «" + dev.Full + "» и перезапустит службу звука Windows.\n\n"
                 + "Звук прервётся на пару секунд; программе, которая сейчас играет, может понадобиться пауза и снова пуск.\n\n"
-                + "Чужие эффекты (" + (nahimic ? "Nahimic, " : "") + "драйвер) остаются на месте. Убрать обработчик можно здесь же, внизу страницы.";
+                + "Чужие эффекты (" + (nahimic ? "программа производителя, " : "") + "драйвер) остаются на месте. Убрать обработчик можно здесь же, внизу страницы.";
             if (!ConfirmDialog.Ask(FindForm(), "Обработка звука", text, "Подключить", "Отмена")) { loading = true; onT.Set(false); loading = false; return; }
             var id = dev.Id; var sp = p;
             busy = true; onT.Enabled = false; onRow.SetSub("Подключаю обработчик и перезапускаю звук Windows…");
@@ -486,7 +486,7 @@ namespace RedTune
 
             // 19.11: Nahimic's effects on this device, on (as installed) or taken out of its chain by the switch (AudioFx.SetNahimic)
             string nh = state.Nahimic ? "Идут до Red Tune и складываются с ним. Выключите, чтобы слышать только Red Tune: вернуть можно здесь же"
-                : state.NahimicOff ? "Убраны из цепочки этого устройства. Сам Nahimic установлен, как был; выключатель вернёт эффекты на место" : null;
+                : state.NahimicOff ? "Убраны из цепочки этого устройства. Программа производителя установлена, как была; выключатель вернёт эффекты на место" : null;
             bool showNh = nh != null, showRemove = state.Attached;
             if (nahimicRow.Visible != showNh || removeRow.Visible != showRemove) { nahimicRow.Visible = showNh; removeRow.Visible = showRemove; Relayout(); }
             if (showNh && nahimicRow.Sub != nh) nahimicRow.SetSub(nh);
@@ -498,18 +498,18 @@ namespace RedTune
             Action back = () => { loading = true; nahimicT.Set(!on); loading = false; };
             if (dev == null || busy) { back(); return; }
             var text = on
-                ? "Red Tune вернёт эффекты Nahimic в цепочку устройства «" + dev.Full + "» и перезапустит службу звука Windows. Звук прервётся на пару секунд."
-                : "Red Tune уберёт эффекты Nahimic из цепочки устройства «" + dev.Full + "» и перезапустит службу звука Windows. Звук прервётся на пару секунд.\n\n"
+                ? "Red Tune вернёт эффекты производителя в цепочку устройства «" + dev.Full + "» и перезапустит службу звука Windows. Звук прервётся на пару секунд."
+                : "Red Tune уберёт эффекты производителя из цепочки устройства «" + dev.Full + "» и перезапустит службу звука Windows. Звук прервётся на пару секунд.\n\n"
                     // 19.11, measured on the R7000P: a tone played at -30 dB reaches Red Tune at -39 dB with Nahimic in the chain and at -30 dB without it
-                    + "Звук станет другим и, скорее всего, заметно громче: Nahimic убавляет уровень и делает часть настройки динамиков. Убавьте громкость заранее. Списки эффектов сохраняются как были, выключатель вернёт их на место.";
-            if (!ConfirmDialog.Ask(FindForm(), "Эффекты Nahimic", text, on ? "Вернуть" : "Выключить", "Отмена")) { back(); return; }
+                    + "Звук станет другим и, скорее всего, заметно громче: эффекты производителя убавляют уровень и делают часть настройки динамиков. Убавьте громкость заранее. Списки эффектов сохраняются как были, выключатель вернёт их на место.";
+            if (!ConfirmDialog.Ask(FindForm(), "Эффекты производителя", text, on ? "Вернуть" : "Выключить", "Отмена")) { back(); return; }
             var id = dev.Id;
             busy = true; nahimicT.Enabled = false; nahimicRow.SetSub("Перезапускаю звук Windows…");
             Task.Run(() =>
             {
                 string err = AudioFx.SetNahimic(id, on);
                 if (err == null) err = AudioFx.RestartAudio();
-                if (err != null) Store.Log("звук: Nahimic: " + err);
+                if (err != null) Store.Log("звук: эффекты производителя: " + err);
                 try
                 {
                     BeginInvoke((Action)(() =>

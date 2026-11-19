@@ -16,6 +16,8 @@ small programs the driver runs to reach the hardware. Everything else in the bui
 |---|---|---|
 | LenovoLegionToolkit-Plugins, CustomFanCurve plugin | The fan curve logic in `src\FanControl.cs` (curve math, safety net, hysteresis, smoothing) | GPL-3.0 — https://github.com/LenovoLegionToolkit-Team/LenovoLegionToolkit-Plugins |
 | Lenovo Legion Toolkit | Lenovo WMI feature IDs and how they are used (power limits, fans, modes) | GPL-3.0 — https://github.com/BartoszCichecki/LenovoLegionToolkit |
+| G-Helper | `src\Asus.cs`: how ASUS's firmware is called through the driver `\\.\ATKACPI` (the DSTS and DEVS methods), the device numbers and the values of the performance modes, the charge limit, the keyboard backlight, the Fn lock and the fan speeds | GPL-3.0 — https://github.com/seerge/g-helper |
+| Linux kernel, `asus-wmi` driver | The same device numbers and values, checked against it (`src\Asus.cs`, the list in `src\Diag.cs`) | GPL-2.0-or-later — https://github.com/torvalds/linux |
 | ZenStates-Core | `src\Smu.cs`: SMU message numbers and mailbox addresses per processor family, the mailbox exchange, the curve's core numbering, the power table layouts (memory clocks). `src\Ram\LiveTimings.cs`: the register map of the memory timings | GPL-3.0 — https://github.com/irusanov/ZenStates-Core |
 
 ## Not included

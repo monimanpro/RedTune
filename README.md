@@ -35,7 +35,7 @@ A sound effect of Red Tune's own that Windows runs for every program on the outp
 - **Equalizer** — up to 12 bands (bell, shelves, cuts, notch) drawn as a curve over the live spectrum; points are dragged, strips beside the plot give the same bands as faders and dials.
 - **Compressor** — in one, two or three frequency bands, each with its own threshold, ratio, knee, attack, release and make-up gain. A picture shows the transfer curve with draggable points, eight dials, and a monitor that is either the last ten seconds or the bands across the frequencies with their live levels. Bands can be soloed and muted for listening.
 - **Limiter** — a look-ahead limiter that measures the true peak of the wave, so the output never passes the ceiling and does not rasp.
-- Presets, settings per device, step back and forward, a level meter, and a switch for a manufacturer's own effect (Nahimic) that would otherwise add to Red Tune's.
+- Presets, settings per device, step back and forward, a level meter, and a switch for a laptop maker's own sound effects that would otherwise add to Red Tune's.
 
 ### Memory
 Live timings and clocks, profiles, a memory test, and writing the memory speed and timings on machines whose BIOS exposes AMD's overclocking interface. Red Tune works out by itself what a machine allows, in three levels:
@@ -50,7 +50,8 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 - **Removing programs** — runs the program's own uninstaller, then finds what it left behind (folders, registry keys, shortcuts, startup entries). Files go to the Recycle Bin; registry keys are exported before they are deleted.
 
 ### Device (laptops with a supported firmware interface)
-Keyboard backlight, charging mode, USB power while asleep, the graphics card's working mode, display resolution, refresh rate, scale and HDR, one brightness for all power plans, and the Fn keys.
+- **Lenovo** — keyboard backlight, charging mode, USB power while asleep, the graphics card's working mode, display resolution, refresh rate, scale and HDR, one brightness for all power plans, and the Fn keys.
+- **ASUS** — the performance mode (quiet, balanced, performance), the battery's charge limit, the keyboard backlight, the Fn lock and the fan speeds, each only where the laptop's firmware has it. Written from the report of one model (Vivobook Pro 14 OLED M3401) and not yet tried on a real ASUS laptop.
 
 ### Distribution (processors with two chiplets)
 Pins programs to a chiplet by folder or process name: games on one, the background on the other.
@@ -71,7 +72,7 @@ Everything that starts with Windows in one list: Run keys, startup folders, sche
 
 - **One program, no service.** A single executable for .NET Framework 4.8 (part of Windows 10 and 11) plus two small native libraries of its own: the load for the auto-tune and the sound effect. A scheduled task starts it in the tray when you sign in, if you ask for that.
 - **The processor** is reached through the [PawnIO](https://pawnio.eu/) driver: Red Tune talks to the processor's system management unit to read the power table and to write the voltage curve and the power limits. PawnIO is installed separately with its own signed installer; without it everything except those parts still works.
-- **Laptop firmware.** Where a laptop's firmware offers a management interface in Windows (WMI), Red Tune uses it for power modes, limits, fans and device settings. Without one, those rows are hidden and the processor limits go the direct way.
+- **Laptop firmware.** Where a laptop's firmware offers a management interface in Windows (Lenovo's WMI classes, ASUS's system control driver), Red Tune uses it for power modes, limits, fans and device settings. Without one, those rows are hidden and the processor limits go the direct way.
 - **Windows power plans** are read and written through Windows' own power API. Changes in the plan block wait for a button; nothing is written while you are still choosing.
 - **The graphics card** is tuned through NVIDIA's own driver interfaces.
 - **Sound** is an audio processing object: the kind of plug-in Windows' audio engine loads for a device. Red Tune registers it, places it in the device's chain of effects, and talks to it through a small shared file (settings in, meters and a spectrum back). The processing takes about one percent of a single processor core.

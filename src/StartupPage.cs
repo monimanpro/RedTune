@@ -62,12 +62,16 @@ namespace RedTune
             AutoScrollPosition = new Point(0, scroll);
         }
 
+        // a full path, as far as can be told: a command with characters no path may have («Путь содержит недопустимые знаки»,
+        // seen on another laptop, where it took the whole page down) is simply not one
+        static bool Rooted(string p) { try { return !string.IsNullOrEmpty(p) && p.IndexOfAny(Path.GetInvalidPathChars()) < 0 && Path.IsPathRooted(p); } catch { return false; } }
+
         Row Item(StartupItem it)
         {
             var on = new Toggle(); on.Set(it.Enabled);
             var more = new FlatButton("…");
             var exe = it.Exe;
-            bool missing = !string.IsNullOrEmpty(exe) && Path.IsPathRooted(exe) && !File.Exists(exe);
+            bool missing = Rooted(exe) && !File.Exists(exe);
             Func<string> sub = () => (missing ? "файла нет: " : "") + (string.IsNullOrEmpty(it.Command) ? "" : it.Command + " · ") + it.Source;
             var row = Row(it.Name, sub(), more, on);
             on.CheckedChanged += (s, e) =>
@@ -112,7 +116,7 @@ namespace RedTune
         {
             try
             {
-                if (string.IsNullOrEmpty(path) || !Path.IsPathRooted(path)) return null;
+                if (!Rooted(path)) return null;
                 if (File.Exists(path)) return path;
                 for (var d = Path.GetDirectoryName(path); !string.IsNullOrEmpty(d); d = Path.GetDirectoryName(d))
                     if (Directory.Exists(d)) return d;

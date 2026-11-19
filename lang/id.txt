@@ -1130,6 +1130,22 @@ w	b9901533	Bisu: pita ini tidak terdengar, yang lain tetap berbunyi. Ini untuk m
 w	03c9d5bd	Sekarang tidak semua pita terdengar: mode mendengarkan aktif (S atau M di monitor “Menurut frekuensi”)
 w	fad83bfd	05 Baru
 w	d9f878b3	01 Milik saya
+w	96ea2048	Fungsi ASUS belum dicoba di laptop sungguhan
+w	ade0bed6	Ditulis dari laporan satu model. Jika sakelar tidak bekerja, kirim laporan dari “Komponen”: jawaban firmware ada di jurnal
+w	cd7189bc	Mode kinerja
+w	b4bbef0e	Kinerja
+w	b90efa8e	Senyap: lebih sedikit bising; kinerja: daya lebih besar
+w	62baa453	Batas pengisian
+w	3e4a1a5e	Baterai diisi sampai tingkat ini dan lebih awet. 100 % berarti tanpa batas
+w	6fa964cb	Keyboard
+w	5a237c8b	Kecerahan lampu tombol
+w	f9419550	Aktif: F1–F12 bekerja tanpa Fn, ikon dengan Fn
+w	8e444a78	Kecepatan sekarang
+w	265388e6	Firmware tidak menjawab
+w	d415d056	Firmware menerimanya
+w	c71418b0	Gagal: driver ASUS tidak menjawab
+w	6848e86f	Firmware tidak menerimanya, jawaban 
+w	1293a69a	Fungsi ASUS ditulis dari laporan satu model (Vivobook M3401) dan belum dicoba di laptop sungguhan
 w	aa1eb8c2	Menurut waktu
 w	4875ee04	Menurut frekuensi
 w	2676c66f	Seluruh suara
@@ -1153,9 +1169,9 @@ w	7f13b6ce	ms
 w	3eeaafdc	berkas setelan bersama tidak terbuat
 w	d93d52e3	regsvr32 tidak merespons
 w	68333e90	perangkat tidak punya bagian efek Windows
-w	19655e15	Efek Nahimic
+w	95da5eb1	Efek pabrikan
 w	28e63132	Berjalan sebelum Red Tune dan menumpuk dengannya. Matikan untuk mendengar Red Tune saja: bisa dikembalikan di sini
-w	1e2e9b43	Dikeluarkan dari rantai perangkat ini. Nahimic sendiri tetap terpasang; sakelar mengembalikan efeknya
+w	f99c29a4	Dikeluarkan dari rantai perangkat ini. Program pabrikan tetap terpasang; sakelar mengembalikan efeknya
 w	b7fa2672	Kembalikan
 w	5c64a063	Memulai ulang suara Windows…
 w	5f11b887	daftar efek asli tidak tersimpan
@@ -1174,6 +1190,9 @@ f	b3b51806	00 Penyetelan
 f	b4420304	Selesai
 f	7f2234e3	Lulus
 f	f8c51341	 dtk · 
+f	b35add7a	Kipas prosesor: 
+f	e098e42d	 · kedua: 
+f	75937636	 · firmware model ini tidak mengizinkan kurva kipas diatur
 f	396205d1	 — listrik
 f	d753034e	 — jenis paket
 f	615c1bca	Untuk tala otomatis: 
@@ -1874,7 +1893,8 @@ f	6e94c261	tidak ada berkas
 f	127e2749	regsvr32: kode 
 f	d85fdc01	efek belum terdaftar: 
 f	d62cae0b	efek akhir perangkat dipakai efek lain (
-f	206adc50	Red Tune akan mengembalikan efek Nahimic ke rantai perangkat «
-f	f5fa4c6b	Red Tune akan mengeluarkan efek Nahimic dari rantai perangkat «
+f	31fb9f74	Red Tune akan mengembalikan efek pabrikan ke rantai perangkat «
+f	59c3cdfb	Red Tune akan mengeluarkan efek pabrikan dari rantai perangkat «
+f	81b1f022	program pabrikan, 
 f	8c7b9989	» dan memulai ulang layanan suara Windows. Suara akan terhenti beberapa detik.\n\n
-f	dcc7d8c7	Suara akan berubah dan kemungkinan besar jauh lebih keras: Nahimic menurunkan level dan mengerjakan sebagian penyetelan speaker. Kecilkan volume dulu. Daftar efek disimpan seperti semula, sakelar mengembalikannya.
+f	e553f0aa	Suara akan berubah dan kemungkinan besar jauh lebih keras: efek pabrikan menurunkan level dan mengerjakan sebagian penyetelan speaker. Kecilkan volume dulu. Daftar efek disimpan seperti semula, sakelar mengembalikannya.

@@ -1130,6 +1130,22 @@ w	b9901533	Tắt tiếng: không nghe dải này, các dải khác vẫn phát. 
 w	03c9d5bd	Hiện không nghe được tất cả các dải: đang bật nghe thử (S hoặc M trên màn hình “Theo tần số”)
 w	fad83bfd	05 Mới
 w	d9f878b3	01 Của tôi
+w	96ea2048	Các chức năng ASUS chưa được thử trên laptop thật
+w	ade0bed6	Chúng được viết từ báo cáo của một mẫu máy. Nếu một công tắc không hoạt động, hãy gửi báo cáo từ “Thành phần”: phản hồi của firmware nằm trong nhật ký
+w	cd7189bc	Chế độ hiệu năng
+w	b4bbef0e	Hiệu năng
+w	b90efa8e	Yên tĩnh: ít ồn hơn; hiệu năng: công suất cao hơn
+w	62baa453	Giới hạn sạc
+w	3e4a1a5e	Pin sạc đến mức này và bền hơn. 100 % nghĩa là không giới hạn
+w	6fa964cb	Bàn phím
+w	5a237c8b	Độ sáng đèn nền phím
+w	f9419550	Bật: F1–F12 hoạt động không cần Fn, các biểu tượng dùng với Fn
+w	8e444a78	Tốc độ hiện tại
+w	265388e6	Firmware không phản hồi
+w	d415d056	Firmware đã nhận
+w	c71418b0	Không được: trình điều khiển ASUS không phản hồi
+w	6848e86f	Firmware không nhận, phản hồi 
+w	1293a69a	Các chức năng ASUS được viết từ báo cáo của một mẫu máy (Vivobook M3401) và chưa được thử trên laptop thật
 w	aa1eb8c2	Theo thời gian
 w	4875ee04	Theo tần số
 w	2676c66f	Toàn bộ âm thanh
@@ -1153,9 +1169,9 @@ w	7f13b6ce	ms
 w	3eeaafdc	không tạo được tệp thiết lập dùng chung
 w	d93d52e3	regsvr32 không phản hồi
 w	68333e90	thiết bị không có phần hiệu ứng của Windows
-w	19655e15	Hiệu ứng Nahimic
+w	95da5eb1	Hiệu ứng của nhà sản xuất
 w	28e63132	Chúng chạy trước Red Tune và cộng thêm vào. Tắt đi để chỉ nghe Red Tune: có thể bật lại ngay tại đây
-w	1e2e9b43	Đã gỡ khỏi chuỗi của thiết bị này. Bản thân Nahimic vẫn được cài như cũ; công tắc sẽ đưa hiệu ứng trở lại
+w	f99c29a4	Đã gỡ khỏi chuỗi của thiết bị này. Chương trình của nhà sản xuất vẫn được cài như cũ; công tắc sẽ đưa hiệu ứng trở lại
 w	b7fa2672	Đưa trở lại
 w	5c64a063	Đang khởi động lại âm thanh Windows…
 w	5f11b887	danh sách hiệu ứng gốc không được giữ lại
@@ -1174,6 +1190,9 @@ f	b3b51806	00 Tinh chỉnh
 f	b4420304	Xong
 f	7f2234e3	Đạt
 f	f8c51341	 giây · 
+f	b35add7a	Quạt bộ xử lý: 
+f	e098e42d	 · quạt thứ hai: 
+f	75937636	 · firmware của mẫu máy này không cho đặt đường cong quạt
 f	396205d1	 — cắm điện
 f	d753034e	 — loại gói nguồn
 f	615c1bca	Cho tự tinh chỉnh: 
@@ -1874,7 +1893,8 @@ f	6e94c261	không có tệp
 f	127e2749	regsvr32: mã 
 f	d85fdc01	hiệu ứng chưa được đăng ký: 
 f	d62cae0b	hiệu ứng cuối của thiết bị đã bị hiệu ứng khác chiếm (
-f	206adc50	Red Tune sẽ đưa hiệu ứng của Nahimic trở lại chuỗi của thiết bị «
-f	f5fa4c6b	Red Tune sẽ gỡ hiệu ứng của Nahimic khỏi chuỗi của thiết bị «
+f	31fb9f74	Red Tune sẽ đưa hiệu ứng của nhà sản xuất trở lại chuỗi của thiết bị «
+f	59c3cdfb	Red Tune sẽ gỡ hiệu ứng của nhà sản xuất khỏi chuỗi của thiết bị «
+f	81b1f022	chương trình của nhà sản xuất, 
 f	8c7b9989	» và khởi động lại dịch vụ âm thanh của Windows. Âm thanh sẽ ngắt vài giây.\n\n
-f	dcc7d8c7	Âm thanh sẽ thay đổi và nhiều khả năng to hơn rõ rệt: Nahimic hạ mức âm và đảm nhận một phần tinh chỉnh loa. Hãy giảm âm lượng trước. Danh sách hiệu ứng được giữ nguyên, công tắc sẽ đưa chúng trở lại.
+f	e553f0aa	Âm thanh sẽ thay đổi và nhiều khả năng to hơn rõ rệt: hiệu ứng của nhà sản xuất hạ mức âm và đảm nhận một phần tinh chỉnh loa. Hãy giảm âm lượng trước. Danh sách hiệu ứng được giữ nguyên, công tắc sẽ đưa chúng trở lại.
