@@ -1,0 +1,19 @@
+# build output
+bin/
+dist/
+*.pdb
+
+# editors
+.vs/
+.vscode/
+*.user
+*.suo
+
+# local runs
+*.log
+redtune_task.xml
+
+# made by tools\lang (extract.js, build.js --list)
+tools/lang/keys.json
+tools/lang/en.tsv
+tools/lang/missing.tsv

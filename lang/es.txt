@@ -1,0 +1,1880 @@
+# Red Tune: Español. Made by tools\lang\build.js; w = a whole string, f = a fragment of a composed one
+@laptop	portátil	PC
+w	a2aa4921	Inicio
+w	0959af38	Energía
+w	352e72e8	Curva
+w	ef92545e	Autoajuste
+w	15d0d65d	Dispositivo
+w	00a6501c	Componentes
+w	06fc79ae	Ajustes
+w	d4365936	Acerca de
+w	3bf90cf9	Modo de energía
+w	2a7dffb1	Fn+Q cambia entre los modos
+w	e28d5e85	Modo personalizado: elige un preajuste a la derecha · Fn+Q cambia entre los modos
+w	d8d0b2d9	Silencioso
+w	31fe851d	Equilibrado
+w	8bd85d30	Rendimiento
+w	94bbc86f	Personalizado
+w	a6022cf0	Extremo
+w	92d46e95	Procesador
+w	8e43a0ae	Gráficos
+w	69031429	Memoria
+w	36c1d729	carga
+w	8ec1f7c9	Carga
+w	bcc6ab26	en uso
+w	5b7c7dd7	Frecuencia
+w	a84ca073	Temperatura
+w	db519266	Potencia
+w	e1d3c891	Ventilador
+w	0589926e	Frecuencia del núcleo
+w	04856dfe	VRAM
+w	ee7476d5	Frecuencia de memoria
+w	5b538146	En uso
+w	cb768d51	Lectura
+w	4933d628	Escritura
+w	5c19d52d	No se pudo leer el modo
+w	a3fb2c9c	La GPU está en reposo
+w	eafd9526	sin datos de NVIDIA
+w	24e2175c	No se encontró el controlador NVIDIA
+w	8c002867	controlador NVIDIA antiguo
+w	d4eda662	UXTU también controla la curva
+w	d634deed	Aplica su preajuste al iniciar, con el cargador y tras la suspensión, y sobrescribirá estos valores
+w	ca20fe31	Desactivar UXTU
+w	f73f7bbc	Preajuste de curva
+w	10c5c91a	Guardar
+w	82172d23	Deshacer los cambios
+w	242643f3	Como en el modo Silencioso
+w	eb9b8e75	Como en el modo Equilibrado
+w	f13b041e	Como en el modo Rendimiento
+w	a22d9c56	Restablecer
+w	ab02a46a	Aplicar
+w	46b7a3ba	En la CPU ahora
+w	85e6d09f	Leer
+w	920ce132	Aplicar automáticamente
+w	7c5e5d92	Al iniciar Windows
+w	5ca4e27f	Requiere que la aplicación se inicie con Windows (Ajustes)
+w	62c03ec3	Al conectar el cargador
+w	12ebec1c	Con batería
+w	6ef48fc4	Tras la suspensión
+w	ef39dd83	Historial de cambios
+w	9425155c	Cada aplicación queda registrada; se puede restaurar cualquier conjunto anterior
+w	2f1ff3ae	Abrir
+w	70c0f38c	coincide
+w	63ec7e9e	difiere
+w	d8623692	error
+w	e9b70efc	leyendo…
+w	bc1a72f1	aplicando…
+w	e14e7f73	La CPU funciona con estos valores
+w	832a150e	Activo: se aplica automáticamente
+w	aa8e426b	Seleccionado pero no activo: Aplicar lo activa
+w	f0f1252e	Las celdas azules están cambiadas
+w	8007c957	Arrastra un control o escribe un número. Tras un clic, la rueda del ratón lo cambia de 1 en 1
+w	7aad830e	Los controles azul claro están cambiados
+w	1dff9af7	Arrastra un control o escribe un número
+w	dd8755bf	Haz clic en una celda; la rueda del ratón la cambia de 1 en 1
+w	2d93184f	De fábrica (0)
+w	7b8656b9	Diario
+w	0c03b6c7	Nuevo preajuste con estos valores…
+w	a112f834	Renombrar…
+w	77559023	Eliminar
+w	14b131be	Nuevo preajuste
+w	641c3535	Nombre
+w	6bbe678c	Mi preajuste
+w	ba434cd4	Renombrar preajuste
+w	e91982fe	Ese nombre ya existe
+w	b4420304	Listo
+w	b0a26fcb	Cancelar
+w	b2e9482c	Historial de cambios de la curva
+w	c1aa7097	Aún no hay nada
+w	7eddd6fa	Cada aplicación de la curva aparece aquí
+w	efc41ede	Al editor
+w	cc1ff13b	Lenovo Legion Toolkit también controla la energía
+w	c5479131	Aplica sus preajustes al cambiar de modo y sobrescribirá estos ajustes
+w	c4d89145	Desactivar LLT
+w	481c06f3	Preajuste del modo personalizado
+w	43768da5	Cambios
+w	5d53ed1c	Guardado
+w	673911cb	Cambios sin guardar
+w	0113f951	Aplicando…
+w	19d21c69	Activo: se usa en el modo Personalizado (Fn+Q o Inicio)
+w	86ea9074	Límite de potencia a largo plazo
+w	72073369	Potencia sostenida de la CPU
+w	1a25f7dc	Límite de potencia a corto plazo
+w	6c7975cc	Potencia máxima durante poco tiempo
+w	cf5f8d36	Límite de potencia de pico
+w	ebb9a9f4	Máximo en cargas instantáneas
+w	4cd50c47	Límite a largo plazo con carga de CPU+GPU
+w	5173f350	Potencia de la CPU mientras también trabaja la GPU
+w	65143d73	Límite de temperatura de la CPU
+w	419a29d3	Por encima, la CPU baja su frecuencia
+w	2f397926	Potencia extra de GPU según la carga de CPU
+w	c33b334d	TGP configurable
+w	926cef2e	Potencia de la GPU por encima de la base
+w	65a462b6	Límite de temperatura de la GPU
+w	aecc699a	Por encima, la GPU baja su frecuencia
+w	aed63ba5	Objetivo de potencia total de CPU con corriente
+w	5964e6ab	Umbral a partir del cual la potencia pasa a la GPU
+w	fb4718bd	Dynamic Boost de GPU a CPU
+w	1e51e386	Cuánto puede tomar la GPU de la CPU
+w	5a6b7b2e	Ventiladores
+w	bc186f34	Predeterminado
+w	6e6f8a07	Sigue al más caliente entre CPU y GPU
+w	00acbcf7	Velocidad máxima
+w	f0773c31	Todos los ventiladores al máximo; se activa con Aplicar arriba. Desgasta los ventiladores si se deja activo
+w	3b219822	Todos los ventiladores al máximo. Desgasta los ventiladores si se deja activo
+w	440ccc96	La velocidad sigue al más caliente entre CPU y GPU. Pasa el cursor por un punto para ver sus umbrales
+w	466960c3	Arrastra los puntos arriba y abajo
+w	49976ea7	Arrastra los puntos arriba y abajo; pasa el cursor por uno para ver sus umbrales
+w	2142831a	Plan de energía de Windows
+w	647b8408	Plan para este preajuste
+w	bffba646	Se activa con el preajuste
+w	f8571b36	Planes de Windows
+w	b27f1d07	Crea o edita planes en el Panel de control de Windows
+w	ecd09041	Crear plan
+w	ff735680	Abrir Opciones de energía
+w	d5c0d83e	Copia el plan equilibrado o abre el Panel de control
+w	afc64e8d	Planes para los demás modos
+w	50aa62f8	No cambiar
+w	181faada	Nuevo preajuste con estos ajustes…
+w	35b936c1	Nuevo plan de energía
+w	f3e6c4be	Batería
+w	4cbf9840	Modo de carga
+w	590a3da3	Conservación
+w	a5908bc1	Normal
+w	624b3832	Rápida
+w	b0b7093e	Conservación mantiene la carga cerca del 80 % para cuidar la batería
+w	df2f4bff	Carga nocturna
+w	04446b1b	80 % durante la noche, 100 % por la mañana
+w	4b738f43	Encender al abrir la tapa
+w	c4c41a34	Encender al conectar el cargador
+w	a7b803cc	Encender con carga USB-C
+w	692aa47a	Alimentación USB
+w	f483edc1	Apagado
+w	93c0c1fc	En suspensión
+w	6b0d1aec	Siempre
+w	6035a231	Cargar dispositivos USB mientras el portátil está suspendido o apagado
+w	a36282e1	Pantalla
+w	3b9cb762	Resolución
+w	0a6d0dcf	Frecuencia de actualización
+w	1a2dade1	Escala
+w	d826138b	Pantalla integrada
+w	30425470	Respuesta del panel más rápida
+w	a79d4040	Apagar las pantallas
+w	ac621e04	Apagar
+w	ada29767	Las pantallas se apagan y el portátil sigue funcionando. El ratón o una tecla las reactivan
+w	2e3d168b	Teclado y entrada
+w	fe5e4931	Retroiluminación del teclado
+w	0d9aa9f4	Fn+Espacio
+w	23b392eb	Bloqueo del panel táctil
+w	5acc5956	Desactivar el panel táctil
+w	e5741f0d	Bloqueo de Fn
+w	14c51fb8	F1–F12 funcionan sin Fn
+w	f05624a9	Bloqueo de la tecla Windows
+w	44174f85	Solo el teclado integrado
+w	1d39ced0	Micrófono
+w	fb931b67	Todos los micrófonos activados o desactivados
+w	0237c487	encontrado
+w	fbb62987	no encontrado
+w	3d8f3436	Elegir carpeta
+w	cb0a9084	Página de CoreCycler
+w	0b714fe6	Próximamente
+w	a776dd81	Prime95, .NET 8 y comprobaciones para el autoajuste
+w	8d4f7e7b	Etapa 4
+w	0c2f82a6	Iniciar con Windows, en la bandeja
+w	edef32fa	Mediante el Programador de tareas, sin aviso de UAC al iniciar sesión
+w	7fa39e24	Cerrar la ventana la oculta en la bandeja
+w	ce91dc4b	Si no, el botón de cierre sale del programa y la curva automática deja de funcionar
+w	18a014bb	Carpeta de ajustes
+w	8dc7408c	Iniciador
+w	4f5a185f	Ejecutor
+w	0240eda2	El humano: ideas, pruebas, reinicios y paciencia
+w	a86c7417	Claude: código, curvas y más de 40 rondas de Prime95
+w	dfc4f89b	Ningún núcleo resultó dañado. Bueno, casi.
+w	aa134bc7	Salir
+w	bc6797f7	Aplicar curva
+w	a0ec1d4e	Idioma
+w	3fa0607e	Escala de la interfaz
+w	b789c9d6	La aplicación se reinicia
+w	d0ace077	Notificaciones
+w	c6ffd760	Mostrar notificaciones
+w	aacaf8d9	Modo de energía, teclas Fn, Bloq Mayús y más: en pantalla un momento
+w	0b656db5	Sobre aplicaciones a pantalla completa
+w	4949ae9c	Si no, no se muestra nada durante un juego o vídeo a pantalla completa
+w	5861186f	1 s
+w	9315f8aa	2 s
+w	d62e7f05	3 s
+w	5cc64b43	5 s
+w	d36fc955	En todos los monitores
+w	b7dc4397	Posición y duración
+w	f3bc62a3	Vista previa
+w	0d06aafe	Abajo al centro
+w	1ecf1794	Arriba al centro
+w	89d76dab	Centro
+w	ea8a5b17	Abajo a la izquierda
+w	3bf323cc	Abajo a la derecha
+w	1b310dc9	Arriba a la izquierda
+w	7564bd1a	Arriba a la derecha
+w	b56930dd	Así se ve una notificación
+w	2cd25ecc	Cámara
+w	f40d907b	Modo avión
+w	aede812c	Adaptador de corriente
+w	2ad6632a	Curva aplicada
+w	072bc287	Bloq Mayús activado
+w	fb9141ec	Bloq Mayús desactivado
+w	4892949e	Bloq Num activado
+w	c95554e7	Bloq Num desactivado
+w	38927f44	Cámara activada
+w	1552bbfb	Cámara desactivada
+w	0dd90ef7	Bloqueo de Fn activado
+w	fdd93ada	Bloqueo de Fn desactivado
+w	4e7a62ca	Panel táctil desactivado
+w	4821ea6d	Panel táctil activado
+w	a0787d6d	Retroiluminación apagada
+w	d2c5cdf5	Micrófono desactivado
+w	6b09e614	Micrófono activado
+w	b7a2d722	Cargador conectado
+w	3491a145	Cargador desconectado
+w	827c6fd9	Otros programas
+w	374f570a	Programas que cambian los mismos ajustes
+w	7c61e8b8	Si se inician con Windows, compiten con Red Tune
+w	6e90df37	Desactivar el inicio automático
+w	f8c9fa3b	no encontrado
+w	a44932e2	en ejecución, se inicia con Windows
+w	d554820c	se inicia con Windows
+w	8521f5c0	en ejecución, inicio automático desactivado
+w	6f2e5dfe	inicio automático desactivado
+w	578da204	Modos de energía, límites, ventiladores, batería, teclas Fn
+w	dbc49c7e	Curva (preajuste al iniciar, con el cargador y tras la suspensión)
+w	9a484d21	Servicio de teclas Fn de Lenovo: le quita las teclas a la aplicación
+w	3df6ae5e	Servicios de Lenovo; cambian los modos y la batería
+w	b88183bb	La aplicación de Lenovo para portátiles de juego
+w	fcae2749	¿Cerrar Lenovo Legion Toolkit y desactivar su inicio automático?\n\nRed Tune se encarga de la energía, los ventiladores y la batería. LLT se puede volver a iniciar a mano.
+w	c4942ec6	¿Cerrar UXTU y desactivar su inicio automático?\n\nA partir de ahora Red Tune aplica la curva. UXTU puede volver: la tarea "UXTU" en el Programador de tareas.
+f	1c6362be	Personalizado: preajuste «
+f	0abcf695	» · Fn+Q cambia entre los modos
+f	e49d5a11	Ahora: Extremo
+f	2a7dffb1	Fn+Q cambia entre los modos
+f	e28d5e85	Modo personalizado: elige un preajuste a la derecha · Fn+Q cambia entre los modos
+f	760c7bc0	Aplicado: modo Personalizado, preajuste «
+f	2788627a	Aplicar la curva «
+f	234fc509	Curva «
+f	9fce8f0b	» aplicada
+f	52e25ab1	   · activo
+f	fab9c39c	Error: 
+f	6529ee54	Aplicando «
+f	a9e46ea5	No disponible: 
+f	0728abe8	Error: 
+f	96cb0090	No aplicado: 
+f	8162e9d2	 · cambios sin guardar
+f	d0cce6af	Valores de 
+f	39d4c1e7	 a 
+f	8013e8c4	 y 
+f	c258081c	 núcleos / 
+f	cb7d9488	 hilos
+f	5c750e0f	 GB
+f	c2474dfa	desgaste 
+f	025a42fc	 MB/s
+f	51f75bf3	 GB/s
+f	204fdec2	 TB
+f	0ff48a0a	Unidad 
+f	2550c409	 GHz
+f	4aff84a8	 MHz
+f	bae41d9e	 rpm
+f	0c3c06ab	Ranura 
+f	145f8e49	canal 
+f	2b48d688	Punto 
+f	0dd2ee13	 · CPU desde 
+f	3a5e2fc2	 · GPU desde 
+f	e62b984e	Versión 
+f	91b7f507	 (editado)
+f	b09490f5	La curva no se aplicó al iniciar: 
+f	1200bedf	La curva no se aplicó (
+f	1e834579	¿Guardar los cambios en el preajuste «
+f	43631f70	» antes de aplicar?
+f	68374c92	¿Eliminar el preajuste «
+f	e882f28d	»? Sus valores quedan en el historial de cambios.
+f	8674c7c9	: Personalizado
+f	46158cb3	: Silencioso
+f	e2aa3afb	: Equilibrado
+f	0dd12afe	: Rendimiento
+f	136195be	: Extremo
+f	34c0f79b	Modo de energía: 
+f	994b491d	Frecuencia de actualización: 
+f	aa8ac194	Retroiluminación: 
+f	1ac39559	¿Desactivar el inicio automático de «
+f	b9fc3e77	» y cerrarlo?\n\nPuede volver: inícialo a mano y activa su inicio automático.
+f	95b26c02	 · no encontrado
+f	4f403dbb	 · en ejecución, se inicia con Windows
+f	ce36e0c1	 · se inicia con Windows
+f	3b68f56f	 · en ejecución, inicio automático desactivado
+f	0664e9a9	 · inicio automático desactivado
+f	25168e49	manual
+f	8a824827	inicio
+f	64b0614f	cargador
+f	d7b8a9de	batería
+f	c81460e9	tras la suspensión
+w	80b22750	Modo de energía de Windows
+w	454ec6c8	Tipo de plan
+w	adcdd377	Equilibrado
+w	7e870c3c	El modo de energía de Windows solo actúa sobre los planes equilibrados
+w	74aa3222	Común a todos los planes de tipo equilibrado; uno para la red y otro para la batería
+w	3aba38ff	Eficiencia
+w	22c9b14a	Equilibrado
+w	dcc65183	Un mismo brillo para todos los planes de energía
+w	dfffd4fe	El brillo de la pantalla se escribe en todos los planes de Windows cada vez que cambia: al cambiar de plan la pantalla no cambia
+w	c03824f2	Escritura en el plan
+w	f05f99ac	Escribir en el plan
+w	0e74dd22	Los cambios de arriba llegan al plan de Windows con este botón o con “Guardar”, abajo
+w	e8f18646	Sin escribir: una vez escrito, Windows no aparcará núcleos
+w	0122ae47	Sin escribir: una vez escrito, Windows podrá aparcar núcleos
+w	8e9bf262	Plan del autoajuste: sus valores los pone Red Tune
+w	29535322	Los valores difieren de los fijados para el autoajuste: la fila del plan del autoajuste, más abajo, los escribe de nuevo
+w	267ab900	Los valores del plan de ajuste se cambiaron fuera de Red Tune: el botón escribe los fijados para el autoajuste
+w	d0ea5698	Restaurar los valores
+w	2af309bf	Los valores del plan de ajuste se han escrito de nuevo.
+w	31ae3b4c	Rellenar para el autoajuste
+w	c2cfc8c8	Ajustes del procesador en el plan
+w	bd6be146	Plan
+w	f88abf8f	Se escribe con el botón de abajo
+w	a9f71427	Este plan no tiene ese ajuste
+w	835b2393	Con la red
+w	7f1cb42d	Con batería
+w	b1b2083c	Tope de frecuencia
+w	1627a837	El procesador no sube por encima. A la derecha del todo: sin tope
+w	5dadc93f	no
+w	6fdaad72	Boost
+w	266aca68	Cómo sube el procesador su frecuencia por encima de la base
+w	540dca6b	Desactivado
+w	cd7a218f	Activado
+w	f360b712	Agresivo
+w	f22b30c8	Eficiente
+w	64c93ee5	Eficiente agresivo
+w	f99d8678	Agresivo, frecuencia garantizada
+w	46f5cac7	Efic. agresivo, frecuencia garantizada
+w	1d85fa92	Preferencia de energía
+w	008c5979	Rendimiento
+w	07a98700	Ahorro
+w	69c06de0	Estado mínimo del procesador
+w	f4e038d8	El procesador no baja de esta parte de su frecuencia
+w	5d832db0	Prohibir el aparcamiento de núcleos
+w	18043896	Todos los núcleos están siempre en marcha: Windows no los aparca
+w	d2a18414	Sobre el plan activo se superpone un modo de energía de Windows: puede tener valores propios
+w	5fde6f32	Planes de energía
+w	bf01f895	Curvas
+w	9223ae12	Red Tune Test va integrado en la aplicación: cálculos que se comprueban a sí mismos; un error indica el núcleo
+w	5b4014e8	Modo de ajuste
+w	68629577	Diario
+w	35213b8e	Estricto
+w	5395098e	Una curva profunda, propia para cada núcleo. Cuenta con que una carga pesada ocupe todos los núcleos a la vez
+w	8ce6a831	Aguanta con cualquier conjunto de núcleos ocupados, pero es menos profunda: un nivel común y los núcleos débiles aparte
+w	355233cf	1. El borde de cada núcleo
+w	94e0a1f1	Cada núcleo solo, los demás en 0: bisección desde −24 en pasos de 12, 6, 3. Los bordes dan su forma a la curva
+w	5a1815d1	2. Todo el conjunto baja
+w	2adbb2ad	Desde “borde +22” (no más profundo que −12), 3 más cada vez bajo carga en todos los núcleos; un núcleo que falla retrocede y sigue en la carga; comprobación final y margen de +3
+w	83fbec09	Bordes hallados antes
+w	4af207b1	Desde estos bordes
+w	eb479818	1. Descenso con cada paso comprobado
+w	e15314ab	Todos los núcleos desde −6, 3 más cada vez. Cada paso se comprueba bajo carga en todos los núcleos y sin los detenidos; un núcleo que falla retrocede un paso y no baja más
+w	e1c35a47	Todo el conjunto: reposo, tormenta, fondo, carga en todos los núcleos y sin los menos profundos, cada núcleo aparte; margen de +3
+w	2459ecbc	1. La escalera de límites
+w	b759e0ae	Todos los núcleos cargados a un mismo valor, desde −6, 3 más cada vez; un núcleo que falla recibe su límite y sale de la carga, los demás siguen bajando, hasta el último núcleo
+w	61a9a549	2. La comprobación final
+w	b6febd7e	Todo el conjunto: reposo, tormenta, fondo, carga en todos los núcleos y en cada escalón de la escalera, cada núcleo aparte; margen de +3
+w	3756ed1b	Búsqueda de los límites
+w	6d4a65a7	La comprobación final
+w	5d9a0d84	El límite propio de cada núcleo bajo carga: todos los núcleos cargados a un mismo valor, desde −6, 3 más cada vez; un núcleo que falla recibe su límite y sale de la carga; comprobación final y margen de +3
+w	7ffd5ac6	Desde un conjunto poco profundo “borde +22”, 3 más cada vez mientras aguante: todos los núcleos; tras un fallo que no nombra ninguno, los chiplets; luego núcleos sueltos; comprobación final y margen de +3
+w	90d71403	Un reinicio entre dos partes de la comprobación del conjunto
+w	68d60662	Fase 2 de nuevo
+w	f51830d3	Fase 2 de nuevo
+w	b8a66c9c	Qué es esto. La búsqueda del valor de Curve Optimizer de cada núcleo: cuánto se puede bajar su tensión sin que el núcleo deje de ser estable. Cuanto más negativo es el valor, menores son la tensión y el calor y mayores las frecuencias dentro de los mismos límites, pero un valor demasiado negativo hace caer el sistema.\n\nDos modos. Diario: una curva profunda, propia para cada núcleo. Primero se busca el borde de cada núcleo, de uno en uno: el valor a partir del cual cede él solo, por bisección desde −24 en pasos de 12, 6, 3, con los demás núcleos en 0. Después todo el conjunto empieza en “borde +22”, pero no más profundo que −12, y baja de 3 en 3 bajo carga en todos los núcleos, cada núcleo hasta su propio tope. Un núcleo que falla retrocede y sigue en la carga; tras un segundo error ya no baja más. Si un fallo no nombra a nadie, el conjunto retrocede y los chiplets siguen por separado, y luego los núcleos uno a uno. Ningún núcleo se acerca a menos de 6 pasos de su borde. Una curva así cuenta con que una carga pesada ocupe todos los núcleos a la vez: los núcleos profundos aguantan mientras otros menos profundos trabajan a su lado. Si casi todos los núcleos están ocupados y justo los poco profundos están en reposo, puede haber errores; por sí solo eso es raro, pero fijar un programa a una parte de los núcleos puede provocarlo. Estricto: aguanta con cualquier conjunto de núcleos ocupados, pero es claramente menos profundo; más abajo se describe cómo funciona.\n\nEl modo estricto. Los núcleos de un procesador comparten una misma tensión y bajo carga se influyen entre sí: un núcleo poco profundo cargado sube la tensión para los demás, y uno profundo se apoya en ella, pero no gratis. Por eso cada paso se comprueba con una cadena de cargas. Todos los núcleos empiezan en −6 y bajan juntos, de 3 en 3. En cada paso primero se cargan todos los núcleos: reposo, arranques de carga en ráfagas, 40 segundos de carga continua. Un núcleo en el que la carga o WHEA mostraron un error vuelve al último valor superado y ya no baja más, pero sigue participando en la carga de todos los núcleos. Luego los mismos valores se comprueban sin los núcleos detenidos: sin el menos profundo, sin dos, sin cuatro y, por último, solo en los que aún bajan. Eso muestra si los núcleos profundos aguantan por sí mismos, sin apoyo. Un paso solo cuenta cuando ha pasado toda la cadena. Si un fallo no nombra a nadie (un reinicio), todos los núcleos que aún bajaban toman el último valor superado y el descenso termina. El ajuste no baja de −45.\n\nLa comprobación final. Todo el conjunto: reposo, arranque de carga, tormenta de ráfagas, un fondo ligero como un vídeo en el navegador en cada chiplet, carga en todos los núcleos, en el modo estricto también carga sin los núcleos menos profundos (sin 1, 2, 4, 8 y 12 de 16) y cada núcleo por turno (carga, escalones de frecuencia, despertares). Un núcleo nombrado recibe +3. Tras un fallo bajo carga que no nombra a nadie, reciben +3 los núcleos del nivel más profundo. La parte se repite. Al conjunto que pasó se le añade un margen de +3.\n\nLa comprobación completa es opcional, con el botón “Comprobar la curva actual”: rondas largas con el preajuste activo (un chiplet en reposo y el otro bajo carga, 25 minutos cada uno; todos los núcleos 25 minutos; tormenta 20 minutos; el fondo 12 minutos cada uno; escalones de frecuencia en todos los núcleos 10 minutos). No ajusta nada y, si encuentra un núcleo débil, lo sube +3. Se puede ejecutar en cualquier momento, por ejemplo de noche.\n\nLa carga pesada es Prime95 o Red Tune Test, y se elige en la página Componentes. Red Tune Test va integrado en el programa: cada núcleo hace cálculos que se comprueban a sí mismos: elevar al cuadrado números grandes mediante una transformada de Fourier al límite mismo de la precisión, sumas con las unidades FMA, pasadas por la caché del núcleo y cambios bruscos de trabajo ligero a pesado. Cualquier resultado incorrecto es un error del núcleo, y se ve cuál es.\n\nUn fallo es un error WHEA (un error de hardware del procesador en el registro de Windows), un error de la carga o un reinicio. También cuentan los errores WHEA 47 de los bloques propios de un núcleo, aunque Windows los etiquete como “memoria”. Tras un reinicio el ajuste continúa solo 45 segundos después de iniciar sesión, y por eso el programa activa su inicio automático; su ventana se abre entonces directamente en esta pestaña.\n\nSi el portátil se cuelga. De vez en cuando un valor demasiado profundo no reinicia el portátil sino que lo deja parado: la pantalla está congelada y no pasa nada durante más de un par de minutos. De ahí no sale solo: apágalo manteniendo pulsado el botón de encendido y vuelve a encenderlo; el ajuste continuará.\n\nEl tope de frecuencia. Durante todo el ajuste el programa quita el tope de frecuencia de Windows (“Frecuencia máxima del procesador” del esquema de energía vigente), para que los núcleos se comprueben hasta el boost completo; en los escalones de frecuencia y bajo la carga de fondo mueve él mismo el tope. El valor anterior se guarda en disco y se restaura al detener el ajuste, y tras un reinicio, en el siguiente arranque del programa.\n\nLa caja negra. Cada 2 segundos el programa escribe en disco lo ocupado que está cada núcleo, su frecuencia y su tensión. Tras un reinicio sin apagado muestra qué núcleos estaban trabajando en el último momento, y el autoajuste lo anota en su registro.\n\nCondiciones. Ajusta en las condiciones más amplias en las que trabaja el portátil: para eso está el preajuste de energía “00 Ajuste” (los límites de tu preajuste más potente y un plan de Windows en el que los núcleos pueden dormir). Activa el modo Personalizado con este preajuste antes de empezar.\n\nEl resultado se guarda como un nuevo preajuste de curva; aplicarlo depende de ti.
+w	f4566ff6	El borde de cada núcleo: bisección desde −24 en 12, 6, 3 · una prueba de un minuto aprox.: carga pesada y escalones de frecuencia
+w	d6e17985	2. Todo el conjunto
+w	aed7fc8a	Desde “borde +13”: un núcleo nombrado recibe +3; un fallo que no nombra ninguno sube todo el conjunto +3; luego chiplets y núcleos sueltos bajan mientras aguante; comprobación final y margen de +3
+w	3a2bc52d	Reposo con el conjunto escrito
+w	5efcd30a	Arranque de carga en todos los núcleos: 6 s de trabajo, 4 s de reposo
+w	601320c8	Tormenta de ráfagas en todos los núcleos
+w	ebf35365	Comprobar
+w	2328b163	Comprobación de memoria
+w	a45c93cb	Iniciar
+w	5d93b875	20 minutos
+w	881bba4e	1 hora
+w	9e0e9f28	3 horas
+w	9939e41c	Hasta detenerla
+w	79a5e26a	Ejecutar de todos modos
+w	d247dc83	La curva no está en cero ahora. Un error en la comprobación podría venir del procesador y no de la memoria.\n\nPara un resultado limpio, aplica primero la curva «De fábrica (0)».
+w	c25760eb	El autoajuste está en marcha: inicia la comprobación de memoria después
+w	2b3fa1c4	Todos los hilos, toda la memoria libre · pon la curva a 0
+w	839c3a34	Aún no se ha ejecutado
+w	28e721bf	Resultado de la comprobación
+w	bf751615	Ocupando la memoria…
+w	465407a0	La comprobación ya está en marcha
+w	3824c927	Muy poca memoria libre: cierra los programas pesados
+w	afabb5fa	Bisección desde −25, luego una confirmación de 32 minutos y un margen de +5
+w	b1644281	Este procesador tiene 8 núcleos o menos, así que los pasos de búsqueda son más largos: 6 minutos en lugar de 4.
+w	aa16f621	Este procesador tiene 9–12 núcleos, así que los pasos de búsqueda son más largos: 5 minutos en lugar de 4.
+w	6eadd7ae	Qué es. Un valor de Curve Optimizer para cada núcleo: cuánto puede bajar el voltaje con el núcleo aún estable. Cuanto más negativo el valor, menores el voltaje y el calor y mayores las frecuencias con los mismos límites, pero un valor demasiado negativo hace caer el sistema. El ajuste encuentra el límite de cada núcleo y deja un margen.\n\nFase 1: cada núcleo por separado, los demás a 0. El valor se busca por bisección desde −25: pasos de ±13, ±6, ±3, ±2, ±1, seis pruebas en total, el límite con precisión de un paso. Una prueba dura alrededor de un minuto y medio: 25 segundos de Prime95 AVX2 en los dos hilos del núcleo (un valor demasiado profundo falla aquí en segundos, sin reinicio), luego 60 segundos de escalones de frecuencia: el núcleo a plena carga mientras el tope de frecuencia baja en pasos de 200 MHz de 5,4 a 1,6 GHz. Los escalones son los que encontraron casi todos los valores débiles. El límite recibe un margen de +8 (unos 40 mV): una prueba corta ve el límite donde el sistema cae, y los errores raros empiezan unos pasos antes.\n\nFase 2: todos los núcleos juntos con el conjunto hallado: 8 minutos de Prime95 en todos los núcleos (AVX2, SSE y sacudidas «carga — reposo»), una tormenta de 5 minutos de ráfagas aleatorias y 5 minutos en cada chiplet de un fondo ligero que se comporta como un vídeo en el navegador. Cuando Prime95 o un error WHEA señalan un núcleo, ese núcleo recibe +3 y la etapa empieza de nuevo. Cuando no se señala ningún culpable (un reinicio), el núcleo débil se busca dividiendo los núcleos por la mitad y recibe +3.\n\nLa comprobación completa: cuando la quieras, con «Probar la curva actual»: rondas largas con el preajuste activo (un chiplet en reposo mientras el otro está cargado, 25 minutos cada uno; todos los núcleos durante 25 minutos; una tormenta de 20 minutos; el fondo durante 12 minutos cada uno; escalones de frecuencia en todos los núcleos durante 10 minutos). No ajusta nada, y un núcleo débil que encuentre recibe +3. Ejecútala cuando quieras, por ejemplo de noche.\n\nUna ronda falla por un error WHEA (un error de hardware del procesador en el registro de Windows), un error de Prime95 o un reinicio. Los errores WHEA 47 de las unidades propias de un núcleo también cuentan, aunque Windows los etiquete como «memoria». Tras un reinicio, el ajuste continúa solo 45 segundos después de iniciar sesión, así que la aplicación activa su inicio automático. Entre rondas todos los núcleos están a 0.\n\nEl tope de frecuencia. Durante todo el ajuste la aplicación levanta el tope de frecuencia de Windows («Frecuencia máxima del procesador» del plan de energía en uso), para que los núcleos se prueben hasta el impulso máximo; en los escalones de frecuencia y en las etapas de «Fondo» mueve el tope ella misma. El valor anterior se guarda en disco y se restaura al detener el ajuste, y tras un reinicio, en el siguiente inicio de la aplicación.\n\nLa caja negra. Cada 2 segundos la aplicación escribe en disco la carga, la frecuencia y el voltaje de cada núcleo. Tras un reinicio sin apagado muestra qué núcleos estaban trabajando en el último momento, y el autoajuste lo anota en el progreso del ajuste.\n\nCondiciones. Ajusta en las condiciones más amplias en que trabaja el portátil: para eso está el preajuste de energía «00 Ajuste» (los límites de tu preajuste más potente, un plan de Windows en el que los núcleos pueden dormir). Activa el modo «Personalizado» con este preajuste antes de empezar.\n\nEl resultado se guarda como un nuevo preajuste de curva; lo aplicas tú.
+w	b2a699ef	Rondas largas, una tormenta, un fondo parecido a un vídeo en el navegador y escalones de frecuencia con el conjunto terminado
+w	a8203eeb	entre mediciones
+w	b28ddffe	midiendo
+w	d8a62faf	desplazamiento
+w	b4b614cd	Medir todos
+w	ac71c0ee	Curvas de todos los núcleos
+w	b758a0f1	Curvas de los núcleos
+w	dae7a4fb	Voltaje a distintas frecuencias: un núcleo con el número sobre su control, todos aquí
+w	3ac2626d	Aún no se ha medido ningún núcleo. Medir todos toma la curva de cada núcleo por turno
+w	dbd39cde	Listo: todos los núcleos están medidos
+w	98e1c0db	Curva del núcleo
+w	ec2537dd	Medir
+w	17062d75	V
+w	e34a6e3f	GHz
+w	1c93e64d	Arrastra un control o escribe un número. El número de un núcleo abre su curva
+w	8d6f9432	Solo procesadores AMD Ryzen
+w	844d9a8e	Se necesita PawnIO (pestaña Componentes)
+w	5a438359	No se puede leer la tabla de telemetría del procesador
+w	f4f7958f	La curva de este núcleo aún no se ha medido. Medir carga el núcleo alrededor de un minuto y lee su voltaje a distintas frecuencias
+w	da528020	Durante la medición, la frecuencia del procesador se limita paso a paso y luego todo se restaura
+w	b59a1620	Cada valor de desplazamiento guarda su propia medición: mide a 0 y con tu valor para comparar
+w	e7c8f987	Midiendo: el núcleo está cargado, la frecuencia baja por escalones…
+w	31cd66c4	La medición se detuvo
+w	3ed40ca2	Ya hay una medición en marcha
+w	46d8a5e9	Muy pocos puntos: no se pudo mantener ocupado el núcleo (cierra los programas pesados e inténtalo de nuevo)
+w	788b76cb	Todos
+w	d6be170f	Desplazamiento
+w	8595368d	Por núcleo
+w	e4e1466c	Por chip
+w	8f4f2a4d	Todos los núcleos
+w	247e56dc	Chips
+w	1800ca6a	Todos los núcleos
+w	393e72fa	Cada núcleo tiene su propio valor
+w	85ce78f5	Un valor por chip: los controles de la izquierda; los de cada núcleo están desactivados
+w	40c32a1e	Un valor para todos los núcleos: el control de la izquierda; los de cada núcleo están desactivados
+w	143d160e	Arrastra el control de la izquierda o escribe un número
+w	9a40ba7b	Contraer el menú
+w	d1b2f605	Expandir el menú
+w	5449f665	Preajuste gráfico para este preajuste
+w	73620917	La curva y la frecuencia de memoria de «Gráficos», aplicadas con el preajuste
+w	a4e6e26e	Preajustes gráficos para los demás modos
+w	c8ffcea9	Se aplica al cambiar a este modo (Fn+Q, Inicio)
+w	4987b8b3	Lista blanca
+w	e62b8b95	Lista negra
+w	3053aa39	Lista blanca: nunca se cierran
+w	d563c053	Lista negra: siempre se cierran, aunque se hayan iniciado solos al arrancar
+w	3596be5f	Elegir un preajuste lo aplica a la tarjeta de inmediato
+w	4c81a219	Solo se abre · Aplicar lo escribe
+w	2b07f8ec	Aplicado
+w	5528d81d	El editor contiene la curva de fábrica sin desplazamientos. ¿Guardarla como preajuste?
+w	89b612dc	Restablecer la tarjeta gráfica
+w	87e8634c	¿Volver a la curva y la frecuencia de memoria de fábrica? Los desplazamientos se quitan de la tarjeta de inmediato; los preajustes guardados se conservan.
+w	09968b83	Curva y frecuencia de memoria de fábrica
+w	a26101fa	La curva y la frecuencia de memoria de la tarjeta gráfica (aplica su propio perfil al iniciar)
+w	e4d95dde	Aplanar por encima
+w	fff46bb4	Guardar como…
+w	1bfabcd4	De fábrica
+w	ce2ceeb5	Curva V/F de la tarjeta gráfica
+w	e9b8479c	Leyendo…
+w	f1a6b59e	MSI Afterburner está en ejecución
+w	13c2f9ee	También aplica su propia curva: las dos se sobrescribirán entre sí. Ciérralo o quítalo del inicio
+w	70f60478	Punto
+w	c63f793d	Haz clic en un punto del gráfico. Arrastrar mueve un punto; con Mayús, toda la curva
+w	c47e1e7f	Desplazar toda la curva
+w	ef8ca404	Mueve todos los puntos juntos; la forma se mantiene
+w	4a5a0a93	Desplazamiento de la frecuencia de la memoria de vídeo
+w	37dd6848	Preajustes
+w	16a147d3	Preajuste
+w	9c740c77	Aplicar al iniciar
+w	0783105d	El controlador olvida la curva al reiniciar: Red Tune recupera el preajuste elegido
+w	32f31247	Como en la tarjeta ahora
+w	a55cf35e	Solo lectura: escribir es una función experta
+w	de83dc47	Cambiado, no aplicado
+w	a7818ef0	Overclocking de la tarjeta gráfica
+w	25edba3d	La curva y la frecuencia de memoria se escriben en el controlador gráfico, como en MSI Afterburner. Frecuencias demasiado altas causan artefactos, cierres de juegos y un reinicio del controlador (la pantalla parpadea).\n\nTras un reinicio, el controlador vuelve a la curva de fábrica.
+w	0c5bcfe8	Restaurando la curva de fábrica…
+w	eb3e9745	Aún no hay preajustes: configura la curva y guárdala
+w	e58c93f1	El preajuste elegido se carga en el editor; «Aplicar» lo escribe en la tarjeta
+w	71b4464e	Este preajuste procede de otra curva (otra tarjeta o controlador)
+w	ffae3daf	Preajuste gráfico
+w	c12fb3f1	Mi undervolt
+w	89ed75ca	La curva gráfica se verificó en una RTX 5070 Laptop (controlador 621), aún no en esta tarjeta
+w	a423b64d	no hay tarjeta gráfica NVIDIA (la curva gráfica es solo para NVIDIA por ahora)
+w	1ea7dd7e	Más
+w	f03308d9	Ocultar
+w	6ae63bd9	Este modelo aún no se ha probado
+w	a062b60d	Qué funciona aquí y qué no está verificado: en «Componentes»
+w	cbf715ff	Temperatura (ACPI)
+w	08b57885	Las lecturas de Radeon aún no son compatibles
+w	8fdec35f	La curva se verificó solo en Ryzen Dragon Range (7x45HX / 8x45HX). Debería funcionar en este procesador, pero no se ha probado
+w	84eed97e	Los modos y límites de Lenovo se verificaron solo en el Legion R7000P; el conjunto y los rangos de este modelo pueden diferir
+w	72d2e750	La escritura de los límites se verificó solo en Dragon Range, no en esta familia
+w	9184776e	Mostrar los tiempos funciona en todas partes; la escritura se verificó solo en el Legion R7000P y está bloqueada en otros modelos
+w	76ac1be8	Las funciones de Lenovo se verificaron solo en el Legion R7000P; algunas pueden faltar en este modelo
+w	ac7b5af9	Recopilando el informe…
+w	643c6ede	No se pudo copiar el informe
+w	1c5ee670	Este modelo está verificado
+w	68dd16fd	Todo lo de la aplicación se probó en este portátil
+w	a4fe0512	Red Tune se probó en un Legion R7000P. Aquí funciona con las mismas reglas, pero las partes marcadas como «no verificado» aún no se han visto funcionar en este modelo. El informe de arriba ayuda a añadirlo
+w	aff6cfad	no verificado
+w	960c62bd	Energía, curva y ajustes para portátiles AMD Ryzen
+w	efb90e1e	Nuevo preajuste con estos ajustes...
+w	c8e2b0c8	Renombrar...
+w	a5eec23b	Este procesador tiene 8 núcleos o menos, así que los pasos son más largos: 6 minutos en lugar de 4, y la comprobación 15 minutos en lugar de 10. El ajuste sigue cabiendo en una noche y prueba la curva con más dureza.
+w	f091cb39	Este procesador tiene 9–12 núcleos, así que los pasos son más largos: 5 minutos en lugar de 4, y la comprobación 12 minutos en lugar de 10.
+w	34c5275d	2. El chiplet bajo carga
+w	027699ee	Todos los núcleos del chiplet juntos; los núcleos débiles reciben +3
+w	bd951612	STAPM: potencia media
+w	352c87d5	Límite rápido (fast PPT)
+w	9edf9bde	Límite lento (slow PPT)
+w	cd2e379c	Potencia media bajo una carga larga
+w	90eabb44	Los primeros segundos de una carga
+w	e5370077	Los minutos siguientes de una carga, hasta que STAPM toma el control
+w	4d3f088d	Clase Ryzen AI Max (45–120 W)
+w	1743ab83	Clase HX: juegos (55 W o más)
+w	9ac83d7b	Clase H/HS: rendimiento (35–54 W)
+w	31f90f92	Clase U: finos y ligeros (15–28 W)
+w	8fa49196	Clase Ryzen AI (15–54 W)
+w	46b3fec8	clase no reconocida
+w	545d061c	Plan activo
+w	770595df	Equilibrado, ahorro de energía, alto rendimiento o los planes propios del fabricante del portátil
+w	31a83cfa	No se pudo contactar con el procesador: se muestra, no se escribe
+w	b20d50c3	Solo lectura. Escribir en el procesador es una función experta: activa «Funciones expertas» en «Ajustes»
+w	e1caf459	Límite de potencia (en Dragon Range, el rápido)
+w	ba3b73b6	Nada que aplicar: no se movió ningún límite
+w	dd9e76ce	Límites guardados eliminados. Los de fábrica vuelven tras un reinicio
+w	f9c44997	Distribución
+w	7cf230cb	Inicio automático
+w	2eaa98f9	Corregir
+w	9671aaca	Otros programas interfieren
+w	361e3d05	Modo de energía: Personalizado
+w	949f766f	Limpieza
+w	6f4c3e1e	Archivos
+w	2690616f	Archivos innecesarios
+w	5d75a799	Analizar
+w	564f8a22	Eliminar seleccionados
+w	695709a0	Archivos temporales, cachés e informes que Windows y los programas vuelven a crear. Solo se eliminan los marcados
+w	7eeedeca	Analizando…
+w	bdb12f8c	Eliminando…
+w	e04696ed	Nada que eliminar
+w	9c87a69a	vacío
+w	d97c424e	Archivos temporales
+w	a3461ece	Tu carpeta Temp: archivos de más de un día
+w	f577a28f	Archivos temporales de Windows
+w	30c2776e	C:\\Windows\\Temp: archivos de más de un día
+w	388ac111	Papelera de reciclaje
+w	87e5ce85	Todo lo que hay en la Papelera de reciclaje de todas las unidades
+w	42dc0531	Caché de Windows Update
+w	287cae42	Instaladores descargados de actualizaciones ya instaladas
+w	60cf7eb8	Caché del navegador
+w	d5db3130	Chrome y Edge: solo la caché; ni contraseñas, ni cookies, ni historial. Cierra el navegador: abierto retiene algunos archivos
+w	7a318acd	Informes de errores y registros
+w	027395fc	Informes de errores de Windows de los programas y registros antiguos de instalación
+w	3bd0a985	Caché de miniaturas
+w	904c49ea	Imágenes de vista previa del Explorador; se vuelven a crear solas
+w	6234f303	Caché de sombreadores
+w	ad478e23	NVIDIA, AMD, DirectX. Tras eliminarla, los juegos dan pequeños tirones en el primer inicio mientras la reconstruyen
+w	483a2391	Volcados de memoria
+w	bfab38b9	Minidump y MEMORY.DMP sirven para analizar pantallas azules. Elimínalos si no hay nada que analizar
+w	20d9d7da	Versión anterior de Windows
+w	461fe4ce	La carpeta Windows.old tras una actualización grande. Elimínala con el Liberador de espacio en disco de Windows
+w	e7430b61	Inicio limpio
+w	901a431d	Liberar memoria
+w	52ecee71	Limpiar
+w	5aeed321	Cerrar todo lo que se abrió después de iniciar sesión
+w	18df3a2f	Buscando lo que sobra…
+w	e65ea987	Nada de más: está como tras un arranque
+w	4c695c53	Cerrando…
+w	7ece72f7	No se cerró
+w	7ba9c293	Forzar cierre
+w	1d3d4a91	Configurar
+w	9b02d65d	No cerrar nunca
+w	00fac06e	Cerrar siempre
+w	608cf486	Se quedan aunque se abran después de iniciar sesión
+w	acafadc3	Junto con todo lo que inician
+w	a3f0db68	Cerrar aunque se hayan iniciado solos al arrancar
+w	964d6f83	Windows y Red Tune nunca se cierran
+w	86a5e0cf	La lista está vacía
+w	0940988c	siempre
+w	51514a8a	RedTune.exe · esta aplicación
+w	4498cb0b	claude.exe · y todo lo que inicia
+w	10ff0d2c	Añadir…
+w	d2f0cc6b	Añadir un programa
+w	dd6ef4da	De los que están en ejecución o por su exe
+w	e4daa91f	Quitar
+w	15593e58	Baja
+w	97455af0	Alta
+w	299392ed	Retroiluminación: baja
+w	57c6215f	Retroiluminación: alta
+w	61afc5b6	Modo gráfico
+w	d959bb19	Híbrido ahorra batería; discreto ejecuta todo en la RTX
+w	0b911c29	Híbrido
+w	95a38339	Híbrido, solo iGPU
+w	8159c3f8	GPU discreta
+w	09770bda	Modo gráfico
+w	3da1415c	Cambiar
+w	489bacca	Reiniciar
+w	cf2e79d5	El modo gráfico cambia tras un reinicio. ¿Reiniciar ahora? Guarda tus archivos abiertos.
+w	25537606	Reiniciar
+w	25a7a334	Más tarde
+w	67c98c4a	El cambio entre híbrido y discreto solo surte efecto tras un reinicio.
+w	08338f7b	El modo cambia de inmediato; si algo no lo detecta, un reinicio ayuda.
+w	9868ca3b	No se encontró la pantalla integrada
+w	c9f841f0	Escalado no disponible
+w	c126ae0c	Windows no aceptó el escalado
+w	6af8a97d	Windows no activó el HDR
+w	ce2b15c0	Ventilador de CPU
+w	4ea26c9d	Ventilador de GPU
+w	6f174cd7	Extras
+w	7d922b06	Curva de ventiladores propia
+w	f22b39dd	Red Tune ajusta la velocidad de los ventiladores según la temperatura cada 0,5 s (en modo Personalizado). Desactivado: la tabla del firmware
+w	57e61172	Velocidad máxima ahora
+w	ed5693d5	Se activa en modo Personalizado; ahora el firmware controla los ventiladores
+w	4cf8fff3	Para todos los preajustes; se aplica de inmediato
+w	9d6065b4	Solo funcionan con la curva de ventiladores propia: activa el interruptor de arriba
+w	7cc23e36	Las curvas solo funcionan con la curva de ventiladores propia: activa el interruptor de arriba
+w	1b902d0b	La curva no está en vigor: el firmware controla los ventiladores
+w	da91bffc	El ventilador de CPU sigue la temperatura de la CPU; el de GPU, la de la GPU. Cada preajuste tiene sus propias curvas
+w	08245ac0	Arrastra los puntos arriba y abajo. Por debajo de la línea discontinua, el firmware controla el ventilador
+w	b0e021b0	firmware
+w	9e9a2310	Protección contra sobrecalentamiento
+w	b20ba939	Desde 75 °C la velocidad se mantiene por encima de un mínimo creciente; a 90 °C, al menos el 80 %
+w	bcd42350	Modo de emergencia
+w	1da09eb3	Desde 95 °C en la CPU o la GPU, ambos ventiladores al máximo
+w	48a5526b	Histéresis
+w	c44657cf	Un ventilador en marcha mantiene su velocidad 3 °C más, sin vaivenes
+w	02264cff	Suavizado de temperatura
+w	dd573590	Ignorar picos breves (media móvil)
+w	480b9a60	Frenado suave
+w	b348591e	La velocidad no baja más de 400 rpm por segundo
+w	56e95b1b	Impulso de arranque
+w	46152f56	Un breve impulso de 3000 rpm cuando un ventilador arranca desde parado
+w	8088a3e9	Sincronizar
+w	d753bc22	Ambos ventiladores a la velocidad del que necesita más
+w	7058f92f	Anticipación
+w	a4d96ad9	Si la temperatura sube más de 5 °C/s: acelerar antes, como para 2 s por delante
+w	597b01db	Overclocking avanzado
+w	0fb1e43d	Valores incorrectos pueden causar inestabilidad, cuelgues o un portátil que no arranca
+w	b8bb95f5	Escalar de Precision Boost Overdrive
+w	5ceacccc	Hasta dónde puede ir PBO más allá de los límites de fábrica, 1–10
+w	7a992bf1	Frecuencia de impulso de Precision Boost Overdrive
+w	c07781af	Se suma a la frecuencia máxima de impulso
+w	17ab15fa	MHz
+w	c718b362	Ajuste de la curva de núcleos
+w	b01d679a	Un desplazamiento de Curve Optimizer para todos los núcleos, mediante el firmware
+w	98148edd	Curve Optimizer para todos los núcleos
+w	adb21a6c	Desplazamiento para todos los núcleos, 0–20 (como en LLT): baja el voltaje y el calor; requiere una prueba de estabilidad
+w	dc9637c2	La curva ya está configurada
+w	ce14d713	Mantener mi curva
+w	fe4a1456	Activar de todos modos
+w	89b5a24c	¿Activarlo de todos modos?
+w	e0f1e992	Curva para este preajuste
+w	db1bf4e3	Se aplica con el preajuste y pasa a ser la activa (pestaña «Curva»)
+w	ff01a8af	Curvas para los demás modos
+w	4a896b5f	Se aplica al cambiar a este modo (Fn+Q, inicio)
+w	363a4473	General
+w	a9129a7d	Aspecto
+w	73ac37d7	Qué mostrar
+w	0c79a3bc	Cristal
+w	9fbefc19	Desenfocar lo que hay detrás de la notificación
+w	23bf93cf	Cristal vivo
+w	be42fff9	El cristal sigue lo que hay debajo. Inconveniente: las notificaciones no salen en capturas ni grabaciones de pantalla
+w	f94ec4ab	Ligero
+w	6e716c86	Medio
+w	af350933	Fuerte
+w	0aefa3c0	Desenfoque
+w	db5f1b82	Cuánto se esmerila el cristal
+w	d768d571	Oscurecimiento
+w	da8ccd94	0 %: cristal transparente; 100 %: fondo oscuro sólido
+w	02930ee1	Brillo y borde
+w	8f4dd487	Un borde claro arriba, como el cristal
+w	2f0c9ea4	Verlo
+w	10bf7869	La notificación aparece donde se indica en la pestaña «General»
+w	23b64977	Cerrar
+w	b1e305c8	Lo que necesita la aplicación
+w	cd657045	Carga para el autoajuste. Sirve la carpeta CoreCycler\\test_programs\\p95 o la descarga
+w	f55b3bff	No hay prime95.exe en esta carpeta
+w	5fdf9081	Controlador
+w	1ea800d9	Copiar
+w	d10f36a7	Descargar
+w	7d1c59b9	Carpeta con
+w	e5130c71	Red Tune trabaja con la curva por sí mismo, mediante el controlador PawnIO. El autoajuste también necesita Prime95
+w	b64df491	Red Tune trabaja con la curva por sí mismo, mediante el controlador PawnIO. El autoajuste necesita una carga: el Red Tune Test integrado o Prime95
+w	6a0416b4	El controlador que accede al procesador: la curva, los límites de AMD, la temperatura. Se instala aparte
+w	40e3947e	Origen: autor namazso, pawnio.eu, un controlador firmado con su propio instalador
+w	5cdc6e97	Actualizar
+w	26582bad	Carpeta de inicio
+w	167024ca	Lo que se inicia con Windows
+w	0fc63dc9	Los elementos desactivados siguen en la lista y se pueden reactivar. El Administrador de tareas → Inicio muestra lo mismo
+w	5ff6d3cd	No se pudo leer la lista
+w	dafca83c	Ningún programa se inicia con Windows
+w	e4979dda	Programas
+w	997be602	Tareas programadas
+w	5cf7bf0f	Se inician al iniciar sesión o al arrancar Windows
+w	2bd8d86d	Las tareas de Microsoft están ocultas. Una tarea desactivada permanece; una tarea cuyo programa ya no existe se puede eliminar en «…»
+w	2cf8bf9b	Abrir la carpeta más cercana
+w	77f77ac8	Abrir la ubicación del archivo
+w	9dd4fe90	Eliminar la tarea…
+w	c0e0dffc	Quitar del inicio…
+w	5052d538	Registro, este usuario
+w	2c02d035	Registro, todos los usuarios
+w	04dad0d7	Registro, todos los usuarios (32 bits)
+w	adc87a23	Carpeta de inicio
+w	06040545	Carpeta de inicio de todos los usuarios
+w	021aef63	Aplicación empaquetada (MSIX)
+w	795499d4	Programador de tareas
+w	d742df8d	definido por directiva, no se puede cambiar
+w	fe798772	el inicio de una aplicación empaquetada solo se puede desactivar
+w	69900ad5	El programa de esta tarea ya no existe. La tarea se elimina del programador; se guarda una copia (XML) en la carpeta de Red Tune → deleted-tasks; se restaura con schtasks /Create /XML.
+w	3657139c	El acceso directo va a la Papelera de reciclaje.\nPara que simplemente no se inicie, basta con desactivarlo.
+w	49fddf80	La entrada se elimina del registro; su comando queda en el registro de Red Tune.\nPara que simplemente no se inicie, basta con desactivarla.
+w	e713663c	Buscar un programa
+w	ae42c564	+  Añadir un programa
+w	f0c3a97d	Cancelar
+w	2cbc8982	Añadir
+w	f51069e1	Programas en ejecución
+w	9925c654	Patrón
+w	9e7c2807	Grupo
+w	1814bd03	Elegir un exe…
+w	564d2aad	\\Carpeta\\ o un nombre de proceso
+w	f67ab0b9	\\Carpeta\\: todos los exe de la carpeta. Un nombre sin \\: un proceso.
+w	d9466145	Programas (*.exe)|*.exe
+w	a09b43b8	Elige el exe del programa
+w	7f9996fe	Elige un programa de la lista o escribe un patrón.
+w	1b88e81e	desactivado
+w	c7d5fafc	● en ejecución · mediante CPU Sets
+w	841ac021	● aún no deja cambiar sus núcleos, reintentando
+w	6a142610	● en ejecución
+w	2463855b	● la carpeta ya no existe
+w	e7b37ad2	Arrastra aquí un programa o elige un grupo en su menú
+w	461f5437	Carpeta no encontrada
+w	8cb7470a	Quitar de la distribución
+w	3537bc86	Conservar
+w	54d4fdbe	Programas en los chips de la CPU
+w	33ab79c2	Arrastra una fila a otro grupo
+w	3e68c818	Juegos nuevos de Steam y Epic → CCD1
+w	0929753d	Los juegos de las carpetas de Steam y Epic van a CCD1 de inmediato, incluso sin regla
+w	bccbcce4	No tocar los lanzadores
+w	6bd2d405	Steam, Epic, Battle.net y otros se quedan en todos los núcleos: sus juegos reciben sus propios núcleos
+w	c06b4866	Cambios cancelados
+w	cd1754e3	También automático: los lanzadores de Steam, Epic, Battle.net, Riot, EA, Ubisoft y GOG (sus juegos reciben núcleos por su cuenta)
+w	1d1d7180	nuevo, sin guardar
+w	1c13a80f	activado
+w	360dfab9	quedará desactivado
+w	46b370dd	quedará sin SMT
+w	b4626bac	vuelve el SMT
+w	15a27acd	Solo núcleos, sin SMT (un hilo por núcleo)
+w	9cfd21eb	Mover a
+w	b76f35e2	Desactivar la regla
+w	ecc3075f	Activar la regla
+w	250c4167	Acceso directo de inicio en el escritorio…
+w	bc54e465	Abrir carpeta
+w	cf34a448	En pausa · Windows elige los núcleos
+w	8a952c83	no tocar, Windows elige los núcleos
+w	33fc6456	todos los núcleos (Windows decide)
+w	d1699cbd	Juegos de Steam
+w	975c0cc6	Juegos de Epic
+w	d89f2b16	Tiempo
+w	8e844f48	Ahora
+w	f385d294	En el BIOS
+w	90346b0d	Nuevo
+w	e87d4a90	Rango
+w	81f7c94b	Perfiles
+w	7e490f23	Aplicar y reiniciar
+w	4cbf14e6	En uso ahora
+w	6aea4075	leyendo los tiempos…
+w	8313b5c7	Cuidado
+w	9f81f465	Valores demasiado ajustados pueden impedir que el portátil arranque, y aquí restablecer el BIOS supone abrirlo
+w	847cbe62	Frecuencias
+w	2d506779	Velocidad de la memoria
+w	50f0250c	MT/s · Auto: el BIOS elige la velocidad
+w	a6faac36	Frecuencia de Infinity Fabric, MHz · por encima de 2400 el portátil se sobrecalienta
+w	94a2dfe3	Frecuencia de Infinity Fabric, MHz
+w	24defca4	Valores demasiado ajustados pueden impedir que el PC arranque. Entonces hay que restablecer la CMOS: el botón o puente Clear CMOS de la placa
+w	2487db18	Ryzen de sobremesa (AM4 / AM5)
+w	4506deb1	La curva de este núcleo aún no se ha medido. Medir carga el núcleo y lee su voltaje a distintas frecuencias: primero con su desplazamiento, luego a 0
+w	b5da5564	Medir toma dos curvas: con el desplazamiento actual y a 0 (el núcleo se pone a 0 durante un minuto y luego se restaura su desplazamiento)
+w	4bf0c979	Poniendo el núcleo a 0 para la medición…
+w	b001821e	El autoajuste está en marcha: la medición a 0 no puede empezar ahora
+w	42666f5e	No se pudo poner el núcleo a 0: la medición no empezó
+w	4e185fdb	Medir: con el desplazamiento actual. Medir a 0 pone el núcleo a 0 durante un minuto y luego restaura su desplazamiento
+w	5854a7b0	Medir a 0
+w	6c984cf6	A 0
+w	f901d24d	Antes
+w	18a14c6b	Tamaño
+w	89f1b893	Arriba al centro
+w	ac026cff	Muy grande
+w	8e2bd37f	Enorme
+w	5ebed300	Pequeño
+w	6e4480db	Mediano
+w	ccabc714	Grande
+w	04bc702b	Superposición
+w	0fc1e9c5	Superposición sobre los juegos
+w	3ddfea34	FPS, temperatura y frecuencia del procesador y la tarjeta gráfica en una esquina de la pantalla
+w	be2c51fd	Cuándo y dónde mostrar
+w	c72f0621	No visible en pantalla completa exclusiva
+w	97b2534c	Sobre programas a pantalla completa
+w	8406f8c4	Arriba a la izquierda
+w	ce2eb0bb	Arriba a la derecha
+w	afef0082	Abajo a la izquierda
+w	634dd477	Abajo a la derecha
+w	009d1ee9	Interruptores rápidos
+w	13836235	Minipanel
+w	be20d2fa	El panel se abre con un clic en el icono de la bandeja. Los bloques desactivados no se muestran en él; sin bloques no se abre
+w	2a716941	Ratón o tecla para reactivar
+w	fd805cf7	Cerrar lo que no hace falta
+w	78b8755a	Preajuste de energía
+w	8b3fd2cd	Cambia al modo Personalizado
+w	fc0d2b58	FPS, temperatura y frecuencia sobre los juegos
+w	2fb71190	Latencia de memoria
+w	5b113f8b	ns
+w	c2616f9c	era
+w	1646139f	Aún no medida
+w	043c5866	Midiendo…
+w	543d72da	Retardo de lectura en L1, L2, L3 y la propia memoria · unos 15 s; mejor no usar el equipo mientras tanto
+w	12e083a1	La comprobación de memoria está en marcha: mide la latencia después
+w	3690bb26	El autoajuste está en marcha: mide la latencia después
+w	7dc0e7ab	Se está midiendo la curva de un núcleo: mide la latencia después
+w	e9d7b233	Muy poca memoria libre: la medición necesita al menos 1 GB
+w	cb7daad5	La curva se volvió a aplicar durante la medición a 0: esa medición no se guarda
+w	b603d43a	El desplazamiento del núcleo no se restauró: aplica el preajuste en la página Curva
+w	6df773eb	Controlador de memoria: 1:1 a la frecuencia de la memoria, 1:2 a la mitad
+w	3097456a	Tiempos
+w	5093838b	Colores de la tabla
+w	ffe050f9	amarillo: tu cambio · azul: espera un reinicio · rojo: no permitido
+w	d0dab655	Leyendo los tiempos…
+w	e888fdac	No se pudieron leer los tiempos
+w	c3c5720a	Comprobación tras el reinicio: no todo surtió efecto
+w	cee2a120	Comprobación tras el reinicio
+w	944f9072	activado
+w	cd40e261	desactivado
+w	89c9b814	El BIOS contiene lo mismo que funciona ahora
+w	ef478caf	Surte efecto tras un reinicio
+w	0b20df94	Solo lectura
+w	a0d3701c	Deshacer cambios
+w	30ed9ce7	Cambios deshechos
+w	a0fc8acc	Todo en Auto
+w	24f891f9	Releer del BIOS
+w	c66d50e8	Releer
+w	9e380690	Guardar perfil…
+w	ff602613	Cargar perfil…
+w	81da2c1d	Abrir la carpeta de perfiles
+w	98b0354a	Corrige los valores
+w	a65cedfc	Perfil de memoria (*.json)|*.json
+w	bbaa3970	No hay valores nuevos. ¿Solo reiniciar el equipo?
+w	470761cf	Nada que cambiar: todo coincide con el BIOS
+w	b8cfd1ba	Confirmar
+w	5ac2c42b	Escribir y reiniciar
+w	ba89cd5b	Escribir en el BIOS
+w	8f0b544f	Escrito y verificado. Reinicio en 15 segundos (cancelar: shutdown /a)
+w	98fd0c72	Escrito en el BIOS y verificado · surte efecto tras un reinicio
+w	778a0a4f	Error de escritura
+w	21fcdde7	la CPU no es AMD
+w	0a3dc30a	el BIOS no tiene interfaz de overclocking de AMD
+w	bd78e094	la interfaz de overclocking de AMD no tiene comandos de tiempos
+w	7012e77e	dispositivo no verificado (la escritura solo está verificada en el Legion R7000P 83LT con BIOS RLCN31WW)
+w	a72a3f17	el formato de los ajustes del BIOS no coincide con el verificado
+w	6c481439	la lectura de los tiempos se quedó colgada
+w	1771db95	este BIOS no tiene el comando «Reset Mem Para»; no se puede poner Auto
+w	92aad902	El BIOS recibió algo distinto de lo pedido. No reinicies hasta corregirlo:\n
+w	a67f7ef5	Fases 2–3 otra vez
+w	5616379b	Repetir las fases 2–3
+w	89eb9d80	Probar la curva actual
+w	fcb65499	Iniciar
+w	f01e5afc	Pausa
+w	5a8cb538	Aplicar el resultado
+w	ff27e70e	Cómo funciona
+w	89e2c79c	Ajuste automático de la curva
+w	aec4003e	Se necesita una vez (repetir tras un cambio de BIOS o de controlador) · ~9 h, no uses el portátil mientras tanto
+w	85885587	Condiciones
+w	bbad033c	Comprobando…
+w	c4ba2517	1. Cada núcleo por separado
+w	b582ae8a	Bisección desde −25, luego una comprobación del valor hallado
+w	76cf2da9	~5 h
+w	88537606	2. Chiplets por turno
+w	19a4346a	Reposo y carga en cada chiplet; los núcleos débiles reciben +3
+w	39f51584	~2 h
+w	a2ae9ba8	3. Comprobación final
+w	bb3092e0	Rondas largas y una tormenta con el conjunto final
+w	e5ec4b6a	~1,5 h
+w	1fce9cc7	Iniciar
+w	face63f2	«Probar» ejecuta solo la fase 3 con el preajuste activo y no ajusta nada (~1,5 h)
+w	b49c2721	Progreso
+w	cdc085a5	Resultado
+w	7e3dae42	¿Restablecer el ajuste? Se eliminarán el progreso y los valores intermedios.
+w	e36cbdb4	conecta el cargador
+w	74bab283	sin PawnIO
+w	072af590	no se conoce la curva de este procesador
+w	179150f2	sin Prime95
+w	9f6efafe	cierra UXTU (Ajustes → Otros programas)
+w	8dd428bf	LLT está en ejecución; mejor desactivarlo
+w	7c61003d	mejor cerrar los programas pesados
+w	1fbabf24	listo
+w	bd7b3012	hay observaciones
+w	6a45b5a3	¿Iniciar el ajuste completo de la curva? Unas 9 horas con reinicios. No uses el portátil mientras tanto.\n\nLa aplicación activa su inicio automático para continuar tras un reinicio.
+w	4a3a407e	autoajuste
+w	4eba2614	En pausa
+w	8b8965bf	Esperando para continuar
+w	b94fbde6	Comprobación de la curva
+w	cc64ef63	Continuar
+w	1965f2bb	CCD2 en reposo, CCD1 bajo carga
+w	ab4db09b	CCD1 en reposo, CCD2 bajo carga
+w	9e52e99c	CCD1 bajo carga
+w	fb80a371	CCD2 bajo carga
+w	696f1838	CCD2 en reposo, 25 min
+w	8be178f9	CCD1 en reposo, 25 min
+w	e346c2aa	los 16 núcleos, 25 min
+w	258ae93f	Tormenta
+w	3fd658ad	ráfagas en todos los núcleos, 20 min
+w	bc23a7d0	Esperando 90 s tras iniciar sesión
+w	e373976a	reinicio
+w	4f469448	simulación
+w	7f2234e3	Superado
+w	f92fac3e	Detenido
+w	187c0903	Fase 3: comprobación final
+w	dd711929	Tormenta en todos los núcleos
+w	ce4bac18	todos los núcleos
+w	edcf1561	fase 1
+w	4f8e70c5	comprobación
+w	eacf10a8	fase 2
+w	ca9ed393	búsqueda
+w	ebcf123b	fase 3
+w	819c4ffe	en marcha
+w	42843e9c	en pausa
+w	3a918591	suspensión
+w	ccc58ded	cierre de sesión de Windows
+w	ab1ec3bf	emergencia
+w	9a7da7e7	curva desactivada
+w	1da43841	velocidad máxima
+w	af4ddda6	no es el modo Personalizado
+w	07be4d27	salida
+w	5c7ef559	modo de energía
+w	1980a208	No se encontró el controlador Lenovo Energy (
+w	9e1b80fc	Modo de batería desconocido
+w	72b5f16a	La carga nocturna no es compatible
+w	68f256c3	No se encontró Prime95: indícalo en la pestaña «Componentes»
+w	f561b116	Crear «Ajuste»
+w	b5d39caf	Plan para el autoajuste
+w	fd1bb7a8	Ajuste
+w	25b44cb1	Sin tope de frecuencia y con un mínimo del 5 %: el procesador puede bajar hasta lo más bajo y subir hasta lo más alto
+w	e7d558f8	Red Tune: para el autoajuste y las comprobaciones de la curva. Sin tope de frecuencia, mínimo 5 %
+w	e7177106	El plan «Ajuste» está listo y elegido para este preajuste. Guarda el preajuste para que se active junto con él.
+w	b7179637	El plan se ha creado
+w	664a9658	El plan ya existía; sus valores se han escrito de nuevo
+w	f05f275e	Copiado del plan activo: este Windows no tiene el plan «Alto rendimiento»
+w	c847203d	Atención: sobre el plan actúa un modo de energía de Windows, que puede mantener su propio tope de frecuencia
+w	ae9329aa	Prueba propia (en ensayo)
+w	b1db0e8a	Carga del autoajuste
+w	7b09903c	Con qué se cargan los núcleos al ajustar la curva. La prueba propia va incluida en el programa y por ahora está en ensayo: se compara con Prime95
+w	758c9f1a	La prueba propia no está disponible: falta RedTuneStress.dll o el procesador no tiene AVX2
+w	2c9ca7c7	La aplicación no conoce la curva de este procesador
+w	551e26d9	Memoria (RAM)
+w	ecf9e1a9	Archivos en disco
+w	05ee5f52	Desinstalar programas
+w	3a4b763f	Restos de programas eliminados
+w	5081fcfd	Programas instalados
+w	fbfc11d1	Cargando la lista…
+w	e0e417df	Desinstalar…
+w	6f39685b	Desinstalar un programa
+w	f023da41	Desinstalando: sigue la ventana del desinstalador…
+w	fb37f0bd	Se completó: buscar restos
+w	95cc6ae0	Se canceló
+w	21a46fae	Buscando restos…
+w	56278755	Eliminado; no se encontraron restos
+w	f5c42cd1	Eliminar seleccionados
+w	1bda422c	Eliminado · se conservaron los restos
+w	6449bcaa	Eliminando restos…
+w	9865a015	Buscando restos de programas eliminados…
+w	7a1f593e	No se encontraron restos de programas eliminados
+w	e3751d7d	Restos de programas eliminados
+w	4d610bda	Seleccionar todo
+w	06d8e0ba	Deseleccionar todo
+w	9d166935	Detener
+w	8101082a	Exe: este programa con todo lo que inicia; carpeta: todo lo que se inicia desde ella
+w	e815f046	Exe: solo este programa; carpeta: todo lo que se inicia desde ella, y sus servicios hasta el reinicio · Windows y Red Tune nunca se cierran
+w	15113f9b	De los que están en ejecución, por exe o por carpeta
+w	81c5c496	Elegir una carpeta…
+w	2145aa7f	La carpeta del programa: todo lo que se inicia desde ella se cierra y sus servicios se detienen
+w	47a1b44c	La carpeta del programa: todo lo que se inicia desde ella se queda
+w	a96d48c7	Esto es la raíz de una unidad
+w	ff47e68b	Esta es la carpeta de Windows
+w	fa59c363	Red Tune está dentro
+w	cde8bc90	Esta es una carpeta compartida con muchos programas
+w	f1b940d0	Elige la carpeta de un solo programa, por ejemplo C:\\Program Files\\Cloudflare\\Cloudflare WARP.
+w	248600c2	Dos curvas
+w	75ac6f74	Una para ambos
+w	68dd7a32	CPU
+w	a8bd8b47	GPU
+w	0b527cc8	El más caliente
+w	a62415b0	Ambos ventiladores
+w	22a7099f	Curvas de ventiladores
+w	554b3c37	Dos: cada ventilador tiene la suya, según su propia temperatura. Una: ambos giran igual
+w	d3610792	Ambos ventiladores igual, según la temperatura de la derecha: CPU, GPU o la más alta de las dos. Cada preajuste tiene su propia curva
+w	f7ed5a97	sin interfaz de firmware de Lenovo (GameZone)
+w	56f156fa	un solo chiplet: no hay entre qué repartir los programas
+w	adef2d50	sin interfaz de firmware de Lenovo
+w	a54f5699	no es un procesador AMD Ryzen
+w	aff8a779	el BIOS no tiene interfaz de overclocking de AMD (AMD_ACPI)
+w	89d20410	Este dispositivo
+w	f0c66eb3	Copiar informe
+w	bd10374e	Informe del sistema copiado: pégalo en un mensaje
+w	8470202b	funciona
+w	c70a264f	oculto
+w	9ba76c91	Compatible con este dispositivo
+w	998ab277	sin respuesta en 30 s
+w	1a93e701	Este procesador no está en la tabla de la aplicación
+w	04a711d4	no se pueden leer los registros del controlador de memoria
+w	f6b383eb	Simulación de otro procesador: no se escribe nada en él
+w	e9091f92	Nada que aplicar
+w	1287c380	Límites de potencia del procesador
+w	d6a0785c	Se escriben directamente en el procesador (SMU), como hace UXTU. Un reinicio los restablece
+w	a934ddeb	Comprobando qué acepta…
+w	e3c00fb9	Aplicar al iniciar y tras la suspensión
+w	d0c6a4e2	Red Tune restablece estos límites cuando Windows o el firmware los reinician
+w	ec8993f1	Límites
+w	68d8eb60	PPT: potencia del procesador
+w	b00d2635	Cuántos vatios puede consumir el procesador de forma prolongada
+w	97e5a050	TDC: corriente sostenida
+w	dd82f28a	Corriente de los núcleos bajo carga larga
+w	af33c030	EDC: corriente de pico
+w	22476d2d	Corriente de los núcleos en ráfagas cortas
+w	1b11b2d7	Valores no aplicados
+w	af49e79c	Este procesador no acepta límites a través del SMU
+w	30c15e74	Límites de potencia
+w	74de9fed	Los límites se escriben directamente en el procesador. Valores demasiado altos calientan el portátil más de lo previsto por su fabricante; demasiado bajos lo hacen lento.\n\nTras un reinicio, el procesador vuelve a los límites de fábrica.
+w	39b66ae2	sin interfaz de firmware de Lenovo y no es un procesador AMD
+w	d3666e30	todos los núcleos, 25 min
+w	edc547fc	Límite de potencia. Cuál de los límites cambia depende del procesador: en Dragon Range, el rápido
+w	261d4d4f	Aplicar ahora
+w	104dd11f	Inicio seguro
+w	0ff66e96	Funciones expertas
+w	93646133	«Curva» y «Memoria» en el menú, escritura de los límites del procesador AMD. Mayús al iniciar: un inicio seguro sin ellas
+w	b3826d07	La curva de voltaje, los tiempos de memoria y los límites directos del procesador cambian lo que fijó el fabricante. Valores incorrectos provocan cuelgues, pantallas azules o un portátil que no arranca.\n\nSi algo salió mal, mantén pulsada Mayús mientras se inicia Red Tune: no aplicará nada.
+w	fd8c73cd	Activar
+w	356be385	Sonido
+w	1a0e6dca	Hacer predeterminado
+w	9edf46c8	Dispositivo de salida
+w	e692df51	Volumen
+w	87ee0cbd	Procesamiento de sonido
+w	7bb6ddb2	Ecualizador
+w	07bac904	Ajustes listos del ecualizador y del compresor; los tuyos se pueden guardar
+w	a6c48966	Arrastra los puntos del gráfico: izquierda y derecha es la frecuencia, arriba y abajo la ganancia. La rueda sobre un punto cambia su anchura
+w	c70e500f	Preganancia
+w	68315b4f	Antes del ecualizador: bájala si las bandas están muy subidas y el limitador trabaja todo el tiempo
+w	47d71657	Compresor
+w	b7720b0e	Baja las partes fuertes: lo suave se oye mejor y lo fuerte no molesta
+w	3a586b5b	Umbral
+w	7f0b22c7	Nivel en el que empieza la compresión
+w	7f20d340	Relación
+w	47d51862	Cuántas veces se reduce lo que supera el umbral
+w	018b2a67	Ataque
+w	61d921b4	Con qué rapidez el compresor actúa sobre un sonido fuerte
+w	627ddda8	Recuperación
+w	9a178b37	Con qué rapidez suelta cuando el sonido baja
+w	852f8bb6	Codo
+w	3241b7df	Suavidad de la transición en el umbral: 0 es brusca
+w	62cf1651	Ganancia de compensación
+w	eab68408	Devuelve el volumen que quitó la compresión
+w	c8b8dddd	Limitador
+w	da57d237	No deja pasar sonido por encima del techo, por mucho que suba el ecualizador: sin crujidos ni saturación
+w	3c28594d	Techo
+w	d8dd32c2	Sistema
+w	3a95984b	Quitar el procesamiento del dispositivo
+w	4e3559fe	Red Tune saca su efecto de la cadena de efectos de este dispositivo; los ajustes se conservan
+w	413517df	No hay dispositivos de salida activos
+w	3439953a	Predeterminado: todos los programas suenan aquí
+w	912f98cc	No es el predeterminado: los programas suenan en otro dispositivo
+w	ae0cbfed	Ajustes propios
+w	f94d475e	Conectar
+w	3f030c31	Conectando el efecto y reiniciando el sonido de Windows…
+w	6376025c	Quitar el procesamiento
+w	012bee00	Quitando el efecto y reiniciando el sonido de Windows…
+w	fde050db	Sin dispositivo
+w	021f27ed	Esta compilación no tiene el archivo del efecto (audio\\RedTuneApo.dll)
+w	e7e126fa	Este dispositivo no tiene sección de efectos de Windows: aún no se le puede conectar el procesamiento
+w	e97697b5	El efecto final del dispositivo lo ocupa otro: aún no se le puede conectar el procesamiento
+w	d75bb0ba	Ecualizador, compresor y limitador propios para este dispositivo. Ahora no está conectado
+w	5ee31b87	Conectado, pero las mejoras de audio están desactivadas para el dispositivo en Windows: los efectos no funcionan
+w	50a02b04	Activado · ahora no suena nada
+w	dc0050b1	Conectado, desactivado
+w	a02b796a	Entrada
+w	54f4234b	Salida
+w	838fa09f	Reducción
+w	580c8b6e	0 dB
+w	6760bee2	silencio
+w	1e939a29	Campana
+w	81eac194	Estante de graves
+w	e54686cc	Estante de agudos
+w	7479f177	Corte de graves
+w	34ae8cd5	Corte de agudos
+w	b556b2d9	Rechazo
+w	c4770fd5	Ganancia a cero
+w	1b220d9d	Eliminar el punto
+w	6af22088	Añadir un punto
+w	f2c7ee73	Todas las ganancias a cero
+w	bbd3efbb	El ecualizador está desactivado
+w	d8d67023	Bandas del compresor
+w	dfac8bbf	Cada banda se comprime por separado y con sus propios ajustes
+w	97e59712	Una
+w	60362da2	Dos
+w	4935edc5	Tres
+w	58766ee5	Graves
+w	2ed7bcd5	Medios
+w	57a4501f	Agudos
+w	5016d919	Límite de graves
+w	24201e77	Todo lo que queda por debajo es la banda “Graves”
+w	4e1f479b	Límite de agudos
+w	b7e458b7	Todo lo que queda por encima es la banda “Agudos”
+w	aaa9416d	Bandas
+w	967f584b	Se ajusta
+w	b29253e0	Los puntos, los diales y los deslizadores corresponden a esta banda
+w	fdeee644	Solo: solo se oyen las bandas con “S”. Es para escuchar: se desactiva por sí solo al salir de la página
+w	b9901533	Silencio: esta banda no se oye, las demás suenan. Es para escuchar: se desactiva por sí solo al salir de la página
+w	03c9d5bd	Ahora no se oyen todas las bandas: la escucha está activada (S o M en el monitor “Por frecuencias”)
+w	fad83bfd	05 Nuevo
+w	d9f878b3	01 Mío
+w	aa1eb8c2	En el tiempo
+w	4875ee04	Por frecuencias
+w	2676c66f	Todo el sonido
+w	94f05c0b	Haz clic para ajustar esta banda
+w	f9104111	Haz clic en una banda para ajustarla. Los límites entre bandas se arrastran a izquierda y derecha, la línea discontinua del umbral arriba y abajo
+w	93c6d52b	Una sola banda para todo el sonido. Se puede dividir en dos o tres en “Bandas del compresor”, más abajo
+w	a2cb5790	Banda que se ajusta
+w	1d5d59b3	Los puntos, los diales y los deslizadores de abajo son de ella
+w	f9f12204	El compresor está desactivado
+w	0632976a	Donde suenan todos los programas
+w	26f11dcd	Compresor y limitador
+w	1a3b1816	Arrastra los puntos: el umbral a izquierda y derecha, la relación (a la derecha) y la ganancia de compensación (a la izquierda) arriba y abajo. La rueda sobre el punto del umbral cambia el codo
+w	5b5a31dc	Arrastra los puntos. Doble clic en un espacio vacío añade un punto; clic derecho en un punto elige el tipo de filtro o lo elimina
+w	3d4bed5c	Plano
+w	4be959f6	Más graves
+w	9608c5e8	Voz
+w	a2721dda	Altavoces del portátil
+w	df2ed3e8	Modo nocturno
+w	9ef3c976	dB
+w	7f13b6ce	ms
+w	3eeaafdc	no se creó el archivo de ajustes compartido
+w	d93d52e3	regsvr32 no respondió
+w	68333e90	el dispositivo no tiene sección de efectos de Windows
+w	19655e15	Efectos de Nahimic
+w	28e63132	Van antes de Red Tune y se suman a él. Desactívalos para oír solo Red Tune: se pueden recuperar aquí mismo
+w	1e2e9b43	Sacados de la cadena de este dispositivo. Nahimic sigue instalado como estaba; el interruptor devuelve los efectos
+w	b7fa2672	Recuperar
+w	5c64a063	Reiniciando el sonido de Windows…
+w	5f11b887	no se conservaron las listas de efectos originales
+w	1a79d826	Graves aparte
+w	7c83b011	Los graves por debajo del corte y todo lo demás se comprimen por separado: un bombo no baja la voz ni los agudos
+w	4fbcff2c	Hz
+f	849d8aad	Se mantiene sobre los planes basados en Equilibrado: 
+f	ed7a5eaa	sin tope de frecuencia, preferencia de energía 
+f	056be074	tope de frecuencia 
+f	1baf1461	 MHz, preferencia de energía 
+f	f4494d86	, estado mínimo 
+f	e297bc24	Modo de energía de Windows — 
+f	0d29bb85	Sin escribir: 
+f	b27ecfef	 — con batería
+f	b3b51806	00 Ajuste
+f	b4420304	Listo
+f	7f2234e3	Superado
+f	f8c51341	 s · 
+f	396205d1	 — con la red
+f	d753034e	 — tipo de plan
+f	615c1bca	Para el autoajuste: 
+f	0b9dc537	 °C — ya está así
+f	c0408926	 °C — guarda el preajuste
+f	f75cefbe	El plan tiene ahora: 
+f	42a84f16	 (0 es velocidad, 100 es ahorro)
+f	7f322198	Windows puede aparcar núcleos ahora; mínimo de núcleos sin aparcar, %: 
+f	dff82ac2	Windows no dejó escribir el valor, código 
+f	a5b6d060	 · activo
+f	30d1b395	”, no más profundo que 
+f	61003bc8	Error de Red Tune Test en 
+f	22f7053e	: ambos hilos, Red Tune Test
+f	dfc8fc47	Red Tune Test no está disponible: falta 
+f	8eefd4c0	 o el procesador no tiene AVX2
+f	2b41b190	Empieza el ajuste (estricto): descenso con cada paso comprobado
+f	9bfce7f7	Empieza el ajuste (diario). Fase 1: el borde de cada núcleo, de uno en uno: 
+f	72c74767	Ajuste diario desde los bordes hallados antes
+f	f7ca3728	Fase 2: todo el conjunto baja
+f	ddf14a32	Diario sin la fase 1, desde los bordes: 
+f	9beba94c	¿Empezar el ajuste diario desde los bordes hallados antes, sin la fase 1? 
+f	0dbbcbb2	Diario · 
+f	806d87c5	Estricto · 
+f	180c25b4	los bordes de los núcleos
+f	98e6cab5	descenso
+f	2079fe22	 aguanta, bajan: 
+f	f76892aa	 · bajan: 
+f	34b2f86e	”), se detiene en 
+f	29cfe126	Error en un núcleo que ya se había detenido: 
+f	1c2fa334	): los núcleos que bajaban (
+f	5403e1f0	) toman el último nivel superado, 
+f	8a7892fd	El descenso ha terminado
+f	7abab46f	carga solo en los núcleos que bajan
+f	15e29bde	): los núcleos del nivel más profundo (
+f	585de988	nivel 
+f	d7050c9a	 — en 
+f	2180c144	, conservando este paso; los demás prueban 
+f	fe1552c4	Empieza el ajuste: descenso con cada paso comprobado
+f	625116d5	La escalera de límites
+f	8a2e5cd2	más profundo que 
+f	79f3514e	 el ajuste no baja
+f	2d144f8c	: no aguanta 
+f	0064009e	 núcleos en la carga (
+f	4d40f118	 con 
+f	872bbaa8	 se queda en 
+f	2edd9ae9	 y conserva este paso, los demás prueban 
+f	bc76b5b5	 sin él
+f	31b94e9e	 sostiene la tensión de esta carga, 
+f	88bfd0c4	ajuste · 
+f	fe86c73c	escalones de frecuencia en 
+f	ad1f5d2c	, hay un ajuste en curso: la ventana en la pestaña Autoajuste
+f	391fcbf4	Fase 2: el límite propio de cada núcleo bajo carga
+f	fb56a042	Fase 2 de nuevo desde los bordes de la fase 1
+f	a32d29d6	La segunda fase a la manera nueva, desde los bordes de la última fase 1
+f	ae6a794e	. Bordes: 
+f	148bd40d	 · inicio: todos los núcleos en 
+f	006281ae	Límites propios
+f	a036c7f8	 · a continuación, la comprobación final
+f	a2bde735	nivel común 
+f	3b376d41	 · en la carga 
+f	d8d2a819	 aguanta, en la carga 
+f	e4086c28	Nivel 
+f	28521a62	: no baja más (su propio tope “borde +
+f	5f334bd1	”), límite 
+f	88306843	: un error en 
+f	dbcda74a	), límite 
+f	0b4c8147	quedan en la carga: 
+f	4ff79500	, reciben el último nivel superado, 
+f	25b63333	Error en un núcleo fuera de la carga: 
+f	e41bff57	Un fallo que no nombra ningún núcleo en el nivel inicial (
+f	2bba868e	): se empieza desde 
+f	7f0fee80	Un fallo que no nombra ningún núcleo en el nivel 
+f	b434c88a	): los núcleos que quedan en la carga (
+f	0a373abc	) reciben el último nivel superado, 
+f	b3ab585c	carga sin los 
+f	41e2b5e2	 núcleos menos profundos, 40 s
+f	59fe2fdb	 núcleos
+f	ab5f3b79	Arranque de carga en 
+f	cdd72fb1	: 6 s de trabajo, 4 s de reposo
+f	246cdd43	la carga falla incluso en cero: no es la curva
+f	9b640f3b	El conjunto inicial aguanta: 
+f	a29f270a	): un paso atrás hasta 
+f	ca66fbe7	, otro intento más tarde
+f	bb91ee20	, a continuación chiplet por chiplet
+f	396f608a	todos los núcleos
+f	d0c06a67	Desde los bordes de la fase 1: 
+f	31d1868c	¿Ejecutar de nuevo la fase 2 desde los bordes de la fase 1? 
+f	54fb905a	, habrá reinicios. No uses el portátil mientras tanto. El progreso actual del ajuste se sustituirá; los preajustes de curva guardados se conservan.
+f	4ff0ced8	Fase 2 de nuevo desde los bordes de la fase 1: 
+f	7ae1ce54	): los núcleos más profundos que el nivel común +
+f	aa241dcd	Si el portátil se cuelga y no pasa nada durante más de un par de minutos, apágalo manteniendo pulsado el botón de encendido y vuelve a encenderlo: el ajuste continuará.
+f	3c003d1d	arranque de carga en todos los núcleos, en ráfagas 
+f	4650d8f2	tormenta de ráfagas 
+f	f6383dfd	fondo ligero en 
+f	59ab3303	carga en todos los núcleos 
+f	f7b5c37b	: carga, escalones de frecuencia, despertares
+f	829cf3ea	Despertares en 
+f	a3b1aa87	comprobación final
+f	3fd06d37	todo el conjunto
+f	08bf8aaf	una prueba más profunda en 
+f	8cde9233	Fase 2: todo el conjunto. Bordes: 
+f	eea6eeda	 · inicio “borde +
+f	ef58dc2c	La segunda fase a la manera nueva, desde los bordes de la última fase 1: 
+f	d1064b9e	El conjunto aguanta: 
+f	99d94a0f	 más profundo en 
+f	8c25df56	 aguanta: 
+f	19b75020	 no aguanta (
+f	4959faee	): se deshace
+f	7c8b8f2c	, a continuación núcleo por núcleo
+f	e02cd222	): se queda en 
+f	bf455565	Comprobación final del conjunto: 
+f	19c83589	El conjunto superó la comprobación final: 
+f	9a0d4cf7	 · con un margen de +
+f	3f7df8ea	Un fallo que no nombra ningún núcleo (
+f	db1795d5	): todo el conjunto +
+f	a9ed6d1b	Error en el núcleo: 
+f	a02a30f4	Un fallo con un solo núcleo bajo carga: 
+f	52d9fd84	Error en un núcleo fuera de la prueba: 
+f	fc048b6e	): se deshacen las pruebas de los núcleos, el conjunto 
+f	71d7389a	reposo 
+f	05aab61a	En curso: 
+f	019e3792	 · probado 
+f	bdfcfc94	sin errores
+f	35e6bfe2	ERRORES: 
+f	3a39a58f	 — la memoria es inestable
+f	51025e77	datos aleatorios
+f	f48bd9c2	copia de bloques
+f	bfcd8b0e	acceso aleatorio
+f	0bf8286d	patrones
+f	9d2cce88	Última: 
+f	afd432c5	 s
+f	0a7618d0	 · interrumpida por un reinicio
+f	977f6e6d	 · interrumpida
+f	854c6c57	 · detenida
+f	53465c11	No se inició: 
+f	62a7a515	Windows no dio memoria (
+f	3fa4673b	 MB por hilo)
+f	b80b6c69	La comprobación de memoria fue interrumpida por un reinicio: funcionó durante 
+f	8926f56e	Confirmando 
+f	6ba31a7b	: un hilo, impulso máximo
+f	d46cf09b	: ambos hilos, Prime95 AVX2
+f	a5d4a82a	: ambos hilos, Prime95 AVX-512
+f	253ad7cb	: ráfagas tras el reposo
+f	8019e9d1	: escalones de frecuencia
+f	3ef0e496	: límite 
+f	7e563418	, con un margen de +
+f	0e006e02	 resultado 
+f	37a44b93	La caja negra antes del reinicio: 
+f	31778a30	Un reinicio sin apagado correcto. Justo antes trabajaban: 
+f	5dbd9265	todos los núcleos casi en reposo (el más ocupado: 
+f	d09418da	, puede haber reinicios. No uses el portátil mientras tanto.
+f	dc026084	¿Iniciar un ajuste completo de la curva? 
+f	a586ed4e	, habrá reinicios. No uses el portátil mientras tanto.\n\nLa aplicación activa su inicio automático para continuar tras un reinicio.
+f	4b2abf5e	carga ligera como un vídeo en el navegador en CCD2, 12 min
+f	af2ffb4b	carga ligera como un vídeo en el navegador en CCD1, 12 min
+f	0d371183	un núcleo en escalones de frecuencia, cada núcleo por turno, 10 min
+f	e082bede	Carga de fondo ligera en 
+f	f3bb6ad2	 (como un vídeo en el navegador)
+f	9fcd30c9	Escalones de frecuencia: un núcleo cargado, 
+f	9635d787	 núcleos por turno
+f	962e7c42	Fondo CCD2
+f	952e7aaf	Fondo CCD1
+f	7c3f380e	Escalones
+f	aa73fa69	Núcleos medidos: 
+f	a328c15a	Medir cada núcleo por turno lleva unos 
+f	1b6e56ed	 min; mientras tanto la frecuencia se limita por escalones
+f	3f157795	Listo, pero núcleos sin medir: 
+f	3341df80	 (detalles en el registro)
+f	48f23da4	Midiendo: 
+f	4f61c00d	La disposición de telemetría de este procesador (0x
+f	d87715e9	) aún no se conoce
+f	832a150e	Activo: se aplica automáticamente
+f	aa8e426b	Seleccionado pero no activo: «Aplicar» lo activa
+f	35ec5682	El preajuste gráfico «
+f	1b2f5b96	» no se aplicó: 
+f	b324cc8d	En juegos hasta
+f	ca272b6f	Gbit/s
+f	4f2f4653	el desplazamiento cuenta doble, como en Afterburner
+f	921cf955	» aplicado
+f	76e93c22	» abierto, no aplicado
+f	9ac8e248	» ya está en la tarjeta
+f	296223f3	preajuste
+f	2e21f1d9	el controlador respondió «aceptado», pero la curva no cambió
+f	e61cad62	\n\n«Aplicar al iniciar» está activado: tras un reinicio, el preajuste «
+f	58bcba36	el controlador NVIDIA no respondió
+f	322ae317	no se encontró ninguna tarjeta NVIDIA
+f	45e82377	el controlador no ofrece la curva V/F (la función de Afterburner)
+f	67031808	Simulación: no se escribe nada en la tarjeta
+f	3c6e0ec4	no se pudo leer la curva actual
+f	b7f34e3a	el controlador no aceptó la curva
+f	c8627f5c	, plana desde el punto 
+f	054a25c6	NVML no respondió
+f	2e0c7e9c	el controlador no aceptó la frecuencia de memoria (código 
+f	2ff4852f	Sin acceso a la curva: 
+f	fe4c3421	el controlador no respondió
+f	851f974d	puntos
+f	0244c6c9	memoria
+f	b4f1474f	bajo la parte plana
+f	cd609234	de fábrica
+f	ae1400cb	mV
+f	5f55ae86	Preajuste «
+f	e26cd779	» guardado
+f	786da301	Se necesita una vez (repetir tras un cambio de BIOS o de controlador)
+f	02083de9	no uses el portátil mientras tanto
+f	972655c8	«Comprobar»: solo la fase 3 con el preajuste activo; no ajusta nada
+f	e451f2d8	 MB
+f	3056e7aa	 KB
+f	3dc05ccd	La curva no se aplicó: 
+f	c5c7d794	No se pudo cambiar el plan: 
+f	e926c315	Sin respuesta: 
+f	723fd7fb	mediante PawnIO
+f	30b0b6a8	ahora
+f	bd1ecc52	rápido
+f	305e0ad8	lento
+f	66cd5473	no se pudieron leer los límites actuales
+f	47564942	escritura no verificada en esta familia
+f	563205e6	se escribirá
+f	fc70b290	guardado; se escribe con «Aplicar» y al iniciar
+f	8957bafc	no se toca hasta que lo muevas
+f	b970f3c8	valor actual
+f	dbe0fc18	no cambiar
+f	db58571b	(simulación)
+f	051ef98b	Curva de Red Tune ahora: CPU 
+f	daad1861	, GPU 
+f	b8b7e47a	 · la curva no está en vigor; el firmware controla los ventiladores
+f	c24900b8	Ahora 
+f	c4bebe8b	 °C · la curva pide 
+f	3ca9e8df	 · girando a 
+f	be8ef508	Cambiar a «
+f	c8d9ac5b	Seleccionado «
+f	50079fbd	»: surte efecto tras un reinicio
+f	e4c2aaf9	Windows no aceptó el modo (
+f	d418376e	 está en ejecución y se inicia con Windows
+f	bed905d9	 está en ejecución
+f	95656e32	 se inicia con Windows
+f	de66c066	 : compiten con Red Tune por los mismos ajustes
+f	a7a8c212	Ya tienes una curva por núcleo
+f	a6785871	: desde 
+f	d1b2dac7	Red Tune la aplica al iniciar, con el cargador y tras la suspensión.\n\n
+f	f1356cee	El Curve Optimizer para todos los núcleos fija un solo valor para todos los núcleos mediante el firmware y anula tu curva cada vez que se aplica este preajuste. 
+f	e91a56e6	Luego Red Tune restablece la tuya: competirán, y lo que quede en los núcleos depende de quién escribió el último.\n\n
+f	b5da746d	No se pudieron leer los valores de fábrica: 
+f	340e42fb	Origen: autor rawhide-kobayashi (GitHub), compilación 0.1.5-sp00n de la versión CoreCycler 0.11
+f	eb016878	Origen: mersenne.org (GIMPS); por defecto, la copia de CoreCycler
+f	51f04fcf	 allí?\n\nA: 
+f	74667d20	\nLos archivos con el mismo nombre se sustituyen.
+f	27d1c323	  · indicado a mano
+f	24f70a9d	Activos: 
+f	8c3268e2	 de 
+f	64633593	. Los elementos desactivados siguen en la lista y se pueden reactivar. El Administrador de tareas muestra lo mismo
+f	2a78cf09	falta el archivo: 
+f	a3be7856	¿Eliminar «
+f	fd0bb6ce	, definido por directiva
+f	54b6e615	no se pudo mover a la Papelera de reciclaje (código 
+f	6a649cfa	¿Cerrar «
+f	837844a1	» y cerrarlo?
+f	4b7e780b	\n\nPuede volver: inícialo a mano y activa su inicio automático.
+f	b2cd6abc	La carpeta de «
+f	1d56c5d5	» no está donde estaba; buscando…
+f	8c155b76	Nueva ubicación de «
+f	dff8f489	La carpeta de «
+f	e7c116a0	» ya no existe: se eliminó o se movió a donde Red Tune no la encuentra.\n\n
+f	17d5fcf2	¿Quitar «
+f	b2fc1c83	» de la distribución?\n(si el programa solo se movió, consérvalo: la carpeta se encuentra en su primer inicio)
+f	392f84e5	» quitado de la lista · pulsa «Guardar» para aplicar
+f	f8771296	La carpeta no se abrió: 
+f	933851b6	No guardado: 
+f	2eeb24c5	cambios
+f	18eb0223	cambios
+f	24eb1507	cambio
+f	9b17e0de	No se pudieron guardar las reglas: 
+f	e4bc92f6	Guardado: 
+f	4f85b849	 · los programas en ejecución se movieron de inmediato
+f	b101a420	¿Qué exe inicias para «
+f	8df50275	»? (normalmente el lanzador de la carpeta del juego)
+f	4b520eab	Acceso directo «
+f	6a5b7216	» en el escritorio: se inicia directamente en 
+f	d1118128	No se pudo crear el acceso directo: 
+f	08e1af56	En ejecución · 
+f	a4d536ff	procesos
+f	b417fc99	procesos
+f	03da9093	proceso
+f	a6937c38	 en sus núcleos
+f	79c65019	 · 2 chips × 
+f	bf4f5981	 núcleos
+f	bb62e4f4	era 
+f	750eb27a	programas
+f	3c0e58bf	programa
+f	cba67395	programas
+f	49d23aa2	, ALL: todos, SKIP: no tocar
+f	07485f11	todos 
+f	db5c4a5a	núcleos 
+f	0ee2b188	 (el antitrampas lo soltó)
+f	42ddfbc1	 (mediante PowerShell: el programa solo admite firmados)
+f	acbdbd50	 (mediante CPU Sets mientras los núcleos están bloqueados)
+f	a2a0db82	 sin SMT
+f	47a9fc5f	memoria soldada 
+f	5416d7ef	: escritura no compatible
+f	480ced79	El BIOS rechazó el comando 0x
+f	a234dcf8	 con el valor 
+f	7f50664c	No se pueden leer los ajustes del BIOS (
+f	36e6186a	no se pudieron leer los tiempos en uso: 
+f	347ca9bc	permitido 
+f	3d076fc6	paso 
+f	3d9a6330	, desde 
+f	4eff029d	   (más ajustado que lo que funciona ahora)
+f	37042eb9	Velocidad: 
+f	8497c4cf	   (más alta que la que funciona ahora)
+f	c82f5382	   (la velocidad solo puede estar en Auto mientras todo esté en Auto)
+f	53618e97	se queda 
+f	06b49f7c	escritura desactivada: 
+f	781163c7	el tamaño de los ajustes del BIOS cambió: 
+f	0d96cffa	: debería ser Auto, pero el BIOS tiene 
+f	6f0250e0	: pedido 
+f	21805168	, el BIOS tiene 
+f	faa53fb1	Velocidad: debería ser Auto, pero el BIOS tiene 
+f	5a2c1fce	Velocidad: pedido 
+f	54123e5c	FCLK: debería ser Auto, pero el BIOS tiene 
+f	f5bc345a	FCLK: pedido 
+f	2a5f2399	UCLK: debería ser Auto, pero el BIOS tiene 
+f	10924b9d	UCLK: pedido 
+f	4181ece5	, en uso 
+f	42448e9e	Los ajustes de memoria de 
+f	c2f3f7a7	 no surtieron efecto por completo:\n
+f	0455395e	\n\nEs posible que el BIOS rechazara los valores o los revirtiera tras un arranque fallido.
+f	61ac7589	: todo en Auto; el BIOS eligió los valores por sí mismo.
+f	50497e27	 surtieron efecto por completo (
+f	d29ad17f	 valores).
+f	f03fdd4b	: escribe un número o activa Auto
+f	8edf5d23	» no es un número
+f	41cb0492	, paso 
+f	4fa54f24	 ns)
+f	8ed1ac78	No se pudo leer: 
+f	fa9ba8ee	Corrige: 
+f	a460952a	 (y 
+f	87701f41	Cambios: 
+f	ae7077fe	Solo lectura: 
+f	fb7429b8	El BIOS contiene valores que aún no están en uso (
+f	2478edcf	): surten efecto tras un reinicio
+f	bd788b9c	Perfil guardado: 
+f	f56d32c3	No guardado: 
+f	55583d6a	Perfil «
+f	af4421f1	» cargado en la ventana · aún no escrito en el BIOS
+f	bbcad474	No se pudo leer el perfil: 
+f	de2ecd23	Escribir en el BIOS:\n\n
+f	5eb2bd92	Valores más ajustados o más altos que ahora: 
+f	dd822ac6	. Si el portátil no arranca con ellos, hay que restablecer el BIOS a mano (abrirlo).\n\n
+f	fe7c3dd2	Midiendo a 
+f	aa145133	Restaurando el desplazamiento: 
+f	689179ae	Midiendo: 
+f	d00c7ae5	 ns
+f	0ba72aa4	 (era 
+f	78f54694	. Si el PC no arranca con ellos, hay que restablecer la CMOS (el botón o puente Clear CMOS de la placa).\n\n
+f	a469ec0d	Auto se fija mediante un restablecimiento de todos los ajustes de memoria; todo lo que se mantuvo manual se vuelve a escribir.\n\n
+f	bfab9893	Tras la escritura, el equipo se reinicia en 15 segundos.
+f	ce597e29	Los valores surten efecto tras el próximo reinicio.
+f	be11dff5	byte 0x{0:X}: era {1:X2}, ahora {2:X2}
+f	ceca344a	Autoajuste terminado: preajuste «
+f	3f0fc2d0	» guardado en la pestaña «Curva»
+f	a15b025a	Autoajuste 
+f	c2dbf5a7	» no se aplicó: 
+f	66b84c19	la CPU devolvió 
+f	9e7c01a8	el firmware devolvió 
+f	fb216380	 W en lugar de 
+f	5e53d119	Lectura de la curva, núcleo 
+f	3be750d8	Lectura de la curva: 
+f	666e7310	Escritura de la curva, núcleo 
+f	c1315107	Escritura de la curva: 
+f	f2d3c55c	Lectura de la curva: núcleos que respondieron: 
+f	f4f92c12	, el procesador tiene 
+f	7b890a9a	 (¿algunos núcleos desactivados en el BIOS?)
+f	3bece7fb	Escritura de la curva: núcleos 
+f	036dabfb	, valores 
+f	ee73761b	el procesador está ocupado con otro comando
+f	ef1b9080	el procesador no respondió al comando
+f	2167aa22	PawnIO no dio acceso al procesador
+f	79db6553	otro programa retiene el bus del procesador
+f	f2cdd096	el procesador rechazó el comando
+f	39ffb75d	el procesador no conoce este comando
+f	5856eec1	el procesador no acepta el comando ahora
+f	daf938a1	el procesador respondió con el código 
+f	25de93fc	Los valores deben ir de 
+f	45518c8e	El controlador de Lenovo se negó (
+f	6bd586f1	Teclas Fn no disponibles (
+f	0a3ad026	Corrige primero las condiciones: 
+f	b81d52ff	¿Probar el preajuste activo «
+f	0ad25ed7	»? Alrededor de 1,5 horas; puede haber reinicios. No uses el portátil mientras tanto.
+f	1aa99bc4	No se pudo activar el inicio automático: 
+f	79a41feb	Aplicado y convertido en el preajuste activo «
+f	8bde0533	No aplicado: 
+f	fc8fa804	Detenido: 
+f	6f9da719	 · ~
+f	7512d05d	 · quedan 
+f	94c906aa	Fase 
+f	845b0103	 de 3
+f	f08e24c8	 · rondas 
+f	b3066733	 · reinicios 
+f	d13ab1f3	Transcurrido 
+f	72ed9798	 h 
+f	cca3f92a	 min
+f	3b4804f2	Conjunto: CCD1 
+f	d1e060e0	 · guardado como preajuste «
+f	782aef55	Modo «
+f	7db23897	» · plan «
+f	e398ad89	Comprobando la curva actual: 
+f	9e809afd	Ajuste completo iniciado. Orden de los núcleos: 
+f	c054bbd0	Reinicio durante una ronda: 
+f	21a68aa1	Ronda: 
+f	2f48b8e1	Falló: 
+f	c71b2eac	Listo. Resultado: CCD1 
+f	b554d024	fase 1 · 
+f	223bb87f	comprobación 
+f	fa3dc2f8	 de 4: 
+f	1a2bb58a	fase 
+f	fcf5295a	 · etapa 
+f	61080f86	 · búsqueda: 
+f	36ae404d	Etapa 
+f	c2998a21	 superada
+f	bda84eed	etapa 
+f	e726e38d	 falla incluso a cero: no es la curva
+f	2ff60b08	Error en el propio núcleo: 
+f	6333f9b6	Fases 2–3 otra vez a partir del conjunto tras la fase 1: 
+f	3ef6b788	A partir del conjunto tras la fase 1: 
+f	04ba07bf	¿Ejecutar de nuevo las fases 2 y 3 a partir del conjunto que dejó la fase 1? 
+f	6699d402	, puede haber reinicios. No uses el portátil mientras tanto. El progreso actual del ajuste se sustituirá; los preajustes de curva guardados se conservan.
+f	e163adb6	Ajuste rápido iniciado. Orden de los núcleos: 
+f	50f20c96	Esperando 45 s tras iniciar sesión
+f	b402ed96	 de 6: 
+f	835aff70	 de 2
+f	9633fa25	todos los núcleos, 8 min
+f	d5e380f4	ráfagas en todos los núcleos, 5 min
+f	214acce2	carga ligera como un vídeo en el navegador en CCD2, 5 min
+f	cd10f5a1	carga ligera como un vídeo en el navegador en CCD1, 5 min
+f	d311c58d	Fase 2: todos los núcleos juntos. Conjunto tras la fase 1: 
+f	0037159c	Escalones de frecuencia en 
+f	dc60e999	Bisección desde −25 con pasos de 13, 6, 3, 2, 1 · prueba de 1,5 min: Prime95 y escalones de frecuencia · margen +8
+f	9f6cbda1	2. Todos los núcleos juntos
+f	4526e7f6	Prime95 en todos los núcleos, una tormenta y un fondo parecido a un vídeo; un núcleo que falla recibe +3
+f	2fb5b412	3. Comprobación completa: cuando la quieras
+f	05fcac03	El botón «Probar la curva actual»: rondas largas, una tormenta, fondo y escalones de frecuencia con el preajuste activo
+f	16e6a2f8	«Probar» es la comprobación completa del preajuste activo; no ajusta nada
+f	824c806b	¿Iniciar el ajuste de la curva? 
+f	f52d645f	Qué es. Una curva que superó todas las pruebas aún puede estar un paso más profunda de lo que algún núcleo aguanta en el uso normal. Al principio ese núcleo falla en silencio: el procesador corrige el error por sí mismo y lo anota en el registro de Windows (WHEA). Nada se cae, no se nota, y los fallos reales están a pocos pasos. El vigilante lee esos registros y dice qué núcleo falló.\n\nQué hace. Una vez por minuto mira el registro de Windows; tras un reinicio sin apagado toma de la caja negra los núcleos que trabajaban en el último momento. Cada uno de esos núcleos recibe un consejo de subir su valor 3 pasos (unos 15 mV). El vigilante no escribe nada en el procesador por sí mismo: el valor cambia cuando pulsas «Subir 3»; el preajuste de curva se guarda y se aplica de inmediato. «Dejarlo» retira el consejo.\n\nQué no hace. No carga el procesador ni prueba nada. No cuenta errores durante un autoajuste o una medición de la curva de un núcleo: allí forman parte de la prueba. No promete que no habrá fallos: un fallo repentino puede llegar sin errores de aviso.\n\nProfundización gradual (opcional). Cuando pasa el número de días elegido sin errores, el vigilante propone bajar todos los núcleos 1 paso. Un núcleo que falle después recibe el consejo «subir 3» y ya no se profundiza más. En un par de semanas cada núcleo llega a su propio límite, demostrado por tu trabajo habitual y no por una prueba sintética. El paso hacia abajo también se hace solo con tu botón. Los errores corregidos suelen llegar antes que los fallos, pero no siempre: en este camino es posible un reinicio.\n\n«Olvidar los errores» permite volver a profundizar los núcleos que fallaron: por ejemplo, tras una actualización del BIOS o un cambio de pasta térmica.
+f	ad4da1a5	Vigilante de la curva
+f	d440b02d	Vigila los errores del procesador en el uso normal y dice qué núcleo subir
+f	432823ef	Vigilancia
+f	528508d6	Estado
+f	07a40c30	Consejo
+f	add784bc	Diario
+f	dc892cb6	Subir 3
+f	dfbb738e	Dejarlo
+f	9a397d80	Bajar 1
+f	cb90fb88	Ahora no
+f	2543764b	Olvidar los errores
+f	908217fe	Se puede probar un paso más profundo
+f	cbeef03e	Profundización gradual
+f	db1071bf	Proponer un paso más profundo
+f	6e34ca3e	Tras unos días sin errores, un consejo de bajar todos los núcleos 1 paso
+f	adbcf0fc	Cuántos días sin errores
+f	05be4f21	Cuanto más largo el plazo, más seguro cada paso
+f	e8b764fa	3 días
+f	2faf0fe1	5 días
+f	f260f2c3	7 días
+f	241c5aab	Núcleos que fallaron
+f	02296acc	Ninguno
+f	b5c5eacb	 : ya no se profundizan
+f	8d0570fa	¿Bajar 1 paso todos los núcleos que aún no han fallado? El preajuste «
+f	0550abcd	» se cambiará y se aplicará.
+f	63567f6c	¿Olvidar qué núcleos fallaron? Se podrán profundizar de nuevo.
+f	10e736cf	Desactivado: nadie lee el registro de errores
+f	39ada1a8	Activado · una comprobación por minuto
+f	fb5d2827	 · la última 
+f	ae1896b3	ahora mismo
+f	f3da1548	 min atrás
+f	4ed454fa	 h atrás
+f	99ceba35	Activa la vigilancia para que el vigilante empiece a contar
+f	8724f213	Sin errores desde hace: 
+f	4fa0edab	 · en total: errores WHEA 
+f	b5755d44	, reinicios 
+f	0caf39f3	 · preajuste «
+f	b8e6cfda	 d 
+f	b1d48614	desactivado
+f	57099ba5	consejo
+f	455e50fb	tranquilo
+f	f4c42fa8	trabajaba antes del reinicio
+f	887a7112	errores corregidos 
+f	cfd2a8f7	 · ahora 
+f	64e2f1d6	 → será 
+f	aa11286d	 sin errores. Todos los núcleos que aún no han fallado bajan 1 paso
+f	319c290d	Solo funciona con la vigilancia activada
+f	24432625	El próximo consejo en 
+f	7f9bc46e	, si no hay errores
+f	c1aa7097	Aún no hay nada
+f	916421fd	 con el valor 
+f	08387752	: subido 
+f	3e6fcc55	un reinicio sin apagado; trabajaban: 
+f	aeaf2d57	desconocido
+f	b42c6956	todos los núcleos salvo los que fallaron, 
+f	b82f5ec0	 más profundo
+f	4b86bdc6	Vigilante: errores en 
+f	0e8ed0e3	. El consejo está en «Curva» → «Vigilante»
+f	29cd9b98	 días sin errores. Se puede probar un paso más profundo: «Curva» → «Vigilante»
+f	43c052d2	Vigilante: 
+f	efc01a98	Vigilante
+f	05b5fa7d	Zona
+f	f2ef49ac	Suavizar
+f	612a51a4	Enderezar
+f	eca2bcfa	Borrar
+f	fa873190	Arrastra con Ctrl o con el botón derecho del ratón
+f	a9bf1e2c	Historial de ediciones
+f	51193970	Paso atrás
+f	32ec8889	Paso adelante
+f	25976950	un paso atrás
+f	37fe8969	un paso adelante
+f	7d052af2	pasos
+f	fcf1b5c1	Deshacer todo
+f	89a6f586	Monitor
+f	f5c90bec	En qué pantalla aparecen las notificaciones
+f	0e8f9d36	Monitor principal
+f	2e9ccd9e	Donde está la ventana activa
+f	f1885493	Todos los monitores
+f	a3804d6d	Ahora / el límite que el procesador puede mantener de forma prolongada · solo informativo
+f	7a9ccb90	Ahora / el límite para picos cortos · solo informativo
+f	38108763	Dispositivo no verificado: los comandos vienen de su BIOS; una escritura se compara con lo almacenado
+f	0551a874	Dispositivo no verificado: los comandos vienen de su BIOS; el resultado solo se ve tras un reinicio
+f	60a7e9db	La escritura de los ajustes de memoria no se ha verificado en este dispositivo.
+f	c6e69358	• Los números de comando y los valores permitidos vienen del BIOS de este dispositivo.
+f	4ac1de23	• El formato de los ajustes del BIOS coincide con el verificado: los valores se comparan tras una escritura.
+f	82ee5fad	• El formato de los ajustes del BIOS es desconocido: antes de un reinicio no hay forma de comprobar lo escrito ni de ver lo almacenado.
+f	4a48a9d5	• Un valor incorrecto puede impedir que el equipo arranque. Entonces solo ayuda restablecer los ajustes del BIOS (CMOS).
+f	3775f2f4	¿Permitir la escritura en este dispositivo?
+f	0a12ec1c	Permitir la escritura
+f	59e6be02	La escritura en modo experimental está permitida
+f	4aa67c65	La escritura en modo experimental está desactivada
+f	122fc88b	el dispositivo no está verificado: la escritura se activa abajo, en la fila «Escritura experimental»
+f	d03f604b	   (se escribe con cada cambio: en este dispositivo no se puede ver lo que contiene el BIOS)
+f	fea4f3cb	Escritura experimental
+f	fa8dee3c	Informe completo a un archivo
+f	faa9b147	Recopilando el informe completo: solo lectura, alrededor de medio minuto…
+f	511a4dc5	El informe no se guardó: 
+f	b68a2542	El informe está en el escritorio: 
+f	847fe80d	: se puede enviar
+f	53b52a6a	Núcleo débil: 
+f	4891c2ae	: resultado 0
+f	4fff176a	: resultado 
+f	91f9e58c	Fase 2: chiplets por turno. Conjunto tras la fase 1: 
+f	40ca50ab	estado mínimo del procesador, %
+f	bee2ddc7	estado máximo del procesador, %
+f	aa4e66ca	tope de frecuencia, MHz (0: ninguno)
+f	12797968	boost (2: agresivo)
+f	06390633	preferencia de energía, % (como en Equilibrado)
+f	5fbdea91	  (no se escribió)
+f	183820ef	no se puede leer
+f	0bd7e9ab	El plan no se creó: 
+f	799b7cd5	Windows no permitió copiar el plan (código 
+f	3b6dff04	Error de la prueba propia en 
+f	e56f2bfb	: ambos hilos, prueba propia
+f	a24e6e6b	Prueba propia
+f	2d5c5b73	128 bits
+f	5fb7975c	Error de Prime95 en 
+f	2817f0b4	Prime95 AVX2 en 
+f	b314b6e2	Ráfagas tras el reposo en 
+f	d79fb677	Sacudidas en 
+f	14aaf06f	: 20 s de carga, 10 s de reposo
+f	4319bd66	 en 
+f	a0c14915	Distribución: se inicia directamente en 
+f	04dad0d7	Registro, todos los usuarios (32 bits)
+f	2c02d035	Registro, todos los usuarios
+f	5052d538	Registro, este usuario
+f	06040545	Carpeta de inicio de todos los usuarios
+f	adc87a23	Carpeta de inicio
+f	021aef63	Aplicación empaquetada (MSIX)
+f	795499d4	Programador de tareas
+f	4156a300	GDM activado
+f	0098bb47	GDM desactivado
+f	039594a1	Encontrado 
+f	7385db3c	 · seleccionado 
+f	deb1b4b9	Eliminar 
+f	7141a109	Liberado 
+f	7d7ae3a5	 por programas
+f	03057700	\n\nLos archivos en uso por programas se omiten. La Papelera de reciclaje no se puede recuperar.
+f	284f5b0f	archivos en uso
+f	8ad691c1	archivos en uso
+f	9f025bea	archivo en uso
+f	c98b7e0d	archivos
+f	87dcabe3	archivos
+f	9d985a41	archivo
+f	4c73677a	\n\nEl trabajo sin guardar en ellos puede perderse: a los programas con ventanas primero se les pide que se cierren solos.
+f	f4c4382e	Estos programas no se cerraron; quizá esperan a que se guarde algo:\n\n
+f	dbdebca4	\n\n¿Forzar su cierre? El trabajo sin guardar en ellos se perderá.
+f	7c0ff6b7	Cerrados 
+f	97b0bef4	 · liberado 
+f	f698c8bd	 GB de memoria
+f	b57968df	 · siguen abiertos: 
+f	8ef573f5	Cerrar 
+f	6d0ea5e2	programa
+f	578da204	Modos de energía, límites, ventiladores, batería, teclas Fn
+f	dbc49c7e	Curva (preajuste al iniciar, con el cargador y tras la suspensión)
+f	9a484d21	Servicio de teclas Fn de Lenovo: le quita las teclas a la aplicación
+f	3df6ae5e	Servicios de Lenovo; cambian los modos y la batería
+f	b88183bb	La aplicación de Lenovo para portátiles de juego
+f	56ab75cd	Fase 1: cada núcleo por separado, los demás a 0. El valor se busca por bisección desde −25: pasos de ±12, ±6, ±3, de 4 minutos cada uno 
+f	0087c0e3	(2 minutos de Prime95 AVX2 en los dos hilos del núcleo y 2 minutos de ráfagas cortas tras el reposo). El valor hallado se comprueba durante 10 minutos; +3 si hay un error.\n\n
+f	db82be12	Fase 2: los chiplets por turno: uno a plena carga mientras el otro reposa y al revés, luego cada uno bajo carga (etapas A–D). 
+f	9d9cd0ae	Una ronda dura 12 minutos: 6 minutos de AVX2, 4 minutos de SSE, 2 minutos de sacudidas. Ante un error, el núcleo débil se busca dividiendo los núcleos por la mitad y recibe +3; los demás se quedan.\n\n
+f	c9dddde5	Fase 3: comprobación final del conjunto terminado: etapas A, B y E de 25 minutos cada una y una tormenta de 20 minutos (ráfagas en todos los núcleos a la vez, como un montón de pestañas del navegador).\n\n
+f	f25d9f6c	Una ronda falla por un error WHEA, un error de Prime95 o un reinicio. Tras un reinicio, el ajuste continúa solo 90 segundos después de iniciar sesión, 
+f	a38506b2	así que la aplicación activa su inicio automático. Entre rondas todos los núcleos están a 0. El resultado se guarda como un nuevo preajuste de curva; lo aplicas tú.
+f	0df53de9	 · eliminado junto con los restos
+f	c31fda81	»?\n\nPrimero se abre su propio desinstalador: síguelo como de costumbre. 
+f	ceca3280	Después Red Tune busca lo que queda (carpetas, entradas del registro, accesos directos, inicio automático) y muestra una lista: solo se eliminan los elementos seleccionados.
+f	214d39c0	No se pudo iniciar el desinstalador: 
+f	b0311c03	» sigue en la lista de instalados. ¿La desinstalación se completó y dejó la entrada, o se canceló?
+f	8132d7a1	Restos de «
+f	07fe1d04	Lo que queda tras la desinstalación. Los archivos y carpetas van a la Papelera de reciclaje; las entradas del registro se guardan en un archivo .reg antes de eliminarse 
+f	4f8a97a7	(carpeta de Red Tune → removed-registry). Desmarca lo que quieras conservar.
+f	739e13d8	Carpetas de AppData y ProgramData que no corresponden a ningún programa instalado y no han cambiado en 2 meses. 
+f	f1e73533	Es una pista, no una respuesta segura: no hay nada marcado; marca lo que reconozcas. Se elimina a la Papelera de reciclaje.
+f	23592d94	 · no se eliminó nada
+f	25994b9f	Carpeta del menú Inicio  
+f	7502b1a5	Carpeta  
+f	6097bc12	Registro  
+f	c4513a26	Acceso directo  
+f	961afb78	 · sin cambios desde 
+f	a38bb58a	Eliminado 
+f	734aae31	 · en la Papelera de reciclaje 
+f	22355604	 · falló: 
+f	19db9354	Detener hasta el reinicio 
+f	9bc7329c	servicio
+f	a3c73f34	servicios
+f	5e1d1037	servicios
+f	f85df9aa	servicios detenidos 
+f	9adc4a8a	Servicios detenidos 
+f	7ad2a6f7	no se detuvo: 
+f	6900e4a9	liberado 
+f	c5b2ed66	siguen abiertos: 
+f	13ff9dd5	 · carpeta entera, con servicios
+f	0e714640	 · carpeta entera
+f	d9b0d858	 · cualquier versión
+f	6c419933	No se pudo encontrar dónde está «
+f	76bc6168	 : inicia el programa y su ubicación quedará registrada.
+f	45918cea	la página está hecha para 16 núcleos; este procesador tiene 
+f	0ff266f3	 núcleos / 
+f	28de246d	 núcleo / 
+f	20d6fcff	 hilos · 
+f	b683d147	 hilos · 
+f	6a985ca7	 hilo · 
+f	7ed3c9c9	 chiplets
+f	99508b0f	 chiplets
+f	10d82a25	 chiplet
+f	9685518a	No se pudo contactar con el procesador: 
+f	2617f474	 · ahora: STAPM 
+f	9a25ad83	 W, rápido 
+f	26fc4fb9	 W, lento 
+f	fcaa658f	Conjunto: 
+f	e2c10fed	Listo. Resultado: 
+f	752f7878	AMD Ryzen (simulado, 
+f	77cff896	 · mediante PawnIO
+f	610e7d5d	Curva, límites y overclocking no aplicados: 
+f	59e02e96	Inicio seguro: curva y límites no aplicados (
+f	ac811831	iniciado con --safe
+f	be4bd3bf	se mantuvo Mayús al iniciar
+f	f550035b	el último inicio se interrumpió en los primeros 
+f	4510ff12	 minutos tras aplicar
+f	78cd758c	Curva y límites no aplicados: 
+f	fbcd34ba	el último inicio se interrumpió justo después de aplicarlos
+f	54167900	 dB
+f	f40ef228	 ms
+f	57ec9e86	 kHz
+f	897554e6	 Hz
+f	4cf6c595	Conectado, desactivado: el sonido pasa sin cambios
+f	aadff4ad	canales: 
+f	ea94d7f5	 · fallos: 
+f	f9442619	anchura Q 
+f	2e321269	Umbral: 
+f	641d9a2f	Techo: 
+f	9a5b726c	codo: 
+f	649ef25d	la rueda cambia el codo
+f	ac33136a	Relación: 
+f	2674fd83	Ganancia de compensación: 
+f	f6fe7fc5	Ataque: 
+f	e85ba742	Recuperación: 
+f	0818c20c	Codo: 
+f	c11fefbb	Límite de graves: 
+f	4838e8a9	Límite de agudos: 
+f	b19cb5e0	arrástralo a izquierda y derecha
+f	91d123d1	arrástralo arriba y abajo
+f	5243b3ad	arrastra arriba y abajo o gira la rueda
+f	dda84af3	la rueda cambia la anchura, el clic derecho elige el tipo de filtro
+f	43d5c6ee	Red Tune añadirá su efecto de sonido a la cadena de efectos de Windows del dispositivo «
+f	c781714f	» y reiniciará el servicio de sonido de Windows.\n\n
+f	7cb39aeb	El sonido se cortará un par de segundos; un programa que esté sonando ahora puede necesitar pausa y reproducir de nuevo.\n\n
+f	3256eb3f	Los demás efectos (
+f	6ee77511	el controlador) se quedan en su sitio. El efecto se puede quitar aquí mismo, al final de la página.
+f	e1aa0388	Red Tune sacará su efecto de la cadena de efectos del dispositivo «
+f	60969dc9	» y reiniciará el servicio de sonido de Windows. El sonido se cortará un par de segundos.
+f	6e94c261	no hay archivo 
+f	127e2749	regsvr32: código 
+f	d85fdc01	el efecto no está registrado: 
+f	d62cae0b	el efecto final del dispositivo lo ocupa otro (
+f	206adc50	Red Tune devolverá los efectos de Nahimic a la cadena del dispositivo «
+f	f5fa4c6b	Red Tune sacará los efectos de Nahimic de la cadena del dispositivo «
+f	8c7b9989	» y reiniciará el servicio de sonido de Windows. El sonido se cortará un par de segundos.\n\n
+f	dcc7d8c7	El sonido cambiará y lo más probable es que suene bastante más fuerte: Nahimic baja el nivel y hace parte del ajuste de los altavoces. Baja antes el volumen. Las listas de efectos se conservan como estaban; el interruptor las devuelve.

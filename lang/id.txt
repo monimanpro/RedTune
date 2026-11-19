@@ -1,0 +1,1880 @@
+# Red Tune: Bahasa Indonesia. Made by tools\lang\build.js; w = a whole string, f = a fragment of a composed one
+@laptop	laptop	PC
+w	a2aa4921	Beranda
+w	0959af38	Daya
+w	352e72e8	Kurva
+w	ef92545e	Tala otomatis
+w	15d0d65d	Perangkat
+w	00a6501c	Komponen
+w	06fc79ae	Pengaturan
+w	d4365936	Tentang
+w	3bf90cf9	Mode daya
+w	2a7dffb1	Fn+Q berganti mode secara bergilir
+w	e28d5e85	Mode kustom: pilih preset di kanan · Fn+Q berganti mode secara bergilir
+w	d8d0b2d9	Senyap
+w	31fe851d	Seimbang
+w	8bd85d30	Performa
+w	94bbc86f	Kustom
+w	a6022cf0	Ekstrem
+w	92d46e95	Prosesor
+w	8e43a0ae	Grafis
+w	69031429	Memori
+w	36c1d729	beban
+w	8ec1f7c9	Beban
+w	bcc6ab26	terpakai
+w	5b7c7dd7	Frekuensi
+w	a84ca073	Suhu
+w	db519266	Daya
+w	e1d3c891	Kipas
+w	0589926e	Frekuensi inti
+w	04856dfe	VRAM
+w	ee7476d5	Frekuensi memori
+w	5b538146	Terpakai
+w	cb768d51	Baca
+w	4933d628	Tulis
+w	5c19d52d	Mode tidak dapat dibaca
+w	a3fb2c9c	GPU sedang tidur
+w	eafd9526	tidak ada data NVIDIA
+w	24e2175c	Driver NVIDIA tidak ditemukan
+w	8c002867	driver NVIDIA lama
+w	d4eda662	UXTU juga mengatur kurva
+w	d634deed	UXTU menerapkan presetnya saat mulai, saat pengisi daya terpasang, dan setelah tidur, lalu menimpa nilai-nilai ini
+w	ca20fe31	Nonaktifkan UXTU
+w	f73f7bbc	Preset kurva
+w	10c5c91a	Simpan
+w	82172d23	Batalkan perubahan
+w	242643f3	Seperti di mode Senyap
+w	eb9b8e75	Seperti di mode Seimbang
+w	f13b041e	Seperti di mode Performa
+w	a22d9c56	Atur ulang
+w	ab02a46a	Terapkan
+w	46b7a3ba	Di CPU sekarang
+w	85e6d09f	Baca
+w	920ce132	Terapkan otomatis
+w	7c5e5d92	Saat Windows mulai
+w	5ca4e27f	Aplikasi harus mulai bersama Windows (Pengaturan)
+w	62c03ec3	Saat pengisi daya dipasang
+w	12ebec1c	Saat memakai baterai
+w	6ef48fc4	Setelah tidur
+w	ef39dd83	Riwayat perubahan
+w	9425155c	Setiap penerapan dicatat, kumpulan nilai lama apa pun dapat dipulihkan
+w	2f1ff3ae	Buka
+w	70c0f38c	cocok
+w	63ec7e9e	berbeda
+w	d8623692	galat
+w	e9b70efc	membaca…
+w	bc1a72f1	menerapkan…
+w	e14e7f73	CPU berjalan dengan nilai-nilai ini
+w	832a150e	Aktif: diterapkan otomatis
+w	aa8e426b	Dipilih tetapi belum aktif: Terapkan untuk mengaktifkannya
+w	f0f1252e	Sel biru telah diubah
+w	8007c957	Seret penggeser atau ketik angka. Setelah diklik, roda mouse mengubahnya per 1
+w	7aad830e	Penggeser biru muda telah diubah
+w	1dff9af7	Seret penggeser atau ketik angka
+w	dd8755bf	Klik sebuah sel, lalu roda mouse mengubahnya per 1
+w	2d93184f	Bawaan pabrik (0)
+w	7b8656b9	Harian
+w	0c03b6c7	Preset baru dari nilai ini…
+w	a112f834	Ganti nama…
+w	77559023	Hapus
+w	14b131be	Preset baru
+w	641c3535	Nama
+w	6bbe678c	Preset saya
+w	ba434cd4	Ganti nama preset
+w	e91982fe	Nama itu sudah dipakai
+w	b4420304	Selesai
+w	b0a26fcb	Batal
+w	b2e9482c	Riwayat perubahan kurva
+w	c1aa7097	Belum ada
+w	7eddd6fa	Setiap penerapan kurva muncul di sini
+w	efc41ede	Ke editor
+w	cc1ff13b	Lenovo Legion Toolkit juga mengatur daya
+w	c5479131	LLT menerapkan presetnya saat mode berganti dan akan menimpa pengaturan ini
+w	c4d89145	Nonaktifkan LLT
+w	481c06f3	Preset mode kustom
+w	43768da5	Perubahan
+w	5d53ed1c	Tersimpan
+w	673911cb	Perubahan belum disimpan
+w	0113f951	Menerapkan…
+w	19d21c69	Aktif: dipakai di mode Kustom (Fn+Q atau Beranda)
+w	86ea9074	Batas daya jangka panjang
+w	72073369	Daya CPU berkelanjutan
+w	1a25f7dc	Batas daya jangka pendek
+w	6c7975cc	Daya puncak untuk waktu singkat
+w	cf5f8d36	Batas daya puncak
+w	ebb9a9f4	Maksimum pada beban sesaat
+w	4cd50c47	Batas jangka panjang pada beban CPU+GPU
+w	5173f350	Daya CPU saat GPU juga bekerja
+w	65143d73	Batas suhu CPU
+w	419a29d3	Di atasnya, CPU menurunkan frekuensi
+w	2f397926	Daya GPU tambahan menurut beban CPU
+w	c33b334d	TGP yang dapat diatur
+w	926cef2e	Daya GPU di atas dasar
+w	65a462b6	Batas suhu GPU
+w	aecc699a	Di atasnya, GPU menurunkan frekuensi
+w	aed63ba5	Target daya CPU total saat memakai listrik
+w	5964e6ab	Ambang saat daya berpindah ke GPU
+w	fb4718bd	Dynamic Boost GPU ke CPU
+w	1e51e386	Seberapa banyak GPU boleh mengambil dari CPU
+w	5a6b7b2e	Kipas
+w	bc186f34	Bawaan
+w	6e6f8a07	Mengikuti yang lebih panas antara CPU dan GPU
+w	00acbcf7	Kecepatan penuh
+w	f0773c31	Semua kipas berkecepatan penuh, dinyalakan dengan Terapkan di atas. Kipas cepat aus jika dibiarkan menyala
+w	3b219822	Semua kipas berkecepatan penuh. Kipas cepat aus jika dibiarkan menyala
+w	440ccc96	Kecepatan mengikuti yang lebih panas antara CPU dan GPU. Arahkan kursor ke titik untuk melihat ambangnya
+w	466960c3	Seret titik-titik ke atas dan bawah
+w	49976ea7	Seret titik-titik ke atas dan bawah, arahkan kursor ke satu titik untuk melihat ambangnya
+w	2142831a	Paket daya Windows
+w	647b8408	Paket untuk preset ini
+w	bffba646	Dinyalakan bersama preset
+w	f8571b36	Paket Windows
+w	b27f1d07	Buat atau ubah paket di Panel Kontrol Windows
+w	ecd09041	Buat paket
+w	ff735680	Buka Opsi Daya
+w	d5c0d83e	Salin paket seimbang atau buka Panel Kontrol
+w	afc64e8d	Paket untuk mode lainnya
+w	50aa62f8	Jangan ubah
+w	181faada	Preset baru dari pengaturan ini…
+w	35b936c1	Paket daya baru
+w	f3e6c4be	Baterai
+w	4cbf9840	Mode pengisian
+w	590a3da3	Konservasi
+w	a5908bc1	Normal
+w	624b3832	Cepat
+w	b0b7093e	Konservasi menjaga daya di sekitar 80 % agar baterai awet
+w	df2f4bff	Pengisian malam
+w	04446b1b	80 % sepanjang malam, 100 % menjelang pagi
+w	4b738f43	Nyalakan saat tutup dibuka
+w	c4c41a34	Nyalakan saat pengisi daya dipasang
+w	a7b803cc	Nyalakan saat mengisi lewat USB-C
+w	692aa47a	Daya USB
+w	f483edc1	Mati
+w	93c0c1fc	Saat tidur
+w	6b0d1aec	Selalu
+w	6035a231	Isi daya perangkat USB saat laptop tidur atau mati
+w	a36282e1	Layar
+w	3b9cb762	Resolusi
+w	0a6d0dcf	Laju penyegaran
+w	1a2dade1	Skala
+w	d826138b	Layar bawaan
+w	30425470	Respons panel lebih cepat
+w	a79d4040	Matikan layar
+w	ac621e04	Matikan
+w	ada29767	Layar padam, laptop tetap berjalan. Mouse atau sebuah tombol menyalakannya lagi
+w	2e3d168b	Keyboard dan masukan
+w	fe5e4931	Lampu latar keyboard
+w	0d9aa9f4	Fn+Spasi
+w	23b392eb	Kunci touchpad
+w	5acc5956	Matikan touchpad
+w	e5741f0d	Kunci Fn
+w	14c51fb8	F1–F12 berfungsi tanpa Fn
+w	f05624a9	Kunci tombol Windows
+w	44174f85	Hanya keyboard bawaan
+w	1d39ced0	Mikrofon
+w	fb931b67	Semua mikrofon nyala atau mati
+w	0237c487	ditemukan
+w	fbb62987	tidak ditemukan
+w	3d8f3436	Pilih folder
+w	cb0a9084	Halaman CoreCycler
+w	0b714fe6	Segera hadir
+w	a776dd81	Prime95, .NET 8, dan pemeriksaan untuk tala otomatis
+w	8d4f7e7b	Tahap 4
+w	0c2f82a6	Mulai bersama Windows, di baki
+w	edef32fa	Lewat Penjadwal Tugas, tanpa permintaan UAC saat masuk
+w	7fa39e24	Menutup jendela menyembunyikannya ke baki
+w	ce91dc4b	Jika tidak, tombol tutup akan keluar dari program dan kurva otomatis berhenti
+w	18a014bb	Folder pengaturan
+w	8dc7408c	Pemrakarsa
+w	4f5a185f	Pelaksana
+w	0240eda2	Manusia — ide, pengujian, mulai ulang, dan kesabaran
+w	a86c7417	Claude — kode, kurva, dan 40+ putaran Prime95
+w	dfc4f89b	Tidak ada inti yang terluka. Yah, hampir.
+w	aa134bc7	Keluar
+w	bc6797f7	Terapkan kurva
+w	a0ec1d4e	Bahasa
+w	3fa0607e	Skala antarmuka
+w	b789c9d6	Aplikasi akan dimulai ulang
+w	d0ace077	Notifikasi
+w	c6ffd760	Tampilkan notifikasi
+w	aacaf8d9	Mode daya, tombol Fn, Caps Lock, dan lainnya — tampil sejenak di layar
+w	0b656db5	Di atas aplikasi layar penuh
+w	4949ae9c	Jika tidak, tidak ada yang tampil selama game atau video layar penuh
+w	5861186f	1 dtk
+w	9315f8aa	2 dtk
+w	d62e7f05	3 dtk
+w	5cc64b43	5 dtk
+w	d36fc955	Di semua monitor
+w	b7dc4397	Posisi dan durasi
+w	f3bc62a3	Pratinjau
+w	0d06aafe	Tengah bawah
+w	1ecf1794	Tengah atas
+w	89d76dab	Tengah
+w	ea8a5b17	Kiri bawah
+w	3bf323cc	Kanan bawah
+w	1b310dc9	Kiri atas
+w	7564bd1a	Kanan atas
+w	b56930dd	Beginilah tampilan notifikasi
+w	2cd25ecc	Kamera
+w	f40d907b	Mode pesawat
+w	aede812c	Adaptor daya
+w	2ad6632a	Kurva diterapkan
+w	072bc287	Caps Lock nyala
+w	fb9141ec	Caps Lock mati
+w	4892949e	Num Lock nyala
+w	c95554e7	Num Lock mati
+w	38927f44	Kamera nyala
+w	1552bbfb	Kamera mati
+w	0dd90ef7	Kunci Fn nyala
+w	fdd93ada	Kunci Fn mati
+w	4e7a62ca	Touchpad mati
+w	4821ea6d	Touchpad nyala
+w	a0787d6d	Lampu latar mati
+w	d2c5cdf5	Mikrofon mati
+w	6b09e614	Mikrofon nyala
+w	b7a2d722	Pengisi daya terhubung
+w	3491a145	Pengisi daya dilepas
+w	827c6fd9	Program lain
+w	374f570a	Program yang mengubah pengaturan yang sama
+w	7c61e8b8	Jika mulai bersama Windows, program itu berebut dengan Red Tune
+w	6e90df37	Nonaktifkan mulai otomatis
+w	f8c9fa3b	tidak ditemukan
+w	a44932e2	berjalan, mulai bersama Windows
+w	d554820c	mulai bersama Windows
+w	8521f5c0	berjalan, mulai otomatis mati
+w	6f2e5dfe	mulai otomatis mati
+w	578da204	Mode daya, batas, kipas, baterai, tombol Fn
+w	dbc49c7e	Kurva (preset saat mulai, saat pengisi daya terpasang, dan setelah tidur)
+w	9a484d21	Layanan tombol Fn Lenovo: mengambil tombol dari aplikasi
+w	3df6ae5e	Layanan Lenovo, mengubah mode dan baterai
+w	b88183bb	Aplikasi milik Lenovo untuk laptop gaming
+w	fcae2749	Tutup Lenovo Legion Toolkit dan nonaktifkan mulai otomatisnya?\n\nRed Tune mengambil alih daya, kipas, dan baterai. LLT dapat dijalankan lagi secara manual.
+w	c4942ec6	Tutup UXTU dan nonaktifkan mulai otomatisnya?\n\nMulai sekarang Red Tune yang menerapkan kurva. UXTU bisa dikembalikan: tugas "UXTU" di Penjadwal Tugas.
+f	1c6362be	Kustom: preset «
+f	0abcf695	» · Fn+Q berganti mode secara bergilir
+f	e49d5a11	Sekarang: Ekstrem
+f	2a7dffb1	Fn+Q berganti mode secara bergilir
+f	e28d5e85	Mode kustom: pilih preset di kanan · Fn+Q berganti mode secara bergilir
+f	760c7bc0	Diterapkan: mode Kustom, preset «
+f	2788627a	Terapkan kurva «
+f	234fc509	Kurva «
+f	9fce8f0b	» diterapkan
+f	52e25ab1	   · aktif
+f	fab9c39c	Gagal: 
+f	6529ee54	Menerapkan «
+f	a9e46ea5	Tidak tersedia: 
+f	0728abe8	Galat: 
+f	96cb0090	Tidak diterapkan: 
+f	8162e9d2	 · perubahan belum disimpan
+f	d0cce6af	Nilai dari 
+f	39d4c1e7	 hingga 
+f	8013e8c4	 dan 
+f	c258081c	 inti / 
+f	cb7d9488	 thread
+f	5c750e0f	 GB
+f	c2474dfa	keausan 
+f	025a42fc	 MB/s
+f	51f75bf3	 GB/s
+f	204fdec2	 TB
+f	0ff48a0a	Drive 
+f	2550c409	 GHz
+f	4aff84a8	 MHz
+f	bae41d9e	 rpm
+f	0c3c06ab	Slot 
+f	145f8e49	kanal 
+f	2b48d688	Titik 
+f	0dd2ee13	 · CPU dari 
+f	3a5e2fc2	 · GPU dari 
+f	e62b984e	Versi 
+f	91b7f507	 (diubah)
+f	b09490f5	Kurva tidak diterapkan saat mulai: 
+f	1200bedf	Kurva tidak diterapkan (
+f	1e834579	Simpan perubahan ke preset «
+f	43631f70	» sebelum menerapkan?
+f	68374c92	Hapus preset «
+f	e882f28d	»? Nilainya tetap ada di riwayat perubahan.
+f	8674c7c9	: Kustom
+f	46158cb3	: Senyap
+f	e2aa3afb	: Seimbang
+f	0dd12afe	: Performa
+f	136195be	: Ekstrem
+f	34c0f79b	Mode daya: 
+f	994b491d	Laju penyegaran: 
+f	aa8ac194	Lampu latar: 
+f	1ac39559	Nonaktifkan mulai otomatis «
+f	b9fc3e77	» dan tutup programnya?\n\nBisa dikembalikan: jalankan secara manual lalu aktifkan mulai otomatisnya.
+f	95b26c02	 · tidak ditemukan
+f	4f403dbb	 · berjalan, mulai bersama Windows
+f	ce36e0c1	 · mulai bersama Windows
+f	3b68f56f	 · berjalan, mulai otomatis mati
+f	0664e9a9	 · mulai otomatis mati
+f	25168e49	manual
+f	8a824827	saat mulai
+f	64b0614f	pengisi daya
+f	d7b8a9de	baterai
+f	c81460e9	setelah tidur
+w	80b22750	Mode daya Windows
+w	454ec6c8	Jenis paket
+w	adcdd377	Seimbang
+w	7e870c3c	Mode daya Windows hanya berlaku pada paket jenis seimbang
+w	74aa3222	Berlaku untuk semua paket jenis seimbang; satu untuk listrik dan satu untuk baterai
+w	3aba38ff	Efisiensi
+w	22c9b14a	Seimbang
+w	dcc65183	Satu kecerahan untuk semua paket daya
+w	dfffd4fe	Kecerahan layar ditulis ke semua paket Windows setiap kali berubah: saat paket diganti, kecerahan layar tetap
+w	c03824f2	Penulisan ke paket
+w	f05f99ac	Tulis ke paket
+w	0e74dd22	Perubahan di atas masuk ke paket Windows lewat tombol ini atau lewat “Simpan” di bawah
+w	e8f18646	Belum ditulis: setelah ditulis, Windows tidak akan memarkir inti
+w	0122ae47	Belum ditulis: setelah ditulis, Windows boleh memarkir inti
+w	8e9bf262	Paket untuk tala otomatis: nilainya diatur Red Tune
+w	29535322	Nilainya berbeda dari yang ditetapkan untuk tala otomatis: baris paket tala otomatis di bawah menulisnya ulang
+w	267ab900	Nilai paket penalaan diubah di luar Red Tune: tombol ini menulis nilai yang ditetapkan untuk tala otomatis
+w	d0ea5698	Pulihkan nilai
+w	2af309bf	Nilai paket penalaan sudah ditulis ulang.
+w	31ae3b4c	Isi untuk tala otomatis
+w	c2cfc8c8	Pengaturan prosesor dalam paket
+w	bd6be146	Paket
+w	f88abf8f	Ditulis lewat tombol di bawah
+w	a9f71427	Paket ini tidak punya pengaturan itu
+w	835b2393	Listrik
+w	7f1cb42d	Baterai
+w	b1b2083c	Batas atas frekuensi
+w	1627a837	Prosesor tidak naik melebihinya. Paling kanan berarti tanpa batas
+w	5dadc93f	tidak ada
+w	6fdaad72	Boost
+w	266aca68	Cara prosesor menaikkan frekuensi di atas frekuensi dasar
+w	540dca6b	Nonaktif
+w	cd7a218f	Aktif
+w	f360b712	Agresif
+w	f22b30c8	Efisien
+w	64c93ee5	Efisien agresif
+w	f99d8678	Agresif, frekuensi terjamin
+w	46f5cac7	Efisien agresif, frekuensi terjamin
+w	1d85fa92	Preferensi energi
+w	008c5979	Performa
+w	07a98700	Hemat
+w	69c06de0	Status minimum prosesor
+w	f4e038d8	Prosesor tidak turun di bawah bagian frekuensinya ini
+w	5d832db0	Larang parkir inti
+w	18043896	Semua inti selalu bekerja: Windows tidak memarkirnya
+w	d2a18414	Mode daya Windows ditumpangkan di atas paket aktif: bisa membawa nilai sendiri
+w	5fde6f32	Paket daya
+w	bf01f895	Kurva
+w	9223ae12	Red Tune Test sudah ada di dalam aplikasi: perhitungan yang memeriksa dirinya sendiri, galat menunjukkan intinya
+w	5b4014e8	Mode penalaan
+w	68629577	Harian
+w	35213b8e	Ketat
+w	5395098e	Kurva yang dalam, tersendiri untuk tiap inti. Mengandaikan beban berat memakai semua inti sekaligus
+w	8ce6a831	Tahan dengan kumpulan inti sibuk mana pun, tetapi lebih dangkal: satu tingkat bersama, inti lemah tersendiri
+w	355233cf	1. Tepi tiap inti
+w	94e0a1f1	Tiap inti sendiri, yang lain di 0: bagi dua dari −24 dengan langkah 12, 6, 3. Tepi-tepi itu memberi bentuk kurva
+w	5a1815d1	2. Seluruh set turun
+w	2adbb2ad	Dari “tepi +22” (tidak lebih dalam dari −12) lebih dalam 3 tiap kali di bawah beban semua inti; inti yang galat mundur dan tetap dalam beban; pemeriksaan akhir dan cadangan +3
+w	83fbec09	Tepi yang sudah ditemukan
+w	4af207b1	Dari tepi-tepi ini
+w	eb479818	1. Turun dengan tiap langkah diperiksa
+w	e15314ab	Semua inti dari −6, lebih dalam 3 tiap kali. Tiap langkah diperiksa di bawah beban semua inti dan tanpa inti yang sudah berhenti; inti yang galat mundur satu langkah dan tidak turun lagi
+w	e1c35a47	Seluruh set: diam, badai, latar, beban semua inti dan tanpa inti terdangkal, tiap inti tersendiri; cadangan +3
+w	2459ecbc	1. Tangga batas
+w	b759e0ae	Semua inti yang dibebani pada satu nilai, dari −6, lebih dalam 3 tiap kali; inti yang galat mendapat batasnya dan keluar dari beban, yang lain turun terus, sampai inti terakhir
+w	61a9a549	2. Pemeriksaan akhir
+w	b6febd7e	Seluruh set: diam, badai, latar, beban semua inti dan pada tiap anak tangga, tiap inti tersendiri; cadangan +3
+w	3756ed1b	Mencari batas
+w	6d4a65a7	Pemeriksaan akhir
+w	5d9a0d84	Batas tiap inti sendiri di bawah beban: semua inti yang dibebani pada satu nilai, dari −6, lebih dalam 3 tiap kali; inti yang galat mendapat batasnya dan keluar dari beban; pemeriksaan akhir dan cadangan +3
+w	7ffd5ac6	Dari set dangkal “tepi +22”, lebih dalam 3 tiap kali selama masih tahan: semua inti; setelah kegagalan yang tidak menunjuk inti mana pun, per chiplet, lalu inti satu per satu; pemeriksaan akhir dan cadangan +3
+w	90d71403	Mulai ulang di antara dua bagian pemeriksaan set
+w	68d60662	Fase 2 lagi
+w	f51830d3	Fase 2 lagi
+w	b8a66c9c	Apa ini. Mencari nilai Curve Optimizer tiap inti: seberapa jauh tegangannya bisa diturunkan sementara inti tetap stabil. Makin negatif nilainya, makin rendah tegangan dan panas serta makin tinggi frekuensi dalam batas yang sama, tetapi nilai yang terlalu negatif menjatuhkan sistem.\n\nDua mode. Harian: kurva yang dalam, tersendiri untuk tiap inti. Mula-mula tepi tiap inti dicari, satu inti tiap kali: nilai yang bila dilewati inti itu menyerah saat bekerja sendirian, dengan bagi dua dari −24 dalam langkah 12, 6, 3, inti lain di 0. Lalu seluruh set mulai di “tepi +22”, tetapi tidak lebih dalam dari −12, dan turun 3 tiap kali di bawah beban semua inti, tiap inti sampai batasnya sendiri. Inti yang galat mundur dan tetap dalam beban; setelah galat kedua ia tidak turun lagi. Jika kegagalan tidak menunjuk siapa pun, set mundur dan chiplet berlanjut terpisah, lalu inti satu per satu. Tidak ada inti yang mendekati tepinya kurang dari 6 langkah. Kurva seperti ini mengandaikan beban berat memakai semua inti sekaligus: inti yang dalam tahan selagi inti yang lebih dangkal bekerja di sampingnya. Jika hampir semua inti sibuk dan kebetulan yang dangkal sedang diam, galat mungkin terjadi; dengan sendirinya itu jarang, tetapi mengikat program ke sebagian inti bisa memicunya. Ketat: tahan dengan kumpulan inti sibuk mana pun, tetapi jelas lebih dangkal; cara kerjanya dijelaskan di bawah.\n\nMode ketat. Inti-inti sebuah prosesor berbagi satu tegangan dan di bawah beban saling memengaruhi: inti dangkal yang dibebani menaikkan tegangan untuk yang lain, inti dalam menumpang padanya, tetapi tidak gratis. Karena itu tiap langkah diperiksa dengan serangkaian beban. Semua inti mulai di −6 dan turun bersama, 3 tiap kali. Di tiap langkah semua inti dibebani dulu: diam, beban mulai berupa lonjakan, 40 detik beban terus-menerus. Inti yang bebannya atau WHEA-nya menunjukkan galat kembali ke nilai terakhir yang lolos dan tidak turun lagi, tetapi tetap ikut dalam beban semua inti. Lalu nilai yang sama diperiksa tanpa inti yang sudah berhenti: tanpa yang terdangkal, tanpa dua, tanpa empat, dan akhirnya hanya pada yang masih turun. Itu menunjukkan apakah inti yang dalam tahan sendiri, tanpa penopang. Satu langkah baru dihitung bila seluruh rangkaian lolos. Jika kegagalan tidak menunjuk siapa pun (mulai ulang), semua inti yang masih turun memakai nilai terakhir yang lolos, dan penurunan selesai. Penalaan tidak turun lebih dalam dari −45.\n\nPemeriksaan akhir. Seluruh set: diam, beban mulai, badai lonjakan, latar ringan seperti video peramban pada tiap chiplet, beban semua inti, dalam mode ketat juga beban tanpa inti terdangkal (tanpa 1, 2, 4, 8, dan 12 dari 16) dan tiap inti bergiliran (beban, tangga frekuensi, bangun). Inti yang ditunjuk mendapat +3. Setelah kegagalan di bawah beban yang tidak menunjuk siapa pun, +3 diberikan kepada inti di tingkat terdalam. Bagian itu diulang. Cadangan +3 ditambahkan pada set yang lolos.\n\nPemeriksaan penuh bersifat opsional, lewat tombol “Periksa kurva saat ini”: putaran panjang pada preset aktif (satu chiplet diam, yang lain dibebani, masing-masing 25 menit; semua inti 25 menit; badai 20 menit; latar masing-masing 12 menit; tangga frekuensi di semua inti 10 menit). Ia tidak menala apa pun, dan bila menemukan inti lemah ia menaikkannya +3. Bisa dijalankan kapan saja, misalnya semalaman.\n\nBeban berat adalah Prime95 atau Red Tune Test, dipilih di halaman Komponen. Red Tune Test sudah ada di dalam program: tiap inti menjalankan perhitungan yang memeriksa dirinya sendiri: pengkuadratan bilangan besar lewat transformasi Fourier di batas ketelitian, penjumlahan lewat unit FMA, lintasan melalui cache inti, dan perubahan mendadak dari kerja ringan ke berat. Setiap hasil yang salah adalah galat inti, dan terlihat inti yang mana.\n\nKegagalan adalah galat WHEA (galat perangkat keras prosesor di log Windows), galat beban, atau mulai ulang. Galat WHEA 47 dari blok milik inti sendiri juga dihitung, meski Windows melabelinya “memori”. Setelah mulai ulang, penalaan berlanjut sendiri 45 detik setelah masuk, karena itulah program menyalakan mulai otomatisnya; jendelanya lalu terbuka langsung di tab ini.\n\nJika laptop macet. Sesekali nilai yang terlalu dalam tidak memulai ulang laptop tetapi membuatnya berhenti total: layar membeku dan tidak terjadi apa-apa lebih dari beberapa menit. Ia tidak akan keluar sendiri dari keadaan itu: matikan dengan menahan tombol daya lalu nyalakan lagi, penalaan akan berlanjut.\n\nBatas atas frekuensi. Selama penalaan, program mengangkat batas atas frekuensi Windows (“Frekuensi prosesor maksimum” pada skema daya yang berlaku), agar inti diperiksa sampai boost penuh; pada tangga frekuensi dan di bawah beban latar ia sendiri yang menggeser batas itu. Nilai sebelumnya ditulis ke disk dan dikembalikan saat penalaan dihentikan, dan setelah mulai ulang, pada saat program dijalankan berikutnya.\n\nKotak hitam. Tiap 2 detik program menulis ke disk seberapa sibuk tiap inti, frekuensinya, dan tegangannya. Setelah mulai ulang tanpa pemadaman, ia menunjukkan inti mana yang bekerja pada saat terakhir, dan tala otomatis mencatatnya di log.\n\nKondisi. Lakukan penalaan dalam kondisi terluas tempat laptop bekerja: preset daya “00 Penyetelan” disediakan untuk itu (batas preset terkuat Anda, paket Windows yang membolehkan inti tidur). Nyalakan mode Kustom dengan preset ini sebelum mulai.\n\nHasilnya disimpan sebagai preset kurva baru; menerapkannya terserah Anda.
+w	f4566ff6	Tepi tiap inti: bagi dua dari −24 dengan 12, 6, 3 · satu uji sekitar semenit: beban berat dan tangga frekuensi
+w	d6e17985	2. Seluruh set
+w	aed7fc8a	Dari “tepi +13”: inti yang ditunjuk mendapat +3; kegagalan yang tidak menunjuk inti mana pun menaikkan seluruh set +3; lalu chiplet dan inti tunggal turun selama masih tahan; pemeriksaan akhir dan cadangan +3
+w	3a2bc52d	Diam dengan set sudah ditulis
+w	5efcd30a	Beban mulai di semua inti: 6 dtk kerja, 4 dtk diam
+w	601320c8	Badai lonjakan di semua inti
+w	ebf35365	Periksa
+w	2328b163	Pemeriksaan memori
+w	a45c93cb	Mulai
+w	5d93b875	20 menit
+w	881bba4e	1 jam
+w	9e0e9f28	3 jam
+w	9939e41c	Sampai dihentikan
+w	79a5e26a	Tetap jalankan
+w	d247dc83	Kurva saat ini tidak di nol. Galat dalam pemeriksaan bisa saja berasal dari prosesor, bukan dari memori.\n\nUntuk hasil yang bersih, terapkan dulu kurva «Bawaan pabrik (0)».
+w	c25760eb	Tala otomatis sedang berjalan: mulai pemeriksaan memori setelahnya
+w	2b3fa1c4	Semua thread, seluruh memori bebas · atur kurva ke 0
+w	839c3a34	Belum dijalankan
+w	28e721bf	Hasil pemeriksaan
+w	bf751615	Mengambil memori…
+w	465407a0	Pemeriksaan sudah berjalan
+w	3824c927	Memori bebas terlalu sedikit: tutup program yang berat
+w	afabb5fa	Pembagian dua dari −25, lalu konfirmasi 32 menit dan margin +5
+w	b1644281	Prosesor ini memiliki 8 inti atau kurang, jadi langkah pencarian lebih lama: 6 menit, bukan 4.
+w	aa16f621	Prosesor ini memiliki 9–12 inti, jadi langkah pencarian lebih lama: 5 menit, bukan 4.
+w	6eadd7ae	Apa ini. Satu nilai Curve Optimizer untuk tiap inti: seberapa jauh tegangan bisa turun dengan inti tetap stabil. Makin negatif nilainya, makin rendah tegangan dan panas serta makin tinggi frekuensi pada batas yang sama, tetapi nilai yang terlalu negatif menjatuhkan sistem. Penalaan mencari tepi tiap inti dan menyisakan margin.\n\nFase 1 — tiap inti sendiri, yang lain di 0. Nilai dicari dengan pembagian dua dari −25: langkah ±13, ±6, ±3, ±2, ±1, enam uji seluruhnya, tepi dengan ketelitian satu langkah. Satu uji memakan sekitar satu setengah menit: 25 detik Prime95 AVX2 di kedua thread inti (nilai yang terlalu dalam langsung galat di sini dalam hitungan detik, tanpa mulai ulang), lalu 60 detik tangga frekuensi — inti dibebani penuh sementara batas frekuensi turun per 200 MHz dari 5,4 ke 1,6 GHz. Tangga inilah yang menemukan hampir semua nilai lemah. Tepi diberi margin +8 (sekitar 40 mV): uji singkat melihat tepi di titik sistem jatuh, sedangkan galat yang jarang muncul beberapa langkah sebelumnya.\n\nFase 2 — semua inti bersama pada kumpulan nilai yang ditemukan: 8 menit Prime95 di semua inti (AVX2, SSE, dan sentakan «beban — diam»), badai 5 menit berupa lonjakan acak, dan 5 menit di tiap chiplet berupa beban latar ringan yang berperilaku seperti video di browser. Jika Prime95 atau galat WHEA menunjuk sebuah inti, inti itu mendapat +3 dan tahap dimulai lagi. Jika tidak ada yang ditunjuk (mulai ulang), inti lemah dicari dengan membagi dua inti dan mendapat +3.\n\nPemeriksaan penuh — kapan pun Anda mau, lewat «Uji kurva saat ini»: putaran panjang pada preset aktif (satu chiplet diam sementara yang lain dibebani, masing-masing 25 menit; semua inti 25 menit; badai 20 menit; beban latar masing-masing 12 menit; tangga frekuensi di semua inti 10 menit). Pemeriksaan ini tidak menala apa pun, dan inti lemah yang ditemukan mendapat +3. Jalankan kapan saja, misalnya semalaman.\n\nSebuah putaran gagal karena galat WHEA (galat perangkat keras prosesor di log Windows), galat Prime95, atau mulai ulang. Galat WHEA 47 dari unit milik inti itu sendiri juga dihitung, meskipun Windows melabelinya «memori». Setelah mulai ulang, penalaan berlanjut sendiri 45 detik setelah masuk, jadi aplikasi mengaktifkan mulai otomatisnya. Di antara putaran semua inti berada di 0.\n\nBatas frekuensi. Selama penalaan, aplikasi mencabut batas frekuensi Windows («Frekuensi prosesor maksimum» pada paket daya yang dipakai), agar inti diuji sampai boost penuh; pada tangga frekuensi dan tahap «Latar» aplikasi sendiri yang menggeser batas itu. Nilai sebelumnya ditulis ke disk dan dikembalikan saat penalaan berhenti, dan setelah mulai ulang, pada saat aplikasi dibuka berikutnya.\n\nKotak hitam. Setiap 2 detik aplikasi menulis beban, frekuensi, dan tegangan tiap inti ke disk. Setelah mulai ulang tanpa dimatikan dengan benar, aplikasi menunjukkan inti mana yang sedang bekerja pada saat terakhir, dan tala otomatis mencatatnya di kemajuan penalaan.\n\nSyarat. Lakukan penalaan dalam kondisi terluas tempat laptop bekerja: preset daya «00 Penyetelan» disediakan untuk itu (batas dari preset Anda yang paling bertenaga, paket Windows yang membolehkan inti tidur). Aktifkan mode «Kustom» dengan preset ini sebelum mulai.\n\nHasilnya disimpan sebagai preset kurva baru; Anda yang menerapkannya.
+w	b2a699ef	Putaran panjang, badai, beban latar mirip video di browser, dan tangga frekuensi pada kumpulan nilai akhir
+w	a8203eeb	di antara pengukuran
+w	b28ddffe	mengukur
+w	d8a62faf	offset
+w	b4b614cd	Ukur semua
+w	ac71c0ee	Kurva semua inti
+w	b758a0f1	Kurva inti
+w	dae7a4fb	Tegangan pada berbagai frekuensi: satu inti lewat nomor di atas penggesernya, semuanya di sini
+w	3ac2626d	Belum ada inti yang diukur. Ukur semua mengambil kurva tiap inti secara bergiliran
+w	dbd39cde	Selesai: semua inti sudah diukur
+w	98e1c0db	Kurva inti
+w	ec2537dd	Ukur
+w	17062d75	V
+w	e34a6e3f	GHz
+w	1c93e64d	Seret penggeser atau ketik angka. Nomor inti membuka kurvanya
+w	8d6f9432	Hanya prosesor AMD Ryzen
+w	844d9a8e	PawnIO diperlukan (tab Komponen)
+w	5a438359	Tabel telemetri prosesor tidak dapat dibaca
+w	f4f7958f	Kurva inti ini belum diukur. Ukur membebani inti sekitar satu menit dan membaca tegangannya pada berbagai frekuensi
+w	da528020	Selama pengukuran, frekuensi prosesor dibatasi selangkah demi selangkah, lalu semuanya dikembalikan
+w	b59a1620	Tiap nilai offset menyimpan pengukurannya sendiri: ukur di 0 dan di nilai Anda untuk membandingkan
+w	e7c8f987	Mengukur: inti dibebani, frekuensi turun bertahap…
+w	31cd66c4	Pengukuran dihentikan
+w	3ed40ca2	Pengukuran sudah berjalan
+w	46d8a5e9	Titik terlalu sedikit: inti tidak dapat dibuat tetap sibuk (tutup program yang berat lalu coba lagi)
+w	788b76cb	Semua
+w	d6be170f	Offset
+w	8595368d	Per inti
+w	e4e1466c	Per chip
+w	8f4f2a4d	Semua inti
+w	247e56dc	Chip
+w	1800ca6a	Semua inti
+w	393e72fa	Tiap inti punya nilainya sendiri
+w	85ce78f5	Satu nilai per chip: penggeser di kiri, penggeser per inti dimatikan
+w	40c32a1e	Satu nilai untuk semua inti: penggeser di kiri, penggeser per inti dimatikan
+w	143d160e	Seret penggeser di kiri atau ketik angka
+w	9a40ba7b	Ciutkan menu
+w	d1b2f605	Bentangkan menu
+w	5449f665	Preset grafis untuk preset ini
+w	73620917	Kurva dan frekuensi memori dari «Grafis», diterapkan bersama preset
+w	a4e6e26e	Preset grafis untuk mode lainnya
+w	c8ffcea9	Diterapkan saat beralih ke mode ini (Fn+Q, Beranda)
+w	4987b8b3	Daftar putih
+w	e62b8b95	Daftar hitam
+w	3053aa39	Daftar putih: tidak pernah ditutup
+w	d563c053	Daftar hitam: selalu ditutup, bahkan jika mulai sendiri saat boot
+w	3596be5f	Memilih preset langsung menerapkannya ke kartu
+w	4c81a219	Hanya membuka · Terapkan yang menulisnya
+w	2b07f8ec	Diterapkan
+w	5528d81d	Editor berisi kurva pabrik tanpa offset. Simpan sebagai preset?
+w	89b612dc	Atur ulang kartu grafis
+w	87e8634c	Kembali ke kurva dan frekuensi memori pabrik? Offset langsung dilepas dari kartu; preset tersimpan tetap ada.
+w	09968b83	Kurva dan frekuensi memori pabrik
+w	a26101fa	Kurva dan frekuensi memori kartu grafis (menerapkan profilnya sendiri saat mulai)
+w	e4d95dde	Ratakan di atasnya
+w	fff46bb4	Simpan sebagai…
+w	1bfabcd4	Pabrik
+w	ce2ceeb5	Kurva V/F kartu grafis
+w	e9b8479c	Membaca…
+w	f1a6b59e	MSI Afterburner sedang berjalan
+w	13c2f9ee	Ia juga menerapkan kurvanya sendiri: keduanya akan saling menimpa. Tutup atau hapus dari daftar mulai otomatis
+w	70f60478	Titik
+w	c63f793d	Klik sebuah titik di grafik. Seret untuk memindahkan satu titik, dengan Shift seluruh kurva
+w	c47e1e7f	Geser seluruh kurva
+w	ef8ca404	Memindahkan semua titik bersama, bentuknya tetap
+w	4a5a0a93	Offset frekuensi memori video
+w	37dd6848	Preset
+w	16a147d3	Preset
+w	9c740c77	Terapkan saat mulai
+w	0783105d	Driver melupakan kurva saat mulai ulang: Red Tune mengembalikan preset yang dipilih
+w	32f31247	Seperti di kartu sekarang
+w	a55cf35e	Hanya lihat: menulis adalah fitur ahli
+w	de83dc47	Diubah, belum diterapkan
+w	a7818ef0	Overclock kartu grafis
+w	25edba3d	Kurva dan frekuensi memori ditulis ke driver grafis, seperti di MSI Afterburner. Frekuensi yang terlalu tinggi menimbulkan artefak, game macet, dan driver diatur ulang (layar berkedip).\n\nSetelah mulai ulang, driver kembali ke kurva pabrik.
+w	0c5bcfe8	Memulihkan kurva pabrik…
+w	eb3e9745	Belum ada preset: atur kurva lalu simpan
+w	e58c93f1	Preset yang dipilih dimuat ke editor; «Terapkan» menulisnya ke kartu
+w	71b4464e	Preset ini berasal dari kurva lain (kartu atau driver lain)
+w	ffae3daf	Preset grafis
+w	c12fb3f1	Undervolt saya
+w	89ed75ca	Kurva grafis diverifikasi pada RTX 5070 Laptop (driver 621), belum pada kartu ini
+w	a423b64d	tidak ada kartu grafis NVIDIA (kurva grafis untuk saat ini hanya NVIDIA)
+w	1ea7dd7e	Lainnya
+w	f03308d9	Sembunyikan
+w	6ae63bd9	Model ini belum pernah dicoba
+w	a062b60d	Apa yang berfungsi di sini dan apa yang belum diverifikasi — di «Komponen»
+w	cbf715ff	Suhu (ACPI)
+w	08b57885	Pembacaan Radeon belum didukung
+w	8fdec35f	Kurva hanya diverifikasi pada Ryzen Dragon Range (7x45HX / 8x45HX). Seharusnya berfungsi pada prosesor ini tetapi belum dicoba
+w	84eed97e	Mode dan batas Lenovo hanya diverifikasi pada Legion R7000P; kumpulan dan rentang model ini bisa berbeda
+w	72d2e750	Penulisan batas hanya diverifikasi pada Dragon Range, belum pada keluarga ini
+w	9184776e	Menampilkan timing berfungsi di mana saja; penulisan hanya diverifikasi pada Legion R7000P dan diblokir pada model lain
+w	76ac1be8	Fitur Lenovo hanya diverifikasi pada Legion R7000P; sebagian mungkin tidak ada pada model ini
+w	ac7b5af9	Mengumpulkan laporan…
+w	643c6ede	Laporan tidak dapat disalin
+w	1c5ee670	Model ini sudah diverifikasi
+w	68dd16fd	Semua yang ada di aplikasi telah dicoba pada laptop ini
+w	a4fe0512	Red Tune dicoba pada Legion R7000P. Di sini ia bekerja dengan aturan yang sama, tetapi bagian bertanda «belum diverifikasi» belum pernah terlihat berfungsi pada model ini. Laporan di atas membantu menambahkannya
+w	aff6cfad	belum diverifikasi
+w	960c62bd	Daya, kurva, dan pengaturan untuk laptop AMD Ryzen
+w	efb90e1e	Preset baru dari pengaturan ini...
+w	c8e2b0c8	Ganti nama...
+w	a5eec23b	Prosesor ini memiliki 8 inti atau kurang, jadi langkahnya lebih lama: 6 menit, bukan 4, pemeriksaan 15 menit, bukan 10. Penalaan tetap muat dalam satu malam dan menguji kurva lebih keras.
+w	f091cb39	Prosesor ini memiliki 9–12 inti, jadi langkahnya lebih lama: 5 menit, bukan 4, pemeriksaan 12 menit, bukan 10.
+w	34c5275d	2. Chiplet di bawah beban
+w	027699ee	Semua inti chiplet bersama, inti lemah mendapat +3
+w	bd951612	STAPM — daya rata-rata
+w	352c87d5	Batas cepat (fast PPT)
+w	9edf9bde	Batas lambat (slow PPT)
+w	cd2e379c	Daya rata-rata pada beban panjang
+w	90eabb44	Detik-detik pertama beban
+w	e5370077	Menit-menit berikutnya dari beban, sampai STAPM mengambil alih
+w	4d3f088d	Kelas Ryzen AI Max (45–120 W)
+w	1743ab83	Kelas HX — gaming (55 W ke atas)
+w	9ac83d7b	Kelas H/HS — performa (35–54 W)
+w	31f90f92	Kelas U — tipis dan ringan (15–28 W)
+w	8fa49196	Kelas Ryzen AI (15–54 W)
+w	46b3fec8	kelas tidak dikenali
+w	545d061c	Paket aktif
+w	770595df	Seimbang, hemat daya, performa tinggi, atau paket milik pembuat laptop
+w	31a83cfa	Prosesor tidak dapat dihubungi: ditampilkan, tidak ditulis
+w	b20d50c3	Hanya lihat. Menulis ke prosesor adalah fitur ahli: aktifkan «Fitur ahli» di «Pengaturan»
+w	e1caf459	Batas daya (pada Dragon Range — yang cepat)
+w	ba3b73b6	Tidak ada yang diterapkan: tidak ada batas yang digeser
+w	dd9e76ce	Batas tersimpan dihapus. Nilai pabrik kembali setelah mulai ulang
+w	f9c44997	Distribusi
+w	7cf230cb	Mulai otomatis
+w	2eaa98f9	Perbaiki
+w	9671aaca	Program lain mengganggu
+w	361e3d05	Mode daya: Kustom
+w	949f766f	Pembersihan
+w	6f4c3e1e	Berkas
+w	2690616f	Berkas tak diperlukan
+w	5d75a799	Pindai
+w	564f8a22	Hapus yang dipilih
+w	695709a0	Berkas sementara, cache, dan laporan yang dibuat ulang oleh Windows dan program. Hanya yang dicentang yang dihapus
+w	7eeedeca	Memindai…
+w	bdb12f8c	Menghapus…
+w	e04696ed	Tidak ada yang dihapus
+w	9c87a69a	kosong
+w	d97c424e	Berkas sementara
+w	a3461ece	Folder Temp Anda: berkas berumur lebih dari sehari
+w	f577a28f	Berkas sementara Windows
+w	30c2776e	C:\\Windows\\Temp: berkas berumur lebih dari sehari
+w	388ac111	Keranjang Sampah
+w	87e5ce85	Semua isi Keranjang Sampah di semua drive
+w	42dc0531	Cache Windows Update
+w	287cae42	Penginstal unduhan dari pembaruan yang sudah terpasang
+w	60cf7eb8	Cache browser
+w	d5db3130	Chrome dan Edge: hanya cache, tanpa kata sandi, cookie, atau riwayat. Tutup browser: jika terbuka, sebagian berkas tertahan
+w	7a318acd	Laporan galat dan log
+w	027395fc	Laporan galat Windows dari program dan log pemasangan lama
+w	3bd0a985	Cache gambar mini
+w	904c49ea	Gambar pratinjau Explorer, dibuat ulang dengan sendirinya
+w	6234f303	Cache shader
+w	ad478e23	NVIDIA, AMD, DirectX. Setelah dihapus, game sedikit tersendat saat pertama dijalankan selagi membuatnya ulang
+w	483a2391	Dump crash
+w	bfab38b9	Minidump dan MEMORY.DMP dipakai untuk menganalisis layar biru. Hapus jika tidak ada yang perlu dianalisis
+w	20d9d7da	Versi Windows sebelumnya
+w	461fe4ce	Folder Windows.old setelah pembaruan besar. Hapus dengan Disk Cleanup Windows
+w	e7430b61	Awal yang bersih
+w	901a431d	Bebaskan memori
+w	52ecee71	Bersihkan
+w	5aeed321	Tutup semua yang dibuka setelah masuk
+w	18df3a2f	Mencari yang berlebih…
+w	e65ea987	Tidak ada yang berlebih: seperti setelah boot
+w	4c695c53	Menutup…
+w	7ece72f7	Tidak tertutup
+w	7ba9c293	Tutup paksa
+w	1d3d4a91	Atur
+w	9b02d65d	Jangan pernah tutup
+w	00fac06e	Selalu tutup
+w	608cf486	Tetap ada meski dibuka setelah masuk
+w	acafadc3	Bersama semua yang dijalankannya
+w	a3f0db68	Tutup meski mulai sendiri saat boot
+w	964d6f83	Windows dan Red Tune tidak pernah ditutup
+w	86a5e0cf	Daftar kosong
+w	0940988c	selalu
+w	51514a8a	RedTune.exe · aplikasi ini
+w	4498cb0b	claude.exe · dan semua yang dijalankannya
+w	10ff0d2c	Tambah…
+w	d2f0cc6b	Tambah program
+w	dd6ef4da	Dari yang sedang berjalan atau lewat exe-nya
+w	e4daa91f	Hapus
+w	15593e58	Rendah
+w	97455af0	Tinggi
+w	299392ed	Lampu latar: rendah
+w	57c6215f	Lampu latar: tinggi
+w	61afc5b6	Mode grafis
+w	d959bb19	Hibrida menghemat baterai, diskret menjalankan semuanya di RTX
+w	0b911c29	Hibrida
+w	95a38339	Hibrida, hanya iGPU
+w	8159c3f8	GPU diskret
+w	09770bda	Mode grafis
+w	3da1415c	Ganti
+w	489bacca	Mulai ulang
+w	cf2e79d5	Mode grafis berubah setelah mulai ulang. Mulai ulang sekarang? Simpan berkas yang sedang terbuka.
+w	25537606	Mulai ulang
+w	25a7a334	Nanti
+w	67c98c4a	Peralihan antara hibrida dan diskret baru berlaku setelah mulai ulang.
+w	08338f7b	Mode langsung berganti; jika ada yang belum mengenalinya, mulai ulang akan membantu.
+w	9868ca3b	Layar bawaan tidak ditemukan
+w	c9f841f0	Penskalaan tidak tersedia
+w	c126ae0c	Windows tidak menerima penskalaan itu
+w	6af8a97d	Windows tidak menyalakan HDR
+w	ce2b15c0	Kipas CPU
+w	4ea26c9d	Kipas GPU
+w	6f174cd7	Tambahan
+w	7d922b06	Kurva kipas kustom
+w	f22b39dd	Red Tune mengatur kecepatan kipas dari suhu setiap 0,5 dtk (dalam mode Kustom). Jika mati: tabel firmware
+w	57e61172	Kecepatan penuh sekarang
+w	ed5693d5	Menyala dalam mode Kustom; sekarang firmware yang mengendalikan kipas
+w	4cf8fff3	Untuk semua preset, langsung berlaku
+w	9d6065b4	Hanya bekerja dengan kurva kipas kustom: nyalakan sakelar di atas
+w	7cc23e36	Kurva hanya bekerja dengan kurva kipas kustom: nyalakan sakelar di atas
+w	1b902d0b	Kurva belum berlaku: firmware yang mengendalikan kipas
+w	da91bffc	Kipas CPU mengikuti suhu CPU, kipas GPU mengikuti suhu GPU. Tiap preset punya kurvanya sendiri
+w	08245ac0	Seret titik-titik ke atas dan bawah. Di bawah garis putus-putus, firmware yang mengendalikan kipas
+w	b0e021b0	firmware
+w	9e9a2310	Jaring pengaman panas berlebih
+w	b20ba939	Mulai 75 °C kecepatan tetap di atas minimum yang terus naik, pada 90 °C setidaknya 80 %
+w	bcd42350	Mode darurat
+w	1da09eb3	Mulai 95 °C pada CPU atau GPU, kedua kipas berkecepatan penuh
+w	48a5526b	Histeresis
+w	c44657cf	Kipas yang berputar menahan kecepatannya 3 °C lebih lama, tidak naik-turun
+w	02264cff	Penghalusan suhu
+w	dd573590	Abaikan lonjakan singkat (rata-rata bergerak)
+w	480b9a60	Perlambatan halus
+w	b348591e	Kecepatan turun tidak lebih cepat dari 400 rpm per detik
+w	56e95b1b	Dorongan awal
+w	46152f56	Dorongan singkat 3000 rpm saat kipas mulai dari diam
+w	8088a3e9	Sinkron
+w	d753bc22	Kedua kipas pada kecepatan kipas yang butuh lebih banyak
+w	7058f92f	Antisipasi
+w	a4d96ad9	Suhu naik lebih cepat dari 5 °C/dtk: percepat lebih awal, seperti untuk 2 dtk ke depan
+w	597b01db	Overclock lanjutan
+w	0fb1e43d	Nilai yang salah dapat menyebabkan ketidakstabilan, macet, atau laptop yang tidak mau menyala
+w	b8bb95f5	Skalar Precision Boost Overdrive
+w	5ceacccc	Seberapa jauh PBO boleh melampaui batas pabrik, 1–10
+w	7a992bf1	Frekuensi boost Precision Boost Overdrive
+w	c07781af	Ditambahkan ke frekuensi boost maksimum
+w	17ab15fa	MHz
+w	c718b362	Penyesuaian kurva inti
+w	b01d679a	Satu offset Curve Optimizer untuk semua inti, lewat firmware
+w	98148edd	Curve Optimizer semua inti
+w	adb21a6c	Offset untuk semua inti, 0–20 (seperti di LLT): menurunkan tegangan dan panas, perlu uji stabilitas
+w	dc9637c2	Kurva sudah diatur
+w	ce14d713	Pertahankan kurva saya
+w	fe4a1456	Tetap nyalakan
+w	89b5a24c	Tetap nyalakan?
+w	e0f1e992	Kurva untuk preset ini
+w	db1bf4e3	Diterapkan bersama preset dan menjadi kurva aktif (tab «Kurva»)
+w	ff01a8af	Kurva untuk mode lainnya
+w	4a896b5f	Diterapkan saat beralih ke mode ini (Fn+Q, beranda)
+w	363a4473	Umum
+w	a9129a7d	Tampilan
+w	73ac37d7	Yang ditampilkan
+w	0c79a3bc	Kaca
+w	9fbefc19	Buramkan yang ada di belakang notifikasi
+w	23bf93cf	Kaca langsung
+w	be42fff9	Kaca mengikuti apa yang ada di bawahnya. Kekurangan: notifikasi tidak muncul di tangkapan layar atau rekaman layar
+w	f94ec4ab	Ringan
+w	6e716c86	Sedang
+w	af350933	Kuat
+w	0aefa3c0	Buram
+w	db5f1b82	Seberapa buram kacanya
+w	d768d571	Penggelapan
+w	da8ccd94	0 %: kaca bening, 100 %: latar gelap pekat
+w	02930ee1	Kilau dan tepi
+w	8f4dd487	Tepi terang di atas, seperti kaca
+w	2f0c9ea4	Lihat
+w	10bf7869	Notifikasi tampil di tempat yang diatur pada tab «Umum»
+w	23b64977	Tutup
+w	b1e305c8	Yang dibutuhkan aplikasi
+w	cd657045	Beban untuk tala otomatis. Folder CoreCycler\\test_programs\\p95 atau hasil unduhan bisa dipakai
+w	f55b3bff	Tidak ada prime95.exe di folder ini
+w	5fdf9081	Driver
+w	1ea800d9	Salin
+w	d10f36a7	Unduh
+w	7d1c59b9	Folder berisi
+w	e5130c71	Red Tune menangani kurva sendiri, lewat driver PawnIO. Tala otomatis juga membutuhkan Prime95
+w	b64df491	Red Tune menangani kurva sendiri lewat driver PawnIO. Tala otomatis butuh beban: Red Tune Test bawaan atau Prime95
+w	6a0416b4	Driver yang menjangkau prosesor: kurva, batas AMD, suhu. Dipasang terpisah
+w	40e3947e	Sumber: pembuat namazso, pawnio.eu, driver bertanda tangan dengan penginstalnya sendiri
+w	5cdc6e97	Segarkan
+w	26582bad	Folder Startup
+w	167024ca	Yang mulai bersama Windows
+w	0fc63dc9	Item yang dimatikan tetap ada di daftar dan bisa dinyalakan lagi. Pengelola Tugas → Startup menampilkan hal yang sama
+w	5ff6d3cd	Daftar tidak dapat dibaca
+w	dafca83c	Tidak ada program yang mulai bersama Windows
+w	e4979dda	Program
+w	997be602	Tugas terjadwal
+w	5cf7bf0f	Mulai saat masuk atau saat Windows mulai
+w	2bd8d86d	Tugas Microsoft disembunyikan. Tugas yang dimatikan tetap ada; tugas yang programnya sudah tidak ada bisa dihapus di «…»
+w	2cf8bf9b	Buka folder terdekat
+w	77f77ac8	Buka lokasi berkas
+w	9dd4fe90	Hapus tugas…
+w	c0e0dffc	Hapus dari mulai otomatis…
+w	5052d538	Registri, pengguna ini
+w	2c02d035	Registri, semua pengguna
+w	04dad0d7	Registri, semua pengguna (32-bit)
+w	adc87a23	Folder Startup
+w	06040545	Folder Startup semua pengguna
+w	021aef63	Aplikasi paket (MSIX)
+w	795499d4	Penjadwal Tugas
+w	d742df8d	diatur oleh kebijakan, tidak dapat diubah
+w	fe798772	mulai otomatis aplikasi paket hanya dapat dimatikan
+w	69900ad5	Program tugas ini sudah tidak ada. Tugas dihapus dari penjadwal; salinannya (XML) disimpan di folder Red Tune → deleted-tasks, pulihkan dengan schtasks /Create /XML.
+w	3657139c	Pintasan dipindahkan ke Keranjang Sampah.\nJika hanya tidak ingin ia mulai, mematikannya sudah cukup.
+w	49fddf80	Entri dihapus dari registri; perintahnya tetap ada di log Red Tune.\nJika hanya tidak ingin ia mulai, mematikannya sudah cukup.
+w	e713663c	Cari program
+w	ae42c564	+  Tambah program
+w	f0c3a97d	Batal
+w	2cbc8982	Tambah
+w	f51069e1	Program yang berjalan
+w	9925c654	Pola
+w	9e7c2807	Grup
+w	1814bd03	Pilih exe…
+w	564d2aad	\\Folder\\ atau nama proses
+w	f67ab0b9	\\Folder\\: semua exe di folder itu. Nama tanpa \\: satu proses.
+w	d9466145	Program (*.exe)|*.exe
+w	a09b43b8	Pilih exe program
+w	7f9996fe	Pilih program di daftar atau masukkan pola.
+w	1b88e81e	mati
+w	c7d5fafc	● berjalan · lewat CPU Sets
+w	841ac021	● belum mengizinkan intinya diubah, mencoba lagi
+w	6a142610	● berjalan
+w	2463855b	● foldernya sudah tidak ada
+w	e7b37ad2	Seret program ke sini atau pilih grup di menunya
+w	461f5437	Folder tidak ditemukan
+w	8cb7470a	Hapus dari distribusi
+w	3537bc86	Pertahankan
+w	54d4fdbe	Program pada chip CPU
+w	33ab79c2	Seret baris ke grup lain
+w	3e68c818	Game baru Steam dan Epic → CCD1
+w	0929753d	Game dari folder Steam dan Epic langsung masuk ke CCD1, bahkan tanpa aturan
+w	bccbcce4	Biarkan launcher apa adanya
+w	6bd2d405	Steam, Epic, Battle.net, dan lainnya tetap di semua inti: game mereka mendapat intinya sendiri
+w	c06b4866	Perubahan dibatalkan
+w	cd1754e3	Juga otomatis: launcher Steam, Epic, Battle.net, Riot, EA, Ubisoft, GOG (game mereka mendapat inti dengan sendirinya)
+w	1d1d7180	baru, belum disimpan
+w	1c13a80f	nyala
+w	360dfab9	akan mati
+w	46b370dd	akan tanpa SMT
+w	b4626bac	SMT kembali
+w	15a27acd	Hanya inti, tanpa SMT (satu thread per inti)
+w	9cfd21eb	Pindahkan ke
+w	b76f35e2	Matikan aturan
+w	ecc3075f	Nyalakan aturan
+w	250c4167	Pintasan peluncur di desktop…
+w	bc54e465	Buka folder
+w	cf34a448	Dijeda · Windows memilih inti
+w	8a952c83	biarkan, Windows memilih inti
+w	33fc6456	semua inti (Windows yang memutuskan)
+w	d1699cbd	Game Steam
+w	975c0cc6	Game Epic
+w	d89f2b16	Timing
+w	8e844f48	Sekarang
+w	f385d294	Di BIOS
+w	90346b0d	Baru
+w	e87d4a90	Rentang
+w	81f7c94b	Profil
+w	7e490f23	Terapkan dan mulai ulang
+w	4cbf14e6	Berjalan sekarang
+w	6aea4075	membaca timing…
+w	8313b5c7	Hati-hati
+w	9f81f465	Nilai yang terlalu ketat dapat membuat laptop tidak mau menyala, dan mengatur ulang BIOS di sini berarti membongkarnya
+w	847cbe62	Frekuensi
+w	2d506779	Kecepatan memori
+w	50f0250c	MT/s · Otomatis: BIOS memilih kecepatan
+w	a6faac36	Frekuensi Infinity Fabric, MHz · di atas 2400 laptop kepanasan
+w	94a2dfe3	Frekuensi Infinity Fabric, MHz
+w	24defca4	Nilai yang terlalu ketat dapat membuat PC tidak mau menyala. Lalu CMOS perlu diatur ulang: tombol atau jumper Clear CMOS pada papan induk
+w	2487db18	Ryzen desktop (AM4 / AM5)
+w	4506deb1	Kurva inti ini belum diukur. Ukur membebani inti dan membaca tegangannya pada berbagai frekuensi: pertama pada offsetnya, lalu pada 0
+w	b5da5564	Ukur mengambil dua kurva: pada offset saat ini dan pada 0 (inti diatur ke 0 selama semenit, lalu offsetnya dikembalikan)
+w	4bf0c979	Mengatur inti ke 0 untuk pengukuran…
+w	b001821e	Tala otomatis sedang berjalan: pengukuran pada 0 belum bisa dimulai
+w	42666f5e	Inti tidak dapat diatur ke 0: pengukuran tidak dimulai
+w	4e185fdb	Ukur: pada offset saat ini. Ukur pada 0 mengatur inti ke 0 selama semenit, lalu mengembalikan offsetnya
+w	5854a7b0	Ukur pada 0
+w	6c984cf6	Pada 0
+w	f901d24d	Sebelumnya
+w	18a14c6b	Ukuran
+w	89f1b893	Tengah atas
+w	ac026cff	Sangat besar
+w	8e2bd37f	Raksasa
+w	5ebed300	Kecil
+w	6e4480db	Sedang
+w	ccabc714	Besar
+w	04bc702b	Overlay
+w	0fc1e9c5	Overlay di atas game
+w	3ddfea34	FPS, suhu, dan frekuensi prosesor serta kartu grafis di sudut layar
+w	be2c51fd	Kapan dan di mana ditampilkan
+w	c72f0621	Tidak terlihat dalam layar penuh eksklusif
+w	97b2534c	Di atas program layar penuh
+w	8406f8c4	Kiri atas
+w	ce2eb0bb	Kanan atas
+w	afef0082	Kiri bawah
+w	634dd477	Kanan bawah
+w	009d1ee9	Sakelar cepat
+w	13836235	Panel mini
+w	be20d2fa	Panel terbuka dengan klik pada ikon baki. Blok yang dimatikan tidak ditampilkan di dalamnya; tanpa blok, panel tidak terbuka
+w	2a716941	Mouse/tombol untuk menyalakan
+w	fd805cf7	Tutup yang tidak diperlukan
+w	78b8755a	Preset daya
+w	8b3fd2cd	Beralih ke mode Kustom
+w	fc0d2b58	FPS, suhu, dan frekuensi di atas game
+w	2fb71190	Latensi memori
+w	5b113f8b	ns
+w	c2616f9c	sebelumnya
+w	1646139f	Belum diukur
+w	043c5866	Mengukur…
+w	543d72da	Jeda baca di L1, L2, L3, dan memori itu sendiri · sekitar 15 dtk, sebaiknya komputer tidak dipakai dulu
+w	12e083a1	Pemeriksaan memori sedang berjalan: ukur latensi setelahnya
+w	3690bb26	Tala otomatis sedang berjalan: ukur latensi setelahnya
+w	7dc0e7ab	Kurva sebuah inti sedang diukur: ukur latensi setelahnya
+w	e9d7b233	Memori bebas terlalu sedikit: pengukuran butuh setidaknya 1 GB
+w	cb7daad5	Kurva diterapkan lagi selama pengukuran pada 0: pengukuran itu tidak disimpan
+w	b603d43a	Offset inti tidak kembali: terapkan preset di halaman Kurva
+w	6df773eb	Pengendali memori: 1:1 pada frekuensi memori, 1:2 pada setengahnya
+w	3097456a	Timing
+w	5093838b	Warna di tabel
+w	ffe050f9	kuning: suntingan Anda · biru: menunggu mulai ulang · merah: tidak diizinkan
+w	d0dab655	Membaca timing…
+w	e888fdac	Timing tidak dapat dibaca
+w	c3c5720a	Pemeriksaan setelah mulai ulang: tidak semuanya berlaku
+w	cee2a120	Pemeriksaan setelah mulai ulang
+w	944f9072	nyala
+w	cd40e261	mati
+w	89c9b814	BIOS menyimpan nilai yang sama dengan yang berjalan sekarang
+w	ef478caf	Berlaku setelah mulai ulang
+w	0b20df94	Hanya lihat
+w	a0d3701c	Batalkan suntingan
+w	30ed9ce7	Suntingan dibatalkan
+w	a0fc8acc	Semua ke Auto
+w	24f891f9	Baca ulang dari BIOS
+w	c66d50e8	Baca ulang
+w	9e380690	Simpan profil…
+w	ff602613	Muat profil…
+w	81da2c1d	Buka folder profil
+w	98b0354a	Perbaiki nilainya
+w	a65cedfc	Profil memori (*.json)|*.json
+w	bbaa3970	Tidak ada nilai baru. Mulai ulang komputer saja?
+w	470761cf	Tidak ada yang diubah: semuanya cocok dengan BIOS
+w	b8cfd1ba	Konfirmasi
+w	5ac2c42b	Tulis dan mulai ulang
+w	ba89cd5b	Tulis ke BIOS
+w	8f0b544f	Ditulis dan diverifikasi. Mulai ulang dalam 15 detik (batal: shutdown /a)
+w	98fd0c72	Ditulis ke BIOS dan diverifikasi · berlaku setelah mulai ulang
+w	778a0a4f	Galat penulisan
+w	21fcdde7	CPU bukan AMD
+w	0a3dc30a	BIOS tidak punya antarmuka overclock AMD
+w	bd78e094	antarmuka overclock AMD tidak punya perintah timing
+w	7012e77e	perangkat belum diverifikasi (penulisan hanya diverifikasi pada Legion R7000P 83LT dengan BIOS RLCN31WW)
+w	a72a3f17	format pengaturan BIOS tidak cocok dengan yang diverifikasi
+w	6c481439	pembacaan timing macet
+w	1771db95	BIOS ini tidak punya perintah «Reset Mem Para», Auto tidak dapat diatur
+w	92aad902	BIOS menerima nilai yang berbeda dari yang diminta. Jangan mulai ulang sebelum ini diperbaiki:\n
+w	a67f7ef5	Fase 2–3 lagi
+w	5616379b	Ulangi fase 2–3
+w	89eb9d80	Uji kurva saat ini
+w	fcb65499	Mulai
+w	f01e5afc	Jeda
+w	5a8cb538	Terapkan hasil
+w	ff27e70e	Cara kerjanya
+w	89e2c79c	Penalaan kurva otomatis
+w	aec4003e	Cukup sekali (ulangi setelah BIOS atau driver berubah) · ~9 jam, jangan pakai laptop selama itu
+w	85885587	Syarat
+w	bbad033c	Memeriksa…
+w	c4ba2517	1. Tiap inti sendiri
+w	b582ae8a	Pembagian dua dari −25, lalu pemeriksaan nilai yang ditemukan
+w	76cf2da9	~5 jam
+w	88537606	2. Chiplet bergiliran
+w	19a4346a	Diam dan beban pada tiap chiplet, inti lemah mendapat +3
+w	39f51584	~2 jam
+w	a2ae9ba8	3. Pemeriksaan akhir
+w	bb3092e0	Putaran panjang dan badai pada kumpulan nilai akhir
+w	e5ec4b6a	~1,5 jam
+w	1fce9cc7	Mulai
+w	face63f2	«Uji» hanya menjalankan fase 3 pada preset aktif dan tidak menala apa pun (~1,5 jam)
+w	b49c2721	Kemajuan
+w	cdc085a5	Hasil
+w	7e3dae42	Atur ulang penalaan? Kemajuan dan nilai sementara akan dihapus.
+w	e36cbdb4	pasang pengisi daya
+w	74bab283	tidak ada PawnIO
+w	072af590	kurva prosesor ini tidak dikenal
+w	179150f2	tidak ada Prime95
+w	9f6efafe	tutup UXTU (Pengaturan → Program lain)
+w	8dd428bf	LLT sedang berjalan, sebaiknya dimatikan
+w	7c61003d	sebaiknya tutup program yang berat
+w	1fbabf24	siap
+w	bd7b3012	ada catatan
+w	6a45b5a3	Mulai penalaan kurva penuh? Sekitar 9 jam dengan beberapa kali mulai ulang. Jangan pakai laptop selama itu.\n\nAplikasi mengaktifkan mulai otomatisnya agar dapat melanjutkan setelah mulai ulang.
+w	4a3a407e	tala otomatis
+w	4eba2614	Dijeda
+w	8b8965bf	Menunggu untuk melanjutkan
+w	b94fbde6	Pemeriksaan kurva
+w	cc64ef63	Lanjutkan
+w	1965f2bb	CCD2 diam, CCD1 dibebani
+w	ab4db09b	CCD1 diam, CCD2 dibebani
+w	9e52e99c	CCD1 dibebani
+w	fb80a371	CCD2 dibebani
+w	696f1838	CCD2 diam, 25 mnt
+w	8be178f9	CCD1 diam, 25 mnt
+w	e346c2aa	semua 16 inti, 25 mnt
+w	258ae93f	Badai
+w	3fd658ad	lonjakan di semua inti, 20 mnt
+w	bc23a7d0	Menunggu 90 dtk setelah masuk
+w	e373976a	mulai ulang
+w	4f469448	simulasi
+w	7f2234e3	Lulus
+w	f92fac3e	Dihentikan
+w	187c0903	Fase 3: pemeriksaan akhir
+w	dd711929	Badai di semua inti
+w	ce4bac18	semua inti
+w	edcf1561	fase 1
+w	4f8e70c5	pemeriksaan
+w	eacf10a8	fase 2
+w	ca9ed393	pencarian
+w	ebcf123b	fase 3
+w	819c4ffe	berjalan
+w	42843e9c	dijeda
+w	3a918591	tidur
+w	ccc58ded	keluar dari Windows
+w	ab1ec3bf	darurat
+w	9a7da7e7	kurva mati
+w	1da43841	kecepatan penuh
+w	af4ddda6	bukan mode Kustom
+w	07be4d27	keluar
+w	5c7ef559	mode daya
+w	1980a208	Driver Lenovo Energy tidak ditemukan (
+w	9e1b80fc	Mode baterai tidak dikenal
+w	72b5f16a	Pengisian malam tidak didukung
+w	68f256c3	Prime95 tidak ditemukan: tentukan di tab «Komponen»
+w	f561b116	Buat «Penyetelan»
+w	b5d39caf	Paket daya untuk penyetelan otomatis
+w	fd1bb7a8	Penyetelan
+w	25b44cb1	Tanpa batas frekuensi dan minimum 5 %: prosesor bisa turun ke paling bawah dan naik ke paling atas
+w	e7d558f8	Red Tune: untuk penyetelan otomatis dan pemeriksaan kurva. Tanpa batas frekuensi, minimum 5 %
+w	e7177106	Paket «Penyetelan» siap dan dipilih untuk preset ini. Simpan preset agar paket ini aktif bersamanya.
+w	b7179637	Paket daya telah dibuat
+w	664a9658	Paket sudah ada, nilainya ditulis ulang
+w	f05f275e	Disalin dari paket aktif: Windows ini tidak punya paket «Performa tinggi»
+w	c847203d	Perhatian: ada mode daya Windows di atas paket ini, yang bisa menahan batas frekuensinya sendiri
+w	ae9329aa	Uji bawaan (percobaan)
+w	b1db0e8a	Beban penyetelan otomatis
+w	7b09903c	Apa yang membebani core saat kurva disetel. Uji bawaan ada di dalam program dan untuk saat ini masih percobaan: sedang dibandingkan dengan Prime95
+w	758c9f1a	Uji bawaan tidak tersedia: RedTuneStress.dll tidak ada atau prosesor tanpa AVX2
+w	2c9ca7c7	Aplikasi tidak mengenal kurva prosesor ini
+w	551e26d9	Memori (RAM)
+w	ecf9e1a9	Berkas di disk
+w	05ee5f52	Menghapus program
+w	3a4b763f	Sisa program yang dihapus
+w	5081fcfd	Program terpasang
+w	fbfc11d1	Memuat daftar…
+w	e0e417df	Hapus…
+w	6f39685b	Menghapus program
+w	f023da41	Menghapus: ikuti jendela penghapus instalasinya…
+w	fb37f0bd	Selesai: cari sisa
+w	95cc6ae0	Dibatalkan
+w	21a46fae	Mencari sisa…
+w	56278755	Dihapus, tidak ada sisa
+w	f5c42cd1	Hapus yang dipilih
+w	1bda422c	Dihapus · sisa dibiarkan
+w	6449bcaa	Menghapus sisa…
+w	9865a015	Mencari sisa program yang dihapus…
+w	7a1f593e	Tidak ada sisa program yang dihapus
+w	e3751d7d	Sisa program yang dihapus
+w	4d610bda	Pilih semua
+w	06d8e0ba	Kosongkan semua
+w	9d166935	Hentikan
+w	8101082a	Exe: program ini dengan semua yang dijalankannya; folder: semua yang dijalankan dari sana
+w	e815f046	Exe: hanya program ini; folder: semua yang dijalankan dari sana, beserta layanannya sampai mulai ulang · Windows dan Red Tune tidak pernah ditutup
+w	15113f9b	Dari yang sedang berjalan, lewat exe atau folder
+w	81c5c496	Pilih folder…
+w	2145aa7f	Folder program: semua yang dijalankan dari sana ditutup dan layanannya berhenti
+w	47a1b44c	Folder program: semua yang dijalankan dari sana tetap ada
+w	a96d48c7	Ini akar drive
+w	ff47e68b	Ini folder Windows
+w	fa59c363	Red Tune ada di dalamnya
+w	cde8bc90	Ini folder bersama berisi banyak program
+w	f1b940d0	Pilih folder satu program, misalnya C:\\Program Files\\Cloudflare\\Cloudflare WARP.
+w	248600c2	Dua kurva
+w	75ac6f74	Satu untuk keduanya
+w	68dd7a32	CPU
+w	a8bd8b47	GPU
+w	0b527cc8	Yang lebih panas
+w	a62415b0	Kedua kipas
+w	22a7099f	Kurva kipas
+w	554b3c37	Dua: tiap kipas punya kurvanya sendiri, menurut suhunya sendiri. Satu: keduanya berputar sama
+w	d3610792	Kedua kipas berputar sama, menurut suhu di kanan: CPU, GPU, atau yang lebih panas di antara keduanya. Tiap preset punya kurvanya sendiri
+w	f7ed5a97	tidak ada antarmuka firmware Lenovo (GameZone)
+w	56f156fa	satu chiplet: tidak ada tempat untuk membagi program
+w	adef2d50	tidak ada antarmuka firmware Lenovo
+w	a54f5699	bukan prosesor AMD Ryzen
+w	aff8a779	BIOS tidak punya antarmuka overclock AMD (AMD_ACPI)
+w	89d20410	Perangkat ini
+w	f0c66eb3	Salin laporan
+w	bd10374e	Laporan sistem disalin: tempelkan ke pesan
+w	8470202b	berfungsi
+w	c70a264f	tersembunyi
+w	9ba76c91	Didukung pada perangkat ini
+w	998ab277	tidak ada jawaban dalam 30 dtk
+w	1a93e701	Prosesor ini tidak ada di tabel aplikasi
+w	04a711d4	register pengendali memori tidak dapat dibaca
+w	f6b383eb	Menyimulasikan prosesor lain: tidak ada yang ditulis ke sana
+w	e9091f92	Tidak ada yang diterapkan
+w	1287c380	Batas daya prosesor
+w	d6a0785c	Ditulis langsung ke prosesor (SMU), seperti UXTU. Mulai ulang mengatur ulang nilainya
+w	a934ddeb	Memeriksa apa yang diterimanya…
+w	e3c00fb9	Terapkan saat mulai dan setelah tidur
+w	d0c6a4e2	Red Tune memasang kembali batas ini saat Windows atau firmware mengatur ulangnya
+w	ec8993f1	Batas
+w	68d8eb60	PPT: daya prosesor
+w	b00d2635	Berapa watt yang boleh ditarik prosesor dalam waktu lama
+w	97e5a050	TDC: arus berkelanjutan
+w	dd82f28a	Arus inti pada beban panjang
+w	af33c030	EDC: arus puncak
+w	22476d2d	Arus inti pada lonjakan singkat
+w	1b11b2d7	Nilai belum diterapkan
+w	af49e79c	Prosesor ini tidak menerima batas lewat SMU
+w	30c15e74	Batas daya
+w	74de9fed	Batas ditulis langsung ke prosesor. Nilai yang terlalu tinggi memanaskan laptop melebihi rancangan pembuatnya; yang terlalu rendah membuatnya lambat.\n\nSetelah mulai ulang, prosesor kembali ke batas pabrik.
+w	39b66ae2	tidak ada antarmuka firmware Lenovo dan bukan prosesor AMD
+w	d3666e30	semua inti, 25 mnt
+w	edc547fc	Batas daya. Batas mana yang diubahnya bergantung pada prosesor: pada Dragon Range yang cepat
+w	261d4d4f	Terapkan sekarang
+w	104dd11f	Mulai aman
+w	0ff66e96	Fitur ahli
+w	93646133	«Kurva» dan «Memori» di menu, penulisan batas prosesor AMD. Shift saat mulai: mulai aman tanpa fitur itu
+w	b3826d07	Kurva tegangan, timing memori, dan batas langsung prosesor mengubah apa yang ditetapkan pembuatnya. Nilai yang salah menyebabkan macet, layar biru, atau laptop yang tidak mau menyala.\n\nJika terjadi masalah, tahan Shift saat Red Tune mulai: ia tidak akan menerapkan apa pun.
+w	fd8c73cd	Nyalakan
+w	356be385	Suara
+w	1a0e6dca	Jadikan default
+w	9edf46c8	Perangkat keluaran
+w	e692df51	Volume
+w	87ee0cbd	Pemrosesan suara
+w	7bb6ddb2	Equalizer
+w	07bac904	Setelan siap pakai equalizer dan kompresor; setelan sendiri bisa disimpan
+w	a6c48966	Seret titik pada grafik: kiri-kanan frekuensi, atas-bawah gain. Roda di atas titik mengubah lebarnya
+w	c70e500f	Pra-gain
+w	68315b4f	Sebelum equalizer: turunkan bila pita dinaikkan tinggi dan limiter bekerja terus
+w	47d71657	Kompresor
+w	b7720b0e	Menurunkan bagian yang keras: yang pelan lebih terdengar, yang keras tidak menyakitkan
+w	3a586b5b	Ambang
+w	7f0b22c7	Tingkat mulai kompresi
+w	7f20d340	Rasio
+w	47d51862	Berapa kali bagian di atas ambang dikurangi
+w	018b2a67	Attack
+w	61d921b4	Seberapa cepat kompresor menangkap suara keras
+w	627ddda8	Release
+w	9a178b37	Seberapa cepat ia melepas saat suara mengecil
+w	852f8bb6	Knee
+w	3241b7df	Kehalusan peralihan di ambang: 0 berarti tajam
+w	62cf1651	Gain kompensasi
+w	eab68408	Mengembalikan kenyaringan yang diambil kompresi
+w	c8b8dddd	Limiter
+w	da57d237	Tidak membiarkan suara melewati batas atas berapa pun equalizer menaikkannya: tanpa pecah, tanpa beban berlebih
+w	3c28594d	Batas atas
+w	d8dd32c2	Sistem
+w	3a95984b	Lepas pemrosesan dari perangkat
+w	4e3559fe	Red Tune mengeluarkan efeknya dari rantai efek perangkat ini; setelannya tetap ada
+w	413517df	Tidak ada perangkat keluaran aktif
+w	3439953a	Default: semua program bersuara di sini
+w	912f98cc	Bukan default: program bersuara di perangkat lain
+w	ae0cbfed	Setelan sendiri
+w	f94d475e	Pasang
+w	3f030c31	Memasang efek dan memulai ulang suara Windows…
+w	6376025c	Lepas pemrosesan
+w	012bee00	Melepas efek dan memulai ulang suara Windows…
+w	fde050db	Tidak ada perangkat
+w	021f27ed	Build ini tidak punya berkas efek (audio\\RedTuneApo.dll)
+w	e7e126fa	Perangkat ini tidak punya bagian efek Windows: pemrosesan belum bisa dipasang
+w	e97697b5	Efek akhir perangkat dipakai efek lain: pemrosesan belum bisa dipasang
+w	d75bb0ba	Equalizer, kompresor, dan limiter sendiri untuk perangkat ini. Saat ini belum terpasang
+w	5ee31b87	Terpasang, tetapi peningkatan audio perangkat dimatikan di Windows: efek tidak berjalan
+w	50a02b04	Aktif · sekarang tidak ada suara
+w	dc0050b1	Terpasang, dimatikan
+w	a02b796a	Masuk
+w	54f4234b	Keluar
+w	838fa09f	Pengurangan
+w	580c8b6e	0 dB
+w	6760bee2	senyap
+w	1e939a29	Lonceng
+w	81eac194	Low shelf
+w	e54686cc	High shelf
+w	7479f177	Potong rendah
+w	34ae8cd5	Potong tinggi
+w	b556b2d9	Notch
+w	c4770fd5	Gain ke nol
+w	1b220d9d	Hapus titik
+w	6af22088	Tambah titik
+w	f2c7ee73	Semua gain ke nol
+w	bbd3efbb	Equalizer dimatikan
+w	d8d67023	Pita kompresor
+w	dfac8bbf	Setiap pita dikompresi sendiri-sendiri dengan pengaturannya sendiri
+w	97e59712	Satu
+w	60362da2	Dua
+w	4935edc5	Tiga
+w	58766ee5	Rendah
+w	2ed7bcd5	Tengah
+w	57a4501f	Tinggi
+w	5016d919	Batas pita rendah
+w	24201e77	Semua yang di bawahnya adalah pita “Rendah”
+w	4e1f479b	Batas pita tinggi
+w	b7e458b7	Semua yang di atasnya adalah pita “Tinggi”
+w	aaa9416d	Pita
+w	967f584b	Diatur
+w	b29253e0	Titik, kenop, dan penggeser berlaku untuk pita ini
+w	fdeee644	Solo: hanya pita dengan “S” yang terdengar. Ini untuk mendengarkan — mati sendiri saat Anda meninggalkan halaman
+w	b9901533	Bisu: pita ini tidak terdengar, yang lain tetap berbunyi. Ini untuk mendengarkan — mati sendiri saat Anda meninggalkan halaman
+w	03c9d5bd	Sekarang tidak semua pita terdengar: mode mendengarkan aktif (S atau M di monitor “Menurut frekuensi”)
+w	fad83bfd	05 Baru
+w	d9f878b3	01 Milik saya
+w	aa1eb8c2	Menurut waktu
+w	4875ee04	Menurut frekuensi
+w	2676c66f	Seluruh suara
+w	94f05c0b	Klik untuk mengatur pita ini
+w	f9104111	Klik sebuah pita untuk mengaturnya. Batas antar pita diseret ke kiri-kanan, garis putus-putus ambang ke atas-bawah
+w	93c6d52b	Satu pita untuk seluruh suara. Dapat dibagi menjadi dua atau tiga di “Pita kompresor” di bawah
+w	a2cb5790	Pita yang diatur
+w	1d5d59b3	Titik, kenop, dan penggeser di bawah adalah miliknya
+w	f9f12204	Kompresor dimatikan
+w	0632976a	Tempat semua program memutar suara
+w	26f11dcd	Kompresor dan limiter
+w	1a3b1816	Seret titik: ambang ke kiri-kanan, rasio (di kanan) dan gain kompensasi (di kiri) ke atas-bawah. Roda di atas titik ambang mengubah knee
+w	5b5a31dc	Seret titik. Klik ganda di ruang kosong menambah titik, klik kanan pada titik memilih jenis filter atau menghapusnya
+w	3d4bed5c	Datar
+w	4be959f6	Lebih banyak bass
+w	9608c5e8	Suara vokal
+w	a2721dda	Speaker laptop
+w	df2ed3e8	Mode malam
+w	9ef3c976	dB
+w	7f13b6ce	ms
+w	3eeaafdc	berkas setelan bersama tidak terbuat
+w	d93d52e3	regsvr32 tidak merespons
+w	68333e90	perangkat tidak punya bagian efek Windows
+w	19655e15	Efek Nahimic
+w	28e63132	Berjalan sebelum Red Tune dan menumpuk dengannya. Matikan untuk mendengar Red Tune saja: bisa dikembalikan di sini
+w	1e2e9b43	Dikeluarkan dari rantai perangkat ini. Nahimic sendiri tetap terpasang; sakelar mengembalikan efeknya
+w	b7fa2672	Kembalikan
+w	5c64a063	Memulai ulang suara Windows…
+w	5f11b887	daftar efek asli tidak tersimpan
+w	1a79d826	Bass terpisah
+w	7c83b011	Bass di bawah titik bagi dan sisanya dikompresi terpisah: kick drum tidak menurunkan vokal dan nada tinggi
+w	4fbcff2c	Hz
+f	849d8aad	Ditahan di atas paket berbasis Seimbang: 
+f	ed7a5eaa	tanpa batas atas frekuensi, preferensi energi 
+f	056be074	batas atas frekuensi 
+f	1baf1461	 MHz, preferensi energi 
+f	f4494d86	, status minimum 
+f	e297bc24	Mode daya Windows — 
+f	0d29bb85	Belum ditulis: 
+f	b27ecfef	 — baterai
+f	b3b51806	00 Penyetelan
+f	b4420304	Selesai
+f	7f2234e3	Lulus
+f	f8c51341	 dtk · 
+f	396205d1	 — listrik
+f	d753034e	 — jenis paket
+f	615c1bca	Untuk tala otomatis: 
+f	0b9dc537	 °C — sudah demikian
+f	c0408926	 °C — simpan preset
+f	f75cefbe	Paket sekarang berisi: 
+f	42a84f16	 (0 kecepatan, 100 hemat)
+f	7f322198	Windows sekarang boleh memarkir inti; minimum inti yang tidak diparkir, %: 
+f	dff82ac2	Windows tidak mengizinkan nilai ditulis, kode 
+f	a5b6d060	 · aktif
+f	30d1b395	”, tidak lebih dalam dari 
+f	61003bc8	Galat Red Tune Test pada 
+f	22f7053e	: kedua thread, Red Tune Test
+f	dfc8fc47	Red Tune Test tidak tersedia: tidak ada 
+f	8eefd4c0	 atau prosesor tidak punya AVX2
+f	2b41b190	Penalaan dimulai (ketat): turun dengan tiap langkah diperiksa
+f	9bfce7f7	Penalaan dimulai (harian). Fase 1: tepi tiap inti, satu per satu: 
+f	72c74767	Penalaan harian dari tepi yang sudah ditemukan
+f	f7ca3728	Fase 2: seluruh set turun
+f	ddf14a32	Harian tanpa fase 1, dari tepi: 
+f	9beba94c	Mulai penalaan harian dari tepi yang sudah ditemukan, tanpa fase 1? 
+f	0dbbcbb2	Harian · 
+f	806d87c5	Ketat · 
+f	180c25b4	tepi inti-inti
+f	98e6cab5	penurunan
+f	2079fe22	 tahan, yang turun: 
+f	f76892aa	 · yang turun: 
+f	34b2f86e	”), berhenti di 
+f	29cfe126	Galat pada inti yang sudah berhenti: 
+f	1c2fa334	): inti yang sedang turun (
+f	5403e1f0	) memakai tingkat terakhir yang lolos, 
+f	8a7892fd	Penurunan selesai
+f	7abab46f	beban hanya pada inti yang turun
+f	15e29bde	): inti di tingkat terdalam (
+f	585de988	tingkat 
+f	d7050c9a	 — di 
+f	2180c144	, menahan langkah ini; yang lain mencoba 
+f	fe1552c4	Penalaan dimulai: turun dengan tiap langkah diperiksa
+f	625116d5	Tangga batas
+f	8a2e5cd2	lebih dalam dari 
+f	79f3514e	 penalaan tidak turun
+f	2d144f8c	: tidak tahan 
+f	0064009e	 inti dalam beban (
+f	4d40f118	 dengan 
+f	872bbaa8	 tetap di 
+f	2edd9ae9	 dan menahan langkah ini, yang lain mencoba 
+f	bc76b5b5	 tanpanya
+f	31b94e9e	 menahan tegangan beban ini, 
+f	88bfd0c4	penalaan · 
+f	fe86c73c	tangga frekuensi pada 
+f	ad1f5d2c	, penalaan sedang berjalan: jendela di tab Tala otomatis
+f	391fcbf4	Fase 2: batas tiap inti sendiri di bawah beban
+f	fb56a042	Fase 2 lagi dari tepi fase 1
+f	a32d29d6	Fase kedua dengan cara baru, dari tepi fase 1 terakhir
+f	ae6a794e	. Tepi: 
+f	148bd40d	 · mulai: semua inti di 
+f	006281ae	Batas sendiri
+f	a036c7f8	 · berikutnya pemeriksaan akhir
+f	a2bde735	tingkat bersama 
+f	3b376d41	 · dalam beban 
+f	d8d2a819	 tahan, dalam beban 
+f	e4086c28	Tingkat 
+f	28521a62	: tidak turun lagi (batas sendiri “tepi +
+f	5f334bd1	”), batas 
+f	88306843	: galat di 
+f	dbcda74a	), batas 
+f	0b4c8147	tersisa dalam beban: 
+f	4ff79500	, mendapat tingkat terakhir yang lolos, 
+f	25b63333	Galat pada inti di luar beban: 
+f	e41bff57	Kegagalan yang tidak menunjuk inti mana pun di tingkat awal (
+f	2bba868e	): mulai dari 
+f	7f0fee80	Kegagalan yang tidak menunjuk inti mana pun di tingkat 
+f	b434c88a	): inti yang tersisa dalam beban (
+f	0a373abc	) mendapat tingkat terakhir yang lolos, 
+f	b3ab585c	beban tanpa 
+f	41e2b5e2	 inti terdangkal, 40 dtk
+f	59fe2fdb	 inti
+f	ab5f3b79	Beban mulai pada 
+f	cdd72fb1	: 6 dtk kerja, 4 dtk diam
+f	246cdd43	beban gagal bahkan di nol: bukan karena kurva
+f	9b640f3b	Set awal tahan: 
+f	a29f270a	): mundur selangkah ke 
+f	ca66fbe7	, satu percobaan lagi nanti
+f	bb91ee20	, berikutnya chiplet demi chiplet
+f	396f608a	semua inti
+f	d0c06a67	Dari tepi fase 1: 
+f	31d1868c	Jalankan fase 2 lagi dari tepi fase 1? 
+f	54fb905a	, akan ada mulai ulang. Jangan pakai laptop sementara itu. Kemajuan penalaan saat ini akan diganti; preset kurva tersimpan tetap ada.
+f	4ff0ced8	Fase 2 lagi dari tepi fase 1: 
+f	7ae1ce54	): inti yang lebih dalam dari tingkat bersama +
+f	aa241dcd	Jika laptop macet dan tidak terjadi apa-apa lebih dari beberapa menit, matikan dengan menahan tombol daya lalu nyalakan lagi: penalaan akan berlanjut.
+f	3c003d1d	beban mulai di semua inti, berupa lonjakan 
+f	4650d8f2	badai lonjakan 
+f	f6383dfd	latar ringan pada 
+f	59ab3303	beban di semua inti 
+f	f7b5c37b	: beban, tangga frekuensi, bangun
+f	829cf3ea	Bangun pada 
+f	a3b1aa87	pemeriksaan akhir
+f	3fd06d37	seluruh set
+f	08bf8aaf	percobaan lebih dalam sebesar 
+f	8cde9233	Fase 2: seluruh set. Tepi: 
+f	eea6eeda	 · mulai “tepi +
+f	ef58dc2c	Fase kedua dengan cara baru, dari tepi fase 1 terakhir: 
+f	d1064b9e	Set tahan: 
+f	99d94a0f	 lebih dalam sebesar 
+f	8c25df56	 tahan: 
+f	19b75020	 tidak tahan (
+f	4959faee	): dikembalikan
+f	7c8b8f2c	, berikutnya inti demi inti
+f	e02cd222	): tetap di 
+f	bf455565	Pemeriksaan akhir set: 
+f	19c83589	Set lolos pemeriksaan akhir: 
+f	9a0d4cf7	 · dengan cadangan +
+f	3f7df8ea	Kegagalan yang tidak menunjuk inti mana pun (
+f	db1795d5	): seluruh set +
+f	a9ed6d1b	Galat pada inti: 
+f	a02a30f4	Kegagalan saat hanya satu inti dibebani: 
+f	52d9fd84	Galat pada inti di luar percobaan: 
+f	fc048b6e	): percobaan inti dibatalkan, set 
+f	71d7389a	diam 
+f	05aab61a	Berjalan: 
+f	019e3792	 · sudah diuji 
+f	bdfcfc94	tanpa galat
+f	35e6bfe2	GALAT: 
+f	3a39a58f	 — memori tidak stabil
+f	51025e77	data acak
+f	f48bd9c2	salin blok
+f	bfcd8b0e	akses acak
+f	0bf8286d	pola
+f	9d2cce88	Terakhir: 
+f	afd432c5	 dtk
+f	0a7618d0	 · terpotong oleh mulai ulang
+f	977f6e6d	 · terputus
+f	854c6c57	 · dihentikan
+f	53465c11	Tidak mulai: 
+f	62a7a515	Windows tidak memberi memori (
+f	3fa4673b	 MB per thread)
+f	b80b6c69	Pemeriksaan memori terpotong oleh mulai ulang: sudah berjalan selama 
+f	8926f56e	Mengonfirmasi 
+f	6ba31a7b	: satu thread, boost tertinggi
+f	d46cf09b	: kedua thread, Prime95 AVX2
+f	a5d4a82a	: kedua thread, Prime95 AVX-512
+f	253ad7cb	: lonjakan setelah diam
+f	8019e9d1	: tangga frekuensi
+f	3ef0e496	: tepi 
+f	7e563418	, dengan margin +
+f	0e006e02	 hasil 
+f	37a44b93	Kotak hitam sebelum mulai ulang: 
+f	31778a30	Mulai ulang tanpa dimatikan dengan benar. Yang bekerja tepat sebelumnya: 
+f	5dbd9265	semua inti hampir diam (yang paling sibuk: 
+f	d09418da	, mungkin terjadi mulai ulang. Jangan pakai laptop selama itu.
+f	dc026084	Mulai penalaan kurva penuh? 
+f	a586ed4e	, akan ada mulai ulang. Jangan pakai laptop selama itu.\n\nAplikasi mengaktifkan mulai otomatisnya agar dapat melanjutkan setelah mulai ulang.
+f	4b2abf5e	beban ringan seperti video di browser pada CCD2, 12 mnt
+f	af2ffb4b	beban ringan seperti video di browser pada CCD1, 12 mnt
+f	0d371183	satu inti pada tangga frekuensi, tiap inti bergiliran, 10 mnt
+f	e082bede	Beban latar ringan pada 
+f	f3bb6ad2	 (seperti video di browser)
+f	9fcd30c9	Tangga frekuensi: satu inti dibebani, 
+f	9635d787	 inti bergiliran
+f	962e7c42	Latar CCD2
+f	952e7aaf	Latar CCD1
+f	7c3f380e	Tangga
+f	aa73fa69	Inti yang diukur: 
+f	a328c15a	Mengukur tiap inti bergiliran memakan sekitar 
+f	1b6e56ed	 mnt; selama itu frekuensi dibatasi bertahap
+f	3f157795	Selesai, tetapi inti yang belum diukur: 
+f	3341df80	 (rincian di log)
+f	48f23da4	Mengukur: 
+f	4f61c00d	Tata letak telemetri prosesor ini (0x
+f	d87715e9	) belum dikenal
+f	832a150e	Aktif: diterapkan otomatis
+f	aa8e426b	Dipilih tetapi belum aktif: «Terapkan» untuk mengaktifkannya
+f	35ec5682	Preset grafis «
+f	1b2f5b96	» tidak diterapkan: 
+f	b324cc8d	Dalam game hingga
+f	ca272b6f	Gbit/s
+f	4f2f4653	offset dihitung dua kali, seperti di Afterburner
+f	921cf955	» diterapkan
+f	76e93c22	» dibuka, belum diterapkan
+f	9ac8e248	» sudah ada di kartu
+f	296223f3	preset
+f	2e21f1d9	driver menjawab «diterima» tetapi kurva tidak berubah
+f	e61cad62	\n\n«Terapkan saat mulai» menyala: setelah mulai ulang, preset «
+f	58bcba36	driver NVIDIA tidak menjawab
+f	322ae317	kartu NVIDIA tidak ditemukan
+f	45e82377	driver tidak menyediakan kurva V/F (fungsi Afterburner)
+f	67031808	Simulasi: tidak ada yang ditulis ke kartu
+f	3c6e0ec4	kurva saat ini tidak dapat dibaca
+f	b7f34e3a	driver tidak menerima kurva
+f	c8627f5c	, rata mulai titik 
+f	054a25c6	NVML tidak menjawab
+f	2e0c7e9c	driver tidak menerima frekuensi memori (kode 
+f	2ff4852f	Tidak ada akses ke kurva: 
+f	fe4c3421	driver tidak menjawab
+f	851f974d	titik
+f	0244c6c9	memori
+f	b4f1474f	di bawah puncak rata
+f	cd609234	pabrik
+f	ae1400cb	mV
+f	5f55ae86	Preset «
+f	e26cd779	» disimpan
+f	786da301	Cukup sekali (ulangi setelah BIOS atau driver berubah)
+f	02083de9	jangan pakai laptop selama itu
+f	972655c8	«Periksa» — hanya fase 3 pada preset aktif, tidak menala apa pun
+f	e451f2d8	 MB
+f	3056e7aa	 KB
+f	3dc05ccd	Kurva tidak diterapkan: 
+f	c5c7d794	Paket tidak dapat diganti: 
+f	e926c315	Tidak ada jawaban: 
+f	723fd7fb	lewat PawnIO
+f	30b0b6a8	sekarang
+f	bd1ecc52	cepat
+f	305e0ad8	lambat
+f	66cd5473	batas saat ini tidak dapat dibaca
+f	47564942	penulisan belum diverifikasi pada keluarga ini
+f	563205e6	akan ditulis
+f	fc70b290	tersimpan, ditulis saat «Terapkan» dan saat mulai
+f	8957bafc	dibiarkan sampai Anda menggesernya
+f	b970f3c8	nilai saat ini
+f	dbe0fc18	jangan ubah
+f	db58571b	(simulasi)
+f	051ef98b	Kurva Red Tune sekarang: CPU 
+f	daad1861	, GPU 
+f	b8b7e47a	 · kurva belum berlaku, firmware yang mengendalikan kipas
+f	c24900b8	Sekarang 
+f	c4bebe8b	 °C · kurva meminta 
+f	3ca9e8df	 · berputar pada 
+f	be8ef508	Beralih ke «
+f	c8d9ac5b	Dipilih «
+f	50079fbd	» — berlaku setelah mulai ulang
+f	e4c2aaf9	Windows tidak menerima mode itu (
+f	d418376e	 sedang berjalan dan mulai bersama Windows
+f	bed905d9	 sedang berjalan
+f	95656e32	 mulai bersama Windows
+f	de66c066	 — berebut pengaturan yang sama dengan Red Tune
+f	a7a8c212	Anda sudah punya kurva per inti
+f	a6785871	: dari 
+f	d1b2dac7	Red Tune menerapkannya saat mulai, saat pengisi daya terpasang, dan setelah tidur.\n\n
+f	f1356cee	Curve Optimizer semua inti menetapkan satu nilai untuk semua inti lewat firmware dan menimpa kurva Anda setiap kali preset ini diterapkan. 
+f	e91a56e6	Lalu Red Tune memasang kembali kurva Anda: keduanya akan berebut, dan nilai akhir di inti bergantung pada siapa yang menulis terakhir.\n\n
+f	b5da746d	Nilai pabrik tidak dapat dibaca: 
+f	340e42fb	Sumber: pembuat rawhide-kobayashi (GitHub), build 0.1.5-sp00n dari rilis CoreCycler 0.11
+f	eb016878	Sumber: mersenne.org (GIMPS); bawaannya salinan dari CoreCycler
+f	51f04fcf	 ke sana?\n\nKe: 
+f	74667d20	\nBerkas dengan nama yang sama akan diganti.
+f	27d1c323	  · ditentukan manual
+f	24f70a9d	Nyala: 
+f	8c3268e2	 dari 
+f	64633593	. Item yang dimatikan tetap ada di daftar dan bisa dinyalakan lagi. Pengelola Tugas menampilkan hal yang sama
+f	2a78cf09	berkas tidak ada: 
+f	a3be7856	Hapus «
+f	fd0bb6ce	, diatur oleh kebijakan
+f	54b6e615	tidak dapat dipindahkan ke Keranjang Sampah (kode 
+f	6a649cfa	Tutup «
+f	837844a1	» dan tutup programnya?
+f	4b7e780b	\n\nBisa dikembalikan: jalankan secara manual lalu aktifkan mulai otomatisnya.
+f	b2cd6abc	Folder «
+f	1d56c5d5	» tidak di tempat semula, mencari…
+f	8c155b76	Lokasi baru «
+f	dff8f489	Folder «
+f	e7c116a0	» sudah tidak ada: dihapus, atau dipindahkan ke tempat yang tidak ditemukan Red Tune.\n\n
+f	17d5fcf2	Hapus «
+f	b2fc1c83	» dari distribusi?\n(jika programnya hanya dipindahkan, pertahankan: foldernya ditemukan saat pertama dijalankan)
+f	392f84e5	» dihapus dari daftar · tekan «Simpan» untuk menerapkan
+f	f8771296	Folder tidak terbuka: 
+f	933851b6	Tidak disimpan: 
+f	2eeb24c5	perubahan
+f	18eb0223	perubahan
+f	24eb1507	perubahan
+f	9b17e0de	Aturan tidak dapat disimpan: 
+f	e4bc92f6	Tersimpan: 
+f	4f85b849	 · program yang berjalan langsung dipindahkan
+f	b101a420	Exe mana yang Anda jalankan untuk «
+f	8df50275	»? (biasanya launcher di folder game)
+f	4b520eab	Pintasan «
+f	6a5b7216	» di desktop: langsung berjalan pada 
+f	d1118128	Pintasan tidak dapat dibuat: 
+f	08e1af56	Berjalan · 
+f	a4d536ff	proses
+f	b417fc99	proses
+f	03da9093	proses
+f	a6937c38	 pada intinya masing-masing
+f	79c65019	 · 2 chip × 
+f	bf4f5981	 inti
+f	bb62e4f4	sebelumnya 
+f	750eb27a	program
+f	3c0e58bf	program
+f	cba67395	program
+f	49d23aa2	, ALL: semua, SKIP: biarkan
+f	07485f11	semua 
+f	db5c4a5a	inti 
+f	0ee2b188	 (anti-cheat sudah melepas)
+f	42ddfbc1	 (lewat PowerShell: program hanya menerima yang bertanda tangan)
+f	acbdbd50	 (lewat CPU Sets selagi inti terkunci)
+f	a2a0db82	 tanpa SMT
+f	47a9fc5f	memori tersolder 
+f	5416d7ef	: penulisan tidak didukung
+f	480ced79	BIOS menolak perintah 0x
+f	a234dcf8	 dengan nilai 
+f	7f50664c	Pengaturan BIOS tidak dapat dibaca (
+f	36e6186a	timing yang berjalan tidak dapat dibaca: 
+f	347ca9bc	diizinkan 
+f	3d076fc6	langkah 
+f	3d9a6330	, dari 
+f	4eff029d	   (lebih ketat dari yang berjalan sekarang)
+f	37042eb9	Kecepatan: 
+f	8497c4cf	   (lebih tinggi dari yang berjalan sekarang)
+f	c82f5382	   (kecepatan hanya bisa Auto selama semuanya Auto)
+f	53618e97	tetap 
+f	06b49f7c	penulisan dinonaktifkan: 
+f	781163c7	ukuran pengaturan BIOS berubah: 
+f	0d96cffa	: seharusnya Auto, tetapi BIOS berisi 
+f	6f0250e0	: diminta 
+f	21805168	, BIOS berisi 
+f	faa53fb1	Kecepatan: seharusnya Auto, tetapi BIOS berisi 
+f	5a2c1fce	Kecepatan: diminta 
+f	54123e5c	FCLK: seharusnya Auto, tetapi BIOS berisi 
+f	f5bc345a	FCLK: diminta 
+f	2a5f2399	UCLK: seharusnya Auto, tetapi BIOS berisi 
+f	10924b9d	UCLK: diminta 
+f	4181ece5	, berjalan 
+f	42448e9e	Pengaturan memori dari 
+f	c2f3f7a7	 tidak sepenuhnya berlaku:\n
+f	0455395e	\n\nBIOS mungkin menolak nilainya atau mengembalikannya setelah gagal boot.
+f	61ac7589	: semua Auto, BIOS memilih nilainya sendiri.
+f	50497e27	 berlaku sepenuhnya (
+f	d29ad17f	 nilai).
+f	f03fdd4b	: masukkan angka atau nyalakan Auto
+f	8edf5d23	» bukan angka
+f	41cb0492	, langkah 
+f	4fa54f24	 ns)
+f	8ed1ac78	Tidak dapat dibaca: 
+f	fa9ba8ee	Perbaiki: 
+f	a460952a	 (dan 
+f	87701f41	Perubahan: 
+f	ae7077fe	Hanya lihat: 
+f	fb7429b8	BIOS menyimpan nilai yang belum berjalan (
+f	2478edcf	) — berlaku setelah mulai ulang
+f	bd788b9c	Profil disimpan: 
+f	f56d32c3	Tidak disimpan: 
+f	55583d6a	Profil «
+f	af4421f1	» dimuat ke jendela · belum ditulis ke BIOS
+f	bbcad474	Profil tidak dapat dibaca: 
+f	de2ecd23	Tulis ke BIOS:\n\n
+f	5eb2bd92	Nilai yang lebih ketat atau lebih tinggi dari sekarang: 
+f	dd822ac6	. Jika laptop tidak mau menyala dengan nilai itu, BIOS harus diatur ulang secara manual (dibongkar).\n\n
+f	fe7c3dd2	Mengukur pada 
+f	aa145133	Mengembalikan offset: 
+f	689179ae	Mengukur: 
+f	d00c7ae5	 ns
+f	0ba72aa4	 (sebelumnya 
+f	78f54694	. Jika PC tidak mau menyala dengan nilai itu, CMOS harus diatur ulang (tombol atau jumper Clear CMOS pada papan induk).\n\n
+f	a469ec0d	Auto diatur lewat pengaturan ulang semua pengaturan memori; semua yang tetap manual ditulis lagi.\n\n
+f	bfab9893	Setelah penulisan, komputer mulai ulang dalam 15 detik.
+f	ce597e29	Nilainya berlaku setelah mulai ulang berikutnya.
+f	be11dff5	byte 0x{0:X}: sebelumnya {1:X2}, sekarang {2:X2}
+f	ceca344a	Tala otomatis selesai: preset «
+f	3f0fc2d0	» disimpan di tab «Kurva»
+f	a15b025a	Tala otomatis 
+f	c2dbf5a7	» tidak diterapkan: 
+f	66b84c19	CPU mengembalikan 
+f	9e7c01a8	firmware mengembalikan 
+f	fb216380	 W, bukan 
+f	5e53d119	Membaca kurva, inti 
+f	3be750d8	Membaca kurva: 
+f	666e7310	Menulis kurva, inti 
+f	c1315107	Menulis kurva: 
+f	f2d3c55c	Membaca kurva: inti yang menjawab: 
+f	f4f92c12	, prosesor memiliki 
+f	7b890a9a	 (sebagian inti dimatikan di BIOS?)
+f	3bece7fb	Menulis kurva: inti 
+f	036dabfb	, nilai 
+f	ee73761b	prosesor sedang sibuk dengan perintah lain
+f	ef1b9080	prosesor tidak menjawab perintah
+f	2167aa22	PawnIO tidak memberi akses ke prosesor
+f	79db6553	program lain menahan bus prosesor
+f	f2cdd096	prosesor menolak perintah
+f	39ffb75d	prosesor tidak mengenal perintah ini
+f	5856eec1	prosesor belum menerima perintah saat ini
+f	daf938a1	prosesor menjawab dengan kode 
+f	25de93fc	Nilai harus dari 
+f	45518c8e	Driver Lenovo menolak (
+f	6bd586f1	Tombol Fn tidak tersedia (
+f	0a3ad026	Perbaiki dulu syaratnya: 
+f	b81d52ff	Uji preset aktif «
+f	0ad25ed7	»? Sekitar 1,5 jam, mungkin terjadi mulai ulang. Jangan pakai laptop selama itu.
+f	1aa99bc4	Mulai otomatis tidak dapat dinyalakan: 
+f	79a41feb	Diterapkan dan dijadikan preset aktif «
+f	8bde0533	Tidak diterapkan: 
+f	fc8fa804	Dihentikan: 
+f	6f9da719	 · ~
+f	7512d05d	 · tersisa 
+f	94c906aa	Fase 
+f	845b0103	 dari 3
+f	f08e24c8	 · putaran 
+f	b3066733	 · mulai ulang 
+f	d13ab1f3	Berlalu 
+f	72ed9798	 jam 
+f	cca3f92a	 mnt
+f	3b4804f2	Kumpulan: CCD1 
+f	d1e060e0	 · disimpan sebagai preset «
+f	782aef55	Mode «
+f	7db23897	» · paket «
+f	e398ad89	Memeriksa kurva saat ini: 
+f	9e809afd	Penalaan penuh dimulai. Urutan inti: 
+f	c054bbd0	Mulai ulang di tengah putaran: 
+f	21a68aa1	Putaran: 
+f	2f48b8e1	Gagal: 
+f	c71b2eac	Selesai. Hasil: CCD1 
+f	b554d024	fase 1 · 
+f	223bb87f	pemeriksaan 
+f	fa3dc2f8	 dari 4: 
+f	1a2bb58a	fase 
+f	fcf5295a	 · tahap 
+f	61080f86	 · pencarian: 
+f	36ae404d	Tahap 
+f	c2998a21	 lulus
+f	bda84eed	tahap 
+f	e726e38d	 gagal bahkan di nol: bukan karena kurva
+f	2ff60b08	Galat pada inti itu sendiri: 
+f	6333f9b6	Fase 2–3 lagi dari kumpulan nilai setelah fase 1: 
+f	3ef6b788	Dari kumpulan nilai setelah fase 1: 
+f	04ba07bf	Jalankan lagi fase 2 dan 3 dari kumpulan nilai yang ditinggalkan fase 1? 
+f	6699d402	, mungkin terjadi mulai ulang. Jangan pakai laptop selama itu. Kemajuan penalaan saat ini akan diganti; preset kurva yang tersimpan tetap ada.
+f	e163adb6	Penalaan cepat dimulai. Urutan inti: 
+f	50f20c96	Menunggu 45 dtk setelah masuk
+f	b402ed96	 dari 6: 
+f	835aff70	 dari 2
+f	9633fa25	semua inti, 8 mnt
+f	d5e380f4	lonjakan di semua inti, 5 mnt
+f	214acce2	beban ringan seperti video di browser pada CCD2, 5 mnt
+f	cd10f5a1	beban ringan seperti video di browser pada CCD1, 5 mnt
+f	d311c58d	Fase 2: semua inti bersama. Kumpulan nilai setelah fase 1: 
+f	0037159c	Tangga frekuensi pada 
+f	dc60e999	Pembagian dua dari −25 dengan 13, 6, 3, 2, 1 · uji 1,5 mnt: Prime95 dan tangga frekuensi · margin +8
+f	9f6cbda1	2. Semua inti bersama
+f	4526e7f6	Prime95 di semua inti, badai, dan beban latar mirip video; inti yang galat mendapat +3
+f	2fb5b412	3. Pemeriksaan penuh — kapan pun Anda mau
+f	05fcac03	Tombol «Uji kurva saat ini»: putaran panjang, badai, beban latar, dan tangga frekuensi pada preset aktif
+f	16e6a2f8	«Uji» adalah pemeriksaan penuh preset aktif, tidak menala apa pun
+f	824c806b	Mulai penalaan kurva? 
+f	f52d645f	Apa ini. Kurva yang lolos semua uji masih bisa satu langkah lebih dalam daripada yang sanggup ditanggung sebuah inti dalam pemakaian biasa. Inti itu mula-mula galat secara diam-diam: prosesor memperbaiki galatnya sendiri dan mencatatnya di log Windows (WHEA). Tidak ada yang jatuh, Anda tidak menyadarinya, dan macet yang sesungguhnya tinggal beberapa langkah lagi. Pengawas membaca catatan itu dan memberi tahu inti mana yang galat.\n\nApa yang dilakukannya. Sekali semenit ia memeriksa log Windows; setelah mulai ulang tanpa dimatikan dengan benar, ia mengambil dari kotak hitam inti-inti yang sedang bekerja pada saat terakhir. Tiap inti tersebut mendapat saran untuk menaikkan nilainya 3 langkah (sekitar 15 mV). Pengawas tidak menulis apa pun ke prosesor dengan sendirinya: nilai berubah saat Anda menekan «Naikkan 3»; preset kurva disimpan dan langsung diterapkan. «Biarkan» menghapus saran itu.\n\nApa yang tidak dilakukannya. Ia tidak membebani prosesor dan tidak menguji apa pun. Ia tidak menghitung galat selama tala otomatis atau pengukuran kurva inti: di sana galat adalah bagian dari uji. Ia tidak menjanjikan tidak akan ada macet: kegagalan mendadak bisa datang tanpa galat peringatan.\n\nPendalaman bertahap (opsional). Setelah jumlah hari yang dipilih berlalu tanpa galat, pengawas menawarkan untuk menurunkan tiap inti 1 langkah. Inti yang galat setelah itu mendapat saran «naikkan 3» dan tidak didalamkan lagi. Dalam beberapa minggu tiap inti sampai pada batasnya sendiri, dibuktikan oleh pekerjaan Anda sehari-hari, bukan oleh uji sintetis. Langkah turun pun hanya dilakukan lewat tombol Anda. Galat yang diperbaiki biasanya muncul sebelum macet, tetapi tidak selalu: mulai ulang mungkin terjadi dalam proses ini.\n\n«Lupakan galat» memungkinkan inti yang pernah galat didalamkan lagi: misalnya setelah pembaruan BIOS atau penggantian pasta termal.
+f	ad4da1a5	Pengawas kurva
+f	d440b02d	Mengawasi galat prosesor dalam pemakaian biasa dan memberi tahu inti mana yang perlu dinaikkan
+f	432823ef	Pengawasan
+f	528508d6	Status
+f	07a40c30	Saran
+f	add784bc	Jurnal
+f	dc892cb6	Naikkan 3
+f	dfbb738e	Biarkan
+f	9a397d80	Turunkan 1
+f	cb90fb88	Nanti saja
+f	2543764b	Lupakan galat
+f	908217fe	Satu langkah lebih dalam bisa dicoba
+f	cbeef03e	Pendalaman bertahap
+f	db1071bf	Tawarkan satu langkah lebih dalam
+f	6e34ca3e	Setelah beberapa hari tanpa galat, saran untuk menurunkan tiap inti 1 langkah
+f	adbcf0fc	Berapa hari tanpa galat
+f	05be4f21	Makin panjang jangkanya, makin pasti tiap langkah
+f	e8b764fa	3 hari
+f	2faf0fe1	5 hari
+f	f260f2c3	7 hari
+f	241c5aab	Inti yang pernah galat
+f	02296acc	Tidak ada
+f	b5c5eacb	 — tidak didalamkan lagi
+f	8d0570fa	Turunkan 1 langkah tiap inti yang belum pernah galat? Preset «
+f	0550abcd	» akan diubah dan diterapkan.
+f	63567f6c	Lupakan inti mana yang pernah galat? Inti itu bisa didalamkan lagi.
+f	10e736cf	Mati: tidak ada yang membaca log galat
+f	39ada1a8	Nyala · pemeriksaan sekali semenit
+f	fb5d2827	 · yang terakhir 
+f	ae1896b3	baru saja
+f	f3da1548	 mnt lalu
+f	4ed454fa	 jam lalu
+f	99ceba35	Nyalakan pengawasan agar pengawas mulai menghitung
+f	8724f213	Tanpa galat selama: 
+f	4fa0edab	 · seluruhnya: galat WHEA 
+f	b5755d44	, mulai ulang 
+f	0caf39f3	 · preset «
+f	b8e6cfda	 hr 
+f	b1d48614	mati
+f	57099ba5	ada saran
+f	455e50fb	tenang
+f	f4c42fa8	sedang bekerja sebelum mulai ulang
+f	887a7112	galat yang diperbaiki 
+f	cfd2a8f7	 · sekarang 
+f	64e2f1d6	 → menjadi 
+f	aa11286d	 tanpa galat. Tiap inti yang belum pernah galat turun 1 langkah lebih dalam
+f	319c290d	Hanya bekerja jika pengawasan menyala
+f	24432625	Saran berikutnya dalam 
+f	7f9bc46e	, jika tidak ada galat
+f	c1aa7097	Belum ada
+f	916421fd	 pada nilai 
+f	08387752	: dinaikkan 
+f	3e6fcc55	mulai ulang tanpa dimatikan; yang bekerja: 
+f	aeaf2d57	tidak diketahui
+f	b42c6956	semua inti kecuali yang pernah galat, 
+f	b82f5ec0	 lebih dalam
+f	4b86bdc6	Pengawas: galat pada 
+f	0e8ed0e3	. Sarannya ada di «Kurva» → «Pengawas»
+f	29cd9b98	 hari tanpa galat. Satu langkah lebih dalam bisa dicoba: «Kurva» → «Pengawas»
+f	43c052d2	Pengawas: 
+f	efc01a98	Pengawas
+f	05b5fa7d	Zona
+f	f2ef49ac	Haluskan
+f	612a51a4	Luruskan
+f	eca2bcfa	Bersihkan
+f	fa873190	Seret dengan Ctrl atau tombol kanan mouse
+f	a9bf1e2c	Riwayat suntingan
+f	51193970	Mundur selangkah
+f	32ec8889	Maju selangkah
+f	25976950	mundur selangkah
+f	37fe8969	maju selangkah
+f	7d052af2	langkah
+f	fcf1b5c1	Batalkan semua
+f	89a6f586	Monitor
+f	f5c90bec	Di layar mana notifikasi muncul
+f	0e8f9d36	Monitor utama
+f	2e9ccd9e	Tempat jendela aktif berada
+f	f1885493	Semua monitor
+f	a3804d6d	Sekarang / batas yang boleh ditahan prosesor dalam waktu lama · hanya informasi
+f	7a9ccb90	Sekarang / batas untuk puncak singkat · hanya informasi
+f	38108763	Perangkat belum diverifikasi: perintah berasal dari BIOS-nya, hasil penulisan dibandingkan dengan yang tersimpan
+f	0551a874	Perangkat belum diverifikasi: perintah berasal dari BIOS-nya, hasilnya baru terlihat setelah mulai ulang
+f	60a7e9db	Penulisan pengaturan memori belum diverifikasi pada perangkat ini.
+f	c6e69358	• Nomor perintah dan nilai yang diizinkan berasal dari BIOS perangkat ini.
+f	4ac1de23	• Format pengaturan BIOS cocok dengan yang diverifikasi: nilai dibandingkan setelah penulisan.
+f	82ee5fad	• Format pengaturan BIOS tidak dikenal: sebelum mulai ulang tidak ada cara untuk memeriksa apa yang ditulis atau melihat apa yang tersimpan.
+f	4a48a9d5	• Nilai yang salah dapat membuat komputer tidak mau menyala. Lalu hanya pengaturan ulang BIOS (CMOS) yang membantu.
+f	3775f2f4	Izinkan penulisan pada perangkat ini?
+f	0a12ec1c	Izinkan penulisan
+f	59e6be02	Penulisan dalam mode eksperimental diizinkan
+f	4aa67c65	Penulisan dalam mode eksperimental mati
+f	122fc88b	perangkat belum diverifikasi: penulisan dinyalakan di bawah, pada baris «Penulisan eksperimental»
+f	d03f604b	   (ditulis setiap ada perubahan: isi BIOS tidak dapat dilihat pada perangkat ini)
+f	fea4f3cb	Penulisan eksperimental
+f	fa8dee3c	Laporan lengkap ke berkas
+f	faa9b147	Mengumpulkan laporan lengkap: hanya membaca, sekitar setengah menit…
+f	511a4dc5	Laporan tidak disimpan: 
+f	b68a2542	Laporan ada di desktop: 
+f	847fe80d	: bisa dikirim
+f	53b52a6a	Inti lemah: 
+f	4891c2ae	: hasil 0
+f	4fff176a	: hasil 
+f	91f9e58c	Fase 2: chiplet bergiliran. Kumpulan nilai setelah fase 1: 
+f	40ca50ab	status minimum prosesor, %
+f	bee2ddc7	status maksimum prosesor, %
+f	aa4e66ca	batas frekuensi, MHz (0: tidak ada)
+f	12797968	boost (2: agresif)
+f	06390633	preferensi energi, % (seperti Seimbang)
+f	5fbdea91	  (tidak tertulis)
+f	183820ef	tidak terbaca
+f	0bd7e9ab	Paket daya tidak dibuat: 
+f	799b7cd5	Windows tidak mengizinkan paket disalin (kode 
+f	3b6dff04	Galat uji bawaan pada 
+f	e56f2bfb	: kedua thread, uji bawaan
+f	a24e6e6b	Uji bawaan
+f	2d5c5b73	128 bit
+f	5fb7975c	Galat Prime95 pada 
+f	2817f0b4	Prime95 AVX2 pada 
+f	b314b6e2	Lonjakan setelah diam pada 
+f	d79fb677	Sentakan pada 
+f	14aaf06f	: beban 20 dtk, diam 10 dtk
+f	4319bd66	 pada 
+f	a0c14915	Distribusi: langsung berjalan pada 
+f	04dad0d7	Registri, semua pengguna (32-bit)
+f	2c02d035	Registri, semua pengguna
+f	5052d538	Registri, pengguna ini
+f	06040545	Folder Startup semua pengguna
+f	adc87a23	Folder Startup
+f	021aef63	Aplikasi paket (MSIX)
+f	795499d4	Penjadwal Tugas
+f	4156a300	GDM nyala
+f	0098bb47	GDM mati
+f	039594a1	Ditemukan 
+f	7385db3c	 · dipilih 
+f	deb1b4b9	Hapus 
+f	7141a109	Dibebaskan 
+f	7d7ae3a5	 oleh program
+f	03057700	\n\nBerkas yang sedang dipakai program dilewati. Isi Keranjang Sampah tidak dapat dikembalikan.
+f	284f5b0f	berkas sedang dipakai
+f	8ad691c1	berkas sedang dipakai
+f	9f025bea	berkas sedang dipakai
+f	c98b7e0d	berkas
+f	87dcabe3	berkas
+f	9d985a41	berkas
+f	4c73677a	\n\nPekerjaan yang belum disimpan di dalamnya bisa hilang: program berjendela diminta menutup sendiri terlebih dahulu.
+f	f4c4382e	Program-program ini tidak tertutup, mungkin sedang menunggu penyimpanan:\n\n
+f	dbdebca4	\n\nTutup paksa? Pekerjaan yang belum disimpan di dalamnya akan hilang.
+f	7c0ff6b7	Ditutup 
+f	97b0bef4	 · dibebaskan 
+f	f698c8bd	 GB memori
+f	b57968df	 · masih terbuka: 
+f	8ef573f5	Tutup 
+f	6d0ea5e2	program
+f	578da204	Mode daya, batas, kipas, baterai, tombol Fn
+f	dbc49c7e	Kurva (preset saat mulai, saat pengisi daya terpasang, dan setelah tidur)
+f	9a484d21	Layanan tombol Fn Lenovo: mengambil tombol dari aplikasi
+f	3df6ae5e	Layanan Lenovo, mengubah mode dan baterai
+f	b88183bb	Aplikasi milik Lenovo untuk laptop gaming
+f	56ab75cd	Fase 1: tiap inti sendiri, yang lain di 0. Nilai dicari dengan pembagian dua dari −25: langkah ±12, ±6, ±3, masing-masing 4 menit 
+f	0087c0e3	(2 menit Prime95 AVX2 di kedua thread inti dan 2 menit lonjakan singkat setelah diam). Nilai yang ditemukan diperiksa selama 10 menit, +3 jika galat.\n\n
+f	db82be12	Fase 2: chiplet bergiliran: satu dibebani penuh sementara yang lain diam dan sebaliknya, lalu masing-masing dibebani (tahap A–D). 
+f	9d9cd0ae	Satu putaran 12 menit: 6 menit AVX2, 4 menit SSE, 2 menit sentakan. Jika galat, inti lemah dicari dengan membagi dua inti dan mendapat +3, yang lain tetap.\n\n
+f	c9dddde5	Fase 3: pemeriksaan akhir kumpulan nilai yang sudah jadi: tahap A, B, dan E masing-masing 25 menit serta badai 20 menit (lonjakan di semua inti sekaligus, seperti setumpuk tab browser).\n\n
+f	f25d9f6c	Sebuah putaran gagal karena galat WHEA, galat Prime95, atau mulai ulang. Setelah mulai ulang, penalaan berlanjut sendiri 90 detik setelah masuk, 
+f	a38506b2	jadi aplikasi mengaktifkan mulai otomatisnya. Di antara putaran semua inti berada di 0. Hasilnya disimpan sebagai preset kurva baru; Anda yang menerapkannya.
+f	0df53de9	 · dihapus bersama sisanya
+f	c31fda81	»?\n\nPenghapus instalasi miliknya terbuka lebih dulu: ikuti seperti biasa. 
+f	ceca3280	Lalu Red Tune mencari yang tersisa (folder, entri registri, pintasan, mulai otomatis) dan menampilkan daftar: hanya item yang dipilih yang dihapus.
+f	214d39c0	Penghapus instalasi tidak dapat dijalankan: 
+f	b0311c03	» masih ada di daftar terpasang. Apakah penghapusan selesai dan menyisakan entri itu, atau dibatalkan?
+f	8132d7a1	Sisa dari «
+f	07fe1d04	Yang tersisa setelah penghapusan. Berkas dan folder masuk ke Keranjang Sampah, entri registri disimpan ke berkas .reg sebelum dihapus 
+f	4f8a97a7	(folder Red Tune → removed-registry). Hapus centang pada yang ingin Anda pertahankan.
+f	739e13d8	Folder di AppData dan ProgramData yang tidak cocok dengan program terpasang mana pun dan tidak berubah selama 2 bulan. 
+f	f1e73533	Ini petunjuk, bukan jawaban pasti: tidak ada yang dicentang, centang yang Anda kenali. Yang dihapus masuk ke Keranjang Sampah.
+f	23592d94	 · tidak ada yang dihapus
+f	25994b9f	Folder menu Start  
+f	7502b1a5	Folder  
+f	6097bc12	Registri  
+f	c4513a26	Pintasan  
+f	961afb78	 · tidak berubah sejak 
+f	a38bb58a	Dihapus 
+f	734aae31	 · di Keranjang Sampah 
+f	22355604	 · gagal: 
+f	19db9354	Hentikan sampai mulai ulang 
+f	9bc7329c	layanan
+f	a3c73f34	layanan
+f	5e1d1037	layanan
+f	f85df9aa	layanan dihentikan 
+f	9adc4a8a	Layanan dihentikan 
+f	7ad2a6f7	tidak berhenti: 
+f	6900e4a9	dibebaskan 
+f	c5b2ed66	masih terbuka: 
+f	13ff9dd5	 · seluruh folder, dengan layanan
+f	0e714640	 · seluruh folder
+f	d9b0d858	 · versi apa pun
+f	6c419933	Tidak dapat menemukan letak «
+f	76bc6168	 : jalankan programnya dan letaknya akan diketahui.
+f	45918cea	halaman ini dibuat untuk 16 inti, prosesor ini memiliki 
+f	0ff266f3	 inti / 
+f	28de246d	 inti / 
+f	20d6fcff	 thread · 
+f	b683d147	 thread · 
+f	6a985ca7	 thread · 
+f	7ed3c9c9	 chiplet
+f	99508b0f	 chiplet
+f	10d82a25	 chiplet
+f	9685518a	Prosesor tidak dapat dihubungi: 
+f	2617f474	 · sekarang: STAPM 
+f	9a25ad83	 W, cepat 
+f	26fc4fb9	 W, lambat 
+f	fcaa658f	Kumpulan: 
+f	e2c10fed	Selesai. Hasil: 
+f	752f7878	AMD Ryzen (simulasi, 
+f	77cff896	 · lewat PawnIO
+f	610e7d5d	Kurva, batas, dan overclock tidak diterapkan: 
+f	59e02e96	Mulai aman: kurva dan batas tidak diterapkan (
+f	ac811831	dijalankan dengan --safe
+f	be4bd3bf	Shift ditahan saat mulai
+f	f550035b	mulai terakhir terputus dalam 
+f	4510ff12	 menit pertama setelah penerapan
+f	78cd758c	Kurva dan batas tidak diterapkan: 
+f	fbcd34ba	mulai terakhir terputus tepat setelahnya
+f	54167900	 dB
+f	f40ef228	 ms
+f	57ec9e86	 kHz
+f	897554e6	 Hz
+f	4cf6c595	Terpasang, dimatikan: suara lewat tanpa perubahan
+f	aadff4ad	kanal: 
+f	ea94d7f5	 · gangguan: 
+f	f9442619	lebar Q 
+f	2e321269	Ambang: 
+f	641d9a2f	Batas atas: 
+f	9a5b726c	knee: 
+f	649ef25d	roda mengubah knee
+f	ac33136a	Rasio: 
+f	2674fd83	Gain kompensasi: 
+f	f6fe7fc5	Attack: 
+f	e85ba742	Release: 
+f	0818c20c	Knee: 
+f	c11fefbb	Batas pita rendah: 
+f	4838e8a9	Batas pita tinggi: 
+f	b19cb5e0	seret ke kiri-kanan
+f	91d123d1	seret ke atas-bawah
+f	5243b3ad	seret ke atas-bawah atau putar roda
+f	dda84af3	roda mengubah lebar, klik kanan memilih jenis filter
+f	43d5c6ee	Red Tune akan menambahkan efek suaranya ke rantai efek Windows untuk perangkat «
+f	c781714f	» dan memulai ulang layanan suara Windows.\n\n
+f	7cb39aeb	Suara akan terhenti beberapa detik; program yang sedang memutar mungkin perlu dijeda lalu diputar lagi.\n\n
+f	3256eb3f	Efek lain (
+f	6ee77511	driver) tetap di tempatnya. Efek bisa dilepas di sini juga, di bagian bawah halaman.
+f	e1aa0388	Red Tune akan mengeluarkan efeknya dari rantai efek perangkat «
+f	60969dc9	» dan memulai ulang layanan suara Windows. Suara akan terhenti beberapa detik.
+f	6e94c261	tidak ada berkas 
+f	127e2749	regsvr32: kode 
+f	d85fdc01	efek belum terdaftar: 
+f	d62cae0b	efek akhir perangkat dipakai efek lain (
+f	206adc50	Red Tune akan mengembalikan efek Nahimic ke rantai perangkat «
+f	f5fa4c6b	Red Tune akan mengeluarkan efek Nahimic dari rantai perangkat «
+f	8c7b9989	» dan memulai ulang layanan suara Windows. Suara akan terhenti beberapa detik.\n\n
+f	dcc7d8c7	Suara akan berubah dan kemungkinan besar jauh lebih keras: Nahimic menurunkan level dan mengerjakan sebagian penyetelan speaker. Kecilkan volume dulu. Daftar efek disimpan seperti semula, sakelar mengembalikannya.

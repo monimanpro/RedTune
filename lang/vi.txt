@@ -1,0 +1,1880 @@
+# Red Tune: Tiếng Việt. Made by tools\lang\build.js; w = a whole string, f = a fragment of a composed one
+@laptop	laptop	PC
+w	a2aa4921	Trang chính
+w	0959af38	Nguồn
+w	352e72e8	Đường cong
+w	ef92545e	Tự tinh chỉnh
+w	15d0d65d	Thiết bị
+w	00a6501c	Thành phần
+w	06fc79ae	Cài đặt
+w	d4365936	Giới thiệu
+w	3bf90cf9	Chế độ nguồn
+w	2a7dffb1	Fn+Q chuyển vòng các chế độ
+w	e28d5e85	Chế độ tùy chỉnh: chọn preset bên phải · Fn+Q chuyển vòng các chế độ
+w	d8d0b2d9	Yên tĩnh
+w	31fe851d	Cân bằng
+w	8bd85d30	Hiệu năng
+w	94bbc86f	Tùy chỉnh
+w	a6022cf0	Cực hạn
+w	92d46e95	Bộ xử lý
+w	8e43a0ae	Đồ họa
+w	69031429	Bộ nhớ
+w	36c1d729	tải
+w	8ec1f7c9	Tải
+w	bcc6ab26	đã dùng
+w	5b7c7dd7	Xung nhịp
+w	a84ca073	Nhiệt độ
+w	db519266	Công suất
+w	e1d3c891	Quạt
+w	0589926e	Xung nhịp nhân
+w	04856dfe	VRAM
+w	ee7476d5	Xung nhịp bộ nhớ
+w	5b538146	Đã dùng
+w	cb768d51	Đọc
+w	4933d628	Ghi
+w	5c19d52d	Không đọc được chế độ
+w	a3fb2c9c	GPU đang ngủ
+w	eafd9526	không có dữ liệu NVIDIA
+w	24e2175c	Không tìm thấy trình điều khiển NVIDIA
+w	8c002867	trình điều khiển NVIDIA cũ
+w	d4eda662	UXTU cũng điều khiển đường cong
+w	d634deed	Nó áp dụng preset của mình khi khởi động, khi cắm sạc và sau khi ngủ, và sẽ ghi đè các giá trị này
+w	ca20fe31	Tắt UXTU
+w	f73f7bbc	Preset đường cong
+w	10c5c91a	Lưu
+w	82172d23	Hoàn tác thay đổi
+w	242643f3	Như ở chế độ Yên tĩnh
+w	eb9b8e75	Như ở chế độ Cân bằng
+w	f13b041e	Như ở chế độ Hiệu năng
+w	a22d9c56	Đặt lại
+w	ab02a46a	Áp dụng
+w	46b7a3ba	Trên CPU hiện tại
+w	85e6d09f	Đọc
+w	920ce132	Tự động áp dụng
+w	7c5e5d92	Khi Windows khởi động
+w	5ca4e27f	Cần ứng dụng khởi động cùng Windows (Cài đặt)
+w	62c03ec3	Khi cắm bộ sạc
+w	12ebec1c	Khi dùng pin
+w	6ef48fc4	Sau khi ngủ
+w	ef39dd83	Lịch sử thay đổi
+w	9425155c	Mỗi lần áp dụng đều được ghi lại, có thể khôi phục bất kỳ bộ giá trị cũ nào
+w	2f1ff3ae	Mở
+w	70c0f38c	khớp
+w	63ec7e9e	khác
+w	d8623692	lỗi
+w	e9b70efc	đang đọc…
+w	bc1a72f1	đang áp dụng…
+w	e14e7f73	CPU đang chạy với các giá trị này
+w	832a150e	Đang hoạt động: được áp dụng tự động
+w	aa8e426b	Đã chọn nhưng chưa hoạt động: Áp dụng để kích hoạt
+w	f0f1252e	Các ô màu xanh đã thay đổi
+w	8007c957	Kéo thanh trượt hoặc nhập số. Sau khi nhấp, con lăn chuột thay đổi từng 1 đơn vị
+w	7aad830e	Các thanh trượt xanh nhạt đã thay đổi
+w	1dff9af7	Kéo thanh trượt hoặc nhập số
+w	dd8755bf	Nhấp vào một ô, rồi dùng con lăn chuột để thay đổi từng 1 đơn vị
+w	2d93184f	Mặc định nhà máy (0)
+w	7b8656b9	Hằng ngày
+w	0c03b6c7	Preset mới từ các giá trị này…
+w	a112f834	Đổi tên…
+w	77559023	Xóa
+w	14b131be	Preset mới
+w	641c3535	Tên
+w	6bbe678c	Preset của tôi
+w	ba434cd4	Đổi tên preset
+w	e91982fe	Tên này đã được dùng
+w	b4420304	Xong
+w	b0a26fcb	Hủy
+w	b2e9482c	Lịch sử thay đổi đường cong
+w	c1aa7097	Chưa có gì
+w	7eddd6fa	Mỗi lần áp dụng đường cong sẽ hiện ở đây
+w	efc41ede	Đến trình chỉnh sửa
+w	cc1ff13b	Lenovo Legion Toolkit cũng điều khiển nguồn
+w	c5479131	Nó áp dụng preset của mình khi đổi chế độ và sẽ ghi đè các cài đặt này
+w	c4d89145	Tắt LLT
+w	481c06f3	Preset của chế độ tùy chỉnh
+w	43768da5	Thay đổi
+w	5d53ed1c	Đã lưu
+w	673911cb	Có thay đổi chưa lưu
+w	0113f951	Đang áp dụng…
+w	19d21c69	Đang hoạt động: dùng trong chế độ Tùy chỉnh (Fn+Q hoặc Trang chính)
+w	86ea9074	Giới hạn công suất dài hạn
+w	72073369	Công suất duy trì của CPU
+w	1a25f7dc	Giới hạn công suất ngắn hạn
+w	6c7975cc	Công suất đỉnh trong thời gian ngắn
+w	cf5f8d36	Giới hạn công suất đỉnh
+w	ebb9a9f4	Mức tối đa khi tải tức thời
+w	4cd50c47	Giới hạn dài hạn khi tải CPU+GPU
+w	5173f350	Công suất CPU khi GPU cũng hoạt động
+w	65143d73	Giới hạn nhiệt độ CPU
+w	419a29d3	Vượt mức này CPU sẽ giảm xung nhịp
+w	2f397926	Công suất GPU bổ sung theo tải CPU
+w	c33b334d	TGP có thể cấu hình
+w	926cef2e	Công suất GPU trên mức cơ bản
+w	65a462b6	Giới hạn nhiệt độ GPU
+w	aecc699a	Vượt mức này GPU sẽ giảm xung nhịp
+w	aed63ba5	Mục tiêu tổng công suất CPU khi cắm điện
+w	5964e6ab	Ngưỡng mà công suất chuyển sang GPU
+w	fb4718bd	Dynamic Boost từ GPU sang CPU
+w	1e51e386	GPU có thể lấy bao nhiêu từ CPU
+w	5a6b7b2e	Quạt
+w	bc186f34	Mặc định
+w	6e6f8a07	Theo bên nóng hơn giữa CPU và GPU
+w	00acbcf7	Tốc độ tối đa
+w	f0773c31	Tất cả quạt chạy tối đa, bật bằng nút Áp dụng ở trên. Để lâu sẽ làm mòn quạt
+w	3b219822	Tất cả quạt chạy tối đa. Để lâu sẽ làm mòn quạt
+w	440ccc96	Tốc độ theo bên nóng hơn giữa CPU và GPU. Rê chuột lên một điểm để xem ngưỡng
+w	466960c3	Kéo các điểm lên xuống
+w	49976ea7	Kéo các điểm lên xuống, rê chuột lên một điểm để xem ngưỡng
+w	2142831a	Gói nguồn Windows
+w	647b8408	Gói cho preset này
+w	bffba646	Bật cùng với preset
+w	f8571b36	Các gói của Windows
+w	b27f1d07	Tạo hoặc sửa gói trong Control Panel của Windows
+w	ecd09041	Tạo gói
+w	ff735680	Mở Tùy chọn nguồn
+w	d5c0d83e	Sao chép gói cân bằng hoặc mở Control Panel
+w	afc64e8d	Gói cho các chế độ khác
+w	50aa62f8	Không thay đổi
+w	181faada	Preset mới từ các cài đặt này…
+w	35b936c1	Gói nguồn mới
+w	f3e6c4be	Pin
+w	4cbf9840	Chế độ sạc
+w	590a3da3	Bảo vệ pin
+w	a5908bc1	Bình thường
+w	624b3832	Sạc nhanh
+w	b0b7093e	Chế độ bảo vệ pin giữ mức sạc khoảng 80 % để pin bền hơn
+w	df2f4bff	Sạc ban đêm
+w	04446b1b	80 % qua đêm, 100 % vào buổi sáng
+w	4b738f43	Bật máy khi mở nắp
+w	c4c41a34	Bật máy khi cắm bộ sạc
+w	a7b803cc	Bật máy khi sạc qua USB-C
+w	692aa47a	Nguồn USB
+w	f483edc1	Tắt
+w	93c0c1fc	Khi ngủ
+w	6b0d1aec	Luôn luôn
+w	6035a231	Sạc thiết bị USB khi laptop đang ngủ hoặc tắt
+w	a36282e1	Màn hình
+w	3b9cb762	Độ phân giải
+w	0a6d0dcf	Tần số quét
+w	1a2dade1	Tỷ lệ
+w	d826138b	Màn hình tích hợp
+w	30425470	Tấm nền phản hồi nhanh hơn
+w	a79d4040	Tắt các màn hình
+w	ac621e04	Tắt
+w	ada29767	Màn hình tắt, laptop vẫn chạy. Di chuột hoặc nhấn phím để bật lại
+w	2e3d168b	Bàn phím và nhập liệu
+w	fe5e4931	Đèn bàn phím
+w	0d9aa9f4	Fn+Space
+w	23b392eb	Khóa touchpad
+w	5acc5956	Tắt touchpad
+w	e5741f0d	Khóa Fn
+w	14c51fb8	F1–F12 hoạt động không cần Fn
+w	f05624a9	Khóa phím Windows
+w	44174f85	Chỉ bàn phím tích hợp
+w	1d39ced0	Micrô
+w	fb931b67	Bật hoặc tắt tất cả micrô
+w	0237c487	đã tìm thấy
+w	fbb62987	không tìm thấy
+w	3d8f3436	Chọn thư mục
+w	cb0a9084	Trang CoreCycler
+w	0b714fe6	Sắp có
+w	a776dd81	Prime95, .NET 8 và các kiểm tra cho việc tự tinh chỉnh
+w	8d4f7e7b	Giai đoạn 4
+w	0c2f82a6	Khởi động cùng Windows, thu nhỏ vào khay
+w	edef32fa	Qua Task Scheduler, không hiện hộp thoại UAC khi đăng nhập
+w	7fa39e24	Đóng cửa sổ sẽ thu vào khay
+w	ce91dc4b	Nếu không, nút đóng sẽ thoát chương trình và đường cong tự động ngừng hoạt động
+w	18a014bb	Thư mục cài đặt
+w	8dc7408c	Người khởi xướng
+w	4f5a185f	Người thực hiện
+w	0240eda2	Con người — ý tưởng, thử nghiệm, khởi động lại và sự kiên nhẫn
+w	a86c7417	Claude — mã nguồn, đường cong và hơn 40 vòng Prime95
+w	dfc4f89b	Không nhân nào bị tổn hại. Ừm, gần như vậy.
+w	aa134bc7	Thoát
+w	bc6797f7	Áp dụng đường cong
+w	a0ec1d4e	Ngôn ngữ
+w	3fa0607e	Tỷ lệ giao diện
+w	b789c9d6	Ứng dụng sẽ khởi động lại
+w	d0ace077	Thông báo
+w	c6ffd760	Hiện thông báo
+w	aacaf8d9	Chế độ nguồn, phím Fn, Caps Lock và hơn nữa — hiện trên màn hình trong giây lát
+w	0b656db5	Hiện trên ứng dụng toàn màn hình
+w	4949ae9c	Nếu không, sẽ không hiện gì khi chơi game hoặc xem video toàn màn hình
+w	5861186f	1 giây
+w	9315f8aa	2 giây
+w	d62e7f05	3 giây
+w	5cc64b43	5 giây
+w	d36fc955	Trên mọi màn hình
+w	b7dc4397	Vị trí và thời lượng
+w	f3bc62a3	Xem thử
+w	0d06aafe	Giữa dưới
+w	1ecf1794	Giữa trên
+w	89d76dab	Giữa
+w	ea8a5b17	Dưới trái
+w	3bf323cc	Dưới phải
+w	1b310dc9	Trên trái
+w	7564bd1a	Trên phải
+w	b56930dd	Thông báo sẽ trông như thế này
+w	2cd25ecc	Camera
+w	f40d907b	Chế độ máy bay
+w	aede812c	Bộ đổi nguồn
+w	2ad6632a	Đã áp dụng đường cong
+w	072bc287	Caps Lock bật
+w	fb9141ec	Caps Lock tắt
+w	4892949e	Num Lock bật
+w	c95554e7	Num Lock tắt
+w	38927f44	Camera bật
+w	1552bbfb	Camera tắt
+w	0dd90ef7	Khóa Fn bật
+w	fdd93ada	Khóa Fn tắt
+w	4e7a62ca	Touchpad tắt
+w	4821ea6d	Touchpad bật
+w	a0787d6d	Đèn bàn phím tắt
+w	d2c5cdf5	Micrô tắt
+w	6b09e614	Micrô bật
+w	b7a2d722	Đã cắm bộ sạc
+w	3491a145	Đã rút bộ sạc
+w	827c6fd9	Chương trình khác
+w	374f570a	Các chương trình thay đổi cùng những cài đặt này
+w	7c61e8b8	Nếu khởi động cùng Windows, chúng sẽ xung đột với Red Tune
+w	6e90df37	Tắt tự khởi động
+w	f8c9fa3b	không tìm thấy
+w	a44932e2	đang chạy, khởi động cùng Windows
+w	d554820c	khởi động cùng Windows
+w	8521f5c0	đang chạy, đã tắt tự khởi động
+w	6f2e5dfe	đã tắt tự khởi động
+w	578da204	Chế độ nguồn, giới hạn, quạt, pin, phím Fn
+w	dbc49c7e	Đường cong (preset khi khởi động, khi cắm sạc và sau khi ngủ)
+w	9a484d21	Dịch vụ phím Fn của Lenovo: lấy mất phím của ứng dụng
+w	3df6ae5e	Dịch vụ của Lenovo, thay đổi chế độ và pin
+w	b88183bb	Ứng dụng của chính Lenovo cho laptop chơi game
+w	fcae2749	Đóng Lenovo Legion Toolkit và tắt tự khởi động của nó?\n\nRed Tune sẽ đảm nhận nguồn, quạt và pin. Vẫn có thể tự mở lại LLT sau này.
+w	c4942ec6	Đóng UXTU và tắt tự khởi động của nó?\n\nTừ giờ Red Tune áp dụng đường cong. Có thể khôi phục UXTU: tác vụ "UXTU" trong Task Scheduler.
+f	1c6362be	Tùy chỉnh: preset «
+f	0abcf695	» · Fn+Q chuyển vòng các chế độ
+f	e49d5a11	Hiện tại: Cực hạn
+f	2a7dffb1	Fn+Q chuyển vòng các chế độ
+f	e28d5e85	Chế độ tùy chỉnh: chọn preset bên phải · Fn+Q chuyển vòng các chế độ
+f	760c7bc0	Đã áp dụng: chế độ Tùy chỉnh, preset «
+f	2788627a	Áp dụng đường cong «
+f	234fc509	Đường cong «
+f	9fce8f0b	» đã được áp dụng
+f	52e25ab1	   · đang hoạt động
+f	fab9c39c	Thất bại: 
+f	6529ee54	Đang áp dụng «
+f	a9e46ea5	Không khả dụng: 
+f	0728abe8	Lỗi: 
+f	96cb0090	Chưa áp dụng: 
+f	8162e9d2	 · có thay đổi chưa lưu
+f	d0cce6af	Giá trị từ 
+f	39d4c1e7	 đến 
+f	8013e8c4	 và 
+f	c258081c	 nhân / 
+f	cb7d9488	 luồng
+f	5c750e0f	 GB
+f	c2474dfa	hao mòn 
+f	025a42fc	 MB/s
+f	51f75bf3	 GB/s
+f	204fdec2	 TB
+f	0ff48a0a	Ổ đĩa 
+f	2550c409	 GHz
+f	4aff84a8	 MHz
+f	bae41d9e	 rpm
+f	0c3c06ab	Khe 
+f	145f8e49	kênh 
+f	2b48d688	Điểm 
+f	0dd2ee13	 · CPU từ 
+f	3a5e2fc2	 · GPU từ 
+f	e62b984e	Phiên bản 
+f	91b7f507	 (đã sửa)
+f	b09490f5	Đường cong không được áp dụng khi khởi động: 
+f	1200bedf	Đường cong không được áp dụng (
+f	1e834579	Lưu thay đổi vào preset «
+f	43631f70	» trước khi áp dụng?
+f	68374c92	Xóa preset «
+f	e882f28d	»? Các giá trị của nó vẫn nằm trong lịch sử thay đổi.
+f	8674c7c9	: Tùy chỉnh
+f	46158cb3	: Yên tĩnh
+f	e2aa3afb	: Cân bằng
+f	0dd12afe	: Hiệu năng
+f	136195be	: Cực hạn
+f	34c0f79b	Chế độ nguồn: 
+f	994b491d	Tần số quét: 
+f	aa8ac194	Đèn bàn phím: 
+f	1ac39559	Tắt tự khởi động của «
+f	b9fc3e77	» và đóng nó?\n\nCó thể khôi phục: tự mở nó rồi bật tự khởi động.
+f	95b26c02	 · không tìm thấy
+f	4f403dbb	 · đang chạy, khởi động cùng Windows
+f	ce36e0c1	 · khởi động cùng Windows
+f	3b68f56f	 · đang chạy, đã tắt tự khởi động
+f	0664e9a9	 · đã tắt tự khởi động
+f	25168e49	thủ công
+f	8a824827	khởi động
+f	64b0614f	bộ sạc
+f	d7b8a9de	pin
+f	c81460e9	sau khi ngủ
+w	80b22750	Chế độ nguồn của Windows
+w	454ec6c8	Loại gói nguồn
+w	adcdd377	Cân bằng
+w	7e870c3c	Chế độ nguồn của Windows chỉ tác động lên gói nguồn loại cân bằng
+w	74aa3222	Dùng chung cho mọi gói nguồn loại cân bằng; một cho khi cắm điện và một cho khi dùng pin
+w	3aba38ff	Hiệu quả
+w	22c9b14a	Cân bằng
+w	dcc65183	Một độ sáng cho mọi gói nguồn
+w	dfffd4fe	Độ sáng màn hình được ghi vào mọi gói nguồn của Windows mỗi khi thay đổi: đổi gói nguồn thì màn hình không đổi độ sáng
+w	c03824f2	Ghi vào gói nguồn
+w	f05f99ac	Ghi vào gói nguồn
+w	0e74dd22	Các thay đổi ở trên vào gói nguồn của Windows khi bấm nút này hoặc nút “Lưu” ở dưới
+w	e8f18646	Chưa ghi: sau khi ghi, Windows sẽ không tạm dừng nhân
+w	0122ae47	Chưa ghi: sau khi ghi, Windows có thể tạm dừng nhân
+w	8e9bf262	Gói nguồn của tự tinh chỉnh: Red Tune đặt các giá trị
+w	29535322	Các giá trị khác với giá trị đặt cho tự tinh chỉnh: hàng gói nguồn của tự tinh chỉnh bên dưới sẽ ghi lại
+w	267ab900	Giá trị của gói nguồn tinh chỉnh đã bị đổi bên ngoài Red Tune: nút này ghi các giá trị đặt cho tự tinh chỉnh
+w	d0ea5698	Khôi phục giá trị
+w	2af309bf	Đã ghi lại các giá trị của gói nguồn tinh chỉnh.
+w	31ae3b4c	Điền cho tự tinh chỉnh
+w	c2cfc8c8	Cài đặt bộ xử lý trong gói nguồn
+w	bd6be146	Gói nguồn
+w	f88abf8f	Ghi bằng nút bên dưới
+w	a9f71427	Gói nguồn này không có cài đặt đó
+w	835b2393	Cắm điện
+w	7f1cb42d	Dùng pin
+w	b1b2083c	Trần xung nhịp
+w	1627a837	Bộ xử lý không vượt quá mức này. Kéo hết sang phải là không giới hạn
+w	5dadc93f	không
+w	6fdaad72	Boost
+w	266aca68	Cách bộ xử lý nâng xung nhịp lên trên mức cơ bản
+w	540dca6b	Tắt
+w	cd7a218f	Bật
+w	f360b712	Mạnh
+w	f22b30c8	Hiệu quả
+w	64c93ee5	Hiệu quả mạnh
+w	f99d8678	Mạnh, xung nhịp đảm bảo
+w	46f5cac7	Hiệu quả mạnh, xung nhịp đảm bảo
+w	1d85fa92	Ưu tiên năng lượng
+w	008c5979	Hiệu năng
+w	07a98700	Tiết kiệm
+w	69c06de0	Trạng thái tối thiểu của bộ xử lý
+w	f4e038d8	Bộ xử lý không xuống dưới tỉ lệ này của xung nhịp
+w	5d832db0	Cấm tạm dừng nhân
+w	18043896	Mọi nhân luôn hoạt động: Windows không tạm dừng chúng
+w	d2a18414	Chế độ nguồn của Windows được đặt chồng lên gói nguồn đang dùng: nó có thể có giá trị riêng
+w	5fde6f32	Gói nguồn
+w	bf01f895	Đường cong
+w	9223ae12	Red Tune Test được tích hợp sẵn trong ứng dụng: các phép tính tự kiểm tra, lỗi sẽ chỉ ra nhân nào
+w	5b4014e8	Chế độ tinh chỉnh
+w	68629577	Hằng ngày
+w	35213b8e	Nghiêm ngặt
+w	5395098e	Đường cong sâu, riêng cho từng nhân. Giả định rằng tải nặng chiếm tất cả các nhân cùng lúc
+w	8ce6a831	Ổn định với bất kỳ tập nhân bận nào, nhưng nông hơn: một mức chung, các nhân yếu để riêng
+w	355233cf	1. Ngưỡng của từng nhân
+w	94e0a1f1	Từng nhân một, các nhân khác ở 0: chia đôi từ −24 theo bước 12, 6, 3. Các ngưỡng tạo nên hình dạng đường cong
+w	5a1815d1	2. Cả bộ cùng hạ xuống
+w	2adbb2ad	Từ “ngưỡng +22” (không sâu hơn −12), mỗi lần sâu thêm 3 dưới tải trên mọi nhân; nhân lỗi sẽ lùi lại và vẫn nằm trong tải; kiểm tra cuối và dự phòng +3
+w	83fbec09	Ngưỡng đã tìm trước đó
+w	4af207b1	Từ các ngưỡng này
+w	eb479818	1. Hạ dần, kiểm tra từng bước
+w	e15314ab	Mọi nhân từ −6, mỗi lần sâu thêm 3. Mỗi bước được kiểm tra dưới tải trên mọi nhân và khi không có các nhân đã dừng; nhân lỗi lùi một bước và không hạ nữa
+w	e1c35a47	Cả bộ: nghỉ, bão, nền, tải trên mọi nhân và không có các nhân nông nhất, từng nhân riêng; dự phòng +3
+w	2459ecbc	1. Bậc thang giới hạn
+w	b759e0ae	Mọi nhân đang tải ở cùng một giá trị, từ −6, mỗi lần sâu thêm 3; nhân lỗi nhận giới hạn của mình và rời tải, các nhân khác hạ tiếp, cho đến nhân cuối cùng
+w	61a9a549	2. Kiểm tra cuối
+w	b6febd7e	Cả bộ: nghỉ, bão, nền, tải trên mọi nhân và trên từng bậc của bậc thang, từng nhân riêng; dự phòng +3
+w	3756ed1b	Tìm các giới hạn
+w	6d4a65a7	Kiểm tra cuối
+w	5d9a0d84	Giới hạn riêng của từng nhân dưới tải: mọi nhân đang tải ở cùng một giá trị, từ −6, mỗi lần sâu thêm 3; nhân lỗi nhận giới hạn của mình và rời tải; kiểm tra cuối và dự phòng +3
+w	7ffd5ac6	Từ một bộ nông “ngưỡng +22”, mỗi lần sâu thêm 3 khi còn ổn định: mọi nhân; sau một lỗi không chỉ ra nhân nào thì theo từng chiplet, rồi từng nhân; kiểm tra cuối và dự phòng +3
+w	90d71403	Khởi động lại giữa hai phần của việc kiểm tra cả bộ
+w	68d60662	Làm lại giai đoạn 2
+w	f51830d3	Làm lại giai đoạn 2
+w	b8a66c9c	Đây là gì. Tìm giá trị Curve Optimizer của từng nhân: điện áp của nó có thể hạ đến đâu mà nhân vẫn ổn định. Giá trị càng âm thì điện áp và nhiệt càng thấp, xung nhịp càng cao trong cùng giới hạn, nhưng giá trị quá âm sẽ làm sập hệ thống.\n\nHai chế độ. Hằng ngày: đường cong sâu, riêng cho từng nhân. Trước hết tìm ngưỡng của từng nhân, lần lượt từng nhân: giá trị mà vượt qua thì nhân đó tự gục khi chạy một mình, bằng cách chia đôi từ −24 theo bước 12, 6, 3, các nhân khác ở 0. Sau đó cả bộ bắt đầu ở “ngưỡng +22”, nhưng không sâu hơn −12, và mỗi lần sâu thêm 3 dưới tải trên mọi nhân, mỗi nhân hạ đến giới hạn riêng của nó. Nhân lỗi sẽ lùi lại và vẫn nằm trong tải; sau lỗi thứ hai nó không hạ nữa. Nếu một lỗi không chỉ ra nhân nào, cả bộ lùi lại và các chiplet tiếp tục riêng rẽ, rồi đến từng nhân một. Không nhân nào tiến gần ngưỡng của mình hơn 6 bước. Đường cong như vậy giả định rằng tải nặng chiếm tất cả các nhân cùng lúc: các nhân sâu ổn định khi các nhân nông hơn làm việc bên cạnh. Nếu gần như mọi nhân đều bận mà đúng các nhân nông lại đang nghỉ, có thể xảy ra lỗi; tự thân điều đó hiếm gặp, nhưng việc gắn một chương trình vào một phần các nhân có thể gây ra. Nghiêm ngặt: ổn định với bất kỳ tập nhân bận nào, nhưng nông hơn rõ rệt; cách thực hiện được mô tả bên dưới.\n\nChế độ nghiêm ngặt. Các nhân của một bộ xử lý dùng chung một điện áp và ảnh hưởng lẫn nhau khi có tải: một nhân nông đang tải nâng điện áp cho các nhân còn lại, nhân sâu dựa vào đó, nhưng không phải miễn phí. Vì vậy mỗi bước đều được kiểm tra bằng một chuỗi tải. Mọi nhân bắt đầu ở −6 và cùng hạ sâu, mỗi lần 3. Ở mỗi bước, trước tiên tải mọi nhân: nghỉ, khởi động tải theo đợt, 40 giây tải liên tục. Nhân mà tải hoặc WHEA báo lỗi sẽ quay về giá trị cuối cùng đã đạt và không hạ nữa, nhưng vẫn tham gia tải trên mọi nhân. Sau đó cùng các giá trị ấy được kiểm tra khi không có các nhân đã dừng: không có nhân nông nhất, không có hai nhân, không có bốn nhân, và cuối cùng chỉ trên những nhân còn đang hạ. Điều đó cho thấy các nhân sâu có tự ổn định được mà không cần chỗ dựa hay không. Một bước chỉ được tính khi cả chuỗi đã qua. Nếu một lỗi không chỉ ra nhân nào (khởi động lại), mọi nhân còn đang hạ nhận giá trị cuối cùng đã đạt, và việc hạ kết thúc. Việc tinh chỉnh không hạ sâu hơn −45.\n\nKiểm tra cuối. Cả bộ: nghỉ, khởi động tải, bão tải ngắt quãng, nền nhẹ như video trên trình duyệt trên từng chiplet, tải trên mọi nhân, ở chế độ nghiêm ngặt còn có tải không có các nhân nông nhất (không có 1, 2, 4, 8 và 12 trong 16) và lần lượt từng nhân (tải, các bậc xung nhịp, đánh thức). Nhân được chỉ ra nhận +3. Sau một lỗi dưới tải không chỉ ra nhân nào, các nhân ở mức sâu nhất nhận +3. Phần đó được lặp lại. Bộ đã qua được cộng thêm dự phòng +3.\n\nKiểm tra đầy đủ là tùy chọn, bằng nút “Kiểm tra đường cong hiện tại”: các vòng dài trên preset đang dùng (một chiplet nghỉ, chiplet kia có tải, mỗi lượt 25 phút; mọi nhân 25 phút; bão 20 phút; nền mỗi lượt 12 phút; các bậc xung nhịp trên mọi nhân 10 phút). Nó không tinh chỉnh gì, và nếu tìm thấy nhân yếu thì nâng nhân đó +3. Có thể chạy bất cứ lúc nào, ví dụ qua đêm.\n\nTải nặng là Prime95 hoặc Red Tune Test, chọn ở trang Thành phần. Red Tune Test được tích hợp sẵn trong chương trình: mỗi nhân chạy các phép tính tự kiểm tra: bình phương các số lớn qua phép biến đổi Fourier ở sát giới hạn độ chính xác, các phép cộng qua khối FMA, các lượt quét qua bộ nhớ đệm của nhân và những lần chuyển đột ngột từ việc nhẹ sang nặng. Mọi kết quả sai đều là lỗi của nhân, và cho thấy đó là nhân nào.\n\nLỗi là một lỗi WHEA (lỗi phần cứng của bộ xử lý trong nhật ký Windows), lỗi của tải hoặc một lần khởi động lại. Các lỗi WHEA 47 từ các khối của chính nhân cũng được tính, dù Windows gắn nhãn chúng là “bộ nhớ”. Sau khi khởi động lại, việc tinh chỉnh tự tiếp tục 45 giây sau khi đăng nhập, vì thế chương trình bật tự khởi động của mình; khi đó cửa sổ mở thẳng vào thẻ này.\n\nNếu laptop treo. Thỉnh thoảng một giá trị quá sâu không làm laptop khởi động lại mà làm nó đứng hẳn: màn hình đóng băng và không có gì xảy ra quá vài phút. Nó sẽ không tự thoát ra: hãy tắt bằng cách giữ nút nguồn rồi bật lại, việc tinh chỉnh sẽ tiếp tục.\n\nTrần xung nhịp. Trong suốt quá trình tinh chỉnh, chương trình gỡ trần xung nhịp của Windows (“Tần số bộ xử lý tối đa” của gói nguồn đang có hiệu lực) để các nhân được kiểm tra đến mức boost đầy đủ; ở các bậc xung nhịp và dưới tải nền, chương trình tự di chuyển trần. Giá trị cũ được ghi vào đĩa và đặt lại khi dừng tinh chỉnh, còn sau khi khởi động lại thì đặt lại ở lần mở chương trình kế tiếp.\n\nHộp đen. Cứ 2 giây chương trình ghi vào đĩa mức bận của từng nhân, xung nhịp và điện áp của nó. Sau một lần khởi động lại mà không tắt máy, nó cho biết những nhân nào đang làm việc ở thời điểm cuối cùng, và tự tinh chỉnh ghi điều đó vào nhật ký.\n\nĐiều kiện. Hãy tinh chỉnh trong điều kiện rộng nhất mà laptop làm việc: preset nguồn “00 Tinh chỉnh” dành cho việc đó (các giới hạn của preset mạnh nhất của bạn, một gói nguồn Windows cho phép các nhân ngủ). Hãy bật chế độ Tùy chỉnh với preset này trước khi bắt đầu.\n\nKết quả được lưu thành một preset đường cong mới; áp dụng hay không là tùy bạn.
+w	f4566ff6	Ngưỡng của từng nhân: chia đôi từ −24 theo 12, 6, 3 · mỗi lần thử khoảng một phút: tải nặng và các bậc xung nhịp
+w	d6e17985	2. Cả bộ
+w	aed7fc8a	Từ “ngưỡng +13”: nhân được chỉ ra nhận +3; lỗi không chỉ ra nhân nào thì nâng cả bộ +3; sau đó các chiplet và từng nhân hạ tiếp khi còn ổn định; kiểm tra cuối và dự phòng +3
+w	3a2bc52d	Nghỉ với bộ giá trị đã ghi
+w	5efcd30a	Khởi động tải trên mọi nhân: 6 giây làm việc, 4 giây nghỉ
+w	601320c8	Bão tải ngắt quãng trên mọi nhân
+w	ebf35365	Kiểm tra
+w	2328b163	Kiểm tra bộ nhớ
+w	a45c93cb	Bắt đầu
+w	5d93b875	20 phút
+w	881bba4e	1 giờ
+w	9e0e9f28	3 giờ
+w	9939e41c	Cho đến khi dừng
+w	79a5e26a	Vẫn chạy
+w	d247dc83	Đường cong hiện không ở mức 0. Lỗi trong lần kiểm tra khi đó có thể đến từ bộ xử lý chứ không phải bộ nhớ.\n\nĐể có kết quả chính xác, hãy áp dụng đường cong «Mặc định nhà máy (0)» trước.
+w	c25760eb	Tự tinh chỉnh đang chạy: hãy bắt đầu kiểm tra bộ nhớ sau khi nó xong
+w	2b3fa1c4	Mọi luồng, toàn bộ bộ nhớ trống · đặt đường cong về 0
+w	839c3a34	Chưa chạy
+w	28e721bf	Kết quả kiểm tra
+w	bf751615	Đang chiếm bộ nhớ…
+w	465407a0	Việc kiểm tra đang chạy rồi
+w	3824c927	Quá ít bộ nhớ trống: hãy đóng các chương trình nặng
+w	afabb5fa	Chia đôi từ −25, sau đó xác nhận 32 phút và chừa biên +5
+w	b1644281	Bộ xử lý này có 8 nhân trở xuống nên các bước tìm kiếm dài hơn: 6 phút thay vì 4.
+w	aa16f621	Bộ xử lý này có 9–12 nhân nên các bước tìm kiếm dài hơn: 5 phút thay vì 4.
+w	6eadd7ae	Đây là gì. Một giá trị Curve Optimizer cho mỗi nhân: điện áp có thể giảm bao nhiêu mà nhân vẫn ổn định. Giá trị càng âm thì điện áp và nhiệt càng thấp, xung nhịp càng cao với cùng giới hạn, nhưng giá trị quá âm sẽ làm sập hệ thống. Việc tinh chỉnh tìm ngưỡng của từng nhân và chừa lại một khoảng an toàn.\n\nGiai đoạn 1 — từng nhân riêng lẻ, các nhân khác ở 0. Giá trị được tìm bằng cách chia đôi từ −25: các bước ±13, ±6, ±3, ±2, ±1, tổng cộng sáu lần thử, ngưỡng chính xác đến một bước. Một lần thử mất khoảng một phút rưỡi: 25 giây Prime95 AVX2 trên cả hai luồng của nhân (giá trị quá sâu sẽ lỗi ở đây trong vài giây, không cần khởi động lại), sau đó 60 giây bậc thang xung nhịp — nhân tải tối đa trong khi trần xung nhịp giảm từng bước 200 MHz từ 5,4 xuống 1,6 GHz. Chính các bậc thang này đã tìm ra gần như mọi giá trị yếu. Ngưỡng được cộng biên +8 (khoảng 40 mV): một lần thử ngắn thấy ngưỡng ở chỗ hệ thống sập, còn các lỗi hiếm bắt đầu trước đó vài bước.\n\nGiai đoạn 2 — tất cả các nhân cùng lúc với bộ giá trị đã tìm: 8 phút Prime95 trên mọi nhân (AVX2, SSE và các cú giật «tải — nghỉ»), một cơn bão 5 phút gồm các đợt tải ngẫu nhiên và 5 phút trên mỗi chiplet với tải nền nhẹ hoạt động giống như video trong trình duyệt. Khi Prime95 hoặc lỗi WHEA chỉ ra một nhân, nhân đó được +3 và giai đoạn bắt đầu lại. Khi không chỉ ra được thủ phạm (máy khởi động lại), nhân yếu được tìm bằng cách chia đôi các nhân và được +3.\n\nKiểm tra đầy đủ — khi bạn muốn, bằng «Kiểm tra đường cong hiện tại»: các vòng dài trên preset đang hoạt động (một chiplet nghỉ trong khi chiplet kia chịu tải, mỗi bên 25 phút; mọi nhân trong 25 phút; cơn bão 20 phút; tải nền mỗi bên 12 phút; bậc thang xung nhịp trên mọi nhân trong 10 phút). Nó không tinh chỉnh gì, và nhân yếu tìm được sẽ được +3. Chạy bất cứ khi nào bạn muốn, ví dụ qua đêm.\n\nMột vòng thất bại khi có lỗi WHEA (lỗi phần cứng của bộ xử lý trong nhật ký Windows), lỗi Prime95 hoặc máy khởi động lại. Lỗi WHEA 47 từ các khối của chính nhân cũng được tính, dù Windows ghi là «bộ nhớ». Sau khi khởi động lại, việc tinh chỉnh tự tiếp tục 45 giây sau khi đăng nhập, vì vậy ứng dụng bật tự khởi động của mình. Giữa các vòng mọi nhân đều ở 0.\n\nTrần xung nhịp. Trong suốt quá trình tinh chỉnh, ứng dụng gỡ trần xung nhịp của Windows («Tần số tối đa của bộ xử lý» trong gói nguồn đang dùng), để các nhân được thử đến mức boost tối đa; trong các bậc thang xung nhịp và các giai đoạn «Nền» nó tự di chuyển trần. Giá trị trước đó được ghi ra đĩa và khôi phục khi dừng tinh chỉnh, còn sau khi khởi động lại thì khôi phục ở lần mở ứng dụng kế tiếp.\n\nHộp đen. Cứ 2 giây ứng dụng ghi tải, xung nhịp và điện áp của từng nhân ra đĩa. Sau một lần khởi động lại mà không tắt máy đúng cách, nó cho biết những nhân nào đang hoạt động ở thời điểm cuối, và tự tinh chỉnh ghi điều đó vào tiến trình.\n\nĐiều kiện. Hãy tinh chỉnh trong điều kiện rộng nhất mà laptop hoạt động: preset nguồn «00 Tinh chỉnh» dành cho việc đó (giới hạn của preset mạnh nhất của bạn, một gói Windows cho phép các nhân ngủ). Bật chế độ «Tùy chỉnh» với preset này trước khi bắt đầu.\n\nKết quả được lưu thành một preset đường cong mới; bạn là người áp dụng nó.
+w	b2a699ef	Các vòng dài, một cơn bão, tải nền giống video trong trình duyệt và bậc thang xung nhịp trên bộ giá trị hoàn chỉnh
+w	a8203eeb	giữa các lần đo
+w	b28ddffe	đang đo
+w	d8a62faf	độ lệch
+w	b4b614cd	Đo tất cả
+w	ac71c0ee	Đường cong của mọi nhân
+w	b758a0f1	Đường cong các nhân
+w	dae7a4fb	Điện áp ở các xung nhịp khác nhau: một nhân qua số phía trên thanh trượt của nó, tất cả ở đây
+w	3ac2626d	Chưa đo nhân nào. Đo tất cả sẽ lần lượt lấy đường cong của từng nhân
+w	dbd39cde	Xong: mọi nhân đã được đo
+w	98e1c0db	Đường cong của nhân
+w	ec2537dd	Đo
+w	17062d75	V
+w	e34a6e3f	GHz
+w	1c93e64d	Kéo thanh trượt hoặc nhập số. Số của nhân sẽ mở đường cong của nó
+w	8d6f9432	Chỉ dành cho bộ xử lý AMD Ryzen
+w	844d9a8e	Cần có PawnIO (thẻ Thành phần)
+w	5a438359	Không đọc được bảng đo từ xa của bộ xử lý
+w	f4f7958f	Đường cong của nhân này chưa được đo. Đo sẽ tải nhân khoảng một phút và đọc điện áp ở các xung nhịp khác nhau
+w	da528020	Trong lúc đo, xung nhịp của bộ xử lý bị giới hạn từng bước, sau đó mọi thứ được khôi phục
+w	b59a1620	Mỗi giá trị độ lệch giữ phép đo riêng: hãy đo ở 0 và ở giá trị của bạn để so sánh
+w	e7c8f987	Đang đo: nhân đang chịu tải, xung nhịp giảm từng bậc…
+w	31cd66c4	Phép đo đã bị dừng
+w	3ed40ca2	Đang có một phép đo chạy
+w	46d8a5e9	Quá ít điểm: không giữ được nhân bận (hãy đóng các chương trình nặng rồi thử lại)
+w	788b76cb	Tất cả
+w	d6be170f	Độ lệch
+w	8595368d	Theo nhân
+w	e4e1466c	Theo chip
+w	8f4f2a4d	Mọi nhân
+w	247e56dc	Chip
+w	1800ca6a	Mọi nhân
+w	393e72fa	Mỗi nhân có giá trị riêng
+w	85ce78f5	Một giá trị cho mỗi chip: các thanh trượt bên trái, thanh trượt từng nhân bị tắt
+w	40c32a1e	Một giá trị cho mọi nhân: thanh trượt bên trái, thanh trượt từng nhân bị tắt
+w	143d160e	Kéo thanh trượt bên trái hoặc nhập số
+w	9a40ba7b	Thu gọn menu
+w	d1b2f605	Mở rộng menu
+w	5449f665	Preset đồ họa cho preset này
+w	73620917	Đường cong và xung nhịp bộ nhớ từ «Đồ họa», áp dụng cùng preset
+w	a4e6e26e	Preset đồ họa cho các chế độ khác
+w	c8ffcea9	Áp dụng khi chuyển sang chế độ này (Fn+Q, Trang chính)
+w	4987b8b3	Danh sách trắng
+w	e62b8b95	Danh sách đen
+w	3053aa39	Danh sách trắng: không bao giờ bị đóng
+w	d563c053	Danh sách đen: luôn bị đóng, kể cả khi tự khởi động lúc mở máy
+w	3596be5f	Chọn một preset sẽ áp dụng ngay vào card
+w	4c81a219	Chỉ mở · Áp dụng mới ghi
+w	2b07f8ec	Đã áp dụng
+w	5528d81d	Trình chỉnh sửa đang chứa đường cong gốc không có độ lệch. Lưu thành preset?
+w	89b612dc	Đặt lại card đồ họa
+w	87e8634c	Trở về đường cong và xung nhịp bộ nhớ gốc? Các độ lệch được gỡ khỏi card ngay; các preset đã lưu vẫn còn.
+w	09968b83	Đường cong và xung nhịp bộ nhớ gốc
+w	a26101fa	Đường cong và xung nhịp bộ nhớ của card đồ họa (tự áp dụng hồ sơ riêng khi khởi động)
+w	e4d95dde	Làm phẳng phía trên
+w	fff46bb4	Lưu thành…
+w	1bfabcd4	Gốc
+w	ce2ceeb5	Đường cong V/F của card đồ họa
+w	e9b8479c	Đang đọc…
+w	f1a6b59e	MSI Afterburner đang chạy
+w	13c2f9ee	Nó cũng áp dụng đường cong riêng: hai bên sẽ ghi đè lẫn nhau. Hãy đóng nó hoặc gỡ khỏi mục khởi động
+w	70f60478	Điểm
+w	c63f793d	Nhấp vào một điểm trên đồ thị. Kéo để di chuyển một điểm, giữ Shift để di chuyển cả đường cong
+w	c47e1e7f	Dịch cả đường cong
+w	ef8ca404	Di chuyển mọi điểm cùng lúc, hình dạng giữ nguyên
+w	4a5a0a93	Độ lệch xung nhịp bộ nhớ video
+w	37dd6848	Preset
+w	16a147d3	Preset
+w	9c740c77	Áp dụng khi khởi động
+w	0783105d	Trình điều khiển quên đường cong khi khởi động lại: Red Tune sẽ khôi phục preset đã chọn
+w	32f31247	Như trên card hiện tại
+w	a55cf35e	Chỉ xem: việc ghi là tính năng chuyên gia
+w	de83dc47	Đã đổi, chưa áp dụng
+w	a7818ef0	Ép xung card đồ họa
+w	25edba3d	Đường cong và xung nhịp bộ nhớ được ghi vào trình điều khiển đồ họa, như trong MSI Afterburner. Xung nhịp quá cao gây lỗi hình, game bị văng và trình điều khiển tự đặt lại (màn hình nháy).\n\nSau khi khởi động lại, trình điều khiển trở về đường cong gốc.
+w	0c5bcfe8	Đang khôi phục đường cong gốc…
+w	eb3e9745	Chưa có preset: hãy thiết lập đường cong và lưu lại
+w	e58c93f1	Preset đã chọn được nạp vào trình chỉnh sửa; «Áp dụng» ghi nó vào card
+w	71b4464e	Preset này đến từ một đường cong khác (card hoặc trình điều khiển khác)
+w	ffae3daf	Preset đồ họa
+w	c12fb3f1	Undervolt của tôi
+w	89ed75ca	Đường cong đồ họa đã được kiểm chứng trên RTX 5070 Laptop (trình điều khiển 621), chưa kiểm chứng trên card này
+w	a423b64d	không có card đồ họa NVIDIA (đường cong đồ họa hiện chỉ dành cho NVIDIA)
+w	1ea7dd7e	Thêm
+w	f03308d9	Ẩn
+w	6ae63bd9	Mẫu máy này chưa được thử
+w	a062b60d	Những gì hoạt động ở đây và những gì chưa kiểm chứng — trong «Thành phần»
+w	cbf715ff	Nhiệt độ (ACPI)
+w	08b57885	Chưa hỗ trợ số liệu Radeon
+w	8fdec35f	Đường cong chỉ được kiểm chứng trên Ryzen Dragon Range (7x45HX / 8x45HX). Trên bộ xử lý này lẽ ra sẽ hoạt động nhưng chưa được thử
+w	84eed97e	Các chế độ và giới hạn của Lenovo chỉ được kiểm chứng trên Legion R7000P; bộ giá trị và phạm vi của mẫu máy này có thể khác
+w	72d2e750	Việc ghi giới hạn chỉ được kiểm chứng trên Dragon Range, chưa kiểm chứng trên dòng này
+w	9184776e	Hiển thị timing hoạt động ở mọi máy; việc ghi chỉ được kiểm chứng trên Legion R7000P và bị chặn trên các mẫu khác
+w	76ac1be8	Các tính năng của Lenovo chỉ được kiểm chứng trên Legion R7000P; một số có thể không có trên mẫu máy này
+w	ac7b5af9	Đang thu thập báo cáo…
+w	643c6ede	Không sao chép được báo cáo
+w	1c5ee670	Mẫu máy này đã được kiểm chứng
+w	68dd16fd	Mọi thứ trong ứng dụng đã được thử trên laptop này
+w	a4fe0512	Red Tune đã được thử trên Legion R7000P. Ở đây nó hoạt động theo cùng quy tắc, nhưng những phần ghi «chưa kiểm chứng» chưa từng được thấy hoạt động trên mẫu máy này. Báo cáo phía trên giúp bổ sung hỗ trợ cho nó
+w	aff6cfad	chưa kiểm chứng
+w	960c62bd	Nguồn, đường cong và cài đặt cho laptop AMD Ryzen
+w	efb90e1e	Preset mới từ các cài đặt này...
+w	c8e2b0c8	Đổi tên...
+w	a5eec23b	Bộ xử lý này có 8 nhân trở xuống nên các bước dài hơn: 6 phút thay vì 4, kiểm tra 15 phút thay vì 10. Việc tinh chỉnh vẫn vừa trong một đêm và thử đường cong kỹ hơn.
+w	f091cb39	Bộ xử lý này có 9–12 nhân nên các bước dài hơn: 5 phút thay vì 4, kiểm tra 12 phút thay vì 10.
+w	34c5275d	2. Chiplet chịu tải
+w	027699ee	Mọi nhân của chiplet cùng lúc, nhân yếu được +3
+w	bd951612	STAPM — công suất trung bình
+w	352c87d5	Giới hạn nhanh (fast PPT)
+w	9edf9bde	Giới hạn chậm (slow PPT)
+w	cd2e379c	Công suất trung bình khi tải lâu
+w	90eabb44	Những giây đầu của tải
+w	e5370077	Những phút tiếp theo của tải, cho đến khi STAPM tiếp quản
+w	4d3f088d	Hạng Ryzen AI Max (45–120 W)
+w	1743ab83	Hạng HX — chơi game (từ 55 W)
+w	9ac83d7b	Hạng H/HS — hiệu năng cao (35–54 W)
+w	31f90f92	Hạng U — mỏng nhẹ (15–28 W)
+w	8fa49196	Hạng Ryzen AI (15–54 W)
+w	46b3fec8	không nhận ra hạng
+w	545d061c	Gói đang dùng
+w	770595df	Cân bằng, tiết kiệm điện, hiệu năng cao hoặc các gói riêng của hãng laptop
+w	31a83cfa	Không kết nối được với bộ xử lý: chỉ hiển thị, không ghi
+w	b20d50c3	Chỉ xem. Ghi vào bộ xử lý là tính năng chuyên gia: bật «Tính năng chuyên gia» trong «Cài đặt»
+w	e1caf459	Giới hạn công suất (trên Dragon Range là giới hạn nhanh)
+w	ba3b73b6	Không có gì để áp dụng: chưa giới hạn nào được dịch chuyển
+w	dd9e76ce	Đã xóa các giới hạn đã lưu. Giá trị gốc sẽ trở lại sau khi khởi động lại
+w	f9c44997	Phân bổ
+w	7cf230cb	Khởi động
+w	2eaa98f9	Khắc phục
+w	9671aaca	Các chương trình khác gây cản trở
+w	361e3d05	Chế độ nguồn: Tùy chỉnh
+w	949f766f	Dọn dẹp
+w	6f4c3e1e	Tệp
+w	2690616f	Tệp không cần thiết
+w	5d75a799	Quét
+w	564f8a22	Xóa mục đã chọn
+w	695709a0	Tệp tạm, bộ nhớ đệm và báo cáo mà Windows và các chương trình sẽ tạo lại. Chỉ những mục được đánh dấu mới bị xóa
+w	7eeedeca	Đang quét…
+w	bdb12f8c	Đang xóa…
+w	e04696ed	Không có gì để xóa
+w	9c87a69a	trống
+w	d97c424e	Tệp tạm
+w	a3461ece	Thư mục Temp của bạn: tệp cũ hơn một ngày
+w	f577a28f	Tệp tạm của Windows
+w	30c2776e	C:\\Windows\\Temp: tệp cũ hơn một ngày
+w	388ac111	Thùng rác
+w	87e5ce85	Mọi thứ trong Thùng rác trên tất cả ổ đĩa
+w	42dc0531	Bộ nhớ đệm Windows Update
+w	287cae42	Bộ cài đã tải của các bản cập nhật đã cài xong
+w	60cf7eb8	Bộ nhớ đệm trình duyệt
+w	d5db3130	Chrome và Edge: chỉ bộ nhớ đệm, không gồm mật khẩu, cookie hay lịch sử. Hãy đóng trình duyệt: khi đang mở nó giữ lại một số tệp
+w	7a318acd	Báo cáo lỗi và nhật ký
+w	027395fc	Báo cáo lỗi Windows của các chương trình và nhật ký cài đặt cũ
+w	3bd0a985	Bộ nhớ đệm hình thu nhỏ
+w	904c49ea	Ảnh xem trước của Explorer, sẽ tự được tạo lại
+w	6234f303	Bộ nhớ đệm shader
+w	ad478e23	NVIDIA, AMD, DirectX. Sau khi xóa, game hơi giật ở lần chạy đầu trong lúc tạo lại
+w	483a2391	Tệp dump khi sập máy
+w	bfab38b9	Minidump và MEMORY.DMP dùng để phân tích màn hình xanh. Hãy xóa nếu không có gì cần phân tích
+w	20d9d7da	Phiên bản Windows trước
+w	461fe4ce	Thư mục Windows.old sau một bản cập nhật lớn. Hãy xóa bằng Disk Cleanup của Windows
+w	e7430b61	Khởi đầu sạch
+w	901a431d	Giải phóng bộ nhớ
+w	52ecee71	Dọn dẹp
+w	5aeed321	Đóng mọi thứ đã mở sau khi đăng nhập
+w	18df3a2f	Đang tìm phần thừa…
+w	e65ea987	Không có gì thừa: giống như sau khi khởi động
+w	4c695c53	Đang đóng…
+w	7ece72f7	Không đóng được
+w	7ba9c293	Buộc đóng
+w	1d3d4a91	Thiết lập
+w	9b02d65d	Không bao giờ đóng
+w	00fac06e	Luôn đóng
+w	608cf486	Giữ lại kể cả khi mở sau khi đăng nhập
+w	acafadc3	Cùng với mọi thứ chúng khởi chạy
+w	a3f0db68	Đóng kể cả khi chúng tự khởi động lúc mở máy
+w	964d6f83	Windows và Red Tune không bao giờ bị đóng
+w	86a5e0cf	Danh sách trống
+w	0940988c	luôn luôn
+w	51514a8a	RedTune.exe · ứng dụng này
+w	4498cb0b	claude.exe · và mọi thứ nó khởi chạy
+w	10ff0d2c	Thêm…
+w	d2f0cc6b	Thêm chương trình
+w	dd6ef4da	Từ các chương trình đang chạy hoặc theo tệp exe
+w	e4daa91f	Gỡ bỏ
+w	15593e58	Thấp
+w	97455af0	Cao
+w	299392ed	Đèn bàn phím: thấp
+w	57c6215f	Đèn bàn phím: cao
+w	61afc5b6	Chế độ đồ họa
+w	d959bb19	Lai tiết kiệm pin, rời chạy mọi thứ trên RTX
+w	0b911c29	Lai
+w	95a38339	Lai, chỉ iGPU
+w	8159c3f8	GPU rời
+w	09770bda	Chế độ đồ họa
+w	3da1415c	Chuyển
+w	489bacca	Khởi động lại
+w	cf2e79d5	Chế độ đồ họa thay đổi sau khi khởi động lại. Khởi động lại ngay? Hãy lưu các tệp đang mở.
+w	25537606	Khởi động lại
+w	25a7a334	Để sau
+w	67c98c4a	Việc chuyển giữa lai và rời chỉ có hiệu lực sau khi khởi động lại.
+w	08338f7b	Chế độ chuyển ngay; nếu có gì chưa nhận, khởi động lại sẽ giúp.
+w	9868ca3b	Không tìm thấy màn hình tích hợp
+w	c9f841f0	Không dùng được co giãn
+w	c126ae0c	Windows không chấp nhận kiểu co giãn
+w	6af8a97d	Windows không bật HDR
+w	ce2b15c0	Quạt CPU
+w	4ea26c9d	Quạt GPU
+w	6f174cd7	Bổ sung
+w	7d922b06	Đường cong quạt tùy chỉnh
+w	f22b39dd	Red Tune đặt tốc độ quạt theo nhiệt độ mỗi 0,5 giây (ở chế độ Tùy chỉnh). Khi tắt: dùng bảng của firmware
+w	57e61172	Tốc độ tối đa ngay
+w	ed5693d5	Bật ở chế độ Tùy chỉnh; hiện firmware đang điều khiển quạt
+w	4cf8fff3	Cho mọi preset, áp dụng ngay
+w	9d6065b4	Chỉ hoạt động với đường cong quạt tùy chỉnh: hãy bật công tắc phía trên
+w	7cc23e36	Các đường cong chỉ hoạt động với đường cong quạt tùy chỉnh: hãy bật công tắc phía trên
+w	1b902d0b	Đường cong chưa có hiệu lực: firmware đang điều khiển quạt
+w	da91bffc	Quạt CPU theo nhiệt độ CPU, quạt GPU theo nhiệt độ GPU. Mỗi preset có đường cong riêng
+w	08245ac0	Kéo các điểm lên xuống. Dưới đường nét đứt, firmware điều khiển quạt
+w	b0e021b0	firmware
+w	9e9a2310	Lưới an toàn chống quá nhiệt
+w	b20ba939	Từ 75 °C tốc độ luôn trên một mức tối thiểu tăng dần, ở 90 °C ít nhất 80 %
+w	bcd42350	Chế độ khẩn cấp
+w	1da09eb3	Từ 95 °C trên CPU hoặc GPU, cả hai quạt chạy tối đa
+w	48a5526b	Độ trễ (hysteresis)
+w	c44657cf	Quạt đang quay giữ tốc độ thêm 3 °C, không dao động qua lại
+w	02264cff	Làm mượt nhiệt độ
+w	dd573590	Bỏ qua các đỉnh ngắn (trung bình động)
+w	480b9a60	Giảm tốc nhẹ nhàng
+w	b348591e	Tốc độ không giảm nhanh hơn 400 rpm mỗi giây
+w	56e95b1b	Cú hích khởi động
+w	46152f56	Một cú hích ngắn 3000 rpm khi quạt bắt đầu quay từ trạng thái đứng yên
+w	8088a3e9	Đồng bộ
+w	d753bc22	Cả hai quạt chạy theo tốc độ của quạt cần nhiều hơn
+w	7058f92f	Dự đoán trước
+w	a4d96ad9	Nhiệt độ tăng nhanh hơn 5 °C/giây: tăng tốc sớm, như cho 2 giây sau
+w	597b01db	Ép xung nâng cao
+w	0fb1e43d	Giá trị sai có thể gây mất ổn định, treo máy hoặc laptop không khởi động được
+w	b8bb95f5	Hệ số Precision Boost Overdrive
+w	5ceacccc	PBO có thể vượt giới hạn gốc đến đâu, 1–10
+w	7a992bf1	Xung nhịp boost của Precision Boost Overdrive
+w	c07781af	Cộng thêm vào xung nhịp boost tối đa
+w	17ab15fa	MHz
+w	c718b362	Điều chỉnh đường cong nhân
+w	b01d679a	Một độ lệch Curve Optimizer cho mọi nhân, thông qua firmware
+w	98148edd	Curve Optimizer cho mọi nhân
+w	adb21a6c	Độ lệch cho mọi nhân, 0–20 (như trong LLT): giảm điện áp và nhiệt, cần kiểm tra độ ổn định
+w	dc9637c2	Đường cong đã được đặt
+w	ce14d713	Giữ đường cong của tôi
+w	fe4a1456	Vẫn bật
+w	89b5a24c	Vẫn bật chứ?
+w	e0f1e992	Đường cong cho preset này
+w	db1bf4e3	Áp dụng cùng preset và trở thành đường cong hoạt động (thẻ «Đường cong»)
+w	ff01a8af	Đường cong cho các chế độ khác
+w	4a896b5f	Áp dụng khi chuyển sang chế độ này (Fn+Q, trang chính)
+w	363a4473	Chung
+w	a9129a7d	Giao diện
+w	73ac37d7	Hiển thị những gì
+w	0c79a3bc	Kính
+w	9fbefc19	Làm mờ những gì phía sau thông báo
+w	23bf93cf	Kính động
+w	be42fff9	Kính bám theo những gì bên dưới. Nhược điểm: thông báo không xuất hiện trong ảnh chụp hay quay màn hình
+w	f94ec4ab	Nhẹ
+w	6e716c86	Vừa
+w	af350933	Mạnh
+w	0aefa3c0	Độ mờ
+w	db5f1b82	Kính mờ đến mức nào
+w	d768d571	Làm tối
+w	da8ccd94	0 %: kính trong, 100 %: nền tối đặc
+w	02930ee1	Ánh bóng và viền
+w	8f4dd487	Một viền sáng phía trên, như kính
+w	2f0c9ea4	Xem thử
+w	10bf7869	Thông báo hiện ở vị trí đã đặt trong thẻ «Chung»
+w	23b64977	Đóng
+w	b1e305c8	Những gì ứng dụng cần
+w	cd657045	Tải cho việc tự tinh chỉnh. Dùng được thư mục CoreCycler\\test_programs\\p95 hoặc bản tải về
+w	f55b3bff	Không có prime95.exe trong thư mục này
+w	5fdf9081	Trình điều khiển
+w	1ea800d9	Sao chép
+w	d10f36a7	Tải về
+w	7d1c59b9	Thư mục chứa
+w	e5130c71	Red Tune tự làm việc với đường cong, thông qua trình điều khiển PawnIO. Tự tinh chỉnh còn cần Prime95
+w	b64df491	Red Tune tự làm việc với đường cong qua trình điều khiển PawnIO. Tự tinh chỉnh cần một tải: Red Tune Test tích hợp sẵn hoặc Prime95
+w	6a0416b4	Trình điều khiển truy cập bộ xử lý: đường cong, giới hạn AMD, nhiệt độ. Cài đặt riêng
+w	40e3947e	Nguồn: tác giả namazso, pawnio.eu, trình điều khiển đã ký số có bộ cài riêng
+w	5cdc6e97	Làm mới
+w	26582bad	Thư mục Startup
+w	167024ca	Những gì khởi động cùng Windows
+w	0fc63dc9	Các mục đã tắt vẫn nằm trong danh sách và có thể bật lại. Task Manager → Startup hiển thị cùng nội dung
+w	5ff6d3cd	Không đọc được danh sách
+w	dafca83c	Không có chương trình nào khởi động cùng Windows
+w	e4979dda	Chương trình
+w	997be602	Tác vụ đã lên lịch
+w	5cf7bf0f	Chạy khi đăng nhập hoặc khi Windows khởi động
+w	2bd8d86d	Các tác vụ của Microsoft bị ẩn. Tác vụ đã tắt vẫn còn; tác vụ mà chương trình không còn nữa có thể xóa trong «…»
+w	2cf8bf9b	Mở thư mục gần nhất
+w	77f77ac8	Mở vị trí tệp
+w	9dd4fe90	Xóa tác vụ…
+w	c0e0dffc	Gỡ khỏi mục khởi động…
+w	5052d538	Registry, người dùng này
+w	2c02d035	Registry, mọi người dùng
+w	04dad0d7	Registry, mọi người dùng (32-bit)
+w	adc87a23	Thư mục Startup
+w	06040545	Thư mục Startup của mọi người dùng
+w	021aef63	Ứng dụng đóng gói (MSIX)
+w	795499d4	Task Scheduler
+w	d742df8d	do chính sách đặt, không thể chuyển
+w	fe798772	mục khởi động của ứng dụng đóng gói chỉ có thể tắt
+w	69900ad5	Chương trình của tác vụ này không còn nữa. Tác vụ bị xóa khỏi bộ lập lịch; một bản sao (XML) được giữ trong thư mục Red Tune → deleted-tasks, khôi phục bằng schtasks /Create /XML.
+w	3657139c	Lối tắt được chuyển vào Thùng rác.\nNếu chỉ muốn nó không khởi động, tắt đi là đủ.
+w	49fddf80	Mục bị xóa khỏi registry; lệnh của nó vẫn nằm trong nhật ký Red Tune.\nNếu chỉ muốn nó không khởi động, tắt đi là đủ.
+w	e713663c	Tìm chương trình
+w	ae42c564	+  Thêm chương trình
+w	f0c3a97d	Hủy
+w	2cbc8982	Thêm
+w	f51069e1	Chương trình đang chạy
+w	9925c654	Mẫu
+w	9e7c2807	Nhóm
+w	1814bd03	Chọn tệp exe…
+w	564d2aad	\\Thư mục\\ hoặc tên tiến trình
+w	f67ab0b9	\\Thư mục\\: mọi exe trong thư mục. Tên không có \\: một tiến trình.
+w	d9466145	Chương trình (*.exe)|*.exe
+w	a09b43b8	Chọn tệp exe của chương trình
+w	7f9996fe	Chọn một chương trình trong danh sách hoặc nhập mẫu.
+w	1b88e81e	tắt
+w	c7d5fafc	● đang chạy · qua CPU Sets
+w	841ac021	● chưa cho đổi nhân, đang thử lại
+w	6a142610	● đang chạy
+w	2463855b	● thư mục không còn nữa
+w	e7b37ad2	Kéo một chương trình vào đây hoặc chọn nhóm trong menu của nó
+w	461f5437	Không tìm thấy thư mục
+w	8cb7470a	Gỡ khỏi phân bổ
+w	3537bc86	Giữ lại
+w	54d4fdbe	Chương trình trên các chip của CPU
+w	33ab79c2	Kéo một dòng sang nhóm khác
+w	3e68c818	Game mới của Steam và Epic → CCD1
+w	0929753d	Game trong thư mục Steam và Epic được đưa ngay sang CCD1, kể cả khi không có quy tắc
+w	bccbcce4	Không động đến các launcher
+w	6bd2d405	Steam, Epic, Battle.net và các launcher khác ở trên mọi nhân: game của chúng nhận nhân riêng
+w	c06b4866	Đã hủy thay đổi
+w	cd1754e3	Cũng tự động: các launcher Steam, Epic, Battle.net, Riot, EA, Ubisoft, GOG (game của chúng tự nhận nhân)
+w	1d1d7180	mới, chưa lưu
+w	1c13a80f	bật
+w	360dfab9	sẽ tắt
+w	46b370dd	sẽ không có SMT
+w	b4626bac	SMT trở lại
+w	15a27acd	Chỉ nhân, không SMT (một luồng mỗi nhân)
+w	9cfd21eb	Chuyển đến
+w	b76f35e2	Tắt quy tắc
+w	ecc3075f	Bật quy tắc
+w	250c4167	Lối tắt khởi chạy trên màn hình nền…
+w	bc54e465	Mở thư mục
+w	cf34a448	Tạm dừng · Windows chọn nhân
+w	8a952c83	để yên, Windows chọn nhân
+w	33fc6456	mọi nhân (Windows quyết định)
+w	d1699cbd	Game Steam
+w	975c0cc6	Game Epic
+w	d89f2b16	Timing
+w	8e844f48	Hiện tại
+w	f385d294	Trong BIOS
+w	90346b0d	Mới
+w	e87d4a90	Phạm vi
+w	81f7c94b	Hồ sơ
+w	7e490f23	Áp dụng và khởi động lại
+w	4cbf14e6	Đang chạy
+w	6aea4075	đang đọc timing…
+w	8313b5c7	Cẩn thận
+w	9f81f465	Giá trị quá chặt có thể khiến laptop không khởi động được, và đặt lại BIOS ở máy này nghĩa là phải tháo máy
+w	847cbe62	Xung nhịp
+w	2d506779	Tốc độ bộ nhớ
+w	50f0250c	MT/s · Tự động: BIOS chọn tốc độ
+w	a6faac36	Xung nhịp Infinity Fabric, MHz · trên 2400 laptop sẽ quá nhiệt
+w	94a2dfe3	Xung nhịp Infinity Fabric, MHz
+w	24defca4	Giá trị quá chặt có thể khiến PC không khởi động được. Khi đó cần đặt lại CMOS: nút hoặc jumper Clear CMOS trên bo mạch
+w	2487db18	Ryzen máy bàn (AM4 / AM5)
+w	4506deb1	Đường cong của nhân này chưa được đo. Đo sẽ tải nhân và đọc điện áp ở các xung nhịp khác nhau: trước ở độ lệch của nó, sau đó ở 0
+w	b5da5564	Đo lấy hai đường cong: ở độ lệch hiện tại và ở 0 (nhân được đặt về 0 trong một phút, rồi trả lại độ lệch)
+w	4bf0c979	Đang đặt nhân về 0 để đo…
+w	b001821e	Tự tinh chỉnh đang chạy: chưa thể bắt đầu đo ở 0
+w	42666f5e	Không đặt được nhân về 0: phép đo chưa bắt đầu
+w	4e185fdb	Đo: ở độ lệch hiện tại. Đo ở 0 đặt nhân về 0 trong một phút, rồi trả lại độ lệch
+w	5854a7b0	Đo ở 0
+w	6c984cf6	Ở 0
+w	f901d24d	Trước đó
+w	18a14c6b	Kích thước
+w	89f1b893	Giữa trên
+w	ac026cff	Rất lớn
+w	8e2bd37f	Khổng lồ
+w	5ebed300	Nhỏ
+w	6e4480db	Vừa
+w	ccabc714	Lớn
+w	04bc702b	Lớp phủ
+w	0fc1e9c5	Lớp phủ trên game
+w	3ddfea34	FPS, nhiệt độ và xung nhịp của bộ xử lý và card đồ họa ở một góc màn hình
+w	be2c51fd	Hiện khi nào và ở đâu
+w	c72f0621	Không hiện ở chế độ toàn màn hình độc quyền
+w	97b2534c	Hiện trên chương trình toàn màn hình
+w	8406f8c4	Trên trái
+w	ce2eb0bb	Trên phải
+w	afef0082	Dưới trái
+w	634dd477	Dưới phải
+w	009d1ee9	Công tắc nhanh
+w	13836235	Bảng mini
+w	be20d2fa	Bảng mở khi nhấp vào biểu tượng ở khay. Các khối đã tắt không hiện trong bảng; không có khối nào thì bảng không mở
+w	2a716941	Chuột hoặc phím để bật lại
+w	fd805cf7	Đóng những gì không cần
+w	78b8755a	Preset nguồn
+w	8b3fd2cd	Chuyển sang chế độ Tùy chỉnh
+w	fc0d2b58	FPS, nhiệt độ và xung nhịp trên game
+w	2fb71190	Độ trễ bộ nhớ
+w	5b113f8b	ns
+w	c2616f9c	trước là
+w	1646139f	Chưa đo
+w	043c5866	Đang đo…
+w	543d72da	Độ trễ đọc ở L1, L2, L3 và chính bộ nhớ · khoảng 15 giây, trong lúc đó tốt nhất đừng dùng máy tính
+w	12e083a1	Đang kiểm tra bộ nhớ: hãy đo độ trễ sau khi xong
+w	3690bb26	Tự tinh chỉnh đang chạy: hãy đo độ trễ sau khi xong
+w	7dc0e7ab	Đang đo đường cong của một nhân: hãy đo độ trễ sau khi xong
+w	e9d7b233	Quá ít bộ nhớ trống: phép đo cần ít nhất 1 GB
+w	cb7daad5	Đường cong được áp dụng lại trong lúc đo ở 0: phép đo đó không được lưu
+w	b603d43a	Độ lệch của nhân chưa trở lại: hãy áp dụng preset ở trang Đường cong
+w	6df773eb	Bộ điều khiển bộ nhớ: 1:1 bằng xung nhịp bộ nhớ, 1:2 bằng một nửa
+w	3097456a	Timing
+w	5093838b	Màu trong bảng
+w	ffe050f9	vàng: bạn đã sửa · xanh: chờ khởi động lại · đỏ: không được phép
+w	d0dab655	Đang đọc timing…
+w	e888fdac	Không đọc được timing
+w	c3c5720a	Kiểm tra sau khi khởi động lại: không phải tất cả đều có hiệu lực
+w	cee2a120	Kiểm tra sau khi khởi động lại
+w	944f9072	bật
+w	cd40e261	tắt
+w	89c9b814	BIOS giữ đúng những gì đang chạy
+w	ef478caf	Có hiệu lực sau khi khởi động lại
+w	0b20df94	Chỉ xem
+w	a0d3701c	Hoàn tác chỉnh sửa
+w	30ed9ce7	Đã hoàn tác chỉnh sửa
+w	a0fc8acc	Tất cả về Auto
+w	24f891f9	Đọc lại từ BIOS
+w	c66d50e8	Đọc lại
+w	9e380690	Lưu hồ sơ…
+w	ff602613	Nạp hồ sơ…
+w	81da2c1d	Mở thư mục hồ sơ
+w	98b0354a	Hãy sửa các giá trị
+w	a65cedfc	Hồ sơ bộ nhớ (*.json)|*.json
+w	bbaa3970	Không có giá trị mới. Chỉ khởi động lại máy tính?
+w	470761cf	Không có gì để thay đổi: mọi thứ khớp với BIOS
+w	b8cfd1ba	Xác nhận
+w	5ac2c42b	Ghi và khởi động lại
+w	ba89cd5b	Ghi vào BIOS
+w	8f0b544f	Đã ghi và kiểm chứng. Khởi động lại sau 15 giây (hủy: shutdown /a)
+w	98fd0c72	Đã ghi vào BIOS và kiểm chứng · có hiệu lực sau khi khởi động lại
+w	778a0a4f	Lỗi ghi
+w	21fcdde7	CPU không phải AMD
+w	0a3dc30a	BIOS không có giao diện ép xung AMD
+w	bd78e094	giao diện ép xung AMD không có lệnh timing
+w	7012e77e	thiết bị chưa kiểm chứng (việc ghi chỉ được kiểm chứng trên Legion R7000P 83LT với BIOS RLCN31WW)
+w	a72a3f17	định dạng cài đặt BIOS không khớp với bản đã kiểm chứng
+w	6c481439	việc đọc timing bị treo
+w	1771db95	BIOS này không có lệnh «Reset Mem Para», không đặt được Auto
+w	92aad902	BIOS nhận giá trị khác với yêu cầu. Đừng khởi động lại cho đến khi sửa xong:\n
+w	a67f7ef5	Giai đoạn 2–3 lần nữa
+w	5616379b	Lặp lại giai đoạn 2–3
+w	89eb9d80	Kiểm tra đường cong hiện tại
+w	fcb65499	Bắt đầu
+w	f01e5afc	Tạm dừng
+w	5a8cb538	Áp dụng kết quả
+w	ff27e70e	Cách hoạt động
+w	89e2c79c	Tự động tinh chỉnh đường cong
+w	aec4003e	Chỉ cần một lần (lặp lại sau khi đổi BIOS hoặc trình điều khiển) · ~9 giờ, trong lúc đó đừng dùng laptop
+w	85885587	Điều kiện
+w	bbad033c	Đang kiểm tra…
+w	c4ba2517	1. Từng nhân riêng lẻ
+w	b582ae8a	Chia đôi từ −25, sau đó kiểm tra giá trị tìm được
+w	76cf2da9	~5 giờ
+w	88537606	2. Lần lượt từng chiplet
+w	19a4346a	Nghỉ và tải trên mỗi chiplet, nhân yếu được +3
+w	39f51584	~2 giờ
+w	a2ae9ba8	3. Kiểm tra cuối
+w	bb3092e0	Các vòng dài và một cơn bão trên bộ giá trị cuối
+w	e5ec4b6a	~1,5 giờ
+w	1fce9cc7	Bắt đầu
+w	face63f2	«Kiểm tra» chỉ chạy giai đoạn 3 trên preset đang hoạt động và không tinh chỉnh gì (~1,5 giờ)
+w	b49c2721	Tiến trình
+w	cdc085a5	Kết quả
+w	7e3dae42	Đặt lại việc tinh chỉnh? Tiến trình và các giá trị trung gian sẽ bị xóa.
+w	e36cbdb4	cắm bộ sạc
+w	74bab283	không có PawnIO
+w	072af590	chưa biết đường cong của bộ xử lý này
+w	179150f2	không có Prime95
+w	9f6efafe	đóng UXTU (Cài đặt → Chương trình khác)
+w	8dd428bf	LLT đang chạy, nên tắt đi
+w	7c61003d	nên đóng các chương trình nặng
+w	1fbabf24	sẵn sàng
+w	bd7b3012	có lưu ý
+w	6a45b5a3	Bắt đầu tinh chỉnh đường cong đầy đủ? Khoảng 9 giờ kèm các lần khởi động lại. Trong lúc đó đừng dùng laptop.\n\nỨng dụng bật tự khởi động để tiếp tục sau khi khởi động lại.
+w	4a3a407e	tự tinh chỉnh
+w	4eba2614	Đã tạm dừng
+w	8b8965bf	Đang chờ tiếp tục
+w	b94fbde6	Kiểm tra đường cong
+w	cc64ef63	Tiếp tục
+w	1965f2bb	CCD2 nghỉ, CCD1 chịu tải
+w	ab4db09b	CCD1 nghỉ, CCD2 chịu tải
+w	9e52e99c	CCD1 chịu tải
+w	fb80a371	CCD2 chịu tải
+w	696f1838	CCD2 nghỉ, 25 phút
+w	8be178f9	CCD1 nghỉ, 25 phút
+w	e346c2aa	cả 16 nhân, 25 phút
+w	258ae93f	Cơn bão
+w	3fd658ad	các đợt tải trên mọi nhân, 20 phút
+w	bc23a7d0	Đang chờ 90 giây sau khi đăng nhập
+w	e373976a	khởi động lại
+w	4f469448	mô phỏng
+w	7f2234e3	Đạt
+w	f92fac3e	Đã dừng
+w	187c0903	Giai đoạn 3: kiểm tra cuối
+w	dd711929	Cơn bão trên mọi nhân
+w	ce4bac18	mọi nhân
+w	edcf1561	giai đoạn 1
+w	4f8e70c5	kiểm tra
+w	eacf10a8	giai đoạn 2
+w	ca9ed393	tìm kiếm
+w	ebcf123b	giai đoạn 3
+w	819c4ffe	đang chạy
+w	42843e9c	tạm dừng
+w	3a918591	ngủ
+w	ccc58ded	đăng xuất Windows
+w	ab1ec3bf	khẩn cấp
+w	9a7da7e7	tắt đường cong
+w	1da43841	tốc độ tối đa
+w	af4ddda6	không phải chế độ Tùy chỉnh
+w	07be4d27	thoát
+w	5c7ef559	chế độ nguồn
+w	1980a208	Không tìm thấy trình điều khiển Lenovo Energy (
+w	9e1b80fc	Chế độ pin không xác định
+w	72b5f16a	Không hỗ trợ sạc ban đêm
+w	68f256c3	Không tìm thấy Prime95: hãy chỉ định ở thẻ «Thành phần»
+w	f561b116	Tạo «Tinh chỉnh»
+w	b5d39caf	Gói nguồn cho tự động tinh chỉnh
+w	fd1bb7a8	Tinh chỉnh
+w	25b44cb1	Không giới hạn xung nhịp và mức tối thiểu 5 %: bộ xử lý có thể xuống thấp nhất và lên cao nhất
+w	e7d558f8	Red Tune: cho tự động tinh chỉnh và kiểm tra đường cong. Không giới hạn xung nhịp, tối thiểu 5 %
+w	e7177106	Gói «Tinh chỉnh» đã sẵn sàng và được chọn cho thiết lập sẵn này. Hãy lưu thiết lập sẵn để gói được bật cùng với nó.
+w	b7179637	Đã tạo gói nguồn
+w	664a9658	Gói đã có sẵn, các giá trị đã được ghi lại
+w	f05f275e	Sao chép từ gói đang dùng: Windows này không có gói «Hiệu suất cao»
+w	c847203d	Lưu ý: có chế độ nguồn của Windows phủ lên gói này và có thể giữ giới hạn xung nhịp riêng
+w	ae9329aa	Bài kiểm tra riêng (thử nghiệm)
+w	b1db0e8a	Tải cho tự động tinh chỉnh
+w	7b09903c	Dùng gì để tải các nhân khi tinh chỉnh đường cong. Bài kiểm tra riêng có sẵn trong chương trình và hiện đang thử nghiệm: đang được so sánh với Prime95
+w	758c9f1a	Không dùng được bài kiểm tra riêng: thiếu RedTuneStress.dll hoặc bộ xử lý không có AVX2
+w	2c9ca7c7	Ứng dụng không biết đường cong của bộ xử lý này
+w	551e26d9	Bộ nhớ (RAM)
+w	ecf9e1a9	Tệp trên đĩa
+w	05ee5f52	Gỡ chương trình
+w	3a4b763f	Phần còn sót của chương trình đã gỡ
+w	5081fcfd	Chương trình đã cài
+w	fbfc11d1	Đang tải danh sách…
+w	e0e417df	Gỡ…
+w	6f39685b	Gỡ một chương trình
+w	f023da41	Đang gỡ: hãy làm theo cửa sổ trình gỡ cài đặt…
+w	fb37f0bd	Đã xong: tìm phần còn sót
+w	95cc6ae0	Đã bị hủy
+w	21a46fae	Đang tìm phần còn sót…
+w	56278755	Đã gỡ, không thấy phần còn sót
+w	f5c42cd1	Xóa mục đã chọn
+w	1bda422c	Đã gỡ · giữ lại phần còn sót
+w	6449bcaa	Đang xóa phần còn sót…
+w	9865a015	Đang tìm phần còn sót của các chương trình đã gỡ…
+w	7a1f593e	Không thấy phần còn sót của các chương trình đã gỡ
+w	e3751d7d	Phần còn sót của các chương trình đã gỡ
+w	4d610bda	Chọn tất cả
+w	06d8e0ba	Bỏ chọn tất cả
+w	9d166935	Dừng
+w	8101082a	Exe: chương trình này cùng mọi thứ nó khởi chạy; thư mục: mọi thứ được chạy từ đó
+w	e815f046	Exe: chỉ chương trình này; thư mục: mọi thứ được chạy từ đó và các dịch vụ của nó cho đến khi khởi động lại · Windows và Red Tune không bao giờ bị đóng
+w	15113f9b	Từ các chương trình đang chạy, theo exe hoặc theo thư mục
+w	81c5c496	Chọn thư mục…
+w	2145aa7f	Thư mục của chương trình: mọi thứ chạy từ đó sẽ bị đóng và các dịch vụ của nó sẽ dừng
+w	47a1b44c	Thư mục của chương trình: mọi thứ chạy từ đó được giữ lại
+w	a96d48c7	Đây là thư mục gốc của ổ đĩa
+w	ff47e68b	Đây là thư mục Windows
+w	fa59c363	Red Tune nằm trong đó
+w	cde8bc90	Đây là thư mục chung chứa nhiều chương trình
+w	f1b940d0	Hãy chọn thư mục của một chương trình, ví dụ C:\\Program Files\\Cloudflare\\Cloudflare WARP.
+w	248600c2	Hai đường cong
+w	75ac6f74	Một cho cả hai
+w	68dd7a32	CPU
+w	a8bd8b47	GPU
+w	0b527cc8	Bên nóng hơn
+w	a62415b0	Cả hai quạt
+w	22a7099f	Đường cong quạt
+w	554b3c37	Hai: mỗi quạt có đường cong riêng theo nhiệt độ của nó. Một: cả hai quay như nhau
+w	d3610792	Cả hai quạt quay như nhau, theo nhiệt độ chọn ở bên phải: CPU, GPU hoặc bên nóng hơn. Mỗi preset có đường cong riêng
+w	f7ed5a97	không có giao diện firmware của Lenovo (GameZone)
+w	56f156fa	chỉ một chiplet: không có gì để chia chương trình
+w	adef2d50	không có giao diện firmware của Lenovo
+w	a54f5699	không phải bộ xử lý AMD Ryzen
+w	aff8a779	BIOS không có giao diện ép xung AMD (AMD_ACPI)
+w	89d20410	Thiết bị này
+w	f0c66eb3	Sao chép báo cáo
+w	bd10374e	Đã sao chép báo cáo hệ thống: hãy dán vào tin nhắn
+w	8470202b	hoạt động
+w	c70a264f	ẩn
+w	9ba76c91	Được hỗ trợ trên thiết bị này
+w	998ab277	không có phản hồi trong 30 giây
+w	1a93e701	Bộ xử lý này không có trong bảng của ứng dụng
+w	04a711d4	không đọc được các thanh ghi của bộ điều khiển bộ nhớ
+w	f6b383eb	Đang mô phỏng bộ xử lý khác: không ghi gì vào nó
+w	e9091f92	Không có gì để áp dụng
+w	1287c380	Giới hạn công suất bộ xử lý
+w	d6a0785c	Ghi thẳng vào bộ xử lý (SMU), như UXTU. Khởi động lại sẽ đặt lại chúng
+w	a934ddeb	Đang kiểm tra nó chấp nhận gì…
+w	e3c00fb9	Áp dụng khi khởi động và sau khi ngủ
+w	d0c6a4e2	Red Tune đặt lại các giới hạn này khi Windows hoặc firmware xóa chúng
+w	ec8993f1	Giới hạn
+w	68d8eb60	PPT: công suất bộ xử lý
+w	b00d2635	Bộ xử lý được dùng bao nhiêu watt trong thời gian dài
+w	97e5a050	TDC: dòng duy trì
+w	dd82f28a	Dòng của nhân khi tải lâu
+w	af33c030	EDC: dòng đỉnh
+w	22476d2d	Dòng của nhân trong các đợt ngắn
+w	1b11b2d7	Chưa áp dụng giá trị
+w	af49e79c	Bộ xử lý này không nhận giới hạn qua SMU
+w	30c15e74	Giới hạn công suất
+w	74de9fed	Các giới hạn được ghi thẳng vào bộ xử lý. Giá trị quá cao làm laptop nóng hơn mức nhà sản xuất tính đến; quá thấp làm máy chậm.\n\nSau khi khởi động lại, bộ xử lý trở về giới hạn gốc.
+w	39b66ae2	không có giao diện firmware của Lenovo và không phải bộ xử lý AMD
+w	d3666e30	mọi nhân, 25 phút
+w	edc547fc	Giới hạn công suất. Nó thay đổi giới hạn nào tùy vào bộ xử lý: trên Dragon Range là giới hạn nhanh
+w	261d4d4f	Áp dụng ngay
+w	104dd11f	Khởi động an toàn
+w	0ff66e96	Tính năng chuyên gia
+w	93646133	«Đường cong» và «Bộ nhớ» trong menu, ghi giới hạn bộ xử lý AMD. Giữ Shift khi khởi động: khởi động an toàn không có chúng
+w	b3826d07	Đường cong điện áp, timing bộ nhớ và giới hạn trực tiếp của bộ xử lý thay đổi những gì nhà sản xuất đã đặt. Giá trị sai dẫn đến treo máy, màn hình xanh hoặc laptop không khởi động được.\n\nNếu có sự cố, hãy giữ Shift khi Red Tune khởi động: nó sẽ không áp dụng gì.
+w	fd8c73cd	Bật
+w	356be385	Âm thanh
+w	1a0e6dca	Đặt làm mặc định
+w	9edf46c8	Thiết bị đầu ra
+w	e692df51	Âm lượng
+w	87ee0cbd	Xử lý âm thanh
+w	7bb6ddb2	Bộ cân bằng
+w	07bac904	Thiết lập sẵn cho bộ cân bằng và bộ nén; có thể lưu thiết lập của riêng bạn
+w	a6c48966	Kéo các điểm trên đồ thị: trái phải là tần số, lên xuống là độ khuếch đại. Lăn chuột trên một điểm để đổi độ rộng
+w	c70e500f	Khuếch đại trước
+w	68315b4f	Trước bộ cân bằng: giảm xuống nếu các dải được nâng cao và bộ giới hạn hoạt động liên tục
+w	47d71657	Bộ nén
+w	b7720b0e	Giảm các đoạn to: âm nhỏ dễ nghe hơn, âm to không chói tai
+w	3a586b5b	Ngưỡng
+w	7f0b22c7	Mức bắt đầu nén
+w	7f20d340	Tỉ lệ
+w	47d51862	Phần vượt ngưỡng được giảm bao nhiêu lần
+w	018b2a67	Attack
+w	61d921b4	Bộ nén phản ứng với âm to nhanh đến mức nào
+w	627ddda8	Release
+w	9a178b37	Nhả nhanh đến mức nào khi âm nhỏ lại
+w	852f8bb6	Knee
+w	3241b7df	Độ mềm của chuyển tiếp tại ngưỡng: 0 là gắt
+w	62cf1651	Khuếch đại bù
+w	eab68408	Trả lại độ lớn mà việc nén đã lấy đi
+w	c8b8dddd	Bộ giới hạn
+w	da57d237	Không cho âm vượt trần dù bộ cân bằng nâng bao nhiêu: không rè, không quá tải
+w	3c28594d	Trần
+w	d8dd32c2	Hệ thống
+w	3a95984b	Gỡ xử lý khỏi thiết bị
+w	4e3559fe	Red Tune gỡ hiệu ứng của mình khỏi chuỗi hiệu ứng của thiết bị này; các thiết lập được giữ lại
+w	413517df	Không có thiết bị đầu ra nào đang bật
+w	3439953a	Mặc định: mọi chương trình phát ở đây
+w	912f98cc	Không phải mặc định: các chương trình phát ở thiết bị khác
+w	ae0cbfed	Thiết lập riêng
+w	f94d475e	Gắn vào
+w	3f030c31	Đang gắn hiệu ứng và khởi động lại âm thanh Windows…
+w	6376025c	Gỡ xử lý
+w	012bee00	Đang gỡ hiệu ứng và khởi động lại âm thanh Windows…
+w	fde050db	Không có thiết bị
+w	021f27ed	Bản dựng này không có tệp hiệu ứng (audio\\RedTuneApo.dll)
+w	e7e126fa	Thiết bị này không có phần hiệu ứng của Windows: chưa thể gắn xử lý vào
+w	e97697b5	Hiệu ứng cuối của thiết bị đã bị hiệu ứng khác chiếm: chưa thể gắn xử lý vào
+w	d75bb0ba	Bộ cân bằng, bộ nén và bộ giới hạn riêng cho thiết bị này. Hiện chưa gắn
+w	5ee31b87	Đã gắn, nhưng tính năng cải thiện âm thanh của thiết bị đang tắt trong Windows: hiệu ứng không chạy
+w	50a02b04	Đang bật · hiện không có âm thanh phát
+w	dc0050b1	Đã gắn, đang tắt
+w	a02b796a	Vào
+w	54f4234b	Ra
+w	838fa09f	Mức nén
+w	580c8b6e	0 dB
+w	6760bee2	im lặng
+w	1e939a29	Chuông
+w	81eac194	Low shelf
+w	e54686cc	High shelf
+w	7479f177	Cắt trầm
+w	34ae8cd5	Cắt cao
+w	b556b2d9	Notch
+w	c4770fd5	Khuếch đại về 0
+w	1b220d9d	Xóa điểm
+w	6af22088	Thêm điểm
+w	f2c7ee73	Mọi khuếch đại về 0
+w	bbd3efbb	Bộ cân bằng đang tắt
+w	d8d67023	Dải của bộ nén
+w	dfac8bbf	Mỗi dải được nén riêng với thiết lập của chính nó
+w	97e59712	Một
+w	60362da2	Hai
+w	4935edc5	Ba
+w	58766ee5	Trầm
+w	2ed7bcd5	Trung
+w	57a4501f	Cao
+w	5016d919	Ranh giới dải trầm
+w	24201e77	Mọi thứ thấp hơn là dải “Trầm”
+w	4e1f479b	Ranh giới dải cao
+w	b7e458b7	Mọi thứ cao hơn là dải “Cao”
+w	aaa9416d	Dải
+w	967f584b	Đang chỉnh
+w	b29253e0	Các điểm, núm xoay và thanh trượt thuộc về dải này
+w	fdeee644	Solo: chỉ nghe các dải có “S”. Dùng để nghe thử — tự tắt khi bạn rời trang
+w	b9901533	Tắt tiếng: không nghe dải này, các dải khác vẫn phát. Dùng để nghe thử — tự tắt khi bạn rời trang
+w	03c9d5bd	Hiện không nghe được tất cả các dải: đang bật nghe thử (S hoặc M trên màn hình “Theo tần số”)
+w	fad83bfd	05 Mới
+w	d9f878b3	01 Của tôi
+w	aa1eb8c2	Theo thời gian
+w	4875ee04	Theo tần số
+w	2676c66f	Toàn bộ âm thanh
+w	94f05c0b	Nhấp để chỉnh dải này
+w	f9104111	Nhấp vào một dải để chỉnh nó. Ranh giới giữa các dải kéo sang trái-phải, đường đứt nét của ngưỡng kéo lên-xuống
+w	93c6d52b	Một dải cho toàn bộ âm thanh. Có thể chia thành hai hoặc ba ở “Dải của bộ nén” bên dưới
+w	a2cb5790	Dải đang chỉnh
+w	1d5d59b3	Các điểm, núm xoay và thanh trượt bên dưới thuộc về dải này
+w	f9f12204	Bộ nén đang tắt
+w	0632976a	Nơi mọi chương trình phát âm thanh
+w	26f11dcd	Bộ nén và bộ giới hạn
+w	1a3b1816	Kéo các điểm: ngưỡng sang trái-phải, tỉ lệ (bên phải) và khuếch đại bù (bên trái) lên-xuống. Lăn chuột trên điểm ngưỡng để đổi knee
+w	5b5a31dc	Kéo các điểm. Nhấp đúp vào chỗ trống để thêm điểm, nhấp phải vào một điểm để chọn loại bộ lọc hoặc xóa
+w	3d4bed5c	Phẳng
+w	4be959f6	Thêm âm trầm
+w	9608c5e8	Giọng nói
+w	a2721dda	Loa laptop
+w	df2ed3e8	Chế độ ban đêm
+w	9ef3c976	dB
+w	7f13b6ce	ms
+w	3eeaafdc	không tạo được tệp thiết lập dùng chung
+w	d93d52e3	regsvr32 không phản hồi
+w	68333e90	thiết bị không có phần hiệu ứng của Windows
+w	19655e15	Hiệu ứng Nahimic
+w	28e63132	Chúng chạy trước Red Tune và cộng thêm vào. Tắt đi để chỉ nghe Red Tune: có thể bật lại ngay tại đây
+w	1e2e9b43	Đã gỡ khỏi chuỗi của thiết bị này. Bản thân Nahimic vẫn được cài như cũ; công tắc sẽ đưa hiệu ứng trở lại
+w	b7fa2672	Đưa trở lại
+w	5c64a063	Đang khởi động lại âm thanh Windows…
+w	5f11b887	danh sách hiệu ứng gốc không được giữ lại
+w	1a79d826	Âm trầm riêng
+w	7c83b011	Âm trầm dưới điểm chia và phần còn lại được nén riêng: tiếng trống kick không kéo giọng và âm cao xuống
+w	4fbcff2c	Hz
+f	849d8aad	Giữ trên các gói nguồn dựa trên Cân bằng: 
+f	ed7a5eaa	không có trần xung nhịp, ưu tiên năng lượng 
+f	056be074	trần xung nhịp 
+f	1baf1461	 MHz, ưu tiên năng lượng 
+f	f4494d86	, trạng thái tối thiểu 
+f	e297bc24	Chế độ nguồn của Windows — 
+f	0d29bb85	Chưa ghi: 
+f	b27ecfef	 — dùng pin
+f	b3b51806	00 Tinh chỉnh
+f	b4420304	Xong
+f	7f2234e3	Đạt
+f	f8c51341	 giây · 
+f	396205d1	 — cắm điện
+f	d753034e	 — loại gói nguồn
+f	615c1bca	Cho tự tinh chỉnh: 
+f	0b9dc537	 °C — đã như vậy
+f	c0408926	 °C — hãy lưu preset
+f	f75cefbe	Gói nguồn hiện có: 
+f	42a84f16	 (0 là tốc độ, 100 là tiết kiệm)
+f	7f322198	Windows hiện có thể tạm dừng nhân; số nhân tối thiểu không tạm dừng, %: 
+f	dff82ac2	Windows không cho ghi giá trị, mã 
+f	a5b6d060	 · đang dùng
+f	30d1b395	”, không sâu hơn 
+f	61003bc8	Lỗi Red Tune Test trên 
+f	22f7053e	: cả hai luồng, Red Tune Test
+f	dfc8fc47	Red Tune Test không khả dụng: thiếu 
+f	8eefd4c0	 hoặc bộ xử lý không có AVX2
+f	2b41b190	Bắt đầu tinh chỉnh (nghiêm ngặt): hạ dần, kiểm tra từng bước
+f	9bfce7f7	Bắt đầu tinh chỉnh (hằng ngày). Giai đoạn 1: ngưỡng của từng nhân, lần lượt: 
+f	72c74767	Tinh chỉnh hằng ngày từ các ngưỡng đã tìm trước đó
+f	f7ca3728	Giai đoạn 2: cả bộ cùng hạ xuống
+f	ddf14a32	Hằng ngày không có giai đoạn 1, từ các ngưỡng: 
+f	9beba94c	Bắt đầu tinh chỉnh hằng ngày từ các ngưỡng đã tìm trước đó, bỏ qua giai đoạn 1? 
+f	0dbbcbb2	Hằng ngày · 
+f	806d87c5	Nghiêm ngặt · 
+f	180c25b4	ngưỡng của các nhân
+f	98e6cab5	hạ dần
+f	2079fe22	 ổn định, đang hạ: 
+f	f76892aa	 · đang hạ: 
+f	34b2f86e	”), dừng ở 
+f	29cfe126	Lỗi trên nhân đã dừng: 
+f	1c2fa334	): các nhân đang hạ (
+f	5403e1f0	) nhận mức cuối cùng đã đạt, 
+f	8a7892fd	Quá trình hạ đã xong
+f	7abab46f	tải chỉ trên các nhân đang hạ
+f	15e29bde	): các nhân ở mức sâu nhất (
+f	585de988	mức 
+f	d7050c9a	 — ở 
+f	2180c144	, giữ bước này; các nhân khác thử 
+f	fe1552c4	Bắt đầu tinh chỉnh: hạ dần, kiểm tra từng bước
+f	625116d5	Bậc thang giới hạn
+f	8a2e5cd2	sâu hơn 
+f	79f3514e	 thì việc tinh chỉnh không hạ nữa
+f	2d144f8c	: không ổn định ở 
+f	0064009e	 nhân trong tải (
+f	4d40f118	 với 
+f	872bbaa8	 giữ ở 
+f	2edd9ae9	 và giữ bước này, các nhân khác thử 
+f	bc76b5b5	 khi không có nó
+f	31b94e9e	 giữ điện áp của tải này, 
+f	88bfd0c4	tinh chỉnh · 
+f	fe86c73c	các bậc xung nhịp trên 
+f	ad1f5d2c	, đang tinh chỉnh: cửa sổ ở thẻ Tự tinh chỉnh
+f	391fcbf4	Giai đoạn 2: giới hạn riêng của từng nhân dưới tải
+f	fb56a042	Làm lại giai đoạn 2 từ các ngưỡng của giai đoạn 1
+f	a32d29d6	Giai đoạn hai theo cách mới, từ các ngưỡng của giai đoạn 1 gần nhất
+f	ae6a794e	. Ngưỡng: 
+f	148bd40d	 · bắt đầu: mọi nhân ở 
+f	006281ae	Giới hạn riêng
+f	a036c7f8	 · tiếp theo là kiểm tra cuối
+f	a2bde735	mức chung 
+f	3b376d41	 · trong tải 
+f	d8d2a819	 ổn định, trong tải 
+f	e4086c28	Mức 
+f	28521a62	: không hạ sâu hơn (giới hạn riêng “ngưỡng +
+f	5f334bd1	”), giới hạn 
+f	88306843	: lỗi ở 
+f	dbcda74a	), giới hạn 
+f	0b4c8147	còn lại trong tải: 
+f	4ff79500	, nhận mức cuối cùng đã đạt, 
+f	25b63333	Lỗi trên nhân ngoài tải: 
+f	e41bff57	Lỗi không chỉ ra nhân nào ở mức khởi đầu (
+f	2bba868e	): bắt đầu từ 
+f	7f0fee80	Lỗi không chỉ ra nhân nào ở mức 
+f	b434c88a	): các nhân còn lại trong tải (
+f	0a373abc	) nhận mức cuối cùng đã đạt, 
+f	b3ab585c	tải không có 
+f	41e2b5e2	 nhân nông nhất, 40 giây
+f	59fe2fdb	 nhân
+f	ab5f3b79	Khởi động tải trên 
+f	cdd72fb1	: 6 giây làm việc, 4 giây nghỉ
+f	246cdd43	tải lỗi ngay cả ở 0: không phải do đường cong
+f	9b640f3b	Bộ khởi đầu ổn định: 
+f	a29f270a	): lùi một bước về 
+f	ca66fbe7	, thử lại sau
+f	bb91ee20	, tiếp theo theo từng chiplet
+f	396f608a	mọi nhân
+f	d0c06a67	Từ các ngưỡng của giai đoạn 1: 
+f	31d1868c	Chạy lại giai đoạn 2 từ các ngưỡng của giai đoạn 1? 
+f	54fb905a	, sẽ có các lần khởi động lại. Đừng dùng laptop trong lúc đó. Tiến trình tinh chỉnh hiện tại sẽ bị thay thế; các preset đường cong đã lưu vẫn còn.
+f	4ff0ced8	Làm lại giai đoạn 2 từ các ngưỡng của giai đoạn 1: 
+f	7ae1ce54	): các nhân sâu hơn mức chung +
+f	aa241dcd	Nếu laptop treo và không có gì xảy ra quá vài phút, hãy tắt bằng cách giữ nút nguồn rồi bật lại: việc tinh chỉnh sẽ tiếp tục.
+f	3c003d1d	khởi động tải trên mọi nhân, theo đợt 
+f	4650d8f2	bão tải ngắt quãng 
+f	f6383dfd	nền nhẹ trên 
+f	59ab3303	tải trên mọi nhân 
+f	f7b5c37b	: tải, các bậc xung nhịp, đánh thức
+f	829cf3ea	Đánh thức trên 
+f	a3b1aa87	kiểm tra cuối
+f	3fd06d37	cả bộ
+f	08bf8aaf	thử sâu thêm 
+f	8cde9233	Giai đoạn 2: cả bộ. Ngưỡng: 
+f	eea6eeda	 · bắt đầu “ngưỡng +
+f	ef58dc2c	Giai đoạn hai theo cách mới, từ các ngưỡng của giai đoạn 1 gần nhất: 
+f	d1064b9e	Cả bộ ổn định: 
+f	99d94a0f	 sâu thêm 
+f	8c25df56	 ổn định: 
+f	19b75020	 không ổn định (
+f	4959faee	): đã hoàn lại
+f	7c8b8f2c	, tiếp theo theo từng nhân
+f	e02cd222	): giữ ở 
+f	bf455565	Kiểm tra cuối cho cả bộ: 
+f	19c83589	Cả bộ đã qua kiểm tra cuối: 
+f	9a0d4cf7	 · với dự phòng +
+f	3f7df8ea	Lỗi không chỉ ra nhân nào (
+f	db1795d5	): cả bộ +
+f	a9ed6d1b	Lỗi trên nhân: 
+f	a02a30f4	Lỗi khi chỉ một nhân đang tải: 
+f	52d9fd84	Lỗi trên nhân ngoài lần thử: 
+f	fc048b6e	): hoàn lại các lần thử của các nhân, cả bộ 
+f	71d7389a	nghỉ 
+f	05aab61a	Đang chạy: 
+f	019e3792	 · đã thử 
+f	bdfcfc94	không có lỗi
+f	35e6bfe2	LỖI: 
+f	3a39a58f	 — bộ nhớ không ổn định
+f	51025e77	dữ liệu ngẫu nhiên
+f	f48bd9c2	sao chép khối
+f	bfcd8b0e	truy cập ngẫu nhiên
+f	0bf8286d	các mẫu
+f	9d2cce88	Lần cuối: 
+f	afd432c5	 giây
+f	0a7618d0	 · bị ngắt do khởi động lại
+f	977f6e6d	 · bị gián đoạn
+f	854c6c57	 · đã dừng
+f	53465c11	Không bắt đầu: 
+f	62a7a515	Windows không cấp bộ nhớ (
+f	3fa4673b	 MB mỗi luồng)
+f	b80b6c69	Việc kiểm tra bộ nhớ bị ngắt do khởi động lại: nó đã chạy được 
+f	8926f56e	Đang xác nhận 
+f	6ba31a7b	: một luồng, boost tối đa
+f	d46cf09b	: cả hai luồng, Prime95 AVX2
+f	a5d4a82a	: cả hai luồng, Prime95 AVX-512
+f	253ad7cb	: các đợt tải sau khi nghỉ
+f	8019e9d1	: bậc thang xung nhịp
+f	3ef0e496	: ngưỡng 
+f	7e563418	, với biên +
+f	0e006e02	 kết quả 
+f	37a44b93	Hộp đen trước khi khởi động lại: 
+f	31778a30	Khởi động lại mà không tắt máy đúng cách. Ngay trước đó đang hoạt động: 
+f	5dbd9265	mọi nhân gần như nghỉ (bận nhất: 
+f	d09418da	, có thể có khởi động lại. Trong lúc đó đừng dùng laptop.
+f	dc026084	Bắt đầu tinh chỉnh đường cong đầy đủ? 
+f	a586ed4e	, sẽ có các lần khởi động lại. Trong lúc đó đừng dùng laptop.\n\nỨng dụng bật tự khởi động để tiếp tục sau khi khởi động lại.
+f	4b2abf5e	tải nhẹ như video trong trình duyệt trên CCD2, 12 phút
+f	af2ffb4b	tải nhẹ như video trong trình duyệt trên CCD1, 12 phút
+f	0d371183	một nhân trên bậc thang xung nhịp, lần lượt từng nhân, 10 phút
+f	e082bede	Tải nền nhẹ trên 
+f	f3bb6ad2	 (như video trong trình duyệt)
+f	9fcd30c9	Bậc thang xung nhịp: một nhân chịu tải, 
+f	9635d787	 nhân lần lượt
+f	962e7c42	Nền CCD2
+f	952e7aaf	Nền CCD1
+f	7c3f380e	Bậc thang
+f	aa73fa69	Số nhân đã đo: 
+f	a328c15a	Đo lần lượt từng nhân mất khoảng 
+f	1b6e56ed	 phút; trong lúc đó xung nhịp bị giới hạn theo bậc
+f	3f157795	Xong, nhưng các nhân chưa đo: 
+f	3341df80	 (chi tiết trong nhật ký)
+f	48f23da4	Đang đo: 
+f	4f61c00d	Bố cục đo từ xa của bộ xử lý này (0x
+f	d87715e9	) chưa được biết
+f	832a150e	Đang hoạt động: được áp dụng tự động
+f	aa8e426b	Đã chọn nhưng chưa hoạt động: «Áp dụng» để kích hoạt
+f	35ec5682	Preset đồ họa «
+f	1b2f5b96	» chưa được áp dụng: 
+f	b324cc8d	Trong game tối đa
+f	ca272b6f	Gbit/s
+f	4f2f4653	độ lệch được tính gấp đôi, như trong Afterburner
+f	921cf955	» đã được áp dụng
+f	76e93c22	» đã mở, chưa áp dụng
+f	9ac8e248	» đã có sẵn trên card
+f	296223f3	preset
+f	2e21f1d9	trình điều khiển trả lời «đã nhận» nhưng đường cong không đổi
+f	e61cad62	\n\n«Áp dụng khi khởi động» đang bật: sau khi khởi động lại, preset «
+f	58bcba36	trình điều khiển NVIDIA không phản hồi
+f	322ae317	không tìm thấy card NVIDIA
+f	45e82377	trình điều khiển không cung cấp đường cong V/F (chức năng của Afterburner)
+f	67031808	Mô phỏng: không ghi gì vào card
+f	3c6e0ec4	không đọc được đường cong hiện tại
+f	b7f34e3a	trình điều khiển không nhận đường cong
+f	c8627f5c	, phẳng từ điểm 
+f	054a25c6	NVML không phản hồi
+f	2e0c7e9c	trình điều khiển không nhận xung nhịp bộ nhớ (mã 
+f	2ff4852f	Không truy cập được đường cong: 
+f	fe4c3421	trình điều khiển không phản hồi
+f	851f974d	điểm
+f	0244c6c9	bộ nhớ
+f	b4f1474f	dưới phần đỉnh phẳng
+f	cd609234	gốc
+f	ae1400cb	mV
+f	5f55ae86	Preset «
+f	e26cd779	» đã lưu
+f	786da301	Chỉ cần một lần (lặp lại sau khi đổi BIOS hoặc trình điều khiển)
+f	02083de9	trong lúc đó đừng dùng laptop
+f	972655c8	«Kiểm tra» — chỉ giai đoạn 3 trên preset đang hoạt động, không tinh chỉnh gì
+f	e451f2d8	 MB
+f	3056e7aa	 KB
+f	3dc05ccd	Đường cong chưa được áp dụng: 
+f	c5c7d794	Không chuyển được gói: 
+f	e926c315	Không có phản hồi: 
+f	723fd7fb	qua PawnIO
+f	30b0b6a8	hiện tại
+f	bd1ecc52	nhanh
+f	305e0ad8	chậm
+f	66cd5473	không đọc được các giới hạn hiện tại
+f	47564942	việc ghi chưa được kiểm chứng trên dòng này
+f	563205e6	sẽ được ghi
+f	fc70b290	đã lưu, được ghi khi «Áp dụng» và khi khởi động
+f	8957bafc	để yên cho đến khi bạn dịch chuyển
+f	b970f3c8	giá trị hiện tại
+f	dbe0fc18	không thay đổi
+f	db58571b	(mô phỏng)
+f	051ef98b	Đường cong Red Tune hiện tại: CPU 
+f	daad1861	, GPU 
+f	b8b7e47a	 · đường cong chưa có hiệu lực, firmware đang điều khiển quạt
+f	c24900b8	Hiện tại 
+f	c4bebe8b	 °C · đường cong yêu cầu 
+f	3ca9e8df	 · đang quay ở 
+f	be8ef508	Chuyển sang «
+f	c8d9ac5b	Đã chọn «
+f	50079fbd	» — có hiệu lực sau khi khởi động lại
+f	e4c2aaf9	Windows không chấp nhận chế độ (
+f	d418376e	 đang chạy và khởi động cùng Windows
+f	bed905d9	 đang chạy
+f	95656e32	 khởi động cùng Windows
+f	de66c066	 — chúng tranh cùng những cài đặt với Red Tune
+f	a7a8c212	Bạn đã có đường cong theo từng nhân
+f	a6785871	: từ 
+f	d1b2dac7	Red Tune áp dụng nó khi khởi động, khi cắm sạc và sau khi ngủ.\n\n
+f	f1356cee	Curve Optimizer cho mọi nhân đặt một giá trị cho tất cả các nhân thông qua firmware và ghi đè đường cong của bạn mỗi lần preset này được áp dụng. 
+f	e91a56e6	Sau đó Red Tune lại đặt đường cong của bạn: hai bên sẽ tranh nhau, và giá trị cuối cùng trên các nhân tùy vào bên nào ghi sau.\n\n
+f	b5da746d	Không đọc được giá trị gốc: 
+f	340e42fb	Nguồn: tác giả rawhide-kobayashi (GitHub), bản dựng 0.1.5-sp00n từ bản phát hành CoreCycler 0.11
+f	eb016878	Nguồn: mersenne.org (GIMPS); mặc định là bản sao từ CoreCycler
+f	51f04fcf	 vào đó?\n\nĐến: 
+f	74667d20	\nCác tệp trùng tên sẽ bị thay thế.
+f	27d1c323	  · chỉ định thủ công
+f	24f70a9d	Đang bật: 
+f	8c3268e2	 trên 
+f	64633593	. Các mục đã tắt vẫn nằm trong danh sách và có thể bật lại. Task Manager hiển thị cùng nội dung
+f	2a78cf09	thiếu tệp: 
+f	a3be7856	Xóa «
+f	fd0bb6ce	, do chính sách đặt
+f	54b6e615	không chuyển được vào Thùng rác (mã 
+f	6a649cfa	Đóng «
+f	837844a1	» và đóng nó?
+f	4b7e780b	\n\nCó thể khôi phục: tự mở nó rồi bật tự khởi động.
+f	b2cd6abc	Thư mục của «
+f	1d56c5d5	» không còn ở chỗ cũ, đang tìm…
+f	8c155b76	Vị trí mới của «
+f	dff8f489	Thư mục của «
+f	e7c116a0	» không còn nữa: đã bị xóa, hoặc chuyển đến nơi Red Tune không tìm thấy.\n\n
+f	17d5fcf2	Gỡ «
+f	b2fc1c83	» khỏi phân bổ?\n(nếu chương trình chỉ bị di chuyển, hãy giữ lại: thư mục sẽ được tìm thấy ở lần chạy đầu)
+f	392f84e5	» đã được gỡ khỏi danh sách · nhấn «Lưu» để áp dụng
+f	f8771296	Không mở được thư mục: 
+f	933851b6	Chưa lưu: 
+f	2eeb24c5	thay đổi
+f	18eb0223	thay đổi
+f	24eb1507	thay đổi
+f	9b17e0de	Không lưu được các quy tắc: 
+f	e4bc92f6	Đã lưu: 
+f	4f85b849	 · các chương trình đang chạy được chuyển ngay
+f	b101a420	Bạn chạy tệp exe nào cho «
+f	8df50275	»? (thường là launcher trong thư mục game)
+f	4b520eab	Lối tắt «
+f	6a5b7216	» trên màn hình nền: khởi chạy ngay trên 
+f	d1118128	Không tạo được lối tắt: 
+f	08e1af56	Đang chạy · 
+f	a4d536ff	tiến trình
+f	b417fc99	tiến trình
+f	03da9093	tiến trình
+f	a6937c38	 trên các nhân của chúng
+f	79c65019	 · 2 chip × 
+f	bf4f5981	 nhân
+f	bb62e4f4	trước là 
+f	750eb27a	chương trình
+f	3c0e58bf	chương trình
+f	cba67395	chương trình
+f	49d23aa2	, ALL: tất cả, SKIP: để yên
+f	07485f11	tất cả 
+f	db5c4a5a	nhân 
+f	0ee2b188	 (anti-cheat đã cho phép)
+f	42ddfbc1	 (qua PowerShell: chương trình chỉ chấp nhận tệp đã ký)
+f	acbdbd50	 (qua CPU Sets khi các nhân bị khóa)
+f	a2a0db82	 không SMT
+f	47a9fc5f	bộ nhớ hàn chết 
+f	5416d7ef	: không hỗ trợ ghi
+f	480ced79	BIOS từ chối lệnh 0x
+f	a234dcf8	 với giá trị 
+f	7f50664c	Không đọc được cài đặt BIOS (
+f	36e6186a	không đọc được timing đang chạy: 
+f	347ca9bc	cho phép 
+f	3d076fc6	bước 
+f	3d9a6330	, từ 
+f	4eff029d	   (chặt hơn giá trị đang chạy)
+f	37042eb9	Tốc độ: 
+f	8497c4cf	   (cao hơn giá trị đang chạy)
+f	c82f5382	   (tốc độ chỉ để Auto được khi mọi thứ đều Auto)
+f	53618e97	giữ nguyên 
+f	06b49f7c	đã tắt việc ghi: 
+f	781163c7	kích thước cài đặt BIOS đã thay đổi: 
+f	0d96cffa	: lẽ ra là Auto, nhưng BIOS có 
+f	6f0250e0	: yêu cầu 
+f	21805168	, BIOS có 
+f	faa53fb1	Tốc độ: lẽ ra là Auto, nhưng BIOS có 
+f	5a2c1fce	Tốc độ: yêu cầu 
+f	54123e5c	FCLK: lẽ ra là Auto, nhưng BIOS có 
+f	f5bc345a	FCLK: yêu cầu 
+f	2a5f2399	UCLK: lẽ ra là Auto, nhưng BIOS có 
+f	10924b9d	UCLK: yêu cầu 
+f	4181ece5	, đang chạy 
+f	42448e9e	Cài đặt bộ nhớ từ 
+f	c2f3f7a7	 chưa có hiệu lực hoàn toàn:\n
+f	0455395e	\n\nBIOS có thể đã từ chối các giá trị hoặc khôi phục lại sau một lần khởi động thất bại.
+f	61ac7589	: tất cả Auto, BIOS tự chọn giá trị.
+f	50497e27	 đã có hiệu lực hoàn toàn (
+f	d29ad17f	 giá trị).
+f	f03fdd4b	: nhập một số hoặc bật Auto
+f	8edf5d23	» không phải là số
+f	41cb0492	, bước 
+f	4fa54f24	 ns)
+f	8ed1ac78	Không đọc được: 
+f	fa9ba8ee	Hãy sửa: 
+f	a460952a	 (và 
+f	87701f41	Thay đổi: 
+f	ae7077fe	Chỉ xem: 
+f	fb7429b8	BIOS đang giữ các giá trị chưa chạy (
+f	2478edcf	) — chúng có hiệu lực sau khi khởi động lại
+f	bd788b9c	Đã lưu hồ sơ: 
+f	f56d32c3	Chưa lưu: 
+f	55583d6a	Hồ sơ «
+f	af4421f1	» đã nạp vào cửa sổ · chưa ghi vào BIOS
+f	bbcad474	Không đọc được hồ sơ: 
+f	de2ecd23	Ghi vào BIOS:\n\n
+f	5eb2bd92	Giá trị chặt hơn hoặc cao hơn hiện tại: 
+f	dd822ac6	. Nếu laptop không khởi động được với chúng, cần đặt lại BIOS thủ công (tháo máy).\n\n
+f	fe7c3dd2	Đang đo ở 
+f	aa145133	Đang trả lại độ lệch: 
+f	689179ae	Đang đo: 
+f	d00c7ae5	 ns
+f	0ba72aa4	 (trước là 
+f	78f54694	. Nếu PC không khởi động được với chúng, cần đặt lại CMOS (nút hoặc jumper Clear CMOS trên bo mạch).\n\n
+f	a469ec0d	Auto được đặt bằng cách đặt lại toàn bộ cài đặt bộ nhớ; mọi thứ để thủ công sẽ được ghi lại.\n\n
+f	bfab9893	Sau khi ghi, máy tính khởi động lại sau 15 giây.
+f	ce597e29	Các giá trị có hiệu lực sau lần khởi động lại tiếp theo.
+f	be11dff5	byte 0x{0:X}: trước là {1:X2}, giờ là {2:X2}
+f	ceca344a	Tự tinh chỉnh xong: preset «
+f	3f0fc2d0	» đã lưu ở thẻ «Đường cong»
+f	a15b025a	Tự tinh chỉnh 
+f	c2dbf5a7	» chưa được áp dụng: 
+f	66b84c19	CPU trả về 
+f	9e7c01a8	firmware trả về 
+f	fb216380	 W thay vì 
+f	5e53d119	Đọc đường cong, nhân 
+f	3be750d8	Đọc đường cong: 
+f	666e7310	Ghi đường cong, nhân 
+f	c1315107	Ghi đường cong: 
+f	f2d3c55c	Đọc đường cong: số nhân phản hồi: 
+f	f4f92c12	, bộ xử lý có 
+f	7b890a9a	 (một số nhân bị tắt trong BIOS?)
+f	3bece7fb	Ghi đường cong: số nhân 
+f	036dabfb	, số giá trị 
+f	ee73761b	bộ xử lý đang bận lệnh khác
+f	ef1b9080	bộ xử lý không trả lời lệnh
+f	2167aa22	PawnIO không truy cập được bộ xử lý
+f	79db6553	chương trình khác đang giữ bus của bộ xử lý
+f	f2cdd096	bộ xử lý từ chối lệnh
+f	39ffb75d	bộ xử lý không biết lệnh này
+f	5856eec1	bộ xử lý hiện không nhận lệnh
+f	daf938a1	bộ xử lý trả lời bằng mã 
+f	25de93fc	Giá trị phải từ 
+f	45518c8e	Trình điều khiển Lenovo từ chối (
+f	6bd586f1	Phím Fn không khả dụng (
+f	0a3ad026	Hãy khắc phục các điều kiện trước: 
+f	b81d52ff	Kiểm tra preset đang hoạt động «
+f	0ad25ed7	»? Khoảng 1,5 giờ, có thể khởi động lại. Trong lúc đó đừng dùng laptop.
+f	1aa99bc4	Không bật được tự khởi động: 
+f	79a41feb	Đã áp dụng và đặt làm preset hoạt động «
+f	8bde0533	Chưa áp dụng: 
+f	fc8fa804	Đã dừng: 
+f	6f9da719	 · ~
+f	7512d05d	 · còn 
+f	94c906aa	Giai đoạn 
+f	845b0103	 trên 3
+f	f08e24c8	 · vòng 
+f	b3066733	 · khởi động lại 
+f	d13ab1f3	Đã qua 
+f	72ed9798	 giờ 
+f	cca3f92a	 phút
+f	3b4804f2	Bộ giá trị: CCD1 
+f	d1e060e0	 · đã lưu thành preset «
+f	782aef55	Chế độ «
+f	7db23897	» · gói «
+f	e398ad89	Đang kiểm tra đường cong hiện tại: 
+f	9e809afd	Đã bắt đầu tinh chỉnh đầy đủ. Thứ tự nhân: 
+f	c054bbd0	Khởi động lại giữa một vòng: 
+f	21a68aa1	Vòng: 
+f	2f48b8e1	Thất bại: 
+f	c71b2eac	Xong. Kết quả: CCD1 
+f	b554d024	giai đoạn 1 · 
+f	223bb87f	kiểm tra 
+f	fa3dc2f8	 trên 4: 
+f	1a2bb58a	giai đoạn 
+f	fcf5295a	 · bước 
+f	61080f86	 · tìm kiếm: 
+f	36ae404d	Bước 
+f	c2998a21	 đã đạt
+f	bda84eed	bước 
+f	e726e38d	 thất bại ngay cả ở 0: không phải do đường cong
+f	2ff60b08	Lỗi ở chính nhân: 
+f	6333f9b6	Giai đoạn 2–3 lần nữa từ bộ giá trị sau giai đoạn 1: 
+f	3ef6b788	Từ bộ giá trị sau giai đoạn 1: 
+f	04ba07bf	Chạy lại giai đoạn 2 và 3 từ bộ giá trị mà giai đoạn 1 để lại? 
+f	6699d402	, có thể có khởi động lại. Trong lúc đó đừng dùng laptop. Tiến trình tinh chỉnh hiện tại sẽ bị thay thế; các preset đường cong đã lưu vẫn còn.
+f	e163adb6	Đã bắt đầu tinh chỉnh nhanh. Thứ tự nhân: 
+f	50f20c96	Đang chờ 45 giây sau khi đăng nhập
+f	b402ed96	 trên 6: 
+f	835aff70	 trên 2
+f	9633fa25	mọi nhân, 8 phút
+f	d5e380f4	các đợt tải trên mọi nhân, 5 phút
+f	214acce2	tải nhẹ như video trong trình duyệt trên CCD2, 5 phút
+f	cd10f5a1	tải nhẹ như video trong trình duyệt trên CCD1, 5 phút
+f	d311c58d	Giai đoạn 2: mọi nhân cùng lúc. Bộ giá trị sau giai đoạn 1: 
+f	0037159c	Bậc thang xung nhịp trên 
+f	dc60e999	Chia đôi từ −25 theo 13, 6, 3, 2, 1 · mỗi lần thử 1,5 phút: Prime95 và bậc thang xung nhịp · biên +8
+f	9f6cbda1	2. Mọi nhân cùng lúc
+f	4526e7f6	Prime95 trên mọi nhân, một cơn bão và tải nền giống video; nhân bị lỗi được +3
+f	2fb5b412	3. Kiểm tra đầy đủ — khi bạn muốn
+f	05fcac03	Nút «Kiểm tra đường cong hiện tại»: các vòng dài, cơn bão, tải nền và bậc thang xung nhịp trên preset đang hoạt động
+f	16e6a2f8	«Kiểm tra» là kiểm tra đầy đủ preset đang hoạt động, không tinh chỉnh gì
+f	824c806b	Bắt đầu tinh chỉnh đường cong? 
+f	f52d645f	Đây là gì. Một đường cong đã qua mọi bài thử vẫn có thể sâu hơn một bước so với mức một nhân nào đó chịu được khi dùng thông thường. Khi đó nhân ban đầu lỗi một cách âm thầm: bộ xử lý tự sửa lỗi và ghi vào nhật ký Windows (WHEA). Không có gì sập, bạn không thể nhận ra, còn sự cố thật chỉ cách vài bước. Bộ giám sát đọc các bản ghi đó và cho biết nhân nào đã lỗi.\n\nNó làm gì. Mỗi phút một lần nó xem nhật ký Windows; sau một lần khởi động lại mà không tắt máy đúng cách, nó lấy từ hộp đen những nhân đang hoạt động ở thời điểm cuối. Mỗi nhân như vậy nhận một lời khuyên nâng giá trị lên 3 bước (khoảng 15 mV). Bộ giám sát không tự ghi gì vào bộ xử lý: giá trị chỉ thay đổi khi bạn nhấn «Nâng 3»; preset đường cong được lưu và áp dụng ngay. «Để yên» xóa lời khuyên.\n\nNó không làm gì. Nó không tạo tải lên bộ xử lý và không thử nghiệm gì. Nó không tính lỗi trong lúc tự tinh chỉnh hay đo đường cong của nhân: ở đó lỗi là một phần của bài thử. Nó không hứa sẽ không có sự cố: hỏng hóc đột ngột có thể đến mà không có lỗi cảnh báo.\n\nĐào sâu dần (tùy chọn). Khi đã qua số ngày đã chọn mà không có lỗi, bộ giám sát đề nghị hạ mỗi nhân 1 bước. Nhân nào lỗi sau đó sẽ nhận lời khuyên «nâng 3» và không bị đào sâu thêm nữa. Sau vài tuần mỗi nhân đạt đến giới hạn riêng, được chứng minh bằng công việc thường ngày của bạn chứ không phải bằng bài thử tổng hợp. Bước hạ xuống cũng chỉ được thực hiện bằng nút của bạn. Lỗi đã sửa thường đến trước sự cố, nhưng không phải luôn luôn: trên con đường này có thể xảy ra khởi động lại.\n\n«Quên các lỗi» cho phép đào sâu lại những nhân đã lỗi: ví dụ sau khi cập nhật BIOS hoặc thay keo tản nhiệt.
+f	ad4da1a5	Bộ giám sát đường cong
+f	d440b02d	Theo dõi lỗi của bộ xử lý khi dùng thông thường và cho biết nên nâng nhân nào
+f	432823ef	Theo dõi
+f	528508d6	Trạng thái
+f	07a40c30	Lời khuyên
+f	add784bc	Nhật ký
+f	dc892cb6	Nâng 3
+f	dfbb738e	Để yên
+f	9a397d80	Hạ 1
+f	cb90fb88	Chưa phải lúc
+f	2543764b	Quên các lỗi
+f	908217fe	Có thể thử sâu thêm một bước
+f	cbeef03e	Đào sâu dần
+f	db1071bf	Đề nghị sâu thêm một bước
+f	6e34ca3e	Sau một số ngày không lỗi, khuyên hạ mỗi nhân 1 bước
+f	adbcf0fc	Bao nhiêu ngày không lỗi
+f	05be4f21	Thời hạn càng dài, mỗi bước càng chắc chắn
+f	e8b764fa	3 ngày
+f	2faf0fe1	5 ngày
+f	f260f2c3	7 ngày
+f	241c5aab	Các nhân đã lỗi
+f	02296acc	Không có
+f	b5c5eacb	 — không đào sâu thêm nữa
+f	8d0570fa	Hạ 1 bước mọi nhân chưa từng lỗi? Preset «
+f	0550abcd	» sẽ được thay đổi và áp dụng.
+f	63567f6c	Quên những nhân nào đã lỗi? Chúng có thể được đào sâu lại.
+f	10e736cf	Tắt: không ai đọc nhật ký lỗi
+f	39ada1a8	Bật · kiểm tra mỗi phút một lần
+f	fb5d2827	 · lần cuối 
+f	ae1896b3	vừa xong
+f	f3da1548	 phút trước
+f	4ed454fa	 giờ trước
+f	99ceba35	Bật theo dõi để bộ giám sát bắt đầu đếm
+f	8724f213	Không lỗi trong: 
+f	4fa0edab	 · tổng cộng: lỗi WHEA 
+f	b5755d44	, khởi động lại 
+f	0caf39f3	 · preset «
+f	b8e6cfda	 ngày 
+f	b1d48614	tắt
+f	57099ba5	có lời khuyên
+f	455e50fb	yên ổn
+f	f4c42fa8	đang hoạt động trước khi khởi động lại
+f	887a7112	lỗi đã sửa 
+f	cfd2a8f7	 · hiện tại 
+f	64e2f1d6	 → sẽ là 
+f	aa11286d	 không lỗi. Mọi nhân chưa từng lỗi được đào sâu thêm 1 bước
+f	319c290d	Chỉ hoạt động khi bật theo dõi
+f	24432625	Lời khuyên tiếp theo sau 
+f	7f9bc46e	, nếu không có lỗi
+f	c1aa7097	Chưa có gì
+f	916421fd	 ở giá trị 
+f	08387752	: đã nâng 
+f	3e6fcc55	khởi động lại mà không tắt máy; đang hoạt động: 
+f	aeaf2d57	không rõ
+f	b42c6956	mọi nhân trừ những nhân đã lỗi, 
+f	b82f5ec0	 sâu hơn
+f	4b86bdc6	Bộ giám sát: lỗi trên 
+f	0e8ed0e3	. Lời khuyên nằm ở «Đường cong» → «Bộ giám sát»
+f	29cd9b98	 ngày không lỗi. Có thể thử sâu thêm một bước: «Đường cong» → «Bộ giám sát»
+f	43c052d2	Bộ giám sát: 
+f	efc01a98	Bộ giám sát
+f	05b5fa7d	Vùng
+f	f2ef49ac	Làm mượt
+f	612a51a4	Làm thẳng
+f	eca2bcfa	Xóa
+f	fa873190	Kéo với Ctrl hoặc nút chuột phải
+f	a9bf1e2c	Lịch sử chỉnh sửa
+f	51193970	Lùi một bước
+f	32ec8889	Tiến một bước
+f	25976950	lùi một bước
+f	37fe8969	tiến một bước
+f	7d052af2	bước
+f	fcf1b5c1	Hoàn tác tất cả
+f	89a6f586	Màn hình
+f	f5c90bec	Thông báo hiện trên màn hình nào
+f	0e8f9d36	Màn hình chính
+f	2e9ccd9e	Nơi có cửa sổ đang hoạt động
+f	f1885493	Mọi màn hình
+f	a3804d6d	Hiện tại / giới hạn bộ xử lý có thể giữ lâu · chỉ để tham khảo
+f	7a9ccb90	Hiện tại / giới hạn cho các đỉnh ngắn · chỉ để tham khảo
+f	38108763	Thiết bị chưa kiểm chứng: lệnh lấy từ BIOS của nó, giá trị ghi được so với giá trị đã lưu
+f	0551a874	Thiết bị chưa kiểm chứng: lệnh lấy từ BIOS của nó, kết quả chỉ thấy sau khi khởi động lại
+f	60a7e9db	Việc ghi cài đặt bộ nhớ chưa được kiểm chứng trên thiết bị này.
+f	c6e69358	• Số lệnh và các giá trị cho phép lấy từ BIOS của thiết bị này.
+f	4ac1de23	• Định dạng cài đặt BIOS khớp với bản đã kiểm chứng: các giá trị được so sánh sau khi ghi.
+f	82ee5fad	• Không rõ định dạng cài đặt BIOS: trước khi khởi động lại không có cách nào kiểm tra những gì đã ghi hay xem những gì được lưu.
+f	4a48a9d5	• Giá trị sai có thể khiến máy tính không khởi động được. Khi đó chỉ có đặt lại cài đặt BIOS (CMOS) mới giúp được.
+f	3775f2f4	Cho phép ghi trên thiết bị này?
+f	0a12ec1c	Cho phép ghi
+f	59e6be02	Đã cho phép ghi ở chế độ thử nghiệm
+f	4aa67c65	Việc ghi ở chế độ thử nghiệm đang tắt
+f	122fc88b	thiết bị chưa kiểm chứng: việc ghi được bật bên dưới, ở dòng «Ghi thử nghiệm»
+f	d03f604b	   (được ghi mỗi lần thay đổi: trên thiết bị này không xem được BIOS đang giữ gì)
+f	fea4f3cb	Ghi thử nghiệm
+f	fa8dee3c	Báo cáo đầy đủ ra tệp
+f	faa9b147	Đang thu thập báo cáo đầy đủ: chỉ đọc, khoảng nửa phút…
+f	511a4dc5	Báo cáo chưa được lưu: 
+f	b68a2542	Báo cáo nằm trên màn hình nền: 
+f	847fe80d	: có thể gửi đi
+f	53b52a6a	Nhân yếu: 
+f	4891c2ae	: kết quả 0
+f	4fff176a	: kết quả 
+f	91f9e58c	Giai đoạn 2: lần lượt từng chiplet. Bộ giá trị sau giai đoạn 1: 
+f	40ca50ab	trạng thái tối thiểu của bộ xử lý, %
+f	bee2ddc7	trạng thái tối đa của bộ xử lý, %
+f	aa4e66ca	giới hạn xung nhịp, MHz (0: không có)
+f	12797968	tăng tốc (2: mạnh)
+f	06390633	ưu tiên năng lượng, % (như Cân bằng)
+f	5fbdea91	  (chưa ghi được)
+f	183820ef	không đọc được
+f	0bd7e9ab	Chưa tạo được gói nguồn: 
+f	799b7cd5	Windows không cho sao chép gói nguồn (mã 
+f	3b6dff04	Lỗi bài kiểm tra riêng trên 
+f	e56f2bfb	: cả hai luồng, bài kiểm tra riêng
+f	a24e6e6b	Bài kiểm tra riêng
+f	2d5c5b73	128 bit
+f	5fb7975c	Lỗi Prime95 trên 
+f	2817f0b4	Prime95 AVX2 trên 
+f	b314b6e2	Các đợt tải sau khi nghỉ trên 
+f	d79fb677	Các cú giật trên 
+f	14aaf06f	: tải 20 giây, nghỉ 10 giây
+f	4319bd66	 trên 
+f	a0c14915	Phân bổ: khởi chạy ngay trên 
+f	04dad0d7	Registry, mọi người dùng (32-bit)
+f	2c02d035	Registry, mọi người dùng
+f	5052d538	Registry, người dùng này
+f	06040545	Thư mục Startup của mọi người dùng
+f	adc87a23	Thư mục Startup
+f	021aef63	Ứng dụng đóng gói (MSIX)
+f	795499d4	Task Scheduler
+f	4156a300	GDM bật
+f	0098bb47	GDM tắt
+f	039594a1	Tìm thấy 
+f	7385db3c	 · đã chọn 
+f	deb1b4b9	Xóa 
+f	7141a109	Đã giải phóng 
+f	7d7ae3a5	 do chương trình giữ
+f	03057700	\n\nCác tệp đang được chương trình sử dụng sẽ bị bỏ qua. Thùng rác đã dọn thì không khôi phục được.
+f	284f5b0f	tệp đang được dùng
+f	8ad691c1	tệp đang được dùng
+f	9f025bea	tệp đang được dùng
+f	c98b7e0d	tệp
+f	87dcabe3	tệp
+f	9d985a41	tệp
+f	4c73677a	\n\nCông việc chưa lưu trong đó có thể bị mất: các chương trình có cửa sổ sẽ được yêu cầu tự đóng trước.
+f	f4c4382e	Các chương trình này không đóng, có thể đang chờ lưu:\n\n
+f	dbdebca4	\n\nBuộc đóng chúng? Công việc chưa lưu trong đó sẽ bị mất.
+f	7c0ff6b7	Đã đóng 
+f	97b0bef4	 · đã giải phóng 
+f	f698c8bd	 GB bộ nhớ
+f	b57968df	 · vẫn còn mở: 
+f	8ef573f5	Đóng 
+f	6d0ea5e2	chương trình
+f	578da204	Chế độ nguồn, giới hạn, quạt, pin, phím Fn
+f	dbc49c7e	Đường cong (preset khi khởi động, khi cắm sạc và sau khi ngủ)
+f	9a484d21	Dịch vụ phím Fn của Lenovo: lấy mất phím của ứng dụng
+f	3df6ae5e	Dịch vụ của Lenovo, thay đổi chế độ và pin
+f	b88183bb	Ứng dụng của chính Lenovo cho laptop chơi game
+f	56ab75cd	Giai đoạn 1: từng nhân riêng lẻ, các nhân khác ở 0. Giá trị được tìm bằng cách chia đôi từ −25: các bước ±12, ±6, ±3, mỗi bước 4 phút 
+f	0087c0e3	(2 phút Prime95 AVX2 trên cả hai luồng của nhân và 2 phút các đợt tải ngắn sau khi nghỉ). Giá trị tìm được sẽ được kiểm tra trong 10 phút, +3 nếu có lỗi.\n\n
+f	db82be12	Giai đoạn 2: lần lượt từng chiplet: một bên tải tối đa trong khi bên kia nghỉ và ngược lại, sau đó từng bên chịu tải (các bước A–D). 
+f	9d9cd0ae	Một vòng là 12 phút: 6 phút AVX2, 4 phút SSE, 2 phút các cú giật. Khi có lỗi, nhân yếu được tìm bằng cách chia đôi các nhân và được +3, các nhân khác giữ nguyên.\n\n
+f	c9dddde5	Giai đoạn 3: kiểm tra cuối bộ giá trị hoàn chỉnh: các bước A, B và E mỗi bước 25 phút và một cơn bão 20 phút (các đợt tải trên mọi nhân cùng lúc, giống như mở rất nhiều thẻ trình duyệt).\n\n
+f	f25d9f6c	Một vòng thất bại khi có lỗi WHEA, lỗi Prime95 hoặc máy khởi động lại. Sau khi khởi động lại, việc tinh chỉnh tự tiếp tục 90 giây sau khi đăng nhập, 
+f	a38506b2	vì vậy ứng dụng bật tự khởi động của mình. Giữa các vòng mọi nhân đều ở 0. Kết quả được lưu thành một preset đường cong mới; bạn là người áp dụng nó.
+f	0df53de9	 · đã gỡ cùng với phần còn sót
+f	c31fda81	»?\n\nTrình gỡ cài đặt riêng của nó sẽ mở trước: hãy làm theo như bình thường. 
+f	ceca3280	Sau đó Red Tune tìm những gì còn sót (thư mục, mục registry, lối tắt, mục khởi động) và hiện danh sách: chỉ các mục đã chọn mới bị xóa.
+f	214d39c0	Không chạy được trình gỡ cài đặt: 
+f	b0311c03	» vẫn còn trong danh sách đã cài. Việc gỡ đã xong và để lại mục này, hay đã bị hủy?
+f	8132d7a1	Phần còn sót của «
+f	07fe1d04	Những gì còn lại sau khi gỡ. Tệp và thư mục được chuyển vào Thùng rác, các mục registry được lưu vào tệp .reg trước khi xóa 
+f	4f8a97a7	(thư mục Red Tune → removed-registry). Bỏ đánh dấu những gì bạn muốn giữ.
+f	739e13d8	Các thư mục trong AppData và ProgramData không khớp với chương trình đã cài nào và không thay đổi trong 2 tháng. 
+f	f1e73533	Đây là gợi ý chứ không phải câu trả lời chắc chắn: không mục nào được đánh dấu, hãy đánh dấu những gì bạn nhận ra. Mục bị xóa sẽ vào Thùng rác.
+f	23592d94	 · không xóa gì
+f	25994b9f	Thư mục menu Start  
+f	7502b1a5	Thư mục  
+f	6097bc12	Registry  
+f	c4513a26	Lối tắt  
+f	961afb78	 · không đổi từ 
+f	a38bb58a	Đã gỡ 
+f	734aae31	 · trong Thùng rác 
+f	22355604	 · thất bại: 
+f	19db9354	Dừng cho đến khi khởi động lại 
+f	9bc7329c	dịch vụ
+f	a3c73f34	dịch vụ
+f	5e1d1037	dịch vụ
+f	f85df9aa	đã dừng dịch vụ 
+f	9adc4a8a	Đã dừng dịch vụ 
+f	7ad2a6f7	không dừng: 
+f	6900e4a9	đã giải phóng 
+f	c5b2ed66	vẫn còn mở: 
+f	13ff9dd5	 · cả thư mục, kèm dịch vụ
+f	0e714640	 · cả thư mục
+f	d9b0d858	 · mọi phiên bản
+f	6c419933	Không tìm được vị trí của «
+f	76bc6168	 : hãy chạy chương trình và vị trí của nó sẽ được ghi nhận.
+f	45918cea	trang này dựng cho 16 nhân, bộ xử lý này có 
+f	0ff266f3	 nhân / 
+f	28de246d	 nhân / 
+f	20d6fcff	 luồng · 
+f	b683d147	 luồng · 
+f	6a985ca7	 luồng · 
+f	7ed3c9c9	 chiplet
+f	99508b0f	 chiplet
+f	10d82a25	 chiplet
+f	9685518a	Không kết nối được với bộ xử lý: 
+f	2617f474	 · hiện tại: STAPM 
+f	9a25ad83	 W, nhanh 
+f	26fc4fb9	 W, chậm 
+f	fcaa658f	Bộ giá trị: 
+f	e2c10fed	Xong. Kết quả: 
+f	752f7878	AMD Ryzen (mô phỏng, 
+f	77cff896	 · qua PawnIO
+f	610e7d5d	Chưa áp dụng đường cong, giới hạn và ép xung: 
+f	59e02e96	Khởi động an toàn: chưa áp dụng đường cong và giới hạn (
+f	ac811831	khởi động với --safe
+f	be4bd3bf	đã giữ Shift khi khởi động
+f	f550035b	lần khởi động trước bị ngắt trong 
+f	4510ff12	 phút đầu sau khi áp dụng
+f	78cd758c	Chưa áp dụng đường cong và giới hạn: 
+f	fbcd34ba	lần khởi động trước bị ngắt ngay sau khi áp dụng chúng
+f	54167900	 dB
+f	f40ef228	 ms
+f	57ec9e86	 kHz
+f	897554e6	 Hz
+f	4cf6c595	Đã gắn, đang tắt: âm thanh đi qua không đổi
+f	aadff4ad	kênh: 
+f	ea94d7f5	 · lỗi: 
+f	f9442619	độ rộng Q 
+f	2e321269	Ngưỡng: 
+f	641d9a2f	Trần: 
+f	9a5b726c	knee: 
+f	649ef25d	lăn chuột đổi knee
+f	ac33136a	Tỉ lệ: 
+f	2674fd83	Khuếch đại bù: 
+f	f6fe7fc5	Attack: 
+f	e85ba742	Release: 
+f	0818c20c	Knee: 
+f	c11fefbb	Ranh giới dải trầm: 
+f	4838e8a9	Ranh giới dải cao: 
+f	b19cb5e0	kéo sang trái-phải
+f	91d123d1	kéo lên-xuống
+f	5243b3ad	kéo lên-xuống hoặc lăn chuột
+f	dda84af3	lăn chuột đổi độ rộng, nhấp phải chọn loại bộ lọc
+f	43d5c6ee	Red Tune sẽ thêm hiệu ứng âm thanh của mình vào chuỗi hiệu ứng Windows của thiết bị «
+f	c781714f	» và khởi động lại dịch vụ âm thanh của Windows.\n\n
+f	7cb39aeb	Âm thanh sẽ ngắt vài giây; chương trình đang phát có thể cần tạm dừng rồi phát lại.\n\n
+f	3256eb3f	Các hiệu ứng khác (
+f	6ee77511	trình điều khiển) vẫn giữ nguyên. Có thể gỡ hiệu ứng ngay tại đây, ở cuối trang.
+f	e1aa0388	Red Tune sẽ gỡ hiệu ứng của mình khỏi chuỗi hiệu ứng của thiết bị «
+f	60969dc9	» và khởi động lại dịch vụ âm thanh của Windows. Âm thanh sẽ ngắt vài giây.
+f	6e94c261	không có tệp 
+f	127e2749	regsvr32: mã 
+f	d85fdc01	hiệu ứng chưa được đăng ký: 
+f	d62cae0b	hiệu ứng cuối của thiết bị đã bị hiệu ứng khác chiếm (
+f	206adc50	Red Tune sẽ đưa hiệu ứng của Nahimic trở lại chuỗi của thiết bị «
+f	f5fa4c6b	Red Tune sẽ gỡ hiệu ứng của Nahimic khỏi chuỗi của thiết bị «
+f	8c7b9989	» và khởi động lại dịch vụ âm thanh của Windows. Âm thanh sẽ ngắt vài giây.\n\n
+f	dcc7d8c7	Âm thanh sẽ thay đổi và nhiều khả năng to hơn rõ rệt: Nahimic hạ mức âm và đảm nhận một phần tinh chỉnh loa. Hãy giảm âm lượng trước. Danh sách hiệu ứng được giữ nguyên, công tắc sẽ đưa chúng trở lại.
