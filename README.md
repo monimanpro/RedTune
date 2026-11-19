@@ -38,7 +38,11 @@ A sound effect of Red Tune's own that Windows runs for every program on the outp
 - Presets, settings per device, step back and forward, a level meter, and a switch for a manufacturer's own effect (Nahimic) that would otherwise add to Red Tune's.
 
 ### Memory
-Live timings and clocks, profiles, a memory test, and writing timings on machines whose BIOS exposes AMD's overclocking interface. Writing is enabled only on verified models; elsewhere the page is read-only.
+Live timings and clocks, profiles, a memory test, and writing the memory speed and timings on machines whose BIOS exposes AMD's overclocking interface. Red Tune works out by itself what a machine allows, in three levels:
+
+- **Verified** — the model and BIOS it was developed on: what was written is read back and compared.
+- **Experimental** — any other AMD machine whose BIOS has the interface with commands for timings, and socketed DDR4 or DDR5 memory. The command numbers and the allowed ranges are taken from that machine's own BIOS. Writing is off until you switch on «Experimental writing» on the page; the consent is kept for that model and BIOS version. This path has not been run on a second machine yet.
+- **View only** — no such interface in the BIOS, soldered (LP) memory, or a processor that is not AMD: the page shows the live values and says why it cannot write.
 
 ### Clean-up
 - **Memory** — closes what was started after you signed in, as if the computer had just started: with a white list and a black list, a polite close first and a question before anything is forced.
