@@ -566,6 +566,7 @@ namespace RedTune
                     if (!string.IsNullOrEmpty(cfgPlanName)) { var before = late; late = () => { if (before != null) before(); pp.ShowCfgPlan(cfgPlanName); }; }
                     page = pp;
                 }
+                else if (what == "curve") page = new CurvePage(new CurveService(s), new Tuner(s), () => { }, () => { }); // 20.11: the real page (the screenshots), reads the presets, applies nothing
                 else if (what == "tune") page = new TunePage(new Tuner(s), new CurveService(s), s, () => { }, () => { }); // 18.11: the auto-tune page with its mode switch (reads the tune's state, starts nothing)
                 else
                 {
@@ -580,6 +581,15 @@ namespace RedTune
                 }
                 page.Dock = DockStyle.Fill;
                 f.Controls.Add(page);
+                // RT_FRAME=1 (20.11, the screenshots of the README): the program's own menu at the left, the page's item lit,
+                // the window wider by the menu
+                if (Environment.GetEnvironmentVariable("RT_FRAME") == "1")
+                {
+                    var key = what == "tune" || what == "watch" ? "curve" : what == "device" || what == "comp" ? "settings" : what == "dist" || what == "startup" ? "apps" : what == "amdpower" ? "power" : what;
+                    var nav = new NavBar(MainForm.MenuItems().Where(it => it.Key == NavBar.ToggleKey || Hw.PageFits(it.Key)).ToArray()) { Current = key };
+                    f.ClientSize = new Size(f.ClientSize.Width + nav.Width, f.ClientSize.Height);
+                    f.Controls.Add(nav); nav.SendToBack(); page.BringToFront();
+                }
                 var host = page as Page;
                 if (host != null && host.Footer != null) { host.Footer.Dock = DockStyle.Bottom; host.Footer.Height = Theme.S(64); f.Controls.Add(host.Footer); }
                 f.Show();

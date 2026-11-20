@@ -58,14 +58,7 @@ namespace RedTune
             MinimumSize = new Size(Math.Min(Theme.S(760), wa.Width), Math.Min(Theme.S(520), wa.Height));
             StartPosition = FormStartPosition.CenterScreen;
 
-            allNav = new[]
-            {
-                new NavBar.Item("home", "", "Главная"), new NavBar.Item("power", "", "Питание"), new NavBar.Item("curve", "", "Кривая"), new NavBar.Item("gpu", "", "Видеокарта"), new NavBar.Item("ram", "", "Память"),
-                // 19.11: the order the user asked for after the cleaning: sound, the device, the distribution, startup, the components, the settings
-                // 20.11: «Дисплей» a section of its own after «Звук»; «Очистка» moved under «Звук» (the user's wish); «Устройство» and «Компоненты» are tabs of «Настройки» now, «Распределение» and «Автозагрузка» tabs of «Программы» (PageGroups)
-                new NavBar.Item("sound", "\ue767", "Звук"), new NavBar.Item("display", "\ue7f4", "Дисплей"), new NavBar.Item("clean", "\ue74d", "Очистка"), new NavBar.Item("apps", "", "Программы"), new NavBar.Item("settings", "", "Настройки"),
-                new NavBar.Item(NavBar.ToggleKey, "", "Свернуть меню", true), new NavBar.Item("about", "", "О программе", true),
-            };
+            allNav = MenuItems();
             nav = new NavBar(allNav.Where(it => NavFits(it.Key)).ToArray()) { Compact = settings.NavCompact }; // only the sections this computer can run (Hw) and, for the risky ones, the expert switch allows
             nav.Selected += ShowPage;
             nav.CompactChanged += SaveNavCompact;
@@ -124,6 +117,19 @@ namespace RedTune
                 var name = m == Lenovo.Quiet ? "Тихий" : m == Lenovo.Balance ? "Баланс" : m == Lenovo.Performance ? "Макс" : m == Lenovo.Extreme ? "Экстремальный" : "Свой";
                 var p = power.Active;
                 Osd.Show("power", "Режим питания: " + L.T(name) + (m == Lenovo.Custom && p != null ? " · " + p.Name : ""));
+            };
+        }
+
+        // every section of the menu, in its order (the off-screen render draws the same menu beside a page: RT_FRAME)
+        internal static NavBar.Item[] MenuItems()
+        {
+            return new[]
+            {
+                new NavBar.Item("home", "", "Главная"), new NavBar.Item("power", "", "Питание"), new NavBar.Item("curve", "", "Кривая"), new NavBar.Item("gpu", "", "Видеокарта"), new NavBar.Item("ram", "", "Память"),
+                // 19.11: the order the user asked for after the cleaning: sound, the device, the distribution, startup, the components, the settings
+                // 20.11: «Дисплей» a section of its own after «Звук»; «Очистка» moved under «Звук» (the user's wish); «Устройство» and «Компоненты» are tabs of «Настройки» now, «Распределение» and «Автозагрузка» tabs of «Программы» (PageGroups)
+                new NavBar.Item("sound", "\ue767", "Звук"), new NavBar.Item("display", "\ue7f4", "Дисплей"), new NavBar.Item("clean", "\ue74d", "Очистка"), new NavBar.Item("apps", "", "Программы"), new NavBar.Item("settings", "", "Настройки"),
+                new NavBar.Item(NavBar.ToggleKey, "", "Свернуть меню", true), new NavBar.Item("about", "", "О программе", true),
             };
         }
 

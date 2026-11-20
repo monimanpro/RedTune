@@ -1,6 +1,22 @@
-# Red Tune
+<h1 align="center">Red Tune</h1>
 
-A control panel for AMD Ryzen laptops: power limits and presets, fan curves, a per-core voltage curve with an automatic tune, graphics card tuning, a system-wide sound effect, display settings for every screen, memory timings, program-to-chiplet pinning, startup items and clean-up — in one program, with one look.
+<p align="center">
+  <b>One control panel for AMD Ryzen laptops.</b><br>
+  Power limits and presets, fan curves, a per-core voltage curve with an automatic tune,<br>
+  graphics card tuning, a system-wide sound effect, every display, memory timings, clean-up — with one look.
+</p>
+
+<p align="center">
+  <a href="https://github.com/monimanpro/RedTune/releases/latest"><img src="https://img.shields.io/github/v/release/monimanpro/RedTune?style=for-the-badge&label=download&color=d33c44" alt="Download"></a>
+  <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-2b2a2a?style=for-the-badge" alt="Windows 10 | 11">
+  <img src="https://img.shields.io/badge/AMD-Ryzen%205000%E2%80%939000-2b2a2a?style=for-the-badge" alt="AMD Ryzen 5000–9000">
+  <img src="https://img.shields.io/badge/languages-9-2b2a2a?style=for-the-badge" alt="9 languages">
+  <img src="https://img.shields.io/github/license/monimanpro/RedTune?style=for-the-badge&color=2b2a2a" alt="License">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/home.png" alt="Red Tune: the home page">
+</p>
 
 Red Tune reads the hardware when it starts and shows only the pages that fit the machine. It is aimed at laptops with Ryzen 5000 to 9000 series processors of any brand; desktop PCs with a Ryzen processor run it in a generic mode.
 
@@ -20,14 +36,30 @@ Presets of your own power mode, each holding everything below, with step back an
 - **Power plans** — which Windows power plan belongs to each mode, and the plan's processor settings in one place: clock ceiling, boost mode, energy preference, minimum state, core parking, the plan's kind, and the Windows power mode laid over balanced plans.
 - **Curves** — which voltage curve belongs to each mode.
 
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/power.png" alt="Power: the processor limits of a preset"></td>
+    <td width="50%"><img src="docs/screenshots/fans.png" alt="Power: a fan curve"></td>
+  </tr>
+</table>
+
 ### Curve
 The Curve Optimizer value of every core, on any number of cores and chiplets: sliders, presets, history, and what to apply when Windows starts.
 
 - **Auto-tune** finds values by itself. It loads the cores (its own load written for this, or Prime95 if you point to it), watches the hardware error records Windows keeps, steps back from the values that fail and leaves a margin. Two modes: *daily* (deeper, a value per core) and *strict* (holds whatever set of cores is busy, noticeably shallower). A run survives restarts: after a crash it goes on from where it stopped.
 - **Watchdog** reads the processor's corrected-error records once a minute and advises which core to raise; it never writes without your button.
 
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/curve.png" alt="Curve: a value per core"></td>
+    <td width="50%"><img src="docs/screenshots/autotune.png" alt="Auto-tune"></td>
+  </tr>
+</table>
+
 ### Graphics card (NVIDIA)
 The card's voltage/clock curve as points you drag, a memory clock offset, presets, step back and forward (Ctrl+Z / Ctrl+Y), and automatic apply with a power preset.
+
+<img src="docs/screenshots/graphics.png" alt="Graphics card: the voltage/clock curve">
 
 ### Sound
 A sound effect of Red Tune's own that Windows runs for every program on the output device you pick.
@@ -36,6 +68,13 @@ A sound effect of Red Tune's own that Windows runs for every program on the outp
 - **Compressor** — in one, two or three frequency bands, each with its own threshold, ratio, knee, attack, release and make-up gain. A picture shows the transfer curve with draggable points, eight dials, and a monitor that is either the last ten seconds or the bands across the frequencies with their live levels. Bands can be soloed and muted for listening.
 - **Limiter** — a look-ahead limiter that measures the true peak of the wave, so the output never passes the ceiling and does not rasp.
 - Presets, settings per device, step back and forward, a level meter, and a switch for a laptop maker's own sound effects that would otherwise add to Red Tune's.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/sound-eq.png" alt="Sound: the equalizer over the live spectrum"></td>
+    <td width="50%"><img src="docs/screenshots/sound.png" alt="Sound: the three-band compressor"></td>
+  </tr>
+</table>
 
 ### Display
 A tab per screen, the laptop's own and every monitor; the settings above the tabs are for all of them.
@@ -47,12 +86,16 @@ A tab per screen, the laptop's own and every monitor; the settings above the tab
 - **Signal** — what goes down the cable: RGB or YCbCr and the bits per channel.
 - **Main monitor**, the screen mode of Win+P, the panel's overdrive on supported laptops, the built-in screen's refresh rate following the power source (high on mains, low on battery), one brightness for all power plans, and the displays off (Red Tune wakes them at the first key or mouse move).
 
+<img src="docs/screenshots/display.png" alt="Display: a tab per screen">
+
 ### Memory
 Live timings and clocks, profiles, a memory test, and writing the memory speed and timings on machines whose BIOS exposes AMD's overclocking interface. Red Tune works out by itself what a machine allows, in three levels:
 
 - **Verified** — the model and BIOS it was developed on: what was written is read back and compared.
 - **Experimental** — any other AMD machine whose BIOS has the interface with commands for timings, and socketed DDR4 or DDR5 memory. The command numbers and the allowed ranges are taken from that machine's own BIOS. Writing is off until you switch on «Experimental writing» on the page; the consent is kept for that model and BIOS version. This path has not been run on a second machine yet.
 - **View only** — no such interface in the BIOS, soldered (LP) memory, or a processor that is not AMD: the page shows the live values and says why it cannot write.
+
+<img src="docs/screenshots/memory.png" alt="Memory: timings, a check and the latency curve">
 
 ### Clean-up
 - **Memory** — closes what was started after you signed in, as if the computer had just started: with a white list and a black list, a polite close first and a question before anything is forced.
@@ -67,6 +110,8 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 - **General** — language, interface scale, start with Windows, close to the tray, expert functions; what the mini panel shows; notifications; the overlay.
 - **Device** (laptops with a supported firmware interface) — **Lenovo**: keyboard backlight, charging mode, USB power while asleep, the graphics card's working mode and the Fn keys. **ASUS**: the performance mode (quiet, balanced, performance), the battery's charge limit, the keyboard backlight, the Fn lock and the fan speeds, each only where the laptop's firmware has it. Written from the report of one model (Vivobook Pro 14 OLED M3401) and not yet tried on a real ASUS laptop.
 - **Components** — what Red Tune found on this machine, what each part needs, and a system report you can copy when asking for a model to be supported.
+
+<img src="docs/screenshots/settings.png" alt="Settings">
 
 ### Around the window
 - **Mini panel** — a click on the tray icon opens small glass blocks: power mode, power preset, curve, graphics preset, output device, overlay, memory clean-up, displays off.
@@ -114,7 +159,7 @@ English, Spanish, Portuguese (Brazil), Russian, Simplified Chinese, Korean, Thai
 
 ## Status
 
-Red Tune is developed and tested on one laptop: a Lenovo Legion R7000P with a Ryzen 9 8945HX and an RTX 5070 Laptop. On other machines it works out what is available and hides the rest, but writing the curve and the limits on other Ryzen families, the generic mode for other brands and for desktop PCs, and the sound effect on other audio drivers have not been verified on real hardware. The system report («Components» → «Copy the report») is what helps to add a model.
+Red Tune is developed and tested on one laptop: a Lenovo Legion R7000P with a Ryzen 9 8945HX and an RTX 5070 Laptop. On other machines it works out what is available and hides the rest, but writing the curve and the limits on other Ryzen families, the generic mode for other brands and for desktop PCs, and the sound effect on other audio drivers have not been verified on real hardware. The system report (Settings → Components → «Copy the report») is what helps to add a model.
 
 ## Build from source
 
@@ -137,6 +182,10 @@ Checks that write nothing to the hardware:
 | `RedTune.exe --comp-graph-check out.txt`, `--eq-strips-check`, `--motion-check`, `--sound-undo-check`, `--ui-edit-check` | the interface driven by mouse messages in a window of its own |
 | `RedTune.exe --simulate-tune …` | the auto-tune against a made-up processor |
 | `RedTune.exe --fan-check out.txt` | the fan curves' logic against made-up temperatures |
+| `RedTune.exe --display-check out.txt` | every screen as Windows reports it: modes, colour, profiles, brightness |
+| `RedTune.exe --dist-check out.txt` | where programs land on the chiplets and what the suggestions offer |
+| `RedTune.exe --motion-frames out.txt` | how smoothly rows come and go |
+
 Translations: `tools\lang` holds the scripts and the translated texts (`tr\<code>.json`); `node build.js <repo>` writes `lang\<code>.txt`, which the build embeds.
 
 ## License
