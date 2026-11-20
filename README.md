@@ -71,7 +71,7 @@ A sound effect of Red Tune's own that Windows runs for every program on the outp
 
 <img src="docs/screenshots/sound-eq.png" alt="Sound: the equalizer over the live spectrum">
 
-<img src="docs/screenshots/sound.png" alt="Sound: the three-band compressor and its monitor: the input in grey, the output in white, how much it turned the sound down in red, the threshold dashed">
+<img src="docs/screenshots/sound-compressor.png" alt="Sound: the three-band compressor and its monitor: the input in grey, the output in white, how much it turned the sound down in red, the threshold dashed">
 
 ### Display
 A tab per screen, the laptop's own and every monitor; the settings above the tabs are for all of them.
