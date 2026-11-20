@@ -69,12 +69,9 @@ A sound effect of Red Tune's own that Windows runs for every program on the outp
 - **Limiter** — a look-ahead limiter that measures the true peak of the wave, so the output never passes the ceiling and does not rasp.
 - Presets, settings per device, step back and forward, a level meter, and a switch for a laptop maker's own sound effects that would otherwise add to Red Tune's.
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/screenshots/sound-eq.png" alt="Sound: the equalizer over the live spectrum"></td>
-    <td width="50%"><img src="docs/screenshots/sound.png" alt="Sound: the three-band compressor"></td>
-  </tr>
-</table>
+<img src="docs/screenshots/sound-eq.png" alt="Sound: the equalizer over the live spectrum">
+
+<img src="docs/screenshots/sound.png" alt="Sound: the three-band compressor and its monitor: the input in grey, the output in white, how much it turned the sound down in red, the threshold dashed">
 
 ### Display
 A tab per screen, the laptop's own and every monitor; the settings above the tabs are for all of them.
