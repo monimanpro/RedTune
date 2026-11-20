@@ -22,6 +22,7 @@ namespace RedTune
         public AsusDevicePage(Settings settings)
         {
             s = settings;
+            PageGroups.AddTabs(this, "device");
             var note = Row("Функции ASUS ещё не проверены на настоящем ноутбуке", "Написаны по отчёту одной модели. Если переключатель не сработал, пришлите отчёт из «Компонентов»: ответ прошивки записан в журнал");
             note.WarnStyle = true;
 

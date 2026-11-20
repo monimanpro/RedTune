@@ -29,7 +29,7 @@ namespace RedTune
             Action<string, Action> part = (t, f) => { head(t); try { f(); } catch (Exception ex) { sb.AppendLine("(не прочиталось: " + ex.Message.Trim() + ")"); } };
 
             sb.Append(Hw.Report());
-            sb.AppendLine("Меню: " + string.Join(", ", new[] { "home", "power", "curve", "gpu", "ram", "clean", "dist", "startup", "device", "comp", "settings", "about" }.Where(Hw.PageFits)));
+            sb.AppendLine("Меню: " + string.Join(", ", new[] { "home", "power", "curve", "gpu", "ram", "clean", "display", "dist", "startup", "device", "comp", "settings", "about" }.Where(Hw.PageFits)));
             sb.AppendLine("Питание: " + (Hw.LenovoPower ? "Lenovo" : Hw.Amd ? "лимиты AMD (SMU)" : "—") + " · экспертные функции: " + (s != null && s.Expert ? "вкл" : "выкл"));
 
             part("Система", () =>

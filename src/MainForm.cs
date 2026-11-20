@@ -60,14 +60,16 @@ namespace RedTune
 
             allNav = new[]
             {
-                new NavBar.Item("home", "", "Главная"), new NavBar.Item("power", "", "Питание"), new NavBar.Item("curve", "", "Кривая"), new NavBar.Item("gpu", "", "Видеокарта"), new NavBar.Item("ram", "", "Память"), new NavBar.Item("clean", "\ue74d", "Очистка"),
+                new NavBar.Item("home", "", "Главная"), new NavBar.Item("power", "", "Питание"), new NavBar.Item("curve", "", "Кривая"), new NavBar.Item("gpu", "", "Видеокарта"), new NavBar.Item("ram", "", "Память"),
                 // 19.11: the order the user asked for after the cleaning: sound, the device, the distribution, startup, the components, the settings
-                new NavBar.Item("sound", "\ue767", "Звук"), new NavBar.Item("device", "", "Устройство"), new NavBar.Item("dist", "", "Распределение"), new NavBar.Item("startup", "", "Автозагрузка"), new NavBar.Item("comp", "", "Компоненты"), new NavBar.Item("settings", "", "Настройки"),
+                // 20.11: «Дисплей» a section of its own after «Звук»; «Очистка» moved under «Звук» (the user's wish); «Устройство» and «Компоненты» are tabs of «Настройки» now, «Распределение» and «Автозагрузка» tabs of «Программы» (PageGroups)
+                new NavBar.Item("sound", "\ue767", "Звук"), new NavBar.Item("display", "\ue7f4", "Дисплей"), new NavBar.Item("clean", "\ue74d", "Очистка"), new NavBar.Item("apps", "", "Программы"), new NavBar.Item("settings", "", "Настройки"),
                 new NavBar.Item(NavBar.ToggleKey, "", "Свернуть меню", true), new NavBar.Item("about", "", "О программе", true),
             };
             nav = new NavBar(allNav.Where(it => NavFits(it.Key)).ToArray()) { Compact = settings.NavCompact }; // only the sections this computer can run (Hw) and, for the risky ones, the expert switch allows
             nav.Selected += ShowPage;
             nav.CompactChanged += SaveNavCompact;
+            PageGroups.Show = ShowPage;
             Resize += (s, e) => FitNav();
             Controls.Add(host); Controls.Add(nav);
             FitNav(); // a window that starts narrow (a small screen)
@@ -91,6 +93,8 @@ namespace RedTune
             AmdPower.ApplySaved(settings, "запуск"); // AMD laptops without Lenovo: the saved limits
             if (Hw.AsusFw && !Safety.SafeStart) Asus.ApplySaved(settings); // ASUS: the charge limit and the mode picked here (the firmware does not keep them)
             if (Hw.PageFits("gpu")) { GpuStore.Load(); GpuStore.ApplySaved(settings, "запуск"); } // the NVIDIA curve (the driver forgets it on reboot)
+            ColorKeep.Start(settings); // 20.11: automatic colour management stays off where the user turned it off
+            if (!Safety.SafeStart) DisplayAuto.ApplyLater(settings, "запуск"); // 20.11: the built-in screen's rate for the power source
             AudioFx.Init(); // 18.11: the sound settings into the file the effect reads, for the devices it is attached to
             keys.Start();
             CoreCurve.RestoreIfLeft(); // a core-curve measurement cut short left the plan's clock cap lowered
@@ -151,7 +155,7 @@ namespace RedTune
             var n = new NavBar(allNav.Where(it => NavFits(it.Key)).ToArray()) { Compact = settings.NavCompact || narrowNav };
             n.Selected += ShowPage; n.CompactChanged += SaveNavCompact; n.Current = cur;
             Controls.Remove(nav); nav.Dispose(); nav = n; Controls.Add(nav);
-            if (!NavFits(cur == "tune" || cur == "watch" ? "curve" : cur)) ShowPage("home");
+            if (!NavFits(PageGroups.Parent(cur))) ShowPage("home");
         }
 
         // language switch: re-measure the controls sized by their text and redraw everything
@@ -183,11 +187,14 @@ namespace RedTune
             if (pages.TryGetValue("gpu", out gp) && gp.Visible && ((GpuPage)gp).HandleKey(keyData)) return true;
             // the same on «Звук»: a step back or forward in the sound settings (19.11)
             if (pages.TryGetValue("sound", out gp) && gp.Visible && ((SoundPage)gp).HandleKey(keyData)) return true;
+            // and on «Питание» (20.11): the values of the preset being edited
+            if (pages.TryGetValue("power", out gp) && gp.Visible && gp is PowerPage && ((PowerPage)gp).HandleKey(keyData)) return true;
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
         void ShowPage(string key)
         {
+            if (key == "apps") key = PageGroups.Keys("apps")[0]; // «Программы» opens on its first tab
             Page p;
             if (!pages.TryGetValue(key, out p))
             {
@@ -202,6 +209,7 @@ namespace RedTune
                     case "power": p = Hw.LenovoPower ? (Page)new PowerPage(power, curve, fans, settings) : new AmdPowerPage(settings); break; // without Lenovo: the AMD limits
                     case "device": p = Hw.AsusFw ? (Page)new AsusDevicePage(settings) : new DevicePage(settings); break; // each firmware has its own page
                     case "sound": p = new SoundPage(settings); break;
+                    case "display": p = new DisplayPage(settings); break;
                     case "gpu": p = new GpuPage(settings); break;
                     case "startup": p = new StartupPage(); break;
                     case "clean": p = new CleanPage(settings); break;
@@ -218,7 +226,7 @@ namespace RedTune
             if (p.Footer != null) { footerHost.Controls.Add(p.Footer); footerHost.Height = p.Footer.Height; } else footerHost.Height = 0;
             footerHost.SendToBack(); // docks first, the page fills what is left
             p.Visible = true;
-            nav.Current = key == "tune" || key == "watch" ? "curve" : key; // the auto-tune and the watchdog live under «Кривая»
+            nav.Current = PageGroups.Parent(key); // the auto-tune and the watchdog live under «Кривая», the device and the components under «Настройки», …
         }
 
         // ---------- automatic curve ----------
@@ -227,6 +235,7 @@ namespace RedTune
         {
             if (e.Mode == PowerModes.Resume) AmdPower.ApplySaved(settings, "после сна"); // AMD laptops without Lenovo: the limits again
             if (e.Mode == PowerModes.Resume && Hw.PageFits("gpu")) GpuStore.ApplySaved(settings, "после сна");
+            if (e.Mode == PowerModes.Resume) { DisplayAuto.ApplyLater(settings, "после сна"); ColorKeep.Later("после сна"); } // 20.11: the screen's rate for the power source
             if (e.Mode == PowerModes.Resume && settings.ApplyOnResume) Later(8000, "после сна");
             else if (e.Mode == PowerModes.StatusChange)
             {
@@ -234,6 +243,7 @@ namespace RedTune
                 if (line == lastLine) return;
                 lastLine = line;
                 if (!PowerService.LltRunning) Osd.Show("ac", line == PowerLineStatus.Online ? "Зарядка подключена" : "Зарядка отключена");
+                DisplayAuto.ApplyLater(settings, line == PowerLineStatus.Online ? "зарядка" : "батарея");
                 if (line == PowerLineStatus.Online && settings.ApplyOnAc) Later(3000, "зарядка");
                 else if (line == PowerLineStatus.Offline && settings.ApplyOnBattery) Later(3000, "батарея");
             }
@@ -360,7 +370,7 @@ namespace RedTune
             Dist.Store.MoveOld();
             try
             {
-                var rules = Dist.Store.LoadRules();
+                var rules = Dist.Store.LoadRules(dist.BackGroup);
                 if (!System.IO.File.Exists(Dist.Store.RulesPath)) Dist.Store.SaveRules(rules);
                 dist.Apply(rules, Dist.Store.LoadSettings());
                 dist.Start();

@@ -135,6 +135,8 @@ namespace RedTune
             presetRow = Row("Пресет своего режима", "", presetBtn);
             Add(tabs); tabs.Picked += ShowTab;
             Footer = bar = new FooterBar(resetBtn, saveBtn, applyBtn);
+            gestureEnd.Tick += (o, e) => { if (Control.MouseButtons != MouseButtons.None) return; gestureEnd.Stop(); gesture = false; }; // a run of changes ends
+            Disposed += (o, e) => gestureEnd.Dispose();
 
             tabMark = Controls.Count; // the rows from here on go to the tabs, in the order of EndTab
             cpuLong = SliderRow("Долгосрочное ограничение мощности", "Непрерывная мощность процессора", Limits.CpuLong, "W");
@@ -445,7 +447,7 @@ namespace RedTune
 
         Slider SliderRow(string title, string sub, int[] range, string unit)
         {
-            var s = new Slider(range[0], range[1], range[0], unit) { Width = Theme.S(330) };
+            var s = new Slider(range[0], range[1], range[0], unit) { Width = Theme.S(330), WarpToKnob = true }; // a press puts the pointer onto the knob (20.11)
             Row(title, sub, s);
             return s;
         }
@@ -856,6 +858,94 @@ namespace RedTune
         void Select(PowerPreset p)
         {
             selected = p; edit = p.Clone();
+            Baseline();
+            ShowEdit();
+        }
+
+        // ---------- 20.11 (the user's wish): Ctrl+Z / Ctrl+Y, as «Звук» and «Видеокарта» have ----------
+        // A step is the values of the preset being edited (the limits, the graphics card, the fans and their curves, the
+        // overclocking, the plan, the curve and the GPU preset tied to it). A run of changes with less than half a
+        // second between them, or made while a mouse button is held (a slider dragged), is one step. The steps belong to
+        // the preset shown: another preset picked starts afresh; saving keeps them (a step back then makes the editor
+        // differ from the saved preset again). The block «Настройки процессора в схеме» is not in them: it writes to the
+        // Windows plan with its own «Записать» / «Отменить».
+        readonly System.Collections.Generic.List<PowerPreset> back = new System.Collections.Generic.List<PowerPreset>(), forward = new System.Collections.Generic.List<PowerPreset>();
+        PowerPreset seen; string seenName; bool gesture;
+        readonly Timer gestureEnd = new Timer { Interval = 500 };
+
+        void Baseline()
+        {
+            if (seen != null && seenName == selected.Name && seen.SameAs(edit)) return; // saved as it stood: the steps stay
+            back.Clear(); forward.Clear(); gesture = false; gestureEnd.Stop();
+            seen = edit.Clone(); seenName = selected.Name;
+        }
+
+        // a change was taken into the editor: the values before it are a step back (once per run of changes)
+        void Record()
+        {
+            if (seen == null || edit.SameAs(seen)) return;
+            if (!gesture) { back.Add(seen); if (back.Count > 200) back.RemoveAt(0); forward.Clear(); gesture = true; }
+            seen = edit.Clone();
+            gestureEnd.Stop(); gestureEnd.Start();
+        }
+
+        bool Step(System.Collections.Generic.List<PowerPreset> from, System.Collections.Generic.List<PowerPreset> to)
+        {
+            if (edit == null || from.Count == 0) return false;
+            to.Add(edit.Clone());
+            var snap = from[from.Count - 1]; from.RemoveAt(from.Count - 1);
+            edit = snap.Clone(); edit.Name = selected.Name;
+            seen = edit.Clone(); gesture = false; gestureEnd.Stop();
+            ShowEdit();
+            return true;
+        }
+
+        // Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z from the main window while this page is shown (a number being typed keeps its own)
+        public bool HandleKey(Keys keyData)
+        {
+            bool undo = keyData == (Keys.Control | Keys.Z), redo = keyData == (Keys.Control | Keys.Y) || keyData == (Keys.Control | Keys.Shift | Keys.Z);
+            if (!Visible || edit == null || (!undo && !redo)) return false;
+            var form = FindForm();
+            if (form != null && form.ActiveControl is TextBoxBase) return false;
+            if (Control.MouseButtons != MouseButtons.None) return true; // something is being dragged: not under its hand
+            if (undo) Step(back, forward); else Step(forward, back);
+            return true;
+        }
+
+        // --power-undo-check: the steps back and forward in the editor, nothing applied or saved
+        internal string UndoCheck()
+        {
+            var sb = new System.Text.StringBuilder();
+            Action<bool, string> line = (ok, text) => sb.AppendLine((ok ? "ok    " : "FAIL  ") + text);
+            var z = Keys.Control | Keys.Z; var y = Keys.Control | Keys.Y;
+            int l0 = cpuLong.Value, s0 = cpuShort.Value; bool oc0 = ocOn.Checked;
+            line(back.Count == 0 && HandleKey(z) && cpuLong.Value == l0, "nothing changed yet: Ctrl+Z is taken and changes nothing");
+            // (a slider set from code reports nothing: the check calls Edited, as the slider's event does)
+            cpuLong.Value = l0 == cpuLong.Value && l0 > 40 ? l0 - 10 : l0 + 10; Edited(); cpuShort.Value = s0 > 40 ? s0 - 10 : s0 + 10; Edited();
+            int l1 = cpuLong.Value, s1 = cpuShort.Value;
+            line(back.Count == 1 && edit.CpuLong == l1 && edit.CpuShort == s1, "two limits moved in one run: one step back (" + back.Count + ")");
+            gesture = false; gestureEnd.Stop();
+            bool fm0 = fanMax.Checked; fanMax.Checked = !fm0; // a toggle reports its click
+            line(back.Count == 2, "after a pause a switch was clicked: a second step (" + back.Count + ")");
+            HandleKey(z);
+            line(fanMax.Checked == fm0 && edit.FanMax == fm0 && cpuLong.Value == l1 && back.Count == 1 && forward.Count == 1, "Ctrl+Z: the switch is back, the limits stay moved (" + cpuLong.Value + " W)");
+            HandleKey(z);
+            line(cpuLong.Value == l0 && cpuShort.Value == s0 && edit.SameAs(selected) == true && back.Count == 0 && forward.Count == 2, "Ctrl+Z again: the values of the preset, nothing unsaved (" + cpuLong.Value + " / " + cpuShort.Value + " W)");
+            line(!saveBtn.Enabled, "«Сохранить» is grey again");
+            HandleKey(z);
+            line(cpuLong.Value == l0 && forward.Count == 2, "a third Ctrl+Z: nothing more to take back");
+            HandleKey(y); HandleKey(Keys.Control | Keys.Shift | Keys.Z);
+            line(cpuLong.Value == l1 && cpuShort.Value == s1 && fanMax.Checked == edit.FanMax && forward.Count == 0 && back.Count == 2 && saveBtn.Enabled, "Ctrl+Y and Ctrl+Shift+Z: both steps again, «Сохранить» lit");
+            HandleKey(z); gesture = false; cpuTemp.Value = cpuTemp.Value > 80 ? cpuTemp.Value - 2 : cpuTemp.Value + 2; Edited();
+            line(forward.Count == 0 && back.Count == 2, "a new change after a step back drops the steps forward");
+            line(ocOn.Checked == oc0, "the overclocking switch was not touched");
+            return sb.ToString();
+        }
+
+        // the values of edit into the controls
+        void ShowEdit()
+        {
+            var p = selected;
             loading = true;
             cpuLong.Value = edit.CpuLong; cpuShort.Value = edit.CpuShort; cpuPeak.Value = edit.CpuPeak; cpuCross.Value = edit.CpuCross; cpuTemp.Value = edit.CpuTemp;
             gpuTemp.Value = edit.GpuTemp; gpuTotal.Value = edit.GpuTotal;
@@ -911,6 +1001,7 @@ namespace RedTune
             if (fan.Enabled != fanOn.Checked) fan.Enabled = fanOn.Checked;
             fanCard.Default.Enabled = fanOn.Checked && (!editCpu.SequenceEqual(FanControl.DefaultCurve) || !editGpu.SequenceEqual(FanControl.DefaultCurve) || !editBoth.SequenceEqual(FanControl.DefaultCurve) || fanMax.Checked);
             if (fanKind.Enabled != fanOn.Checked) { fanKind.Enabled = fanOn.Checked; fanSrc.Enabled = fanOn.Checked; }
+            Record();
         }
 
         void SaveEdit()

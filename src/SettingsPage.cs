@@ -14,6 +14,7 @@ namespace RedTune
         public SettingsPage(Settings s, Action languageChanged, Action<int> scaleChanged)
         {
             this.s = s;
+            PageGroups.AddTabs(this, "settings");
             // 17.11: a list instead of the Русский / English switch: nine languages, each under its own name
             var lang = new DropButton();
             lang.Set(L.Names, Math.Max(0, Array.IndexOf(L.Codes, s.Language)));

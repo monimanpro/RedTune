@@ -128,7 +128,21 @@ namespace RedTune
         // what a button fills itself with at rest: its background colour, or over glass a faint shade that lets it show
         protected Color Rest { get { return OnGlass ? Color.FromArgb(70, 0, 0, 0) : BackColor; } }
 
-        protected override void WndProc(ref Message m) { if (Backdrops.Whole(this, ref m)) return; base.WndProc(ref m); }
+        // 20.11: the page takes the picture of a row before Windows hides it (Page.BeforeHide)
+        protected override void SetVisibleCore(bool value)
+        {
+            if (!value && Visible) { var page = Parent as Page; if (page != null) page.BeforeHide(this); }
+            base.SetVisibleCore(value);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (Backdrops.Whole(this, ref m)) return;
+            if (m.Msg != 0x000F || PaintProbe == null) { base.WndProc(ref m); return; }
+            long t0 = System.Diagnostics.Stopwatch.GetTimestamp(); base.WndProc(ref m);
+            PaintProbe((System.Diagnostics.Stopwatch.GetTimestamp() - t0) * 1000.0 / System.Diagnostics.Stopwatch.Frequency);
+        }
+        internal static Action<double> PaintProbe; // --motion-frames: how long each paint took (null: not measured)
 
         protected Painted()
         {
@@ -157,8 +171,10 @@ namespace RedTune
             set { if (on == value) return; on = value; anim.Go(on); Invalidate(); var h = CheckedChanged; if (h != null) h(this, EventArgs.Empty); }
         }
 
-        // without the event: for loading saved values (and without the slide)
-        public void Set(bool value) { on = value; anim.Snap(on); Invalidate(); }
+        // without the event: for loading saved values, no slide. 20.11: the same value leaves the toggle alone, so a page that
+        // reads its values back right after a click (the plan block of «Питание»: «Запретить парковку ядер») no longer cuts off
+        // the slide the click started
+        public void Set(bool value) { if (value == on) return; on = value; anim.Snap(on); Invalidate(); }
 
         protected override void Dispose(bool disposing) { if (disposing) anim.Dispose(); base.Dispose(disposing); }
 
@@ -1049,6 +1065,36 @@ namespace RedTune
             }
         }
     }
+    // 20.11: the frames of a page's glide, as ToggleAnim's: a pool timer every 15 ms posts one frame at a time to the
+    // window. A WinForms Timer comes last of everything Windows hands out (after every paint), so the glide ran at about
+    // 30 frames a second, a frame every 31 ms (measured with --motion-frames). Start / Stop / Enabled / Tick as a Timer's.
+    class FrameClock : IDisposable
+    {
+        readonly Control owner;
+        readonly System.Threading.Timer timer;
+        volatile bool running;
+        int posted; // a frame is waiting in the queue: no second one
+        public event EventHandler Tick;
+
+        public FrameClock(Control owner)
+        {
+            this.owner = owner;
+            timer = new System.Threading.Timer(_ => Post(), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+        }
+
+        void Post()
+        {
+            if (!running || System.Threading.Interlocked.Exchange(ref posted, 1) == 1) return;
+            try { owner.BeginInvoke((Action)(() => { posted = 0; var h = Tick; if (running && h != null) h(this, EventArgs.Empty); })); }
+            catch { posted = 0; } // the window is gone or not made yet
+        }
+
+        public bool Enabled { get { return running; } }
+        public void Start() { if (running) return; running = true; timer.Change(0, 15); }
+        public void Stop() { running = false; timer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite); }
+        public void Dispose() { running = false; timer.Dispose(); }
+    }
+
     // a scrolling page: controls stacked top to bottom at the page width
     class Page : Panel
     {
@@ -1056,6 +1102,7 @@ namespace RedTune
 
         public Page()
         {
+            motion = new FrameClock(this); // first: setting AutoScroll lays the page out at once, and that reads it
             AutoScroll = true; BackColor = Theme.Window; Dock = DockStyle.Fill;
             motion.Tick += (s, e) => MotionTick();
             HandleCreated += (s, e) => Native.DarkScrollBars(Handle);
@@ -1067,6 +1114,17 @@ namespace RedTune
         public T Add<T>(T c, int gapBefore = 8) where T : Control
         {
             items.Add(new KeyValuePair<Control, int>(c, gapBefore));
+            Controls.Add(c);
+            c.SizeChanged += (s, e) => { if (!inLayout) Relayout(); else again = true; };
+            return c;
+        }
+
+        // 20.11: a control put into the stack in front of another (the hints of «Распределение» above its groups)
+        public T InsertBefore<T>(Control before, T c, int gapBefore = 8) where T : Control
+        {
+            int i = items.FindIndex(kv => kv.Key == before);
+            if (i < 0) return Add(c, gapBefore);
+            items.Insert(i, new KeyValuePair<Control, int>(c, gapBefore));
             Controls.Add(c);
             c.SizeChanged += (s, e) => { if (!inLayout) Relayout(); else again = true; };
             return c;
@@ -1089,7 +1147,10 @@ namespace RedTune
         // hidden (or changes its height), the rows under it glide to their new places in about a fifth of a second,
         // quick at first and slowing at the end. A row that comes is uncovered from its top edge down as the rows under
         // it make room (its window is cut to the part uncovered). A row that goes is already hidden by the page's code,
-        // so its last picture is kept and drawn by the page itself, shrinking as the rows under it close in.
+        // so its last picture is kept and shrinks away as the rows under it close in. 20.11: the picture is a window of its
+        // own under the rows (GhostView), made shorter each frame, the mirror of a row coming; the page used to draw it
+        // itself, repainting the whole rectangle of it with its background on every frame, and on the window's glass a row
+        // going came out in jerks while one coming was smooth.
         // No movement: the first placing, a page that is not on screen, another width (the window resized), more than
         // four rows changing at once (a tab switched, a list rebuilt: that would be a stampede, not a movement), the mini
         // panel (its window is as tall as its rows), Windows' own «show animations» switched off, and the checks and
@@ -1101,10 +1162,25 @@ namespace RedTune
         // a row's place: Y where it stands now and To where it goes (down from the page's top, whatever the scrolling),
         // From where the glide began; Was: it was shown at the last placing; Showing: it is being uncovered
         class Spot { public float Y, From; public int To; public bool Was, Showing, Placed; }
-        class Ghost { public Bitmap Pic; public int X, Y, W, H; public float Left = 1; }
+        class Ghost { public Bitmap Pic; public int X, Y, W, H; public GhostView View; }
+        // the picture of a row that went: it paints its top part as tall as it is; the rows under it are drawn over it
+        class GhostView : Control
+        {
+            public Bitmap Pic;
+            public GhostView() { SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true); }
+            protected override void OnPaintBackground(PaintEventArgs e) { }
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                if (Pic == null) return;
+                var g = e.Graphics; var r = Rectangle.Intersect(e.ClipRectangle, new Rectangle(0, 0, Math.Min(Width, Pic.Width), Math.Min(Height, Pic.Height)));
+                if (r.Width <= 0 || r.Height <= 0) return;
+                g.CompositingMode = CompositingMode.SourceCopy; g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                g.DrawImage(Pic, r, r, GraphicsUnit.Pixel);
+            }
+        }
         readonly Dictionary<Control, Spot> spots = new Dictionary<Control, Spot>();
         readonly List<Ghost> ghosts = new List<Ghost>();
-        readonly Timer motion = new Timer { Interval = 15 };
+        readonly FrameClock motion;
         DateTime motionStart; int placedWidth = -1; bool placedOnce;
         // A page that hides its rows one by one (a tab switched: each change places the rows anew) is seen by the number
         // of changes within a moment, not within one placing: more than four in 60 ms, and nothing glides.
@@ -1127,8 +1203,11 @@ namespace RedTune
                 if (sp.To != sp.From) { sp.Y = sp.From + (sp.To - sp.From) * e; int y = AutoScrollPosition.Y + (int)Math.Round(sp.Y); if (kv.Key.Top != y) kv.Key.Top = y; }
                 if (sp.Showing) Uncover(kv.Key, (int)Math.Round(kv.Key.Height * e));
             }
+            // inside the suspended layout too: a child that changes its size makes the page lay out, and with the pictures
+            // shrinking outside it the page placed all its rows anew for every picture on every frame (every 2.5 ms on
+            // «Питание»: the toggle and the rows got no frames, measured 20.11)
+            foreach (var g in ghosts) { int tall = Math.Max(0, (int)Math.Round(g.H * (1 - e))); if (g.View.Height != tall) g.View.Height = tall; }
             ResumeLayout(false); inLayout = was;
-            foreach (var g in ghosts) { g.Left = 1 - e; Invalidate(new Rectangle(g.X, AutoScrollPosition.Y + g.Y, g.W, g.H)); }
         }
 
         static void Uncover(Control c, int tall)
@@ -1154,25 +1233,63 @@ namespace RedTune
             DropGhosts();
         }
 
+        // the picture of a row as a window of its own under the rows, painted at once; null: it could not be taken
+        Ghost TakeGhost(Control c, int y)
+        {
+            try
+            {
+                var pic = new Bitmap(c.Width, c.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb); // the quick kind to draw
+                c.DrawToBitmap(pic, new Rectangle(0, 0, pic.Width, pic.Height));
+                var gh = new Ghost { Pic = pic, X = Theme.S(Side), Y = y, W = pic.Width, H = pic.Height };
+                gh.View = new GhostView { Pic = pic, BackColor = BackColor, Bounds = new Rectangle(gh.X, AutoScrollPosition.Y + gh.Y, gh.W, gh.H) };
+                Controls.Add(gh.View); gh.View.SendToBack(); // under the rows, which close in over it
+                gh.View.Update(); // painted now
+                return gh;
+            }
+            catch { return null; }
+        }
+
+        // 20.11: a row about to be hidden (Painted.SetVisibleCore, before Windows hides it): its picture is put under it
+        // now. Taken after the hiding, there were tens of milliseconds between Windows wiping the row's place with the
+        // page's colour and the picture painted over it, and on the laptop a frame of that empty place reached the
+        // screen: the help of «Автотюн» went, came back and then shrank. Not for a burst of rows (a tab switched).
+        readonly Dictionary<Control, Ghost> early_ = new Dictionary<Control, Ghost>();
+        DateTime earlyAt; int earlyBurst;
+        internal void BeforeHide(Control c)
+        {
+            Spot sp;
+            if (!Motion || NoScroll || !placedOnce || !IsHandleCreated || !Visible || early_.ContainsKey(c) || c.Width <= 0 || c.Height <= 0) return;
+            if (!spots.TryGetValue(c, out sp) || !sp.Was || !sp.Placed || !items.Any(kv => kv.Key == c)) return;
+            var now = DateTime.Now;
+            if ((now - earlyAt).TotalMilliseconds > 60) { earlyAt = now; earlyBurst = 0; }
+            if (++earlyBurst > 4) return;
+            var gh = TakeGhost(c, (int)Math.Round(sp.Y));
+            if (gh != null) early_[c] = gh;
+        }
+
+        void DropEarly(bool hiddenOnly = false)
+        {
+            foreach (var c in early_.Keys.Where(c => !hiddenOnly || !c.Visible).ToList()) { var g = early_[c]; Controls.Remove(g.View); g.View.Dispose(); g.Pic.Dispose(); early_.Remove(c); }
+        }
+
         void DropGhosts()
         {
-            foreach (var g in ghosts) { Invalidate(new Rectangle(g.X, AutoScrollPosition.Y + g.Y, g.W, g.H)); g.Pic.Dispose(); }
+            foreach (var g in ghosts) { Controls.Remove(g.View); g.View.Dispose(); g.Pic.Dispose(); }
             ghosts.Clear();
         }
 
+        internal static Action<double> PaintProbe; // --motion-frames: how long each paint took (null: not measured)
+        internal static Action<string> PlaceProbe; // --motion-frames: what each placing decided
         protected override void OnPaint(PaintEventArgs e)
         {
+            long pp0 = System.Diagnostics.Stopwatch.GetTimestamp();
             base.OnPaint(e);
-            foreach (var g in ghosts)
-            {
-                int tall = (int)Math.Round(g.H * g.Left); if (tall <= 0) continue;
-                e.Graphics.DrawImage(g.Pic, new Rectangle(g.X, AutoScrollPosition.Y + g.Y, g.W, tall), new Rectangle(0, 0, g.W, tall), GraphicsUnit.Pixel);
-            }
+            if (PaintProbe != null) PaintProbe((System.Diagnostics.Stopwatch.GetTimestamp() - pp0) * 1000.0 / System.Diagnostics.Stopwatch.Frequency);
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) { motion.Dispose(); foreach (var g in ghosts) g.Pic.Dispose(); ghosts.Clear(); }
+            if (disposing) { motion.Dispose(); DropGhosts(); DropEarly(); }
             base.Dispose(disposing);
         }
 
@@ -1254,6 +1371,7 @@ namespace RedTune
             bool stampede = burst > 4 && (nowAt - burstAt).TotalMilliseconds <= 60;
             var form = FindForm();
             bool glide = Motion && !NoScroll && placedOnce && placedWidth == wide && !stampede && IsHandleCreated && Visible && form != null && form.Visible && form.WindowState != FormWindowState.Minimized;
+            if (PlaceProbe != null) PlaceProbe("place: glide " + glide + ", changed " + changed + ", burst " + burst + (stampede ? " (stampede)" : "") + ", width " + placedWidth + "->" + wide + ", moving " + motion.Enabled + ", ghosts " + ghosts.Count);
             if (!glide && (motion.Enabled || ghosts.Count > 0)) MotionEnd();
             bool start = false;
             int cy = Theme.S(TopGap);
@@ -1264,16 +1382,12 @@ namespace RedTune
                 if (!kv.Key.Visible)
                 {
                     // it has just been hidden: its last picture stays where it stood and shrinks away
-                    if (sp.Was && glide && sp.Placed && kv.Key.Width > 0 && kv.Key.Height > 0)
+                    Ghost early;
+                    if (sp.Was && glide && sp.Placed && early_.TryGetValue(kv.Key, out early)) { early_.Remove(kv.Key); ghosts.Add(early); start = true; }
+                    else if (sp.Was && glide && sp.Placed && kv.Key.Width > 0 && kv.Key.Height > 0)
                     {
-                        try
-                        {
-                            var pic = new Bitmap(kv.Key.Width, kv.Key.Height);
-                            kv.Key.DrawToBitmap(pic, new Rectangle(0, 0, pic.Width, pic.Height));
-                            ghosts.Add(new Ghost { Pic = pic, X = Theme.S(Side), Y = (int)Math.Round(sp.Y), W = pic.Width, H = pic.Height });
-                            start = true;
-                        }
-                        catch { }
+                        var gh = TakeGhost(kv.Key, (int)Math.Round(sp.Y));
+                        if (gh != null) { ghosts.Add(gh); start = true; }
                     }
                     if (sp.Showing) { sp.Showing = false; Uncover(kv.Key, int.MaxValue); }
                     sp.Was = false; continue;
@@ -1296,6 +1410,7 @@ namespace RedTune
                 foreach (var sp in spots.Values) sp.From = sp.Y;
                 motionStart = DateTime.Now; motion.Start();
             }
+            DropEarly(true); // pictures taken for rows that went without a glide after all (a row still shown waits for its hiding)
             placedOnce = true; placedWidth = wide;
             int y = AutoScrollPosition.Y + cy;
             if (!NoScroll) AutoScrollMinSize = new Size(0, y - AutoScrollPosition.Y + Theme.S(24));
@@ -1321,85 +1436,14 @@ namespace RedTune
             foreach (var b in lone) b.MinWidth = wide;
         }
 
-        // 14.11: rows that appear or go away (the advanced settings under their switch) slide: they come out from under
-        // the row above, the rows below move down with them, and they go back the same way. Slow start, speed, soft stop.
-        // The rows themselves do not move while it lasts: a picture of them does, in a pane whose height changes; the
-        // real rows take its place when it is over. rows: next to each other on the page.
-        class SlidePane : Control
-        {
-            public Bitmap Pic; public int Full;
-            public SlidePane() { SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true); BackColor = Theme.Window; }
-            protected override void OnPaint(PaintEventArgs e) { e.Graphics.Clear(BackColor); if (Pic != null) e.Graphics.DrawImageUnscaled(Pic, 0, Height - Full); }
-            protected override void Dispose(bool disposing) { if (disposing && Pic != null) { Pic.Dispose(); Pic = null; } base.Dispose(disposing); }
-        }
-
-        [System.Runtime.InteropServices.DllImport("user32.dll")] static extern IntPtr SendMessage(IntPtr h, int msg, IntPtr w, IntPtr l);
-        Action finishSlide;
-
+        // 20.11: the slide is the page's own glide now (see Motion: the rows are uncovered as the ones under them make room,
+        // or shrink away as they close in). The pane of its own (14.11) ran beside that glide, which came in 19.11: every
+        // step of the pane moved the rows under it and the glide started over to chase them, so they went down, back up
+        // and down again with stops of up to 157 ms (measured with --motion-frames). (14.11 to 20.11: rows slid out of the row above as a picture.)
         public void Slide(Control[] rows, bool show)
         {
-            if (finishSlide != null) finishSlide(); // one at a time: the last one ends at once
-            rows = items.Select(kv => kv.Key).Where(c => rows.Contains(c)).ToArray();
-            if (rows.Length == 0) return;
-            if (!IsHandleCreated || !Visible || Width < 10) { foreach (var r in rows) r.Visible = show; Relayout(); return; }
-
-            SendMessage(Handle, 0x000B, IntPtr.Zero, IntPtr.Zero); // WM_SETREDRAW off: none of the steps below shows
-            SlidePane pane;
-            try
-            {
-                if (show) { foreach (var r in rows) r.Visible = true; Relayout(); } // their places and sizes, to take the picture
-                int top = rows.Min(r => r.Top), bottom = rows.Max(r => r.Bottom), left = rows.Min(r => r.Left), wide = rows.Max(r => r.Right) - left;
-                int at = items.FindIndex(kv => kv.Key == rows[0]), gap = Theme.S(items[at].Value);
-                var pic = new Bitmap(Math.Max(1, wide), Math.Max(1, bottom - top + gap));
-                using (var g = Graphics.FromImage(pic))
-                {
-                    g.Clear(Theme.Window);
-                    foreach (var r in rows)
-                        using (var one = new Bitmap(Math.Max(1, r.Width), Math.Max(1, r.Height)))
-                        {
-                            r.DrawToBitmap(one, new Rectangle(0, 0, one.Width, one.Height));
-                            g.DrawImageUnscaled(one, r.Left - left, r.Top - top + gap);
-                        }
-                }
-                foreach (var r in rows) r.Visible = false;
-                pane = new SlidePane { Pic = pic, Full = pic.Height, Height = show ? 0 : pic.Height };
-                items.Insert(at, new KeyValuePair<Control, int>(pane, 0)); // its own gap is in the picture, so it closes to nothing
-                Controls.Add(pane);
-                Relayout();
-            }
-            finally { SendMessage(Handle, 0x000B, (IntPtr)1, IntPtr.Zero); }
-            Invalidate(true); Update();
-
-            var clock = System.Diagnostics.Stopwatch.StartNew();
-            var timer = new Timer { Interval = 15 };
-            bool over = false;
-            Action end = () =>
-            {
-                if (over) return;
-                over = true; finishSlide = null;
-                timer.Stop(); timer.Dispose();
-                if (IsDisposed) return;
-                SendMessage(Handle, 0x000B, IntPtr.Zero, IntPtr.Zero);
-                try
-                {
-                    items.RemoveAll(kv => kv.Key == pane); Controls.Remove(pane); pane.Dispose();
-                    foreach (var r in rows) r.Visible = show;
-                    Relayout();
-                }
-                finally { SendMessage(Handle, 0x000B, (IntPtr)1, IntPtr.Zero); }
-                Invalidate(true); Update();
-            };
-            finishSlide = end;
-            timer.Tick += (s, e) =>
-            {
-                if (IsDisposed || pane.IsDisposed) { end(); return; }
-                float t = Math.Min(1f, clock.ElapsedMilliseconds / 320f);
-                float k = t < 0.5f ? 4f * t * t * t : 1f - (float)Math.Pow(-2f * t + 2f, 3) / 2f;
-                pane.Height = (int)Math.Round(pane.Full * (show ? k : 1f - k));
-                Relayout(); pane.Invalidate(); Update();
-                if (t >= 1f) end();
-            };
-            timer.Start();
+            foreach (var r in rows) r.Visible = show;
+            Relayout();
         }
 
         // a bar under the page that doesn't scroll away (the window shows it at the bottom); null = none
@@ -1474,6 +1518,11 @@ namespace RedTune
         // Caption — a text in place of «value unit» (the top of the clock cap on the power page reads «нет»)
         public int Step = 1;
         public Func<int, string> Caption;
+        // 20.11 (the user's wish, as the equalizer's faders): a press on the track leaves the knob where it is and puts the
+        // pointer onto it; the drag then moves the value by as much as the mouse moves from there (not to the pixel under
+        // it: on a long range such as the clock cap a pixel is tens of MHz, and the knob would jump at the first move)
+        public bool WarpToKnob;
+        int pressX, pressValue; bool relative;
 
         public Slider(int min, int max, int value, string unit)
         {
@@ -1494,9 +1543,46 @@ namespace RedTune
         int TrackW { get { return Width - Theme.S(70); } }
         static int Pad { get { return Theme.S(13); } } // room for half the glass knob and its shadow at both ends
 
-        void SetFrom(int x)
+        // --slider-warp-check: a press far from the knob and a drag, driven by the mouse messages Windows sends (the real
+        // pointer is not moved: WarpPointer off, so the drag goes from the press)
+        [System.Runtime.InteropServices.DllImport("user32.dll")] static extern IntPtr SendMessage(IntPtr h, int msg, IntPtr w, IntPtr l);
+        internal static string WarpCheck()
         {
-            int v = min + (int)Math.Round((double)(x - Pad) / Math.Max(1, TrackW - 2 * Pad) * (max - min));
+            var sb = new System.Text.StringBuilder();
+            Action<bool, string> line = (ok, t) => sb.AppendLine((ok ? "ok    " : "FAIL  ") + t);
+            Theme.WarpPointer = false;
+            using (var f = new Form { ShowInTaskbar = false, StartPosition = FormStartPosition.Manual, Location = new Point(-4000, -4000), Size = new Size(600, 200) })
+            {
+                var s = new Slider(1000, 20000, 15000, "МГц") { Width = 470, WarpToKnob = true };
+                int changes = 0; s.Changed += (o, e) => changes++;
+                f.Controls.Add(s); f.Show(); Application.DoEvents();
+                Func<int, int, IntPtr> at = (x, y) => (IntPtr)((y << 16) | (x & 0xFFFF));
+                int y0 = s.Height / 2, k = s.KnobX, far = Pad + 5;
+                SendMessage(s.Handle, 0x201, (IntPtr)1, at(far, y0));
+                line(s.Value == 15000 && changes == 0, "a press at the left end, far from the knob: the value stays " + s.Value);
+                SendMessage(s.Handle, 0x200, (IntPtr)1, at(far + 40, y0));
+                int moved = s.Value; double px = (s.TrackW - 2 * Pad) / 19000.0;
+                line(Math.Abs(moved - 15000 - 40 / px) <= 60, "40 px to the right from there: " + moved + " (15000 + " + (40 / px).ToString("0") + " expected), not the left end");
+                SendMessage(s.Handle, 0x200, (IntPtr)1, at(far + 4000, y0));
+                line(s.Value == 20000, "far to the right: the top of the range (" + s.Value + ")");
+                SendMessage(s.Handle, 0x202, IntPtr.Zero, at(far + 4000, y0));
+                s.WarpToKnob = false; s.Value = 15000;
+                SendMessage(s.Handle, 0x201, (IntPtr)1, at(far, y0)); SendMessage(s.Handle, 0x202, IntPtr.Zero, at(far, y0));
+                line(s.Value < 1300, "without it (other pages) the knob still jumps to the press: " + s.Value);
+            }
+            Theme.WarpPointer = true;
+            return sb.ToString();
+        }
+
+        int KnobX { get { float f = max > min ? (float)(value - min) / (max - min) : 0; return (int)Math.Round(Pad + (TrackW - 2 * Pad) * f); } }
+
+        void SetFrom(int x) { SetTo(min + (int)Math.Round((double)(x - Pad) / Math.Max(1, TrackW - 2 * Pad) * (max - min))); }
+
+        // relative: the value at the press plus as much as the mouse went since
+        void DragTo(int x) { SetTo(pressValue + (int)Math.Round((double)(x - pressX) / Math.Max(1, TrackW - 2 * Pad) * (max - min))); }
+
+        void SetTo(int v)
+        {
             if (Step > 1) v = min + (int)Math.Round((v - min) / (double)Step) * Step;
             v = Math.Max(min, Math.Min(max, v));
             // 20.11: the knob paints itself before the page reacts — a heavy handler (the sound page's pictures) left it waiting
@@ -1554,13 +1640,19 @@ namespace RedTune
         protected override void OnMouseDown(MouseEventArgs e)
         {
             armed = true;
-            if (e.X < TrackW) { drag = true; Grab(); SetFrom(e.X); }
+            if (e.X < TrackW)
+            {
+                drag = true; Grab();
+                relative = WarpToKnob && !unset && e.Button == MouseButtons.Left;
+                if (relative) { int kx = KnobX; pressValue = value; pressX = Theme.Warp(this, kx, Height / 2f) ? kx : e.X; }
+                else SetFrom(e.X);
+            }
             else if (e.Button == MouseButtons.Left) BeginEdit();
             base.OnMouseDown(e);
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (drag) SetFrom(e.X);
+            if (drag) { if (relative) DragTo(e.X); else SetFrom(e.X); }
             bool over = Enabled && ValueArea.Contains(e.Location);
             if (over != overValue) { overValue = over; Invalidate(); }
             // 19.11: the pointer is set from where the mouse is on every move, not only when it crosses into the number
@@ -1975,10 +2067,20 @@ namespace RedTune
             for (int i = 0; i < items.Length; i++)
             {
                 var c = Cell(i);
-                var r = new RectangleF(c.X + Theme.S(4) + 0.5f, Theme.S(4) + 0.5f, c.Width - Theme.S(8) - 1, Height - Theme.S(8) - 1);
+                // 20.11 (the user): one gap everywhere, as it is seen: from the inside of the frame's line to the outside of
+                // the cell's line, and between two cells' lines. Measured at 150 % the first try gave 6 px at the frame and
+                // 8 px between cells: the gap was counted from the frame's outer edge, and the half pixel of each line
+                // around the cells widened the gap between them. Now the edges are worked out where they show: the frame's
+                // line covers 0..1 at the left and top, W-1.5..W-0.5 and H-1.5..H-0.5 at the right and bottom; a cell's line
+                // is drawn half a pixel inside its outer edge
+                float gap = Theme.S(5);
+                float left = i == 0 ? 1f + gap : c.X + gap / 2, right = i == items.Length - 1 ? Width - 1.5f - gap : c.Right - gap / 2;
+                float top = 2f + gap, bottom = Height - 1.5f - gap; // the top: the glass shine under the line makes it 2 px
+                var r = RectangleF.FromLTRB(left + 0.5f, top + 0.5f, right - 0.5f, bottom - 0.5f);
                 bool on = i == selected;
-                if (on) { Theme.Fill(g, r, Theme.S(6), Theme.AccentBg); Theme.Stroke(g, r, Theme.S(6), Theme.Accent); }
-                else if (i == hot) Theme.Fill(g, r, Theme.S(6), Theme.Raised);
+                // 20.11 (the user): the red cell (and the hover under it) rounder, 10; the frame stays at 8
+                if (on) { Theme.Fill(g, r, Theme.S(10), Theme.AccentBg); Theme.Stroke(g, r, Theme.S(10), Theme.Accent); }
+                else if (i == hot) Theme.Fill(g, r, Theme.S(10), Theme.Raised);
                 var text = L.T(items[i]);
                 int tw = TextWidth(g, text, Theme.Bold);
                 string note = string.IsNullOrEmpty(Notes[i]) ? null : "● " + L.T(Notes[i]);

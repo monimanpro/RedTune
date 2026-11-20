@@ -8,8 +8,8 @@ using System.Windows.Forms;
 [assembly: AssemblyTitle("Red Tune")]
 [assembly: AssemblyDescription("Питание, кривая и настройки ноутбуков на AMD Ryzen")]
 [assembly: AssemblyProduct("Red Tune")]
-[assembly: AssemblyVersion("0.4.2.0")]
-[assembly: AssemblyFileVersion("0.4.2.0")]
+[assembly: AssemblyVersion("0.4.3.0")]
+[assembly: AssemblyFileVersion("0.4.3.0")]
 
 namespace RedTune
 {
@@ -51,7 +51,7 @@ namespace RedTune
 
             // --hw-report <file>: what Hw finds and which sections it would show (RT_HW_SIM simulates another machine), a check
             i = at("--hw-report");
-            if (i >= 0 && i + 1 < args.Length) { Hw.Detect(); System.IO.File.WriteAllText(args[i + 1], Hw.Report() + "\r\nМеню: " + string.Join(", ", new[] { "home", "power", "curve", "dist", "ram", "device", "startup", "clean", "comp", "settings", "about" }.Where(Hw.PageFits)) + "\r\nПитание: " + (Hw.LenovoPower ? "Lenovo" : Hw.Amd ? "лимиты AMD (SMU)" : "—") + "\r\nКоротко: " + Hw.Short() + "\r\n", new System.Text.UTF8Encoding(true)); return 0; }
+            if (i >= 0 && i + 1 < args.Length) { Hw.Detect(); System.IO.File.WriteAllText(args[i + 1], Hw.Report() + "\r\nМеню: " + string.Join(", ", new[] { "home", "power", "curve", "dist", "ram", "device", "display", "startup", "clean", "comp", "settings", "about" }.Where(Hw.PageFits)) + "\r\nПитание: " + (Hw.LenovoPower ? "Lenovo" : Hw.Amd ? "лимиты AMD (SMU)" : "—") + "\r\nКоротко: " + Hw.Short() + "\r\n", new System.Text.UTF8Encoding(true)); return 0; }
             // --fps-probe <file> [seconds] [--krnl-all]: the frame counter (Fps) listens for some seconds and writes which
             // programs draw and at what rate, and how many events of each kind came (--krnl-all: every event of the
             // graphics kernel, to look for the right one). Reads only.
@@ -244,6 +244,27 @@ namespace RedTune
             i = at("--ui-edit-check");
             if (i >= 0 && i + 1 < args.Length) { Theme.Init(100); L.Set("ru"); PagePng.EditCheck(args[i + 1]); return 0; }
             // --eq-strips-check <file>: the strips of the equalizer under the mouse (PagePng.EqCheck), a check; a picture goes beside the file
+            // --dist-check <file>: «Распределение»: where programs land, what the hints offer (Dist.Engine.Check); moves nothing
+            i = at("--dist-check");
+            if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Dist.Engine.Check(), new System.Text.UTF8Encoding(true)); return 0; }
+            i = at("--dist-live-check");
+            if (i >= 0 && i + 2 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Dist.Engine.LiveCheck(int.Parse(args[i + 2])), new System.Text.UTF8Encoding(true)); return 0; }
+            // --power-undo-check <file>: Ctrl+Z / Ctrl+Y on «Питание» (PowerPage.UndoCheck); nothing applied or saved
+            i = at("--battery-check");
+            if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Energy.BatteryReport(), new System.Text.UTF8Encoding(true)); return 0; }
+            i = at("--display-check");
+            if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Display.Check(), new System.Text.UTF8Encoding(true)); return 0; }
+            i = at("--slider-warp-check");
+            if (i >= 0 && i + 1 < args.Length) { Theme.Init(100); L.Set("ru"); System.IO.File.WriteAllText(args[i + 1], Slider.WarpCheck(), new System.Text.UTF8Encoding(true)); return 0; }
+            i = at("--power-undo-check");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                var su = Store.LoadSettings(); Comp.S = su; Theme.Init(100); L.Set("ru"); Hw.Detect();
+                var ps = new PowerService(); var pp = new PowerPage(ps, new CurveService(su), new FanControl(ps, su), su);
+                using (var f = new Form { ShowInTaskbar = false, StartPosition = FormStartPosition.Manual, Location = new System.Drawing.Point(-4000, -4000), Size = new System.Drawing.Size(1000, 800) })
+                { f.Controls.Add(pp); f.Show(); Application.DoEvents(); System.IO.File.WriteAllText(args[i + 1], pp.UndoCheck(), new System.Text.UTF8Encoding(true)); }
+                return 0;
+            }
             i = at("--eq-strips-check");
             if (i >= 0 && i + 1 < args.Length) { Theme.Init(100); L.Set("ru"); PagePng.EqCheck(args[i + 1]); return 0; }
             // --color-mode-check <file>: each screen and whether Windows runs it in advanced colour (the mini panel goes without the blur there); reads only
@@ -334,6 +355,15 @@ namespace RedTune
                 int zoom = 150; if (i + 2 < args.Length) int.TryParse(args[i + 2], out zoom);
                 Theme.Init(zoom); L.Set("ru");
                 System.IO.File.WriteAllText(args[i + 1], "scale " + zoom + " %, a toggle slide (260 ms) beside the sound page's pictures:\r\n" + ToggleFrames.Run(), new System.Text.UTF8Encoding(true));
+                return 0;
+            }
+            // --motion-frames <file> [scale]: how smoothly rows come out (MotionFrames): the help card and the slide of «Питание»
+            i = at("--motion-frames");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                int zoom = 150; if (i + 2 < args.Length) int.TryParse(args[i + 2], out zoom);
+                Theme.Init(zoom); L.Set("ru");
+                System.IO.File.WriteAllText(args[i + 1], "scale " + zoom + " %, motion " + Page.Motion + ":" + Environment.NewLine + MotionFrames.Run(), new System.Text.UTF8Encoding(true));
                 return 0;
             }
             // --motion-check <file>: the movement of rows that come and go on the pages (PagePng.MotionCheck), a check on a page of its own; pictures go beside the file

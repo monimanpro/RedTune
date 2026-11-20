@@ -1053,6 +1053,7 @@ namespace RedTune
         protected override void OnMouseDown(MouseEventArgs e)
         {
             armed = true; SetInCol(BandsCol.Contains(e.Location));
+            if (e.Button == MouseButtons.Middle) { ResetAt(e.Location); Invalidate(); base.OnMouseDown(e); return; }
             var part = Hit(e.Location);
             if (e.Button == MouseButtons.Left && (part == Part.Solo || part == Part.Mute)) { Listen(part, zoneHot); base.OnMouseDown(e); return; }
             if (e.Button == MouseButtons.Left && (part == Part.Count || part == Part.Pill))
@@ -1152,13 +1153,13 @@ namespace RedTune
             }
         }
 
-        // a double click puts the value under the mouse back to where a new device starts
-        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        // a press of the wheel puts the value under the mouse back to where a new device starts (20.11, the user's wish:
+        // it was a double click, which went off by itself when a knob was clicked twice quickly)
+        void ResetAt(Point at)
         {
-            var part = Hit(e.Location);
-            // (the second press of a quick pair on S or M has already come as a press of its own: nothing more to do here)
-            if (part == Part.Solo || part == Part.Mute) { base.OnMouseDoubleClick(e); return; }
-            if (e.Button == MouseButtons.Left && part != Part.None && part != Part.Zone && part != Part.ViewTime && part != Part.ViewFreq && part != Part.Count && part != Part.Pill)
+            var part = Hit(at);
+            if (part == Part.Solo || part == Part.Mute) return;
+            if (part != Part.None && part != Part.Zone && part != Part.ViewTime && part != Part.ViewFreq && part != Part.Count && part != Part.Pill)
             {
                 drag = Part.None; var s = SoundParams.Start();
                 if (part == Part.Makeup || part == Part.DialMakeup) Q.Makeup = 0;
@@ -1170,10 +1171,9 @@ namespace RedTune
                 else if (part == Part.Release) Q.Release = s.Release;
                 else if (part == Part.Knee) Q.Knee = s.Knee;
                 else if (part == Part.CeilFader) P.Ceil = s.Ceil;
-                else { base.OnMouseDoubleClick(e); return; }
+                else return;
                 Fire();
             }
-            base.OnMouseDoubleClick(e);
         }
 
         static float Db(float lin) { return lin <= 0.00001f ? -100f : 20f * (float)Math.Log10(lin); }
@@ -1638,7 +1638,8 @@ namespace RedTune
     }
 
     // The equalizer: the curve over a frequency axis, a knob per band. A knob is dragged (frequency and gain), the
-    // wheel over it changes its width, a right click picks the kind of filter or deletes it, a double click on empty
+    // wheel over it changes its width, a right click picks the kind of filter or deletes it, a press of the wheel on a strip
+    // puts it back (20.11), a double click on empty
     // space adds one. Behind the curve, what the device plays right now (the spectrum of the processed sound).
     class EqGraph : Painted
     {
@@ -1786,6 +1787,7 @@ namespace RedTune
         protected override void OnMouseDown(MouseEventArgs e)
         {
             armed = true;
+            if (e.Button == MouseButtons.Middle) { ResetAt(e.Location); Invalidate(); base.OnMouseDown(e); return; }
             int band = -1; var part = Dim ? Part.None : HitPanel(e.Location, out band);
             if (part != Part.None)
             {
@@ -1863,18 +1865,24 @@ namespace RedTune
         }
         int wheelAcc;
 
-        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        // a press of the wheel: «Общ.» back to no gain, a band's fader to zero, its width dial to 1 (20.11, the user's wish:
+        // it was a double click, which went off by itself when a fader was clicked twice quickly)
+        void ResetAt(Point at)
         {
-            int band = -1; var part = Dim ? Part.None : HitPanel(e.Location, out band);
-            if (e.Button == MouseButtons.Left && part == Part.Master) { dragPart = Part.None; P.Preamp = 0; Fire(); } // a double click: back to no gain
-            else if (e.Button == MouseButtons.Left && band >= 0 && band < P.Bands.Count)
+            int band = -1; var part = Dim ? Part.None : HitPanel(at, out band);
+            if (part == Part.Master) { P.Preamp = 0; Fire(); }
+            else if (band >= 0 && band < P.Bands.Count)
             {
-                dragPart = Part.None; dragBand = -1; // the second press of the pair took hold of the strip again
-                // a double click on a fader puts the gain to zero, on the width dial the width to 1
                 if (part == Part.Fader && P.Bands[band].HasGain) { P.Bands[band].Gain = 0; Fire(); }
                 else if (part == Part.Wide) { P.Bands[band].Q = 1f; Fire(); }
             }
-            else if (e.Button == MouseButtons.Left && !Dim && part == Part.None && Hit(e.Location) < 0 && Plot.Contains(e.Location)) AddAt(e.Location);
+        }
+
+        // a double click on empty space adds a point (that one stays a double click: it adds, it does not reset)
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            int band = -1; var part = Dim ? Part.None : HitPanel(e.Location, out band);
+            if (e.Button == MouseButtons.Left && !Dim && part == Part.None && Hit(e.Location) < 0 && Plot.Contains(e.Location)) AddAt(e.Location);
             base.OnMouseDoubleClick(e);
         }
 

@@ -45,6 +45,8 @@ namespace RedTune
         public string TuneLoad = "p95";         // the heavy load of the auto-tune: "p95" Prime95, "own" the program's own test (Stress), on trial
         public string TuneMode = "daily";       // 18.11: what the quick tune looks for: "daily" a deep curve for everyday use, "strict" one that holds with any set of busy cores
         // fan curve extras (FanControl): safety net and emergency on, the rest off
+        public string AcmOff = ""; // 20.11: monitors (EDID «maker:product», hex) whose automatic colour management the user turned off: kept off (ColorKeep)
+        public bool HzAuto; public int HzAc, HzDc; // 20.11: the built-in screen's refresh rate by the power source (DisplayAuto); 0 = the highest / 60
         public bool FanSafety = true, FanCritical = true, FanHyst, FanEma, FanGlide, FanBoost, FanSync, FanPredict; public bool SyncBrightness; // 18.11: one screen brightness for all power plans (BrightnessSync), off by default
         // on-screen notifications
         public bool OsdOn = true, OsdTopmost = false, OsdAllMonitors = false;
@@ -154,6 +156,10 @@ namespace RedTune
                     case "FanBoost": s.FanBoost = b; break;
                     case "FanSync": s.FanSync = b; break;
                     case "FanPredict": s.FanPredict = b; break; case "SyncBrightness": s.SyncBrightness = b; break;
+                    case "HzAuto": s.HzAuto = b; break;
+                    case "AcmOff": s.AcmOff = v; break;
+                    case "HzAc": int hza; if (int.TryParse(v, out hza) && hza >= 0 && hza <= 1000) s.HzAc = hza; break;
+                    case "HzDc": int hzd; if (int.TryParse(v, out hzd) && hzd >= 0 && hzd <= 1000) s.HzDc = hzd; break;
                     case "Language": s.Language = System.Array.IndexOf(L.Codes, v) >= 0 ? v : "ru"; break;
                     case "OsdOn": s.OsdOn = b; break;
                     case "OsdTopmost": s.OsdTopmost = b; break;
@@ -212,7 +218,7 @@ namespace RedTune
                 "ApplyOnBattery=" + b(s.ApplyOnBattery), "ApplyOnResume=" + b(s.ApplyOnResume), "CloseToTray=" + b(s.CloseToTray),
                 "UiScale=" + s.UiScale, "Language=" + s.Language, "P95Path=" + s.P95Path, "TuneLoad=" + s.TuneLoad, "TuneMode=" + s.TuneMode, "TunePlan=" + s.TunePlan,
                 "FanSafety=" + b(s.FanSafety), "FanCritical=" + b(s.FanCritical), "FanHyst=" + b(s.FanHyst), "FanEma=" + b(s.FanEma),
-                "FanGlide=" + b(s.FanGlide), "FanBoost=" + b(s.FanBoost), "FanSync=" + b(s.FanSync), "FanPredict=" + b(s.FanPredict), "SyncBrightness=" + b(s.SyncBrightness),
+                "FanGlide=" + b(s.FanGlide), "FanBoost=" + b(s.FanBoost), "FanSync=" + b(s.FanSync), "FanPredict=" + b(s.FanPredict), "SyncBrightness=" + b(s.SyncBrightness), "HzAuto=" + b(s.HzAuto), "AcmOff=" + s.AcmOff, "HzAc=" + s.HzAc, "HzDc=" + s.HzDc,
                 "OsdOn=" + b(s.OsdOn), "OsdTopmost=" + b(s.OsdTopmost), "OsdAllMonitors=" + b(s.OsdAllMonitors), "OsdFollow=" + b(s.OsdFollow), "CompByFreq=" + b(s.CompByFreq), "AsusMode=" + s.AsusMode, "AsusCharge=" + s.AsusCharge, "AsusLight=" + s.AsusLight, "OverlayOn=" + b(s.OverlayOn), "OverlayAlways=" + b(s.OverlayAlways), "OverlayCorner=" + s.OverlayCorner, "OverlaySize=" + s.OverlaySize, "OsdPosition=" + s.OsdPosition, "OsdMs=" + s.OsdMs, "OsdOff=" + s.OsdOff, "MiniOff=" + s.MiniOff,
                 "OsdGlass=" + b(s.OsdGlass), "OsdShine=" + b(s.OsdShine), "OsdLive=" + b(s.OsdLive), "CleanKeep=" + s.CleanKeep, "CleanClose=" + s.CleanClose, "CleanVer=" + s.CleanVer, "OsdBlur=" + s.OsdBlur, "OsdTint=" + s.OsdTint, "OsdLook=" + s.OsdLook, "AmdPowerOn=" + b(s.AmdPowerOn), "AmdPowerAsked=" + b(s.AmdPowerAsked), "Expert=" + b(s.Expert), "UnverifiedSeen=" + b(s.UnverifiedSeen), "WatchOn=" + b(s.WatchOn), "WatchDeepen=" + b(s.WatchDeepen), "WatchDays=" + s.WatchDays, "GpuAsked=" + b(s.GpuAsked), "NavCompact=" + b(s.NavCompact), "AmdPpt=" + s.AmdPpt, "AmdTdc=" + s.AmdTdc, "AmdEdc=" + s.AmdEdc, "AmdStapm=" + s.AmdStapm, "AmdFast=" + s.AmdFast, "AmdSlow=" + s.AmdSlow,
             }, Utf8Bom);

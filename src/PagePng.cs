@@ -179,6 +179,7 @@ namespace RedTune
                 Action<int, int> move = (x, y) => SendMessage(q.Handle, 0x200, (IntPtr)1, at(x, y));
                 Action<int, int> hover = (x, y) => SendMessage(q.Handle, 0x200, IntPtr.Zero, at(x, y));
                 Action<int, int> up = (x, y) => SendMessage(q.Handle, 0x202, IntPtr.Zero, at(x, y));
+                Action<int, int> wheelPress = (x, y) => { SendMessage(q.Handle, 0x207, (IntPtr)0x10, at(x, y)); SendMessage(q.Handle, 0x208, IntPtr.Zero, at(x, y)); }; // 20.11: the reset
                 int top = q.FaderTop, bottom = q.FaderBottom, mid = (top + bottom) / 2;
 
                 line(q.Panel.Width > 0 && q.Order().Length == 5, "five bands: five strips and «+» (panel " + q.Panel.Width + " px wide)");
@@ -191,9 +192,10 @@ namespace RedTune
                 move(x2, bottom + 40); float g2 = p.Bands[2].Gain; up(x2, bottom + 40);
                 line(g0 == 0 && Math.Abs(g1 - 9f) < 0.3f && g2 == -18f && p.Bands[1].Gain == 0 && p.Bands[3].Gain == 0, "fader: the press leaves it at " + g0 + " dB, a quarter of the travel up gives " + g1 + " dB (9 expected), far below " + g2 + " dB (-18), the neighbours stay at 0");
 
-                // a double click on it: no gain
-                down(x2, mid + 30); up(x2, mid + 30); SendMessage(q.Handle, 0x203, (IntPtr)1, at(x2, mid + 30)); up(x2, mid + 30);
-                line(p.Bands[2].Gain == 0, "double click on a fader: gain " + p.Bands[2].Gain + " dB");
+                // 20.11: a double click on it changes nothing any more; a press of the wheel: no gain
+                down(x2, mid + 30); up(x2, mid + 30); SendMessage(q.Handle, 0x203, (IntPtr)1, at(x2, mid + 30)); up(x2, mid + 30); float gd = p.Bands[2].Gain;
+                wheelPress(x2, mid + 30);
+                line(gd == -18f && p.Bands[2].Gain == 0, "double click on a fader keeps " + gd + " dB (-18); a press of the wheel: gain " + p.Bands[2].Gain + " dB");
 
                 // the frequency dial of the first strip (80 Hz): half the travel up is half the range in octaves, x31.6
                 int x0 = q.StripX(0);
@@ -222,8 +224,8 @@ namespace RedTune
                 var kp = q.Knob(2); down((int)kp.X, (int)kp.Y); move((int)kp.X, (int)kp.Y - 1); up((int)kp.X, (int)kp.Y - 1);
                 line(Math.Abs(p.Bands[2].Gain) < 0.35f, "a point taken where it is drawn keeps its gain: " + p.Bands[2].Gain + " dB with the pre-gain at " + p.Preamp);
                 hover(xm, mid); SendMessage(q.Handle, 0x20A, (IntPtr)(120 << 16), at(0, 0)); float m4 = p.Preamp;
-                SendMessage(q.Handle, 0x203, (IntPtr)1, at(xm, mid)); up(xm, mid);
-                line(Math.Abs(m4 - m3 - 0.5f) < 0.01f && p.Preamp == 0, "pre-gain: the wheel " + m3 + " -> " + m4 + " dB, a double click -> " + p.Preamp);
+                wheelPress(xm, mid);
+                line(Math.Abs(m4 - m3 - 0.5f) < 0.01f && p.Preamp == 0, "pre-gain: the wheel " + m3 + " -> " + m4 + " dB, a press of the wheel -> " + p.Preamp);
                 p.Bands[2].Gain = 0;
 
                 // «+»: a sixth band, in the widest gap, with no gain
@@ -263,6 +265,7 @@ namespace RedTune
                 Action<int, int> down = (x, y) => SendMessage(q.Handle, 0x201, (IntPtr)1, at(x, y));
                 Action<int, int> move = (x, y) => SendMessage(q.Handle, 0x200, (IntPtr)1, at(x, y));
                 Action<int, int> up = (x, y) => SendMessage(q.Handle, 0x202, IntPtr.Zero, at(x, y));
+                Action<int, int> wheelPress = (x, y) => { SendMessage(q.Handle, 0x207, (IntPtr)0x10, at(x, y)); SendMessage(q.Handle, 0x208, IntPtr.Zero, at(x, y)); }; // 20.11: the reset
                 Func<CompGraph.Part, Point> knob = part => Point.Round(q.KnobAt(part));
                 double perDb = q.Curve.Height / 60.0;
 
@@ -299,9 +302,10 @@ namespace RedTune
                 down(dk.X, dk.Y); move(dk.X, dk.Y - Theme.S(110)); float kn = p.Knee; up(0, 0);
                 line(a1 > 130 && a1 < 150 && rl == 10 && kn == 12, "dials: attack 10 -> " + a1 + " ms (141 expected), release far down " + rl + " ms (10, the least), knee 0 -> " + kn + " dB (12)");
 
-                // a double click on a dial: the value a new device starts with
-                down(xa, dy); up(xa, dy); SendMessage(q.Handle, 0x203, (IntPtr)1, at(xa, dy)); up(xa, dy);
-                line(p.Attack == SoundParams.Start().Attack, "double click on the attack dial: " + p.Attack + " ms");
+                // 20.11: a double click on a dial changes nothing any more; a press of the wheel: the value a new device starts with
+                float aWas = p.Attack; down(xa, dy); up(xa, dy); SendMessage(q.Handle, 0x203, (IntPtr)1, at(xa, dy)); up(xa, dy); float aDbl = p.Attack;
+                wheelPress(xa, dy);
+                line(aDbl == aWas && p.Attack == SoundParams.Start().Attack, "double click on the attack dial keeps " + aDbl + " ms; a press of the wheel: " + p.Attack + " ms");
 
                 // 20.11: the wheel on a dial: one notch = one step of its scale; a smooth wheel's half notches make one step together
                 Action<int, int, int> wheel = (x, y, delta) => { SendMessage(q.Handle, 0x200, IntPtr.Zero, at(x, y)); SendMessage(q.Handle, 0x20A, (IntPtr)(delta << 16), at(0, 0)); };
@@ -333,9 +337,9 @@ namespace RedTune
                 p.Limit = true;
                 int fm = (q.CeilTop + q.CeilBottom) / 2; down(fx, fm); float f1 = p.Ceil; move(fx, fm + (q.CeilBottom - q.CeilTop) / 4); float f3 = p.Ceil; move(fx, q.CeilBottom + 400); float f2 = p.Ceil; up(0, 0);
                 SendMessage(q.Handle, 0x200, IntPtr.Zero, at(fx, (int)q.CeilY(p.Ceil))); SendMessage(q.Handle, 0x20A, (IntPtr)(120 << 16), at(0, 0)); float f4 = p.Ceil;
-                { int fy = (int)q.CeilY(p.Ceil); SendMessage(q.Handle, 0x203, (IntPtr)1, at(fx, fy)); up(fx, fy); } float f5 = p.Ceil;
+                { int fy = (int)q.CeilY(p.Ceil); wheelPress(fx, fy); } float f5 = p.Ceil;
                 line(cst.Width > 0 && cst.X > q.History.Right && f0 == -3f && f1 == -3f && f2 == -12f && f3 == -6f && f4 == -11.5f && f5 == SoundParams.Start().Ceil,
-                    "ceiling fader right of the monitor: limiter off " + f0 + " stays; on: the press leaves it at " + f1 + " dB, a quarter of the travel down " + f3 + " (-6), far below " + f2 + " (-12), wheel up " + f4 + " (-11.5), double click " + f5);
+                    "ceiling fader right of the monitor: limiter off " + f0 + " stays; on: the press leaves it at " + f1 + " dB, a quarter of the travel down " + f3 + " (-6), far below " + f2 + " (-12), wheel up " + f4 + " (-11.5), a press of the wheel " + f5);
                 p.Limit = false;
                 // 19.11, the bands: with three at work the picture shows the one the page picked, and only that band's settings move
                 q.Dim = false; p.Limit = false; p.Split = 250; p.Split2 = 4000; p.Parts[0].Thr = -20; p.Parts[1].Thr = -30; p.Parts[2].Thr = -40; q.Band = 2;
@@ -433,8 +437,9 @@ namespace RedTune
                 down(gRat.X, gRat.Y); move(gRat.X, gRat.Y - Theme.S(110)); float dRat = p.Ratio; move(gRat.X, gRat.Y + Theme.S(600)); float dRatLow = p.Ratio; up(0, 0);
                 down(gMk.X, gMk.Y); move(gMk.X, gMk.Y - Theme.S(110)); float dMk = p.Makeup; up(0, 0);
                 line(dThr == -10 && Math.Abs(dRat - 8.9f) < 0.15f && dRatLow == 1 && dMk == 18, "half the travel up: threshold -40 -> " + dThr + " dB (-10), ratio 2 -> " + dRat + " : 1 (8.9), far down " + dRatLow + " : 1 (1, the least), gain after 0 -> " + dMk + " dB (18)");
-                down(gMk.X, gMk.Y); up(gMk.X, gMk.Y); SendMessage(q.Handle, 0x203, (IntPtr)1, at(gMk.X, gMk.Y)); up(gMk.X, gMk.Y);
-                line(p.Makeup == 0, "double click on the gain-after dial: " + p.Makeup + " dB");
+                down(gMk.X, gMk.Y); up(gMk.X, gMk.Y); SendMessage(q.Handle, 0x203, (IntPtr)1, at(gMk.X, gMk.Y)); up(gMk.X, gMk.Y); float mkDbl = p.Makeup;
+                wheelPress(gMk.X, gMk.Y);
+                line(mkDbl == 18 && p.Makeup == 0, "double click on the gain-after dial keeps " + mkDbl + " dB (18); a press of the wheel: " + p.Makeup + " dB");
                 // 19.11, two more dials under the six: the splits between the bands, alive only where their split is at work
                 p.Split = 100; p.Split2 = 2000; q.Ghost1 = 250; q.Ghost2 = 4000; q.SetView(false); q.Band = 0;
                 var gS1 = q.DialAt(6); var gS2 = q.DialAt(7);
@@ -507,6 +512,34 @@ namespace RedTune
                 else if (what == "home") page = new HomePage(new PowerService(), () => { }, s, () => { });
                 else if (what == "settings") { Osd.Init(s); page = new SettingsPage(s, () => { }, v => { }); } // the language list and the rest, nothing is changed
                 else if (what == "comp") page = new ComponentsPage(s);
+                else if (what == "startup") page = new StartupPage(); // 20.11: reads the list when it shows, changes nothing
+                else if (what == "display")
+                {
+                    // 20.11: «Дисплей», reads the monitors when it shows, changes nothing; RT_TAB=<n>: that monitor's tab
+                    var dp = new DisplayPage(s); page = dp; int dt;
+                    if (int.TryParse(Environment.GetEnvironmentVariable("RT_TAB") ?? "", out dt)) late = () => { var w = DateTime.Now.AddMilliseconds(600); while (DateTime.Now < w) { Application.DoEvents(); System.Threading.Thread.Sleep(10); } dp.ShowTab(dt); };
+                }
+                else if (what == "tabs")
+                {
+                    // 20.11: the tabs of «Питание» alone, «Кривые» picked and «Схемы питания» under the mouse (RT_HOT=<n>), to measure the gaps
+                    var tp = new Page(); var tabs = tp.Add(new PageTabs(4, "Процессор", "Видеокарта", "Вентиляторы", "Схемы питания", "Кривые"), 0);
+                    int hot; if (!int.TryParse(Environment.GetEnvironmentVariable("RT_HOT") ?? "3", out hot)) hot = 3;
+                    typeof(PageTabs).GetField("hot", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(tabs, hot);
+                    page = tp;
+                }
+                else if (what == "dist")
+                {
+                    // 20.11: «Распределение» on an engine that is never started (no program is moved); RT_FAKE_L3=32,96 plays an X3D
+                    // with the cache on CCD2; RT_FAKE_HINTS=1 adds three made-up hints: a game in front, a background job, a render
+                    var eng = new Dist.Engine();
+                    if (Environment.GetEnvironmentVariable("RT_FAKE_HINTS") == "1")
+                    {
+                        eng.FakeHint(@"D:\Games\Some Game\Game-Win64-Shipping.exe", 300, 280, 3.5);
+                        eng.FakeHint(@"C:\Tools\Sync\syncworker.exe", 120, 0, 1.2);
+                        eng.FakeHint(@"C:\Program Files\Blender Foundation\Blender 4.2\blender.exe", 600, 500, 24);
+                    }
+                    page = new Dist.DistPage(eng);
+                }
                 else if (what == "sound")
                 {
                     // 18.11: «Звук» (reads the devices and their effects, changes nothing). RT_COMP_DEMO=1: a made-up sound in the compressor's picture

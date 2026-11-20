@@ -1,6 +1,7 @@
 # build output
 bin/
-dist/
+# the installer output only: without the leading slash it also took src/Dist (git ignores case on Windows)
+/dist/
 *.pdb
 
 # editors

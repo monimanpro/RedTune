@@ -705,7 +705,7 @@ w	167024ca	Lo que se inicia con Windows
 w	0fc63dc9	Los elementos desactivados siguen en la lista y se pueden reactivar. El Administrador de tareas → Inicio muestra lo mismo
 w	5ff6d3cd	No se pudo leer la lista
 w	dafca83c	Ningún programa se inicia con Windows
-w	e4979dda	Programas
+w	e4979dda	Aplicaciones
 w	997be602	Tareas programadas
 w	5cf7bf0f	Se inician al iniciar sesión o al arrancar Windows
 w	2bd8d86d	Las tareas de Microsoft están ocultas. Una tarea desactivada permanece; una tarea cuyo programa ya no existe se puede eliminar en «…»
@@ -771,6 +771,42 @@ w	8a952c83	no tocar, Windows elige los núcleos
 w	33fc6456	todos los núcleos (Windows decide)
 w	d1699cbd	Juegos de Steam
 w	975c0cc6	Juegos de Epic
+w	76a2b5c4	Pantalla
+w	34d5eb3a	Modo de pantallas
+w	44b8b052	Como Win+P
+w	460d52a2	Solo el portátil
+w	8a3403f9	Duplicar
+w	f70933c2	Extender
+w	e20ca349	Solo la segunda
+w	af3a252f	Brillo
+w	36a09770	Como las teclas de brillo
+w	120d95e6	Por DDC/CI, como los botones del propio monitor
+w	f5cf7a96	Esta: la barra de tareas con el reloj y las ventanas nuevas están en ella
+w	b22338eb	La barra de tareas con el reloj y las ventanas nuevas pasan a esta pantalla
+w	d0b521e4	Frecuencia según la alimentación
+w	a0b6b1ed	Frecuencia alta con el cargador, baja con batería: la pantalla gasta menos cuando el portátil no se está cargando
+w	40c4f40e	Con cargador · con batería
+w	2a633911	Cambia sola al conectar y desconectar el cargador
+w	38161845	Windows no da el brillo de esta pantalla
+w	321c82a8	El monitor no responde por DDC/CI: se puede activar en el menú del monitor
+w	ee332c07	Pantalla del portátil
+w	4190f301	HDR
+w	30afc93a	Color de la señal
+w	b7334dcf	Perfil de color
+w	b00e01a0	Gestión automática del color
+w	3f6e9351	Desactivado y recordado para este monitor: si Windows lo activa por su cuenta, Red Tune lo desactiva otra vez
+w	17ce92cb	Windows mantiene los colores exactos (sRGB) por sí mismo. Desactivado, la pantalla muestra el modo de color del perfil elegido
+w	0111073b	Con la gestión automática, todos los perfiles del panel dan la misma imagen. Para un modo de Lenovo (DCI-P3, sRGB…) desactívala abajo
+w	8c8edf7d	Sin perfil
+w	edb5d8e2	Perfil del panel del portátil
+w	1ebfdff8	Este perfil se midió en la pantalla del portátil: no corresponde al monitor y distorsiona sus colores. Mejor «Sin perfil» o el perfil del propio monitor
+w	95cef88e	Modo HDR
+w	46755edd	Gestión automática del color de Windows
+w	53df5793	Modo de color estándar
+w	6ae379af	Lenovo · gama completa del panel
+w	e8905514	Lenovo · de fábrica
+w	5cd2d56a	Los juegos de las carpetas de Steam, Epic, Xbox, EA, Ubisoft, GOG y Riot y lo que inician los lanzadores van directo a este chip, aunque no tengan una regla propia
+w	5e32b3d4	Sugerencias
 w	d89f2b16	Tiempo
 w	8e844f48	Ahora
 w	f385d294	En el BIOS
@@ -1178,6 +1214,35 @@ w	5f11b887	no se conservaron las listas de efectos originales
 w	1a79d826	Graves aparte
 w	7c83b011	Los graves por debajo del corte y todo lo demás se comprimen por separado: un bombo no baja la voz ni los agudos
 w	4fbcff2c	Hz
+f	abd087d5	 bits por canal
+f	b4501cda	Este modo tiene su propio perfil: el elegido en el modo estándar no actúa aquí
+f	daa51691	. Sin perfil, Windows gestiona el color por sí mismo
+f	45b5f982	Windows no aceptó el perfil (0x
+f	eca565d8	Windows no quitó el perfil (0x
+f	f2d02e44	Windows no instaló el perfil (
+f	3668d391	pantalla no encontrada
+f	15d8d1d9	Windows no cambió la gestión automática del color (
+f	0e6c523d	 · si los colores se ven mal (un tono rojo o rosa), pon el formato RGB en el panel de la tarjeta gráfica
+f	0c7e4d55	el monitor no responde por DDC/CI (se puede activar en el menú del monitor)
+f	feabe938	Windows no deja cambiar el brillo de esta pantalla
+f	2d6be3cd	Windows no cambió las pantallas (
+f	107263a6	Windows no aceptó la disposición (
+f	d4efa9f1	Pantalla no encontrada
+f	313ff57e	monitor no encontrado
+f	26d1e506	Juegos nuevos → 
+f	983665bd	 · 3D V-Cache en 
+f	246ca130	Más núcleos de los que tiene un chip: mejor dejarlo en todos
+f	1daa9627	Ocupó el procesador mientras estaba en pantalla: parece un juego
+f	0f59d00f	Ocupa el procesador en segundo plano
+f	34dc9adc	 % del procesador, 
+f	2753f5ec	Juego de un lanzador
+f	68c1ca9c	Juego de Steam
+f	b59396c9	Juego de Epic
+f	03a9213d	Juego de Xbox
+f	6809752a	Juego de Riot
+f	608497d6	Juego de EA
+f	3b83e11f	Juego de GOG
+f	f76c4fea	Juego de Ubisoft
 f	849d8aad	Se mantiene sobre los planes basados en Equilibrado: 
 f	ed7a5eaa	sin tope de frecuencia, preferencia de energía 
 f	056be074	tope de frecuencia 

@@ -20,6 +20,7 @@ namespace RedTune
 
         public StartupPage()
         {
+            PageGroups.AddTabs(this, "startup");
             head = Row("Что запускается вместе с Windows", "Выключенное остаётся в списке — его можно включить обратно. То же видно в «Диспетчере задач» → «Автозагрузка»", folder, refresh);
             refresh.Click += (s, e) => Reload();
             folder.Click += (s, e) => { try { Process.Start("explorer.exe", "\"" + Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\""); } catch { } };

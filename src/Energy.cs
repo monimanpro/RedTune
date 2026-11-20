@@ -51,6 +51,34 @@ namespace RedTune
             throw new InvalidOperationException("Неизвестный режим батареи");
         }
 
+        // --battery-check <file>: what the firmware says of the charge mode (raw status and its bits), and what Windows says
+        // of the battery: the charge, mains or not, charging or not, the rate. Reads only.
+        public static string BatteryReport()
+        {
+            var sb = new System.Text.StringBuilder();
+            try
+            {
+                uint raw = Send(BatteryCode, 0xFF), s = Swap(raw);
+                sb.AppendLine("firmware status 0x" + raw.ToString("X8") + " (swapped 0x" + s.ToString("X8") + "): bit17 " + Bit(s, 17) + ", bit26 " + Bit(s, 26) + ", bit29 " + Bit(s, 29) + " -> mode " + GetBattery());
+            }
+            catch (Exception ex) { sb.AppendLine("firmware: " + ex.Message); }
+            try { sb.AppendLine("night charge: " + GetNightCharge()); } catch (Exception ex) { sb.AppendLine("night charge: " + ex.Message); }
+            try
+            {
+                using (var q = new System.Management.ManagementObjectSearcher(@"root\WMI", "SELECT * FROM BatteryStatus"))
+                    foreach (System.Management.ManagementObject o in q.Get())
+                        using (o) sb.AppendLine("battery: power online " + o["PowerOnline"] + ", charging " + o["Charging"] + ", discharging " + o["Discharging"] + ", rate " + o["ChargeRate"] + " mW, discharge rate " + o["DischargeRate"] + " mW, remaining " + o["RemainingCapacity"] + " mWh");
+                using (var q = new System.Management.ManagementObjectSearcher(@"root\WMI", "SELECT * FROM BatteryFullChargedCapacity"))
+                    foreach (System.Management.ManagementObject o in q.Get()) using (o) sb.AppendLine("full charged capacity " + o["FullChargedCapacity"] + " mWh");
+                using (var q = new System.Management.ManagementObjectSearcher("SELECT EstimatedChargeRemaining, BatteryStatus FROM Win32_Battery"))
+                    foreach (System.Management.ManagementObject o in q.Get()) using (o) sb.AppendLine("Windows: " + o["EstimatedChargeRemaining"] + " %, status " + o["BatteryStatus"] + " (1 discharging, 2 on mains)");
+            }
+            catch (Exception ex) { sb.AppendLine("battery: " + ex.Message); }
+            var reg = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Lenovo\VantageService\AddinData\IdeaNotebookAddin", "BatteryChargeMode", null);
+            sb.AppendLine("Lenovo Vantage's note: " + (reg ?? "none"));
+            return sb.ToString();
+        }
+
         public static void SetBattery(BatteryMode mode)
         {
             var last = GetBattery();

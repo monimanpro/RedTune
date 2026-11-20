@@ -705,7 +705,7 @@ w	167024ca	Những gì khởi động cùng Windows
 w	0fc63dc9	Các mục đã tắt vẫn nằm trong danh sách và có thể bật lại. Task Manager → Startup hiển thị cùng nội dung
 w	5ff6d3cd	Không đọc được danh sách
 w	dafca83c	Không có chương trình nào khởi động cùng Windows
-w	e4979dda	Chương trình
+w	e4979dda	Ứng dụng
 w	997be602	Tác vụ đã lên lịch
 w	5cf7bf0f	Chạy khi đăng nhập hoặc khi Windows khởi động
 w	2bd8d86d	Các tác vụ của Microsoft bị ẩn. Tác vụ đã tắt vẫn còn; tác vụ mà chương trình không còn nữa có thể xóa trong «…»
@@ -771,6 +771,42 @@ w	8a952c83	để yên, Windows chọn nhân
 w	33fc6456	mọi nhân (Windows quyết định)
 w	d1699cbd	Game Steam
 w	975c0cc6	Game Epic
+w	76a2b5c4	Màn hình
+w	34d5eb3a	Chế độ màn hình
+w	44b8b052	Như Win+P
+w	460d52a2	Chỉ laptop
+w	8a3403f9	Nhân bản
+w	f70933c2	Mở rộng
+w	e20ca349	Chỉ màn hình thứ hai
+w	af3a252f	Độ sáng
+w	36a09770	Như các phím độ sáng
+w	120d95e6	Qua DDC/CI, như các nút trên chính màn hình
+w	f5cf7a96	Màn hình này: thanh tác vụ có đồng hồ và cửa sổ mới nằm ở đây
+w	b22338eb	Thanh tác vụ có đồng hồ và cửa sổ mới sẽ chuyển sang màn hình này
+w	d0b521e4	Tần số quét theo nguồn điện
+w	a0b6b1ed	Tần số cao khi cắm sạc, thấp khi dùng pin: màn hình tốn ít điện hơn khi laptop không sạc
+w	40c4f40e	Cắm sạc · dùng pin
+w	2a633911	Tự đổi khi cắm hoặc rút sạc
+w	38161845	Windows không cho biết độ sáng của màn hình này
+w	321c82a8	Màn hình không phản hồi qua DDC/CI: có thể bật trong menu của màn hình
+w	ee332c07	Màn hình laptop
+w	4190f301	HDR
+w	30afc93a	Màu tín hiệu
+w	b7334dcf	Hồ sơ màu
+w	b00e01a0	Quản lý màu tự động
+w	3f6e9351	Đã tắt và ghi nhớ cho màn hình này: nếu Windows tự bật, Red Tune sẽ tắt lại
+w	17ce92cb	Windows tự giữ màu chính xác (sRGB). Khi tắt, màn hình hiển thị chế độ màu của hồ sơ đã chọn
+w	0111073b	Khi quản lý tự động, mọi hồ sơ của tấm nền cho cùng một hình. Để dùng chế độ Lenovo (DCI-P3, sRGB…) hãy tắt nó ở dưới
+w	8c8edf7d	Không có hồ sơ
+w	edb5d8e2	Hồ sơ của tấm nền laptop
+w	1ebfdff8	Hồ sơ này được đo trên màn hình laptop: không hợp với màn hình rời và làm sai màu. Tốt hơn là «Không có hồ sơ» hoặc hồ sơ của chính màn hình đó
+w	95cef88e	Chế độ HDR
+w	46755edd	Quản lý màu tự động của Windows
+w	53df5793	Chế độ màu tiêu chuẩn
+w	6ae379af	Lenovo · toàn bộ gam màu tấm nền
+w	e8905514	Lenovo · mặc định nhà máy
+w	5cd2d56a	Game trong thư mục Steam, Epic, Xbox, EA, Ubisoft, GOG và Riot cùng những gì launcher khởi chạy được đưa thẳng lên chip này, kể cả khi không có quy tắc riêng
+w	5e32b3d4	Gợi ý
 w	d89f2b16	Timing
 w	8e844f48	Hiện tại
 w	f385d294	Trong BIOS
@@ -1178,6 +1214,35 @@ w	5f11b887	danh sách hiệu ứng gốc không được giữ lại
 w	1a79d826	Âm trầm riêng
 w	7c83b011	Âm trầm dưới điểm chia và phần còn lại được nén riêng: tiếng trống kick không kéo giọng và âm cao xuống
 w	4fbcff2c	Hz
+f	abd087d5	 bit mỗi kênh
+f	b4501cda	Chế độ này có hồ sơ riêng: hồ sơ chọn ở chế độ tiêu chuẩn không có tác dụng ở đây
+f	daa51691	. Khi không có hồ sơ, Windows tự quản lý màu
+f	45b5f982	Windows không nhận hồ sơ (0x
+f	eca565d8	Windows không gỡ hồ sơ (0x
+f	f2d02e44	Windows không cài hồ sơ (
+f	3668d391	không tìm thấy màn hình
+f	15d8d1d9	Windows không chuyển quản lý màu tự động (
+f	0e6c523d	 · nếu màu bị sai (ám đỏ hoặc hồng), hãy chọn định dạng RGB trong bảng điều khiển card đồ họa
+f	0c7e4d55	màn hình không phản hồi qua DDC/CI (có thể bật trong menu của màn hình)
+f	feabe938	Windows không cho đổi độ sáng của màn hình này
+f	2d6be3cd	Windows không chuyển màn hình (
+f	107263a6	Windows không nhận cách sắp xếp (
+f	d4efa9f1	Không tìm thấy màn hình
+f	313ff57e	không tìm thấy màn hình
+f	26d1e506	Game mới → 
+f	983665bd	 · 3D V-Cache trên 
+f	246ca130	Dùng nhiều nhân hơn một chip có: tốt hơn nên để trên tất cả
+f	1daa9627	Chiếm bộ xử lý khi đang hiện trên màn hình: có vẻ là game
+f	0f59d00f	Chiếm bộ xử lý ở chế độ nền
+f	34dc9adc	 % bộ xử lý, 
+f	2753f5ec	Game từ launcher
+f	68c1ca9c	Game Steam
+f	b59396c9	Game Epic
+f	03a9213d	Game Xbox
+f	6809752a	Game Riot
+f	608497d6	Game EA
+f	3b83e11f	Game GOG
+f	f76c4fea	Game Ubisoft
 f	849d8aad	Giữ trên các gói nguồn dựa trên Cân bằng: 
 f	ed7a5eaa	không có trần xung nhịp, ưu tiên năng lượng 
 f	056be074	trần xung nhịp 

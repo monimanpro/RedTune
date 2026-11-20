@@ -705,7 +705,7 @@ w	167024ca	随 Windows 启动的项目
 w	0fc63dc9	已关闭的项目仍保留在列表中，可重新开启。任务管理器 → 启动 显示的内容相同
 w	5ff6d3cd	无法读取列表
 w	dafca83c	没有程序随 Windows 启动
-w	e4979dda	程序
+w	e4979dda	应用
 w	997be602	计划任务
 w	5cf7bf0f	在登录或 Windows 启动时运行
 w	2bd8d86d	Microsoft 的任务已隐藏。已关闭的任务会保留；程序已不存在的任务可在«…»中删除
@@ -771,6 +771,42 @@ w	8a952c83	不处理，由 Windows 选择核心
 w	33fc6456	所有核心（由 Windows 决定）
 w	d1699cbd	Steam 游戏
 w	975c0cc6	Epic 游戏
+w	76a2b5c4	显示
+w	34d5eb3a	屏幕模式
+w	44b8b052	同 Win+P
+w	460d52a2	仅笔记本电脑
+w	8a3403f9	复制
+w	f70933c2	扩展
+w	e20ca349	仅第二屏幕
+w	af3a252f	亮度
+w	36a09770	同亮度键
+w	120d95e6	通过 DDC/CI，与显示器自身的按键相同
+w	f5cf7a96	就是这个：带时钟的任务栏和新窗口都在它上面
+w	b22338eb	带时钟的任务栏和新窗口会移到这个屏幕
+w	d0b521e4	按电源切换刷新率
+w	a0b6b1ed	接电源时高刷新率，用电池时低刷新率：笔记本电脑不充电时屏幕更省电
+w	40c4f40e	接电源 · 用电池
+w	2a633911	插上或拔下充电器时自动切换
+w	38161845	Windows 不提供此屏幕的亮度
+w	321c82a8	显示器未通过 DDC/CI 响应：可在显示器菜单中开启
+w	ee332c07	笔记本电脑屏幕
+w	4190f301	HDR
+w	30afc93a	信号颜色
+w	b7334dcf	颜色配置文件
+w	b00e01a0	自动颜色管理
+w	3f6e9351	已关闭并为此显示器记住：如果 Windows 自行开启，Red Tune 会再次关闭
+w	17ce92cb	Windows 自行保持颜色准确（sRGB）。关闭时，屏幕显示所选配置文件的颜色模式
+w	0111073b	启用自动管理时，面板的所有配置文件显示效果相同。要使用 Lenovo 模式（DCI-P3、sRGB…），请在下方关闭它
+w	8c8edf7d	无配置文件
+w	edb5d8e2	笔记本电脑面板的配置文件
+w	1ebfdff8	此配置文件是在笔记本电脑屏幕上测得的：不适合显示器，会使颜色失真。最好选「无配置文件」或显示器自己的配置文件
+w	95cef88e	HDR 模式
+w	46755edd	Windows 自动颜色管理
+w	53df5793	标准颜色模式
+w	6ae379af	Lenovo · 面板全色域
+w	e8905514	Lenovo · 出厂
+w	5cd2d56a	Steam、Epic、Xbox、EA、Ubisoft、GOG 和 Riot 文件夹中的游戏以及启动器启动的程序直接放到这个芯片上，即使没有单独的规则
+w	5e32b3d4	建议
 w	d89f2b16	时序
 w	8e844f48	当前
 w	f385d294	BIOS 中
@@ -1178,6 +1214,35 @@ w	5f11b887	未保留原始效果列表
 w	1a79d826	低音单独处理
 w	7c83b011	分界以下的低音与其余部分分别压缩：底鼓不会把人声和高音压下去
 w	4fbcff2c	Hz
+f	abd087d5	 位/通道
+f	b4501cda	此模式有自己的配置文件：在标准模式下选择的配置文件在这里不起作用
+f	daa51691	。没有配置文件时，Windows 会自行管理颜色
+f	45b5f982	Windows 未接受配置文件（0x
+f	eca565d8	Windows 未移除配置文件（0x
+f	f2d02e44	Windows 未安装配置文件（
+f	3668d391	未找到屏幕
+f	15d8d1d9	Windows 未切换自动颜色管理（
+f	0e6c523d	 · 如果颜色不对（偏红或偏粉），请在显卡控制面板中设为 RGB 格式
+f	0c7e4d55	显示器未通过 DDC/CI 响应（可在显示器菜单中开启）
+f	feabe938	Windows 不允许更改此屏幕的亮度
+f	2d6be3cd	Windows 未切换屏幕（
+f	107263a6	Windows 未接受排列（
+f	d4efa9f1	未找到屏幕
+f	313ff57e	未找到显示器
+f	26d1e506	新游戏 → 
+f	983665bd	 · 3D V-Cache 在 
+f	246ca130	占用的核心比一个芯片上的还多：最好留在全部核心上
+f	1daa9627	在屏幕前台时占用处理器：看起来像游戏
+f	0f59d00f	在后台占用处理器
+f	34dc9adc	 % 处理器， 
+f	2753f5ec	启动器中的游戏
+f	68c1ca9c	Steam 游戏
+f	b59396c9	Epic 游戏
+f	03a9213d	Xbox 游戏
+f	6809752a	Riot 游戏
+f	608497d6	EA 游戏
+f	3b83e11f	GOG 游戏
+f	f76c4fea	Ubisoft 游戏
 f	849d8aad	在基于“平衡”的计划之上保持： 
 f	ed7a5eaa	无频率上限，能耗偏好 
 f	056be074	频率上限 

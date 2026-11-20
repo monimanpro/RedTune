@@ -11,13 +11,12 @@ namespace RedTune
     class DevicePage : Page
     {
         readonly List<Action> refreshers = new List<Action>();
-        readonly DropButton resBtn = new DropButton(), hzBtn = new DropButton(), dpiBtn = new DropButton();
-        readonly Row hdrRow, lightRow;
-        List<DisplayMode> modes = new List<DisplayMode>();
+        readonly Row lightRow;
         bool loading;
 
         public DevicePage(Settings settings)
         {
+            PageGroups.AddTabs(this, "device");
             Section("Батарея");
             var battery = new Segmented("Консервация", "Обычный", "Быстрый");
             var batRow = Row("Режим зарядки", "Консервация держит заряд около 80 % и бережёт батарею", battery);
@@ -69,28 +68,7 @@ namespace RedTune
                 Relayout();
             }, gpuRow));
 
-            Section("Экран");
-            var resRow = Row("Разрешение", null, resBtn);
-            var hzRow = Row("Частота обновления", null, hzBtn);
-            var dpiRow = Row("Масштаб", "Встроенный экран", dpiBtn);
-            resBtn.Changed += (s, e) => SetMode(resRow, true);
-            hzBtn.Changed += (s, e) => SetMode(hzRow, false);
-            dpiBtn.Changed += (s, e) => { if (loading) return; var v = int.Parse(dpiBtn.Items[dpiBtn.Index].TrimEnd('%', ' ')); Run(dpiRow, "Встроенный экран", () => Display.SetDpi(v)); };
-            refreshers.Add(LoadDisplay);
-            var hdr = new Toggle();
-            hdrRow = Row("HDR", null, hdr);
-            hdr.CheckedChanged += (s, e) => { if (!loading) Run(hdrRow, null, () => Display.SetHdr(hdr.Checked)); };
-            refreshers.Add(() => Read(() => Display.Hdr(), v => { hdrRow.Visible = v != null; if (v != null) hdr.Set(v.Value); Relayout(); }, hdrRow));
-            BindToggle("Over Drive", "Быстрее отклик матрицы", () => Lenovo.GameZoneGet("GetODStatus") == 1, v => Lenovo.GameZoneSet("SetODStatus", v ? 1 : 0));
-            // 18.11: one screen brightness for all power plans (BrightnessSync): a setting of the program, kept at once.
-            // It stood on the power page first; the user moved it here, to the screen.
-            var bright = new Toggle(); bright.Set(settings.SyncBrightness);
-            Row("Одна яркость для всех схем питания", "Яркость экрана записывается во все схемы Windows при каждом изменении: при смене схемы экран не меняет яркость", bright);
-            bright.CheckedChanged += (s, e) => { settings.SyncBrightness = bright.Checked; Store.SaveSettings(settings); BrightnessSync.Init(settings); };
-            refreshers.Add(() => bright.Set(settings.SyncBrightness));
-            var off = new FlatButton("Выключить");
-            Row("Выключить дисплеи", "Экраны гаснут, ноутбук работает и не засыпает. Мышь или клавиша включают их", off);
-            off.Click += (s, e) => Display.MonitorsOff();
+            // 20.11: the screen («Экран») is a section of its own now, «Дисплей» (DisplayPage)
 
             Section("Клавиатура и ввод");
             var light = new Segmented("Выкл", "Низкая", "Высокая");
@@ -137,43 +115,6 @@ namespace RedTune
         {
             seg.Changed += (s, e) => { if (!loading) { int i = seg.Selected; Run(row, sub, () => set(i)); } };
             refreshers.Add(() => Read(get, i => { seg.Selected = i; row.Visible = i >= 0; Relayout(); }, row));
-        }
-
-        void LoadDisplay()
-        {
-            Read(() =>
-            {
-                var cur = Display.Current(); var all = Display.Modes(); int dpi; var dpis = Display.DpiOptions(out dpi);
-                return Tuple.Create(cur, all, dpis, dpi);
-            }, t =>
-            {
-                modes = t.Item2;
-                var cur = t.Item1;
-                if (cur == null) return;
-                var res = modes.Select(m => m.Width + " × " + m.Height).Distinct().ToList();
-                if (!res.Contains(cur.Width + " × " + cur.Height)) res.Insert(0, cur.Width + " × " + cur.Height);
-                resBtn.Set(res.ToArray(), res.IndexOf(cur.Width + " × " + cur.Height));
-                var hz = modes.Where(m => m.Width == cur.Width && m.Height == cur.Height).Select(m => m.Hz).Distinct().OrderBy(x => x).ToList();
-                if (!hz.Contains(cur.Hz)) hz.Add(cur.Hz);
-                hzBtn.Set(hz.Select(h => h + " Hz").ToArray(), hz.IndexOf(cur.Hz));
-                dpiBtn.Set(t.Item3.Select(p => p + " %").ToArray(), Array.IndexOf(t.Item3, t.Item4));
-            }, resBtn.Parent as Row);
-        }
-
-        void SetMode(Row row, bool resolutionChanged)
-        {
-            if (loading) return;
-            var r = resBtn.Items[resBtn.Index].Split('×').Select(x => int.Parse(x.Trim())).ToArray();
-            int hz;
-            if (resolutionChanged)
-                hz = modes.Where(m => m.Width == r[0] && m.Height == r[1]).Select(m => m.Hz).DefaultIfEmpty(60).Max();
-            else hz = int.Parse(hzBtn.Items[hzBtn.Index].Replace(" Hz", ""));
-            Task.Run(() =>
-            {
-                string err = null;
-                try { Display.SetMode(r[0], r[1], hz); } catch (Exception ex) { err = ex.Message; }
-                try { BeginInvoke((Action)(() => { row.SetSub(err != null ? "Не удалось: " + err : null); LoadDisplay(); })); } catch { }
-            });
         }
     }
 }

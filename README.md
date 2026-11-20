@@ -1,6 +1,6 @@
 # Red Tune
 
-A control panel for AMD Ryzen laptops: power limits and presets, fan curves, a per-core voltage curve with an automatic tune, graphics card tuning, a system-wide sound effect, memory timings, program-to-chiplet pinning, startup items and clean-up — in one program, with one look.
+A control panel for AMD Ryzen laptops: power limits and presets, fan curves, a per-core voltage curve with an automatic tune, graphics card tuning, a system-wide sound effect, display settings for every screen, memory timings, program-to-chiplet pinning, startup items and clean-up — in one program, with one look.
 
 Red Tune reads the hardware when it starts and shows only the pages that fit the machine. It is aimed at laptops with Ryzen 5000 to 9000 series processors of any brand; desktop PCs with a Ryzen processor run it in a generic mode.
 
@@ -12,7 +12,7 @@ Red Tune reads the hardware when it starts and shows only the pages that fit the
 Load, clocks, temperatures, fan speeds and power («now / limit») of the processor, the graphics card and memory; a card per drive; the power mode switch.
 
 ### Power
-Presets of your own power mode, each holding everything below. The page has five tabs.
+Presets of your own power mode, each holding everything below, with step back and forward (Ctrl+Z / Ctrl+Y). A press on a slider's track puts the pointer onto its knob, and the drag goes from there. The page has five tabs.
 
 - **Processor** — power limits (sustained, short, peak), temperature limit, current limits. On laptops whose firmware offers a tuning interface the limits go through it; elsewhere they are written straight to the processor's management unit (PPT, TDC, EDC, or STAPM / fast / slow on mobile chips).
 - **Graphics card** — the card's power and temperature limits where the firmware exposes them, and which graphics preset goes with the power preset.
@@ -37,6 +37,16 @@ A sound effect of Red Tune's own that Windows runs for every program on the outp
 - **Limiter** — a look-ahead limiter that measures the true peak of the wave, so the output never passes the ceiling and does not rasp.
 - Presets, settings per device, step back and forward, a level meter, and a switch for a laptop maker's own sound effects that would otherwise add to Red Tune's.
 
+### Display
+A tab per screen, the laptop's own and every monitor; the settings above the tabs are for all of them.
+
+- **Brightness** — the built-in screen through Windows, an external monitor through DDC/CI (as its own buttons do).
+- **Resolution, refresh rate, scale** — a monitor's «60 Hz» that really runs at 59.95 is shown and set as 60.
+- **Colour profile** — the profiles Windows applies to the screen, including the ones a laptop maker measured for its panel (sRGB, DCI-P3, Display P3 …); a profile made for another screen is flagged. Profiles can be added from a file.
+- **HDR** and **automatic colour management** told apart. Windows switches automatic colour management on by itself for 10-bit screens; it maps everything through what the monitor reports of its colours, and a monitor that reports them wrongly gets a colour cast. Turned off on the page, it is kept off for that monitor on every cable.
+- **Signal** — what goes down the cable: RGB or YCbCr and the bits per channel.
+- **Main monitor**, the screen mode of Win+P, the panel's overdrive on supported laptops, the built-in screen's refresh rate following the power source (high on mains, low on battery), one brightness for all power plans, and the displays off (Red Tune wakes them at the first key or mouse move).
+
 ### Memory
 Live timings and clocks, profiles, a memory test, and writing the memory speed and timings on machines whose BIOS exposes AMD's overclocking interface. Red Tune works out by itself what a machine allows, in three levels:
 
@@ -49,19 +59,14 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 - **Files on disk** — measures, then deletes only what you tick: temporary files, the Recycle Bin, update and browser caches, error reports, thumbnail and shader caches, crash dumps. Personal folders are never looked at.
 - **Removing programs** — runs the program's own uninstaller, then finds what it left behind (folders, registry keys, shortcuts, startup entries). Files go to the Recycle Bin; registry keys are exported before they are deleted.
 
-### Device (laptops with a supported firmware interface)
-- **Lenovo** — keyboard backlight, charging mode, USB power while asleep, the graphics card's working mode, display resolution, refresh rate, scale and HDR, one brightness for all power plans, and the Fn keys.
-- **ASUS** — the performance mode (quiet, balanced, performance), the battery's charge limit, the keyboard backlight, the Fn lock and the fan speeds, each only where the laptop's firmware has it. Written from the report of one model (Vivobook Pro 14 OLED M3401) and not yet tried on a real ASUS laptop.
+### Apps
+- **Distribution** (processors with two chiplets) — pins programs to a chiplet by folder or process name: games on one, the background on the other. On an X3D processor the chiplet with 3D V-Cache is the game one. Games from the Steam, Epic, Xbox, EA, Ubisoft, GOG and Riot folders, and whatever a launcher starts outside its own folder, go to it without a rule of their own. A program without a rule that keeps the processor busy for a minute becomes a suggestion: the game chiplet if it was busy while on screen, the background one if not, all cores if it uses more than one chiplet has; one click takes it.
+- **Startup** — everything that starts with Windows in one list: Run keys, startup folders, scheduled tasks, packaged apps.
 
-### Distribution (processors with two chiplets)
-Pins programs to a chiplet by folder or process name: games on one, the background on the other.
-
-### Startup
-Everything that starts with Windows in one list: Run keys, startup folders, scheduled tasks, packaged apps.
-
-### Components and Settings
+### Settings
+- **General** — language, interface scale, start with Windows, close to the tray, expert functions; what the mini panel shows; notifications; the overlay.
+- **Device** (laptops with a supported firmware interface) — **Lenovo**: keyboard backlight, charging mode, USB power while asleep, the graphics card's working mode and the Fn keys. **ASUS**: the performance mode (quiet, balanced, performance), the battery's charge limit, the keyboard backlight, the Fn lock and the fan speeds, each only where the laptop's firmware has it. Written from the report of one model (Vivobook Pro 14 OLED M3401) and not yet tried on a real ASUS laptop.
 - **Components** — what Red Tune found on this machine, what each part needs, and a system report you can copy when asking for a model to be supported.
-- **Settings** — language, interface scale, start with Windows, close to the tray, expert functions; what the mini panel shows; notifications; the overlay.
 
 ### Around the window
 - **Mini panel** — a click on the tray icon opens small glass blocks: power mode, power preset, curve, graphics preset, output device, overlay, memory clean-up, displays off.

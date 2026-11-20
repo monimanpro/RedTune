@@ -705,7 +705,7 @@ w	167024ca	Yang mulai bersama Windows
 w	0fc63dc9	Item yang dimatikan tetap ada di daftar dan bisa dinyalakan lagi. Pengelola Tugas → Startup menampilkan hal yang sama
 w	5ff6d3cd	Daftar tidak dapat dibaca
 w	dafca83c	Tidak ada program yang mulai bersama Windows
-w	e4979dda	Program
+w	e4979dda	Aplikasi
 w	997be602	Tugas terjadwal
 w	5cf7bf0f	Mulai saat masuk atau saat Windows mulai
 w	2bd8d86d	Tugas Microsoft disembunyikan. Tugas yang dimatikan tetap ada; tugas yang programnya sudah tidak ada bisa dihapus di «…»
@@ -771,6 +771,42 @@ w	8a952c83	biarkan, Windows memilih inti
 w	33fc6456	semua inti (Windows yang memutuskan)
 w	d1699cbd	Game Steam
 w	975c0cc6	Game Epic
+w	76a2b5c4	Layar
+w	34d5eb3a	Mode layar
+w	44b8b052	Seperti Win+P
+w	460d52a2	Hanya laptop
+w	8a3403f9	Duplikat
+w	f70933c2	Perluas
+w	e20ca349	Hanya layar kedua
+w	af3a252f	Kecerahan
+w	36a09770	Seperti tombol kecerahan
+w	120d95e6	Lewat DDC/CI, seperti tombol monitor itu sendiri
+w	f5cf7a96	Yang ini: bilah tugas dengan jam dan jendela baru ada di sini
+w	b22338eb	Bilah tugas dengan jam dan jendela baru pindah ke layar ini
+w	d0b521e4	Refresh rate menurut sumber daya
+w	a0b6b1ed	Rate tinggi saat dicolok, rendah saat baterai: layar lebih hemat saat laptop tidak diisi daya
+w	40c4f40e	Dicolok · baterai
+w	2a633911	Berubah sendiri saat pengisi daya dicolok atau dicabut
+w	38161845	Windows tidak memberikan kecerahan layar ini
+w	321c82a8	Monitor tidak menjawab lewat DDC/CI: bisa diaktifkan di menu monitor
+w	ee332c07	Layar laptop
+w	4190f301	HDR
+w	30afc93a	Warna sinyal
+w	b7334dcf	Profil warna
+w	b00e01a0	Manajemen warna otomatis
+w	3f6e9351	Mati dan diingat untuk monitor ini: jika Windows menyalakannya sendiri, Red Tune mematikannya lagi
+w	17ce92cb	Windows menjaga warna tetap akurat (sRGB) sendiri. Jika mati, layar menampilkan mode warna profil yang dipilih
+w	0111073b	Dengan manajemen otomatis, semua profil panel memberi gambar yang sama. Untuk mode Lenovo (DCI-P3, sRGB…) matikan di bawah
+w	8c8edf7d	Tanpa profil
+w	edb5d8e2	Profil panel laptop
+w	1ebfdff8	Profil ini diukur pada layar laptop: tidak cocok untuk monitor dan merusak warnanya. Lebih baik «Tanpa profil» atau profil monitor itu sendiri
+w	95cef88e	Mode HDR
+w	46755edd	Manajemen warna otomatis Windows
+w	53df5793	Mode warna standar
+w	6ae379af	Lenovo · gamut penuh panel
+w	e8905514	Lenovo · bawaan pabrik
+w	5cd2d56a	Game dari folder Steam, Epic, Xbox, EA, Ubisoft, GOG, dan Riot serta apa pun yang dijalankan launcher langsung ke chip ini, meski tanpa aturan sendiri
+w	5e32b3d4	Saran
 w	d89f2b16	Timing
 w	8e844f48	Sekarang
 w	f385d294	Di BIOS
@@ -1178,6 +1214,35 @@ w	5f11b887	daftar efek asli tidak tersimpan
 w	1a79d826	Bass terpisah
 w	7c83b011	Bass di bawah titik bagi dan sisanya dikompresi terpisah: kick drum tidak menurunkan vokal dan nada tinggi
 w	4fbcff2c	Hz
+f	abd087d5	 bit per kanal
+f	b4501cda	Mode ini punya profil sendiri: yang dipilih di mode standar tidak berlaku di sini
+f	daa51691	. Tanpa profil, Windows mengelola warna sendiri
+f	45b5f982	Windows tidak menerima profil (0x
+f	eca565d8	Windows tidak melepas profil (0x
+f	f2d02e44	Windows tidak memasang profil (
+f	3668d391	layar tidak ditemukan
+f	15d8d1d9	Windows tidak mengganti manajemen warna otomatis (
+f	0e6c523d	 · jika warna tampak salah (semburat merah atau merah muda), pilih format RGB di panel kartu grafis
+f	0c7e4d55	monitor tidak menjawab lewat DDC/CI (bisa diaktifkan di menu monitor)
+f	feabe938	Windows tidak mengizinkan kecerahan layar ini diubah
+f	2d6be3cd	Windows tidak mengganti layar (
+f	107263a6	Windows tidak menerima susunan (
+f	d4efa9f1	Layar tidak ditemukan
+f	313ff57e	monitor tidak ditemukan
+f	26d1e506	Game baru → 
+f	983665bd	 · 3D V-Cache di 
+f	246ca130	Memakai lebih banyak inti daripada satu chip: lebih baik dibiarkan di semua inti
+f	1daa9627	Membebani prosesor saat tampil di layar: tampaknya sebuah game
+f	0f59d00f	Membebani prosesor di latar belakang
+f	34dc9adc	 % prosesor, 
+f	2753f5ec	Game dari launcher
+f	68c1ca9c	Game Steam
+f	b59396c9	Game Epic
+f	03a9213d	Game Xbox
+f	6809752a	Game Riot
+f	608497d6	Game EA
+f	3b83e11f	Game GOG
+f	f76c4fea	Game Ubisoft
 f	849d8aad	Ditahan di atas paket berbasis Seimbang: 
 f	ed7a5eaa	tanpa batas atas frekuensi, preferensi energi 
 f	056be074	batas atas frekuensi 

@@ -705,7 +705,7 @@ w	167024ca	O que inicia com o Windows
 w	0fc63dc9	Itens desligados ficam na lista e podem ser religados. O Gerenciador de Tarefas → Inicializar mostra o mesmo
 w	5ff6d3cd	Não foi possível ler a lista
 w	dafca83c	Nenhum programa inicia com o Windows
-w	e4979dda	Programas
+w	e4979dda	Aplicativos
 w	997be602	Tarefas agendadas
 w	5cf7bf0f	Iniciam no logon ou quando o Windows inicia
 w	2bd8d86d	As tarefas da Microsoft ficam ocultas. Uma tarefa desligada permanece; uma tarefa cujo programa não existe mais pode ser excluída em «…»
@@ -771,6 +771,42 @@ w	8a952c83	deixar em paz, o Windows escolhe os núcleos
 w	33fc6456	todos os núcleos (o Windows decide)
 w	d1699cbd	Jogos da Steam
 w	975c0cc6	Jogos da Epic
+w	76a2b5c4	Tela
+w	34d5eb3a	Modo das telas
+w	44b8b052	Como Win+P
+w	460d52a2	Só o notebook
+w	8a3403f9	Duplicar
+w	f70933c2	Estender
+w	e20ca349	Só a segunda
+w	af3a252f	Brilho
+w	36a09770	Como as teclas de brilho
+w	120d95e6	Por DDC/CI, como os botões do próprio monitor
+w	f5cf7a96	Esta: a barra de tarefas com o relógio e as janelas novas ficam nela
+w	b22338eb	A barra de tarefas com o relógio e as janelas novas passam para esta tela
+w	d0b521e4	Taxa de atualização conforme a energia
+w	a0b6b1ed	Taxa alta na tomada, baixa na bateria: a tela gasta menos quando o notebook não está carregando
+w	40c4f40e	Na tomada · na bateria
+w	2a633911	Muda sozinha ao conectar e desconectar o carregador
+w	38161845	O Windows não informa o brilho desta tela
+w	321c82a8	O monitor não responde por DDC/CI: dá para ativar no menu do monitor
+w	ee332c07	Tela do notebook
+w	4190f301	HDR
+w	30afc93a	Cor do sinal
+w	b7334dcf	Perfil de cor
+w	b00e01a0	Gerenciamento automático de cores
+w	3f6e9351	Desligado e lembrado para este monitor: se o Windows ligar sozinho, o Red Tune desliga de novo
+w	17ce92cb	O Windows mantém as cores precisas (sRGB) sozinho. Desligado, a tela mostra o modo de cor do perfil escolhido
+w	0111073b	Com o gerenciamento automático, todos os perfis do painel dão a mesma imagem. Para um modo da Lenovo (DCI-P3, sRGB…) desligue-o abaixo
+w	8c8edf7d	Sem perfil
+w	edb5d8e2	Perfil do painel do notebook
+w	1ebfdff8	Este perfil foi medido na tela do notebook: não serve para o monitor e distorce as cores. Melhor «Sem perfil» ou o perfil do próprio monitor
+w	95cef88e	Modo HDR
+w	46755edd	Gerenciamento automático de cores do Windows
+w	53df5793	Modo de cor padrão
+w	6ae379af	Lenovo · gama completa do painel
+w	e8905514	Lenovo · de fábrica
+w	5cd2d56a	Jogos das pastas Steam, Epic, Xbox, EA, Ubisoft, GOG e Riot e o que os launchers iniciam vão direto para este chip, mesmo sem uma regra própria
+w	5e32b3d4	Sugestões
 w	d89f2b16	Timing
 w	8e844f48	Agora
 w	f385d294	No BIOS
@@ -1178,6 +1214,35 @@ w	5f11b887	as listas de efeitos originais não foram guardadas
 w	1a79d826	Graves à parte
 w	7c83b011	Os graves abaixo do corte e todo o resto são comprimidos separadamente: um bumbo não abaixa a voz nem os agudos
 w	4fbcff2c	Hz
+f	abd087d5	 bits por canal
+f	b4501cda	Este modo tem um perfil próprio: o escolhido no modo padrão não vale aqui
+f	daa51691	. Sem perfil, o Windows gerencia as cores sozinho
+f	45b5f982	O Windows não aceitou o perfil (0x
+f	eca565d8	O Windows não removeu o perfil (0x
+f	f2d02e44	O Windows não instalou o perfil (
+f	3668d391	tela não encontrada
+f	15d8d1d9	O Windows não alterou o gerenciamento automático de cores (
+f	0e6c523d	 · se as cores parecerem erradas (tom vermelho ou rosa), escolha o formato RGB no painel da placa de vídeo
+f	0c7e4d55	o monitor não responde por DDC/CI (dá para ativar no menu do monitor)
+f	feabe938	O Windows não deixa mudar o brilho desta tela
+f	2d6be3cd	O Windows não trocou as telas (
+f	107263a6	O Windows não aceitou a disposição (
+f	d4efa9f1	Tela não encontrada
+f	313ff57e	monitor não encontrado
+f	26d1e506	Jogos novos → 
+f	983665bd	 · 3D V-Cache no 
+f	246ca130	Mais núcleos do que um chip tem: melhor deixar em todos
+f	1daa9627	Ocupou o processador enquanto estava na tela: parece um jogo
+f	0f59d00f	Ocupa o processador em segundo plano
+f	34dc9adc	 % do processador, 
+f	2753f5ec	Jogo de um launcher
+f	68c1ca9c	Jogo da Steam
+f	b59396c9	Jogo da Epic
+f	03a9213d	Jogo do Xbox
+f	6809752a	Jogo da Riot
+f	608497d6	Jogo da EA
+f	3b83e11f	Jogo da GOG
+f	f76c4fea	Jogo da Ubisoft
 f	849d8aad	Mantido sobre os planos baseados em Equilibrado: 
 f	ed7a5eaa	sem teto de frequência, preferência de energia 
 f	056be074	teto de frequência 

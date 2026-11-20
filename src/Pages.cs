@@ -8,6 +8,56 @@ using System.Windows.Forms;
 
 namespace RedTune
 {
+    // 20.11 (the user's wishes): pages that left the menu and became tabs of another item, as «Автотюн» and «Сторож» are
+    // tabs of «Кривая»: «Устройство» and «Компоненты» under «Настройки»; «Распределение» and «Автозагрузка» under the new
+    // item «Программы». Each stays its own page with its own scrolling, the tabs on top of each switch between them, and
+    // the menu shows the item lit for all of them. A page this computer cannot run (Hw.PageFits) is not a tab; a group
+    // left with one page shows no tabs. The keys stay the same, so ShowPage("comp") from the home page still lands on its tab.
+    static class PageGroups
+    {
+        public static Action<string> Show; // MainForm's ShowPage; null in the off-screen renders
+
+        // the menu item a page is shown under
+        public static string Parent(string key)
+        {
+            switch (key)
+            {
+                case "tune": case "watch": return "curve";
+                case "device": case "comp": return "settings";
+                case "dist": case "startup": return "apps";
+                default: return key;
+            }
+        }
+
+        // the pages of a menu item that this computer runs, in the order of the tabs
+        public static string[] Keys(string parent)
+        {
+            var all = parent == "settings" ? new[] { "settings", "device", "comp" } : parent == "apps" ? new[] { "dist", "startup" } : new[] { parent };
+            return all.Where(Hw.PageFits).ToArray();
+        }
+
+        static string Name(string key)
+        {
+            switch (key)
+            {
+                case "settings": return "Основное";
+                case "device": return "Устройство";
+                case "comp": return "Компоненты";
+                case "dist": return "Распределение";
+                default: return "Автозагрузка";
+            }
+        }
+
+        public static void AddTabs(Page page, string key)
+        {
+            var keys = Keys(Parent(key));
+            if (keys.Length < 2) return;
+            var tabs = new PageTabs(Math.Max(0, Array.IndexOf(keys, key)), keys.Select(Name).ToArray());
+            tabs.Picked += i => { var h = Show; if (h != null) h(keys[i]); };
+            page.Add(tabs, 0);
+        }
+    }
+
     class PlaceholderPage : Page
     {
         public PlaceholderPage(string title, string stage, string what)
@@ -26,6 +76,7 @@ namespace RedTune
         public ComponentsPage(Settings s)
         {
             this.s = s;
+            PageGroups.AddTabs(this, "comp");
             // this computer and which sections fit it (Hw); the report goes to whoever adds support for another laptop
             Section("Это устройство");
             var copy = new FlatButton("Скопировать отчёт");
