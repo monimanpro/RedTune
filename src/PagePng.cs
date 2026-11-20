@@ -164,6 +164,7 @@ namespace RedTune
         // mouse messages Windows sends, on a window of its own with five bands of no gain. Changes nothing of the settings.
         public static void EqCheck(string file)
         {
+            Theme.WarpPointer = false; // the real pointer stays where it is
             var sb = new System.Text.StringBuilder();
             Func<int, int, IntPtr> at = (x, y) => (IntPtr)((y << 16) | (x & 0xFFFF));
             Action wait = () => { var until = DateTime.Now.AddMilliseconds(120); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(10); } };
@@ -184,9 +185,11 @@ namespace RedTune
 
                 // the fader of the third strip (1 kHz): a quarter down from the top is half the scale up, then all the way down
                 int x2 = q.StripX(2);
-                down(x2, top + (bottom - top) / 4); float g1 = p.Bands[2].Gain;
+                // (20.11: a press does not move the knob, the pointer goes onto it; the drag counts from where it was taken)
+                int y2 = top + (bottom - top) / 4;
+                down(x2, y2); float g0 = p.Bands[2].Gain; move(x2, y2 - (bottom - top) / 4); float g1 = p.Bands[2].Gain;
                 move(x2, bottom + 40); float g2 = p.Bands[2].Gain; up(x2, bottom + 40);
-                line(Math.Abs(g1 - 9f) < 0.3f && g2 == -18f && p.Bands[1].Gain == 0 && p.Bands[3].Gain == 0, "fader: a quarter from the top gives " + g1 + " dB (9 expected), below the bottom " + g2 + " dB (-18), the neighbours stay at 0");
+                line(g0 == 0 && Math.Abs(g1 - 9f) < 0.3f && g2 == -18f && p.Bands[1].Gain == 0 && p.Bands[3].Gain == 0, "fader: the press leaves it at " + g0 + " dB, a quarter of the travel up gives " + g1 + " dB (9 expected), far below " + g2 + " dB (-18), the neighbours stay at 0");
 
                 // a double click on it: no gain
                 down(x2, mid + 30); up(x2, mid + 30); SendMessage(q.Handle, 0x203, (IntPtr)1, at(x2, mid + 30)); up(x2, mid + 30);
@@ -207,6 +210,22 @@ namespace RedTune
                 int b3 = q.Order()[3];
                 line(p.Bands[b3].Gain == 1f, "wheel over a fader: two notches up give " + p.Bands[b3].Gain + " dB");
 
+                // 20.11: the pre-gain's strip left of the bands: its fader (±24 dB by half a dB), the points ride on the line
+                // it moves, a point dragged keeps its own gain, the wheel and a double click
+                int xm = q.MasterX; float k0 = q.Knob(2).Y;
+                int ym = top + (bottom - top) / 4; down(xm, ym); float m0 = p.Preamp;
+                move(xm, ym - (bottom - top) / 4); float m1 = p.Preamp; move(xm, bottom + 40); float m2 = p.Preamp; move(xm, ym + (bottom - top) / 8); float m3 = p.Preamp; up(xm, ym + (bottom - top) / 8);
+                float k1 = q.Knob(2).Y;
+                line(m0 == 0 && Math.Abs(m1 - 12f) < 0.6f && m2 == -24f && Math.Abs(m3 + 6f) < 0.6f && p.Bands.All(b => b.Gain == 0 || b == p.Bands[q.Order()[3]]),
+                    "pre-gain fader: the press leaves it at " + m0 + ", a quarter of the travel up " + m1 + " dB (12), far below " + m2 + " (-24), an eighth under where it was taken " + m3 + " (-6); the bands keep their gains");
+                line(k1 > k0 + 5, "the points ride on the line: the 1 kHz point went down " + (k1 - k0).ToString("0") + " px with the pre-gain at " + p.Preamp + " dB");
+                var kp = q.Knob(2); down((int)kp.X, (int)kp.Y); move((int)kp.X, (int)kp.Y - 1); up((int)kp.X, (int)kp.Y - 1);
+                line(Math.Abs(p.Bands[2].Gain) < 0.35f, "a point taken where it is drawn keeps its gain: " + p.Bands[2].Gain + " dB with the pre-gain at " + p.Preamp);
+                hover(xm, mid); SendMessage(q.Handle, 0x20A, (IntPtr)(120 << 16), at(0, 0)); float m4 = p.Preamp;
+                SendMessage(q.Handle, 0x203, (IntPtr)1, at(xm, mid)); up(xm, mid);
+                line(Math.Abs(m4 - m3 - 0.5f) < 0.01f && p.Preamp == 0, "pre-gain: the wheel " + m3 + " -> " + m4 + " dB, a double click -> " + p.Preamp);
+                p.Bands[2].Gain = 0;
+
                 // «+»: a sixth band, in the widest gap, with no gain
                 int xAdd = q.StripX(5); down(xAdd, mid); up(xAdd, mid);
                 line(p.Bands.Count == 6 && p.Bands[5].Gain == 0 && q.Order().Length == 6, "«+»: bands " + p.Bands.Count + ", the new one at " + (p.Bands.Count == 6 ? p.Bands[5].Freq + " Hz" : "?"));
@@ -221,7 +240,7 @@ namespace RedTune
                 q.Dim = true; float was = p.Bands[2].Gain; down(q.StripX(2), top + 10); move(q.StripX(2), top + 20); up(q.StripX(2), top + 20);
                 line(p.Bands[2].Gain == was, "equalizer switched off: a fader does not move");
                 sb.AppendLine("changes reported: " + changes);
-                using (var bmp = new Bitmap(q.Width, q.Height)) { q.Dim = false; q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size)); bmp.Save(System.IO.Path.ChangeExtension(file, ".png"), System.Drawing.Imaging.ImageFormat.Png); }
+                using (var bmp = new Bitmap(q.Width, q.Height)) { q.Dim = false; p.Preamp = -6; p.Bands[1].Gain = 6; q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size)); bmp.Save(System.IO.Path.ChangeExtension(file, ".png"), System.Drawing.Imaging.ImageFormat.Png); }
             }
             System.IO.File.WriteAllText(file, sb.ToString(), new System.Text.UTF8Encoding(true));
         }
@@ -230,11 +249,12 @@ namespace RedTune
         // driven by the mouse messages Windows sends, on a window of its own. Changes nothing of the settings.
         public static void CompCheck(string file)
         {
+            Theme.WarpPointer = false; // the real pointer stays where it is
             var sb = new System.Text.StringBuilder();
             Func<int, int, IntPtr> at = (x, y) => (IntPtr)((y << 16) | (x & 0xFFFF));
             Action wait = () => { var until = DateTime.Now.AddMilliseconds(120); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(10); } };
             Action<bool, string> line = (ok, text) => sb.AppendLine((ok ? "ok    " : "FAIL  ") + text);
-            using (var f = new Form { FormBorderStyle = FormBorderStyle.None, ShowInTaskbar = false, StartPosition = FormStartPosition.Manual, Location = new Point(-4000, -4000), ClientSize = new Size(Theme.S(1100), Theme.S(320)), BackColor = Theme.Window })
+            using (var f = new Form { FormBorderStyle = FormBorderStyle.None, ShowInTaskbar = false, StartPosition = FormStartPosition.Manual, Location = new Point(-4000, -4000), ClientSize = new Size(Theme.S(1100), Theme.S(420)), BackColor = Theme.Window })
             {
                 var q = new CompGraph { Location = new Point(0, 0), Width = Theme.S(1100) };
                 int changes = 0; q.Changed += (o, e) => changes++;
@@ -283,6 +303,16 @@ namespace RedTune
                 down(xa, dy); up(xa, dy); SendMessage(q.Handle, 0x203, (IntPtr)1, at(xa, dy)); up(xa, dy);
                 line(p.Attack == SoundParams.Start().Attack, "double click on the attack dial: " + p.Attack + " ms");
 
+                // 20.11: the wheel on a dial: one notch = one step of its scale; a smooth wheel's half notches make one step together
+                Action<int, int, int> wheel = (x, y, delta) => { SendMessage(q.Handle, 0x200, IntPtr.Zero, at(x, y)); SendMessage(q.Handle, 0x20A, (IntPtr)(delta << 16), at(0, 0)); };
+                p.Attack = 20; p.Release = 150; p.Ratio = 1.5f;
+                wheel(xa, dy, 120); float wa = p.Attack; wheel(dr.X, dr.Y, 120); float wr = p.Release;
+                var dWr = q.DialAt(4); float wq0 = p.Ratio; if (q.HasSixDials) wheel(dWr.X, dWr.Y, 120); float wq = p.Ratio;
+                wheel(xa, dy, 60); float wh1 = p.Attack; wheel(xa, dy, 60); float wh2 = p.Attack; wheel(xa, dy, -120); float wd = p.Attack;
+                line(wa == 21 && wr == 160 && (!q.HasSixDials || Math.Abs(wq - 1.6f) < 0.001f) && wh1 == 21 && wh2 == 22 && wd == 21,
+                    "wheel on the dials: attack 20 -> " + wa + " ms, release 150 -> " + wr + " ms, ratio " + wq0 + " -> " + wq + "; half a notch " + wh1 + ", the second half " + wh2 + ", a notch down " + wd);
+                p.Attack = 10; p.Release = 150; p.Ratio = 3;
+
                 // switched off: nothing moves
                 q.Dim = true; k = knob(CompGraph.Part.Thr); float was = p.Thr; down(k.X, k.Y); move(k.X - 80, k.Y); up(0, 0);
                 line(p.Thr == was, "compressor switched off: the threshold point does not move");
@@ -296,6 +326,17 @@ namespace RedTune
                 line(Math.Abs(c1 + 6) <= 0.5f && c2 == -12f, "limiter on, compressor off: the ceiling line dragged to -6 dB gives " + c1 + " dB; over the curve, far down, " + c2 + " dB (-12, the least)");
                 p.Limit = false; p.Ceil = -3f; down(hx, (int)q.Y(-3)); move(hx, (int)q.Y(-9)); up(0, 0);
                 line(p.Ceil == -3f, "limiter off: no ceiling line to take (" + p.Ceil + " dB stays)");
+                // 20.11: the ceiling's fader right of the monitor: the knob comes to the press, follows the mouse by half a dB,
+                // the wheel, a double click; still while the limiter is off
+                var cst = q.CeilStrip; int fx = cst.X + cst.Width / 2;
+                down(fx, q.CeilTop + 4); move(fx, q.CeilTop - 4); up(0, 0); float f0 = p.Ceil;
+                p.Limit = true;
+                int fm = (q.CeilTop + q.CeilBottom) / 2; down(fx, fm); float f1 = p.Ceil; move(fx, fm + (q.CeilBottom - q.CeilTop) / 4); float f3 = p.Ceil; move(fx, q.CeilBottom + 400); float f2 = p.Ceil; up(0, 0);
+                SendMessage(q.Handle, 0x200, IntPtr.Zero, at(fx, (int)q.CeilY(p.Ceil))); SendMessage(q.Handle, 0x20A, (IntPtr)(120 << 16), at(0, 0)); float f4 = p.Ceil;
+                { int fy = (int)q.CeilY(p.Ceil); SendMessage(q.Handle, 0x203, (IntPtr)1, at(fx, fy)); up(fx, fy); } float f5 = p.Ceil;
+                line(cst.Width > 0 && cst.X > q.History.Right && f0 == -3f && f1 == -3f && f2 == -12f && f3 == -6f && f4 == -11.5f && f5 == SoundParams.Start().Ceil,
+                    "ceiling fader right of the monitor: limiter off " + f0 + " stays; on: the press leaves it at " + f1 + " dB, a quarter of the travel down " + f3 + " (-6), far below " + f2 + " (-12), wheel up " + f4 + " (-11.5), double click " + f5);
+                p.Limit = false;
                 // 19.11, the bands: with three at work the picture shows the one the page picked, and only that band's settings move
                 q.Dim = false; p.Limit = false; p.Split = 250; p.Split2 = 4000; p.Parts[0].Thr = -20; p.Parts[1].Thr = -30; p.Parts[2].Thr = -40; q.Band = 2;
                 k = knob(CompGraph.Part.Thr); down(k.X, k.Y); move(k.X + (int)(10 * perDb), k.Y); up(0, 0);
@@ -351,7 +392,7 @@ namespace RedTune
                 line(q.HasBands && bcol.Right < q.Curve.X - Theme.S(40) && q.Panel.X > q.Curve.Right && q.History.X > q.Panel.Right && q.CountRect(2).Right <= bcol.Right && q.BandRect(2).Bottom <= bcol.Bottom && Math.Abs((q.CountRect(0).Y - Theme.S(26) - bcol.Y) - (bcol.Bottom - q.BandRect(2).Bottom)) <= 1, "the order across: the bands' column (" + bcol.X + ".." + bcol.Right + "), the curve (" + q.Curve.X + ".." + q.Curve.Right + "), the dials (" + q.Panel.X + ".." + q.Panel.Right + "), the monitor (" + q.History.X + ".." + q.History.Right + ")");
                 Func<Rectangle, Point> mid = r => new Point(r.X + r.Width / 2, r.Y + r.Height / 2);
                 var cnt2 = mid(q.CountRect(1)); down(cnt2.X, cnt2.Y); up(cnt2.X, cnt2.Y);
-                line(p.PartCount == 2 && p.Split == 250 && p.Split2 == 0 && q.Band == 0 && q.ByFreq, "«2» in the column: two bands, the middle (which was shown) gives way to the bass, the monitor turns to the bands");
+                line(p.PartCount == 2 && p.Split == 250 && p.Split2 == 0 && q.Band == 0 && !q.ByFreq, "«2» in the column: two bands, the middle (which was shown) gives way to the bass, the monitor stays over time (20.11)");
                 int afterMid = q.Band;
                 var pt = mid(q.BandRect(2)); down(pt.X, pt.Y); up(pt.X, pt.Y);
                 line(afterMid == 0 && q.Band == 2 && picked == 1 && q.BandRect(1).Height == 0 && Math.Abs(q.BandRect(2).Y - q.BandRect(0).Y - Theme.S(40)) <= 1, "two bands: two plates, one under another (the middle has none); the top's plate takes the top (reported " + picked + ")");
@@ -361,6 +402,11 @@ namespace RedTune
                 var cnt3 = mid(q.CountRect(2)); down(cnt3.X, cnt3.Y); up(cnt3.X, cnt3.Y); int n3 = p.PartCount; float s23 = p.Split2;
                 var cnt1 = mid(q.CountRect(0)); down(cnt1.X, cnt1.Y); up(cnt1.X, cnt1.Y);
                 line(n3 == 3 && s23 == 4000 && p.PartCount == 1 && p.Split == 0 && q.Band == 0, "«3»: three bands with the upper split back at " + s23 + " Hz; «1»: one band, the whole sound");
+                // 20.11: by frequencies the monitor stays so too, whatever is picked in the column
+                bool timeKept = !q.ByFreq; q.SetView(true);
+                down(cnt3.X, cnt3.Y); up(cnt3.X, cnt3.Y); var pMid = mid(q.BandRect(1)); down(pMid.X, pMid.Y); up(pMid.X, pMid.Y);
+                bool freqKept = q.ByFreq; int bandMid = q.Band; q.SetView(false); down(cnt1.X, cnt1.Y); up(cnt1.X, cnt1.Y);
+                line(timeKept && freqKept && bandMid == 1 && p.PartCount == 1, "picking in the column leaves the monitor as it was: over time after the picks above (" + timeKept + "), by frequencies after «3» and the middle (" + freqKept + ", band " + bandMid + ")");
                 SendMessage(q.Handle, 0x2A3, IntPtr.Zero, IntPtr.Zero); q.Settle();
                 line(q.BandRect(1).Height == 0 && q.BandRect(2).Height == 0 && Math.Abs((q.CountRect(0).Y - Theme.S(26) - bcol.Y) - (bcol.Bottom - q.BandRect(0).Bottom)) <= 1, "one band: one plate, the block again in the middle (top " + (q.CountRect(0).Y - Theme.S(26) - bcol.Y) + ", bottom " + (bcol.Bottom - q.BandRect(0).Bottom) + ")");
                 q.Dim = true; cnt3 = mid(q.CountRect(2)); down(cnt3.X, cnt3.Y); up(cnt3.X, cnt3.Y); line(p.PartCount == 1, "compressor switched off: the numbers do not work"); q.Dim = false;
@@ -404,6 +450,16 @@ namespace RedTune
                 int wide6 = q.Width; q.Width = Theme.S(700); bool one = q.HasBands && !q.HasSixDials && q.Panel.Width > 0 && q.DialCell(3).Width == 0; q.Width = wide6;
                 line(one && q.HasSixDials, "in a picture of 700 the bands' column stays and the dials are the three of before; the page then shows the three rows");
                 p.Split = 250; p.Split2 = 4000; q.SetView(false);
+                // 20.11: the compression over time is kept per band: a band picked shows its own last seconds at once
+                using (var hq = new CompGraph { Width = Theme.S(1100) })
+                {
+                    hq.P.Split = 250; hq.P.Split2 = 4000; hq.Band = 0;
+                    for (int kk = 0; kk < 20; kk++) { hq.FeedBands(new[] { -6f, -2f, -0.5f }, new[] { -10f, -20f, -30f }); hq.Feed(true, 0.5f, 0.3f, -6f, 0f, -10f); }
+                    float g0 = hq.GrAgo(0, 5), g1 = hq.GrAgo(1, 5), g2 = hq.GrAgo(2, 5);
+                    hq.FeedBands(null, null); hq.Feed(true, 0.5f, 0.5f, 0f, 0f, -10f); float g1now = hq.GrAgo(1, 0), g1before = hq.GrAgo(1, 1);
+                    line(g0 == -6f && g1 == -2f && g2 == -0.5f && g1now == 0 && g1before == -2f,
+                        "compression over time per band, while the bass was shown: bass " + g0 + ", middle " + g1 + ", top " + g2 + " dB kept apart; compressor off: " + g1now + " now, the middle's " + g1before + " before stays");
+                }
                 sb.AppendLine("changes reported: " + changes);
                 q.Dim = false; p.Limit = true; p.Ceil = -6f; p.Thr = -30; p.Ratio = 2; p.Makeup = 9; p.Parts[1].Ratio = 4; p.Parts[2].Ratio = 1.5f; q.Band = 1; q.Demo();
                 using (var bmp = new Bitmap(q.Width, q.Height)) { q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size)); bmp.Save(System.IO.Path.ChangeExtension(file, ".png"), System.Drawing.Imaging.ImageFormat.Png); }

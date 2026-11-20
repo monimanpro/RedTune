@@ -11,6 +11,25 @@ namespace RedTune
         public static float Scale = 1f;
         public static int S(float v) { return (int)Math.Round(v * Scale); }
 
+        // 20.11: whole wheel notches in what the mouse sent (120 = one notch). A smooth wheel or a touchpad sends a notch in
+        // several small parts; the parts are kept in acc until they make a notch. A turn the other way starts afresh.
+        // 20.11 (the user): a press on a fader's column does not move its knob, the mouse pointer goes onto the knob
+        // instead, ready to drag it. False in the checks, which must not move the real pointer. Returns whether it moved.
+        public static bool WarpPointer = true;
+        public static bool Warp(Control c, float x, float y)
+        {
+            if (!WarpPointer) return false;
+            try { Cursor.Position = c.PointToScreen(new Point((int)Math.Round(x), (int)Math.Round(y))); return true; } catch { return false; }
+        }
+
+        public static int WheelNotches(ref int acc, int delta)
+        {
+            if (acc != 0 && Math.Sign(acc) != Math.Sign(delta)) acc = 0;
+            acc += delta;
+            int n = acc / 120; acc -= n * 120;
+            return n;
+        }
+
         // 13.11 (Red Tune): near-neutral dark greys with a trace of warmth, off-white text and a red accent, cards drawn
         // as glass. The red is a little softer than a pure signal red: it fills toggles, sliders and whole buttons, and
         // at full saturation that much of it glares on a dark page. Red being the brand, "wrong" is orange (Danger).
@@ -645,7 +664,12 @@ namespace RedTune
         readonly Control owner;
         readonly Func<Rectangle> area; // the part of the owner to redraw; null = all of it
         readonly System.Diagnostics.Stopwatch clock = new System.Diagnostics.Stopwatch();
-        readonly Timer timer = new Timer { Interval = 15 };
+        // 20.11: the frames come from a pool timer as posted messages, each painted at once. A WinForms Timer is the
+        // last thing Windows hands out (after every paint), so beside the sound page's live pictures the slide got half
+        // its frames with gaps of 50-60 ms and looked slower than on the other pages (check: --toggle-frames).
+        readonly System.Threading.Timer timer;
+        volatile bool running;
+        int posted; // a frame is waiting in the queue: no second one (a busy window must not pile them up)
         float from, to, pos;
         bool target;
         const float Ms = 260f;
@@ -653,33 +677,44 @@ namespace RedTune
         public ToggleAnim(Control owner, bool on, Func<Rectangle> area = null)
         {
             this.owner = owner; this.area = area; target = on; pos = to = on ? 1f : 0f;
-            timer.Tick += (s, e) => Step();
+            timer = new System.Threading.Timer(_ => Post(), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
         }
+
+        void Post()
+        {
+            if (!running || System.Threading.Interlocked.Exchange(ref posted, 1) == 1) return;
+            try { owner.BeginInvoke((Action)(() => { posted = 0; if (running) Step(); })); }
+            catch { posted = 0; } // the window is gone or not made yet
+        }
+
+        void Start() { running = true; timer.Change(0, 15); }
+        void Stop() { running = false; timer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite); }
 
         public float Pos { get { return pos; } }
 
         // no move: a value that is loaded, not switched by hand
-        public void Snap(bool on) { timer.Stop(); target = on; pos = to = on ? 1f : 0f; }
+        public void Snap(bool on) { Stop(); target = on; pos = to = on ? 1f : 0f; }
 
         public void Go(bool on)
         {
             if (on == target) return;
             target = on; from = pos; to = on ? 1f : 0f;
             if (!owner.IsHandleCreated || !owner.Visible) { pos = to; return; }
-            clock.Restart(); timer.Start();
+            clock.Restart(); Start();
         }
 
         void Step()
         {
-            if (owner.IsDisposed) { timer.Stop(); return; }
+            if (owner.IsDisposed) { Stop(); return; }
             float t = Math.Min(1f, clock.ElapsedMilliseconds / (Ms * Math.Max(0.35f, Math.Abs(to - from))));
             float e = t < 0.5f ? 4f * t * t * t : 1f - (float)Math.Pow(-2f * t + 2f, 3) / 2f;
             pos = from + (to - from) * e;
-            if (t >= 1f) { pos = to; timer.Stop(); }
+            if (t >= 1f) { pos = to; Stop(); }
             if (area != null) owner.Invalidate(area()); else owner.Invalidate();
+            owner.Update(); // now, not when the queue is empty
         }
 
-        public void Dispose() { timer.Stop(); timer.Dispose(); }
+        public void Dispose() { Stop(); timer.Dispose(); }
     }
 
     // 13.11: a hint beside a control (the names of the folded side menu), made like the drop-downs: Windows 11's own

@@ -23,8 +23,8 @@ namespace RedTune
         readonly DropButton devBtn = new DropButton(), presetBtn = new DropButton();
         readonly FlatButton makeDefault = new FlatButton("Сделать основным"), savePreset = new FlatButton("Сохранить как…"), dropPreset = new FlatButton("Удалить"), remove = new FlatButton("Убрать");
         readonly Toggle onT = new Toggle(), eqT = new Toggle(), compT = new Toggle(), limT = new Toggle(), muteT = new Toggle(), nahimicT = new Toggle();
-        readonly Slider vol = new Slider(0, 100, 50, "%"), pre = new Slider(-24, 24, 0, "дБ"), thr = new Slider(-60, 0, -18, "дБ"), ratio = new Slider(10, 200, 30, ""),
-            mk = new Slider(-12, 24, 0, "дБ"), ceil = new Slider(-120, 0, -1, ""), split = new Slider(80, 600, 250, "Гц"), split2 = new Slider(1200, 12000, 4000, "Гц");
+        readonly Slider vol = new Slider(0, 100, 50, "%"), thr = new Slider(-60, 0, -18, "дБ"), ratio = new Slider(10, 200, 30, ""),
+            mk = new Slider(-12, 24, 0, "дБ"), split = new Slider(80, 600, 250, "Гц"), split2 = new Slider(1200, 12000, 4000, "Гц");
         // 19.11 (the user's wish): the compressor on the whole sound or in two or three bands, each with settings of its own.
         // band: which of SoundParams.Parts the sliders, the points and the dials show (0 the bass, 1 the middle, 2 the top)
         readonly Segmented partsSeg = new Segmented("Одна", "Две", "Три"), bandSeg = new Segmented("Низ", "Середина", "Верх");        int band, bandNames = 3;
@@ -132,11 +132,13 @@ namespace RedTune
             presetRow = Row("Пресет", "Готовые настройки эквалайзера и компрессора; свои можно сохранить", dropPreset, savePreset, presetBtn);
             eqRow = Row("Эквалайзер", "Точки на графике тянутся мышью: влево-вправо частота, вверх-вниз усиление. Колесо на точке меняет ширину", eqT);
             Add(graph);
-            pre.Caption = v => Signed(v, "дБ");
-            Row("Общее усиление", "До эквалайзера: убавьте, если полосы подняты высоко и лимитер срабатывает постоянно", pre);
+            // 20.11: «Общее усиление» is no longer a row here: it is the first strip of the equalizer (EqGraph, Part.Master)
 
             Section("Компрессор и лимитер"); // 19.11: one section and one picture for both (the user's wish)
             compRow = Row("Компрессор", "Убавляет громкие места: тихое слышнее, громкое не бьёт по ушам", compT);
+            // 20.11 (the user's wish): the limiter's switch right under the compressor's; its ceiling is a fader in the picture,
+            // right of the monitor (CompGraph, Part.CeilFader), no longer a row
+            limRow = Row("Лимитер", "Не выпускает звук выше потолка, сколько бы ни поднял эквалайзер: без хрипа и перегруза", limT);
             Add(cgraph); // 19.11: the compressor drawn, with its settings as points and dials (the user's wish)
             cgraph.ByFreq = s.CompByFreq;
             // the bands: how many, where they part, and which one the rows and the picture show. (Two bands is what «Бас
@@ -149,13 +151,13 @@ namespace RedTune
             bandRow = Row("Настраиваемая полоса", "Точки, ручки и ползунки ниже относятся к ней", bandSeg);
             split1Row = Row("Граница низа", "Всё, что ниже, — полоса «Низ»", split);
             split2Row = Row("Граница верха", "Всё, что выше, — полоса «Верх»", split2);
-            // 19.11 (the user's wish): whatever is about the bands — their number, the one being set, a split — turns the
-            // picture's monitor to the bands, so the choice is seen at once
+            // 19.11 (the user's wish): a split moved turns the picture's monitor to the bands, so it is seen moving. 20.11 (the
+            // user): the number of bands and the band being set leave the monitor as it is
             partsSeg.Changed += (o, e) =>
             {
                 if (loading) return;
                 int n = Math.Max(0, partsSeg.Selected) + 1; p.Split = n >= 2 ? split.Value : 0; p.Split2 = n >= 3 ? split2.Value : 0;
-                Changed(); ShowParts(); View(true);
+                Changed(); ShowParts();
             };
             split.Changed += (o, e) => { if (!loading) View(true); };
             split2.Changed += (o, e) => { if (!loading) View(true); };
@@ -163,7 +165,7 @@ namespace RedTune
             {
                 if (loading) return;
                 var act = p.ActiveParts; band = act[Math.Max(0, Math.Min(act.Length - 1, bandSeg.Selected))];
-                ShowBand(); View(true);
+                ShowBand();
             };
             // 19.11 (the user's wish): these three are dials of the picture; their rows show only in a window too narrow for them
             thrRow = Row("Порог", "Громкость, с которой начинается сжатие", thr);
@@ -173,9 +175,6 @@ namespace RedTune
             mk.Caption = v => Signed(v, "дБ");
             mkRow = Row("Усиление после", "Возвращает громкость, которую забрало сжатие", mk);
 
-            limRow = Row("Лимитер", "Не выпускает звук выше потолка, сколько бы ни поднял эквалайзер: без хрипа и перегруза", limT);
-            ceil.Caption = v => (v == 0 ? "0" : "−" + (-v / 10.0).ToString("0.0", CultureInfo.InvariantCulture)) + " дБ";
-            Row("Потолок", null, ceil);
 
             Section("Система");
             nahimicRow = Row("Эффекты производителя", null, nahimicT);
@@ -192,11 +191,11 @@ namespace RedTune
             vol.Changed += (o, e) => { if (!loading && dev != null) AudioFx.SetVolume(dev.Id, vol.Value); };
             muteT.CheckedChanged += (o, e) => { if (!loading && dev != null) AudioFx.SetMute(dev.Id, !muteT.Checked); };
             onT.CheckedChanged += (o, e) => { if (!loading) SwitchOn(onT.Checked); };
-            eqT.CheckedChanged += (o, e) => Changed();
-            compT.CheckedChanged += (o, e) => Changed();
-            limT.CheckedChanged += (o, e) => Changed();
-            foreach (var sl in new[] { pre, thr, ratio, mk, ceil, split, split2 }) sl.Changed += (o, e) => Changed();
-            graph.Changed += (o, e) => Changed();
+            eqT.CheckedChanged += (o, e) => Changed(o);
+            compT.CheckedChanged += (o, e) => Changed(o);
+            limT.CheckedChanged += (o, e) => Changed(o);
+            foreach (var sl in new[] { thr, ratio, mk, split, split2 }) sl.Changed += (o, e) => Changed(o);
+            graph.Changed += (o, e) => Changed(o);
             // a point or a dial of the compressor's picture moved: it wrote into the settings itself, the sliders follow
             cgraph.Changed += (o, e) =>
             {
@@ -205,7 +204,7 @@ namespace RedTune
                 band = cgraph.Band; // the number of bands changed in the picture may have moved it
                 loading = true;
                 var q = p.Parts[band];
-                thr.Value = (int)Math.Round(q.Thr); ratio.Value = (int)Math.Round(q.Ratio * 10); mk.Value = (int)Math.Round(q.Makeup); ceil.Value = (int)Math.Round(p.Ceil * 10);
+                thr.Value = (int)Math.Round(q.Thr); ratio.Value = (int)Math.Round(q.Ratio * 10); mk.Value = (int)Math.Round(q.Makeup);
                 if (p.Split > 0) split.Value = (int)Math.Round(p.Split); // a split dragged in the picture
                 if (p.Split2 > 0) split2.Value = (int)Math.Round(p.Split2);
                 cgraph.Ghost1 = split.Value; cgraph.Ghost2 = split2.Value;
@@ -296,10 +295,8 @@ namespace RedTune
         {
             loading = true;
             onT.Set(sp.On && state.Attached); eqT.Set(sp.Eq); compT.Set(sp.Comp); limT.Set(sp.Limit);
-            pre.Value = (int)Math.Round(sp.Preamp);
             if (sp.Split > 0) split.Value = (int)Math.Round(sp.Split);
             if (sp.Split2 > 0) split2.Value = (int)Math.Round(sp.Split2);
-            ceil.Value = (int)Math.Round(sp.Ceil * 10);
             graph.P = sp; graph.Invalidate();
             cgraph.P = sp; cgraph.Ghost1 = split.Value; cgraph.Ghost2 = split2.Value; cgraph.Invalidate();
             loading = false;
@@ -354,16 +351,28 @@ namespace RedTune
         }
 
         // what is switched off shows grey
-        void Dim()
+        void Dim() { Dim(true, true, true); }
+
+        // 20.11 (user: «Общее усиление» and «Потолок» lagged under the hand, the volume did not): every move of a slider
+        // used to repaint BOTH big pictures at once (~25 ms at 150 %), even when it changed nothing in them — the
+        // pre-gain is drawn in neither. Now only the picture the control shows something in is repainted at once;
+        // the others only when the page's moment was due (so the spectrum and the history keep moving during a drag).
+        // now = false (a toggle clicked): the pictures are only marked; painting them at once (12-25 ms) ate the start of the
+        // toggle's slide, and nothing there follows the hand
+        void Dim(bool eqPic, bool compPic, bool due, bool now = true)
         {
-            graph.Dim = !p.Eq; pre.Enabled = p.Eq;
+            bool eqWas = graph.Dim, compWas = cgraph.Dim;
+            graph.Dim = !p.Eq;
             foreach (var sl in new[] { thr, ratio, mk, split, split2 }) sl.Enabled = p.Comp;
             partsSeg.Enabled = bandSeg.Enabled = p.Comp;
-            ceil.Enabled = p.Limit;
-            graph.Invalidate();
-            cgraph.Dim = !p.Comp; cgraph.Invalidate();
+            cgraph.Dim = !p.Comp;
+            eqPic |= graph.Dim != eqWas; compPic |= cgraph.Dim != compWas;
+            if (eqPic) graph.Invalidate();
+            if (compPic) cgraph.Invalidate();
             // a slider of the page dragged: the pictures follow at once, not when the mouse rests (see EqGraph.Fire)
-            graph.Update(); cgraph.Update();
+            if (!now) return;
+            if (eqPic || due) graph.Update();
+            if (compPic || due) cgraph.Update();
         }
 
         // for the off-screen render: the compressor's picture with a sound in it, scrolled into view
@@ -389,17 +398,19 @@ namespace RedTune
         }
 
         // a control moved: into the settings, to the effect, and (a little later) to the disk
-        void Changed()
+        void Changed(object from)
         {
             if (loading || dev == null) return;
-            TickIfDue();
+            bool due = TickIfDue();
             p.Eq = eqT.Checked; p.Comp = compT.Checked; p.Limit = limT.Checked;
             int parts = p.PartCount;
-            p.Preamp = pre.Value; p.Ceil = ceil.Value / 10f; p.Split = parts >= 2 ? split.Value : 0; p.Split2 = parts >= 3 ? split2.Value : 0;
+            // the pre-gain and the limiter's ceiling are set in the pictures themselves (EqGraph's first strip, CompGraph's fader)
+            p.Split = parts >= 2 ? split.Value : 0; p.Split2 = parts >= 3 ? split2.Value : 0;
             var q = p.Parts[band]; q.Thr = thr.Value; q.Ratio = ratio.Value / 10f; q.Makeup = mk.Value;
             cgraph.Ghost1 = split.Value; cgraph.Ghost2 = split2.Value;
             Push();
-            ShowPreset(); Dim();
+            // what this control shows itself in: the EQ picture draws itself (EqGraph.Fire)
+            ShowPreset(); Dim(from == eqT, from != graph && from != eqT, due, !(from is Toggle));
         }
 
         void Push()
@@ -531,7 +542,8 @@ namespace RedTune
         // takes the moment of the sound that is due.
         readonly System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
         long lastTick = -1000;
-        void TickIfDue() { if (clock.ElapsedMilliseconds - lastTick >= tick.Interval - 3) Tick(); }
+        bool TickIfDue() { if (clock.ElapsedMilliseconds - lastTick < tick.Interval - 3) return false; Tick(); return true; }
+        void Changed() { Changed(null); }
 
         void Tick()
         {
@@ -683,7 +695,7 @@ namespace RedTune
             r.Offset(off);
             TextRenderer.DrawText(g, text, f, r, c, Mid | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix | TextFormatFlags.SingleLine);
         }
-        internal enum Part { None, Thr, Ratio, Makeup, Line, Attack, Release, Knee, Ceil, Split1, Split2, Zone, ViewTime, ViewFreq, Count, Pill, DialThr, DialRatio, DialMakeup, Solo, Mute, DialSplit1, DialSplit2 }
+        internal enum Part { None, Thr, Ratio, Makeup, Line, Attack, Release, Knee, Ceil, Split1, Split2, Zone, ViewTime, ViewFreq, Count, Pill, DialThr, DialRatio, DialMakeup, Solo, Mute, DialSplit1, DialSplit2, CeilFader }
         Part hot, drag; bool armed, demo; int dragY; double dragFrom; float grabDx, grabDy;
 
         // 19.11 (the user's wish: the bands seen, not only named). The place of the last seconds holds one of two monitors,
@@ -767,7 +779,11 @@ namespace RedTune
             return freq ? new Rectangle(h.Right - viewW1, y, viewW1, hh) : new Rectangle(h.Right - viewW1 - Theme.S(4) - viewW0, y, viewW0, hh);
         }
         public void SetView(bool freq) { if (ByFreq == freq) return; ByFreq = freq; hot = Part.None; Invalidate(); }
-        readonly float[] hIn = new float[Hist], hOut = new float[Hist], hGr = new float[Hist], hLim = new float[Hist];
+        readonly float[] hIn = new float[Hist], hOut = new float[Hist], hLim = new float[Hist];
+        // 20.11 (the user): what the compressor took off, kept per part of the settings (the bass or the whole sound, the
+        // middle, the top), so the band picked shows its own last ten seconds at once; there was one line for whichever
+        // band was shown, and a band picked only took over its colour
+        readonly float[][] hGrB = { new float[Hist], new float[Hist], new float[Hist] };
         int hCount; bool live; float nowIn = -100, nowGr, nowLim, nowLv = -140; // nowLv: the level the shown band reads, for the dot on the curve
 
         public CompGraph() { BackColor = Theme.Window; Height = Theme.S(400); anim.Tick += (o, e) => AnimTick(); Disposed += (o, e) => anim.Dispose(); } // 300 -> 350: three dials with a name above and a value under each need the height
@@ -815,7 +831,7 @@ namespace RedTune
             get
             {
                 var c = Curve; if (!HasPanel) return Rectangle.Empty;
-                int x = Panel.Right + Theme.S(Gap), w = Width - Theme.S(18) - x;
+                int x = Panel.Right + Theme.S(Gap), w = Width - Theme.S(18) - Theme.S(CeilUnits) - x; // the ceiling's fader at the right end
                 return w >= Theme.S(150) ? new Rectangle(x, c.Y, w, c.Height) : Rectangle.Empty;
             }
         }
@@ -823,6 +839,23 @@ namespace RedTune
         // that the one being set — a plate per band with its colour; a band that is not at work keeps its place, grey,
         // and lights up when the number takes it in. They were two rows under the picture; in a window too narrow for
         // the column beside the curve and the dials the page shows those rows instead (HasBands).
+        // 20.11 (the user's wish): the limiter's ceiling as a fader right of the monitor, 0 dB on top, −12 at the bottom, by
+        // half a dB; a flat line with an arrow up to it on top, the value under it. Only where the monitor has its room.
+        const int CeilUnits = 44, CeilStripW = 30;
+        // with no room for the monitor it still stands at the right end when it fits there itself (the line over the curve
+        // is then the other way to the ceiling)
+        internal Rectangle CeilStrip
+        {
+            get
+            {
+                var c = Curve; if (!HasPanel) return Rectangle.Empty;
+                int x = Width - Theme.S(18) - Theme.S(CeilStripW);
+                return History.Width > 0 || x - Panel.Right >= Theme.S(CeilUnits - CeilStripW) ? new Rectangle(x, c.Y, Theme.S(CeilStripW), c.Height) : Rectangle.Empty;
+            }
+        }
+        internal int CeilTop { get { return CeilStrip.Y + Theme.S(26); } }
+        internal int CeilBottom { get { return CeilStrip.Bottom - Theme.S(6); } }
+        internal float CeilY(double db) { return (float)(CeilTop + (CeilBottom - CeilTop) * Clamp(-db / 12.0, 0, 1)); }
         public bool HasMonitor { get { return History.Width > 0; } } // room for the monitor, where the splits are dragged
         public bool HasBands { get { return Width >= Theme.S(BandsLeft + BandUnits + CurveAfterBands) + Side + Theme.S(Gap) + Theme.S(PanelUnits) + Theme.S(12); } }
         internal Rectangle BandsCol { get { return HasBands ? new Rectangle(Theme.S(BandsLeft), Theme.S(14), Theme.S(BandUnits), Side) : Rectangle.Empty; } }
@@ -901,6 +934,7 @@ namespace RedTune
 
         // what the compressor takes off at a level, dB (<= 0): the same formula as the effect's (Want in rtdsp.h)
         internal double Gr(double x) { return GrOf(Q, x); }
+        internal float GrAgo(int part, int k) { return hGrB[part][Hist - 1 - k]; } // the check: what part took off k moments ago
         static double GrOf(CompPart q, double x)
         {
             double over = x - q.Thr, slope = 1.0 / Math.Max(1, q.Ratio) - 1, knee = q.Knee;
@@ -926,6 +960,7 @@ namespace RedTune
             // the two words under the monitor
             if (ViewRect(false).Contains(m)) return Part.ViewTime;
             if (ViewRect(true).Contains(m)) return Part.ViewFreq;
+            { var cs = CeilStrip; if (cs.Width > 0 && Rectangle.Inflate(cs, 0, Theme.S(4)).Contains(m)) return P.Limit ? Part.CeilFader : Part.None; }
             // the bands' column: a number, or the plate of a band at work
             if (!Dim && BandsCol.Contains(m))
             {
@@ -998,7 +1033,8 @@ namespace RedTune
                 // the splits as dials: the whole range of each (80..600 Hz, 1.2..12 kHz) in the same travel, evenly by ear
                 case Part.DialSplit1: P.Split = (float)(Math.Round(Clamp(dragFrom * Math.Pow(600 / 80.0, turn), 80, 600) / 10) * 10); break;
                 case Part.DialSplit2: P.Split2 = (float)(Math.Round(Clamp(dragFrom * Math.Pow(10, turn), 1200, 12000) / 100) * 100); break;
-                case Part.Ceil: P.Ceil = (float)(Math.Round(Clamp(DbAtY(my), -12, 0) * 2) / 2); break; // by half a dB; the slider has the tenths
+                case Part.Ceil: P.Ceil = (float)(Math.Round(Clamp(DbAtY(my), -12, 0) * 2) / 2); break; // by half a dB
+                case Part.CeilFader: P.Ceil = (float)(Math.Round(Clamp(dragFrom + (dragY - m.Y) * 12.0 / Math.Max(1, CeilBottom - CeilTop), -12, 0) * 2) / 2); break; // from where it was taken
                 // the splits: within what the page's sliders allow, by their steps
                 case Part.Split1: P.Split = (float)(Math.Round(Clamp(HzAtX(mx), 80, 600) / 10) * 10); break;
                 case Part.Split2: P.Split2 = (float)(Math.Round(Clamp(HzAtX(mx), 1200, 12000) / 100) * 100); break;
@@ -1021,10 +1057,10 @@ namespace RedTune
             if (e.Button == MouseButtons.Left && (part == Part.Solo || part == Part.Mute)) { Listen(part, zoneHot); base.OnMouseDown(e); return; }
             if (e.Button == MouseButtons.Left && (part == Part.Count || part == Part.Pill))
             {
-                // the choice is seen at once: the monitor turns to the bands
-                bool turned = !ByFreq; SetView(true); hot = part;
+                // 20.11 (the user): the monitor stays as it is — over time or by frequencies — when the number of bands or
+                // the band being set is picked (it used to turn to the bands)
+                hot = part;
                 if (part == Part.Count) SetCount(idxHot + 1); else Pick(idxHot);
-                if (turned) { var h = ViewPicked; if (h != null) h(this, EventArgs.Empty); }
                 Invalidate(); base.OnMouseDown(e); return;
             }
             if (e.Button == MouseButtons.Left && (part == Part.ViewTime || part == Part.ViewFreq))
@@ -1046,6 +1082,12 @@ namespace RedTune
                 if (part == Part.Thr || part == Part.Ratio || part == Part.Makeup) { var k = KnobAt(part); grabDx = k.X - e.X; grabDy = k.Y - e.Y; }
                 else if (part == Part.Line) grabDy = Y(Q.Thr) - e.Y;
                 else if (part == Part.Ceil) grabDy = Y(P.Ceil) - e.Y;
+                else if (part == Part.CeilFader)
+                {
+                    // the pointer onto the knob, the knob stays (20.11, as the equalizer's faders)
+                    dragFrom = P.Ceil; var cs = CeilStrip; int ky = (int)Math.Round(CeilY(P.Ceil));
+                    if (Theme.Warp(this, cs.X + cs.Width / 2f, ky)) dragY = ky;
+                }
                 else if (part == Part.Split1 || part == Part.Split2) grabDx = SplitAt(part == Part.Split1 ? 0 : 1).X - e.X;
                 Invalidate();
             }
@@ -1077,27 +1119,37 @@ namespace RedTune
         // Over the threshold point it changes the knee, elsewhere the value under the mouse
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (!armed || hot == Part.None || hot == Part.Zone || hot == Part.ViewTime || hot == Part.ViewFreq || hot == Part.Count || hot == Part.Pill || hot == Part.Solo || hot == Part.Mute || (Dim && hot != Part.Ceil)) { base.OnMouseWheel(e); return; }
+            if (!armed || hot == Part.None || hot == Part.Zone || hot == Part.ViewTime || hot == Part.ViewFreq || hot == Part.Count || hot == Part.Pill || hot == Part.Solo || hot == Part.Mute || (Dim && hot != Part.Ceil && hot != Part.CeilFader)) { base.OnMouseWheel(e); return; }
             if (hot == Part.Line && ByFreq && zoneHot != Band) { base.OnMouseWheel(e); return; } // the line of a band not taken yet
-            int d = e.Delta > 0 ? 1 : -1;
+            var he = e as HandledMouseEventArgs; if (he != null) he.Handled = true;
+            // 20.11 (the user: a notch moved a dial by three): one notch (120) = one step of the value, whatever the mouse
+            // sends — a smooth wheel sends a notch in several small parts, each of them used to be a whole step
+            int notches = Theme.WheelNotches(ref wheelAcc, e.Delta);
+            for (int i = 0; i < Math.Abs(notches); i++) WheelStep(notches > 0 ? 1 : -1);
+            if (notches != 0) Fire();
+        }
+        int wheelAcc;
+
+        // one step of the value under the mouse (20.11: by one step of its scale; the attack, the release and the ratio
+        // went by 15 and 10 %, three milliseconds a notch at 20 ms)
+        void WheelStep(int d)
+        {
             switch (hot)
             {
                 case Part.Split1: case Part.DialSplit1: P.Split = (float)Clamp(Math.Round(P.Split / 10) * 10 + d * 10, 80, 600); break;
                 case Part.Split2: case Part.DialSplit2: P.Split2 = (float)Clamp(Math.Round(P.Split2 / 100) * 100 + d * 100, 1200, 12000); break;
-                case Part.Ceil: P.Ceil = Tenth(Clamp(P.Ceil + d * 0.5, -12, 0)); break;
+                case Part.Ceil: case Part.CeilFader: P.Ceil = Tenth(Clamp(P.Ceil + d * 0.5, -12, 0)); break;
                 case Part.Thr: Q.Knee = (float)Clamp(Math.Round(Q.Knee) + d, 0, 24); break;
                 case Part.Knee: Q.Knee = (float)Clamp(Math.Round(Q.Knee) + d, 0, 24); break;
                 case Part.DialThr: Q.Thr = (float)Clamp(Math.Round(Q.Thr) + d, -60, 0); break;
                 case Part.DialMakeup: Q.Makeup = (float)Clamp(Math.Round(Q.Makeup) + d, -12, 24); break;
-                case Part.DialRatio: { float r = Tenth(Clamp(Q.Ratio * (d > 0 ? 1.1 : 1 / 1.1), 1, 20)); if (r == Q.Ratio) r = Tenth(Clamp(Q.Ratio + d * 0.1, 1, 20)); Q.Ratio = r; break; } // a dial: up = more
+                case Part.DialRatio: Q.Ratio = Tenth(Clamp(Q.Ratio + d * 0.1, 1, 20)); break; // a dial: up = more
                 case Part.Line: Q.Thr = (float)Clamp(Math.Round(Q.Thr) + d, -60, 0); break;
                 case Part.Makeup: Q.Makeup = (float)Clamp(Math.Round(Q.Makeup) + d, -12, 24); break;
-                case Part.Ratio: { float r = Tenth(Clamp(Q.Ratio * (d > 0 ? 1 / 1.1 : 1.1), 1, 20)); if (r == Q.Ratio) r = Tenth(Clamp(Q.Ratio - d * 0.1, 1, 20)); Q.Ratio = r; break; } // up = less squeezing, as the point goes up
-                case Part.Attack: { double a = Math.Round(Clamp(Q.Attack * (d > 0 ? 1.15 : 1 / 1.15), 1, 200)); if (a == Q.Attack) a = Clamp(Q.Attack + d, 1, 200); Q.Attack = (float)a; break; }
-                case Part.Release: { double a = Math.Round(Clamp(Q.Release * (d > 0 ? 1.15 : 1 / 1.15), 10, 2000) / 10) * 10; if (a == Q.Release) a = Clamp(Q.Release + d * 10, 10, 2000); Q.Release = (float)a; break; }
+                case Part.Ratio: Q.Ratio = Tenth(Clamp(Q.Ratio - d * 0.1, 1, 20)); break; // up = less squeezing, as the point goes up
+                case Part.Attack: Q.Attack = (float)Clamp(Math.Round(Q.Attack) + d, 1, 200); break;
+                case Part.Release: Q.Release = (float)Clamp(Math.Round(Q.Release / 10) * 10 + d * 10, 10, 2000); break;
             }
-            Fire();
-            var he = e as HandledMouseEventArgs; if (he != null) he.Handled = true;
         }
 
         // a double click puts the value under the mouse back to where a new device starts
@@ -1117,6 +1169,7 @@ namespace RedTune
                 else if (part == Part.Attack) Q.Attack = s.Attack;
                 else if (part == Part.Release) Q.Release = s.Release;
                 else if (part == Part.Knee) Q.Knee = s.Knee;
+                else if (part == Part.CeilFader) P.Ceil = s.Ceil;
                 else { base.OnMouseDoubleClick(e); return; }
                 Fire();
             }
@@ -1131,7 +1184,7 @@ namespace RedTune
         {
             if (demo) return;
             if (!on) { if (live) { live = false; hCount = 0; nowIn = -100; nowLv = -140; nowGr = nowLim = 0; Invalidate(); } return; }
-            Push(Db(inPeak), Db(outPeak), grDb, limDb); nowLv = levelDb;
+            Push(Db(inPeak), Db(outPeak), grDb, limDb, bGr); nowLv = levelDb; // bGr: all the bands, from FeedBands just before
             live = true;
             Invalidate(); // the whole picture every moment (20.11, the user: no caches, everything live)
         }
@@ -1149,10 +1202,11 @@ namespace RedTune
             }
         }
 
-        void Push(float i, float o, float gr, float lim)
+        void Push(float i, float o, float gr, float lim, float[] grs)
         {
-            Array.Copy(hIn, 1, hIn, 0, Hist - 1); Array.Copy(hOut, 1, hOut, 0, Hist - 1); Array.Copy(hGr, 1, hGr, 0, Hist - 1); Array.Copy(hLim, 1, hLim, 0, Hist - 1);
-            hIn[Hist - 1] = i; hOut[Hist - 1] = o; hGr[Hist - 1] = gr; hLim[Hist - 1] = lim; if (hCount < Hist) hCount++;
+            Array.Copy(hIn, 1, hIn, 0, Hist - 1); Array.Copy(hOut, 1, hOut, 0, Hist - 1); Array.Copy(hLim, 1, hLim, 0, Hist - 1);
+            hIn[Hist - 1] = i; hOut[Hist - 1] = o; hLim[Hist - 1] = lim; if (hCount < Hist) hCount++;
+            for (int b = 0; b < 3; b++) { Array.Copy(hGrB[b], 1, hGrB[b], 0, Hist - 1); hGrB[b][Hist - 1] = grs[b]; }
             nowIn = i; nowGr = gr; nowLim = lim;
         }
 
@@ -1165,7 +1219,8 @@ namespace RedTune
                 float i = (float)(-27 + 13 * Math.Sin(k / 17.0) + 7 * Math.Sin(k / 3.1) + 4 * Math.Sin(k / 1.3)); if (i > -1) i = -1;
                 float gr = Dim ? 0 : (float)Gr(i), o = i + gr + (Dim ? 0 : Q.Makeup);
                 float lim = P.Limit && o > P.Ceil ? P.Ceil - o : 0;
-                Push(i, Math.Min(0, o + lim), gr, lim); nowLv = i;
+                var grs = new float[3]; for (int b = 0; b < 3; b++) grs[b] = Dim ? 0 : (float)GrOf(P.Parts[b], i);
+                Push(i, Math.Min(0, o + lim), gr, lim, grs); nowLv = i;
             }
             float[] lv = { -11, -21, -30 };
             for (int b = 0; b < 3; b++) { bLv[b] = lv[b]; bGr[b] = Dim ? 0 : (float)GrOf(P.Parts[b], lv[b]); }
@@ -1181,7 +1236,7 @@ namespace RedTune
         {
             if (live && hCount > 1)
             {
-                int n = hCount; float dx = hist.Width / (float)(Hist - 1);
+                int n = hCount; float dx = hist.Width / (float)(Hist - 1); var hGr = hGrB[Math.Max(0, Math.Min(2, Band))]; // the band shown
                 var pin = new List<PointF>(); var pout = new PointF[n]; var pgr = new List<PointF>(); var pall = new List<PointF>();
                 pin.Add(new PointF(hist.Right - (n - 1) * dx, hist.Bottom)); pgr.Add(new PointF(hist.Right - (n - 1) * dx, hist.Y)); pall.Add(pgr[0]);
                 for (int k = 0; k < n; k++)
@@ -1313,6 +1368,28 @@ namespace RedTune
         static string DbText(double v) { int n = (int)Math.Round(v); return (n < 0 ? "−" : "") + Math.Abs(n) + " дБ"; }
         static string Plus(double v) { int n = (int)Math.Round(v); return (n > 0 ? "+" : n < 0 ? "−" : "") + Math.Abs(n) + " дБ"; }
         string RatioText { get { return Q.Ratio.ToString("0.#", CultureInfo.InvariantCulture) + " : 1"; } }
+        // the limiter's ceiling fader (see CeilStrip): grey and still while the limiter is off
+        void CeilFader(Graphics g, Color limC, bool lim, bool ch)
+        {
+            var cs = CeilStrip; if (cs.Width <= 0) return;
+            float cx = cs.X + cs.Width / 2f, th = Theme.S(5), top = CeilTop, bottom = CeilBottom;
+            if (ch && lim) Theme.Fill(g, new RectangleF(cs.X + 1, cs.Y - Theme.S(4), cs.Width - 2, cs.Height + Theme.S(8)), Theme.S(6), Color.FromArgb(46, Theme.Text));
+            var ic = lim ? limC : Theme.Muted;
+            using (var pen = new Pen(ic, Theme.S(1.6f)) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+            {
+                float iy = cs.Y + Theme.S(6), w = Theme.S(15), a = Theme.S(2.5f);
+                g.DrawLine(pen, cx - w / 2, iy, cx + w / 2, iy);
+                g.DrawLine(pen, cx, iy + Theme.S(3), cx, iy + Theme.S(11));
+                g.DrawLines(pen, new[] { new PointF(cx - a, iy + Theme.S(3) + a), new PointF(cx, iy + Theme.S(3)), new PointF(cx + a, iy + Theme.S(3) + a) });
+            }
+            Theme.Tube(g, new RectangleF(cx - th / 2f, top, th, bottom - top));
+            float y = CeilY(P.Ceil);
+            if (y - top > 1f) Theme.Fill(g, new RectangleF(cx - th / 2f, top, th, y - top), th / 2f, lim ? limC : Theme.Muted);
+            Theme.GlassKnob(g, cx, y, Theme.S(ch && lim ? 16 : 14), lim ? 1f : 0f, lim ? limC : Theme.Muted, th, !lim, 270f, null, lim ? y - top : 0f); // lit towards the top: what is cut off
+            string v = P.Ceil > -0.05f ? "0" : "−" + (-P.Ceil).ToString("0.#", CultureInfo.InvariantCulture);
+            Theme.Text1(g, v, Theme.Small, new Rectangle((int)cx - Theme.S(24), Curve.Bottom + Theme.S(3), Theme.S(48), Theme.S(20)), lim ? (ch ? Theme.Text : Theme.Text2) : Theme.Muted, TextFormatFlags.HorizontalCenter);
+        }
+
         string CeilText { get { return (P.Ceil > -0.05f ? "0" : "−" + (-P.Ceil).ToString("0.0", CultureInfo.InvariantCulture)) + " дБ"; } }
 
         // the transfer curve with its fill, the other bands, the threshold, the ceiling and the three points; the dot of the
@@ -1321,7 +1398,7 @@ namespace RedTune
         {
             Color line = Dim ? Theme.Muted : P.PartCount == 1 ? Theme.Accent : PartColor[Math.Max(0, Math.Min(2, Band))];
             Color lit = Dim ? Theme.Muted : Lighter(line);
-            Color limC = Theme.Warning; bool lim = P.Limit, ch = hot == Part.Ceil || drag == Part.Ceil;
+            Color limC = Theme.Warning; bool lim = P.Limit, ch = hot == Part.Ceil || drag == Part.Ceil || hot == Part.CeilFader || drag == Part.CeilFader;
             float cy = Y(P.Ceil);
             var clip = g.Clip;
             int steps = Math.Max(40, c.Width / 2);
@@ -1389,7 +1466,7 @@ namespace RedTune
             // one band: the program's red; in bands: the colour of the band shown
             Color line = Dim ? Theme.Muted : P.PartCount == 1 ? Theme.Accent : PartColor[Math.Max(0, Math.Min(2, Band))];
             Color lit = Dim ? Theme.Muted : Lighter(line);
-            Color limC = Theme.Warning; bool lim = P.Limit, ch = hot == Part.Ceil || drag == Part.Ceil;
+            Color limC = Theme.Warning; bool lim = P.Limit, ch = hot == Part.Ceil || drag == Part.Ceil || hot == Part.CeilFader || drag == Part.CeilFader;
             float cy = Y(P.Ceil);
             // a paint of a part of the picture (Windows uncovering it) skips what lies outside its clip
             var want = e.ClipRectangle;
@@ -1414,6 +1491,7 @@ namespace RedTune
                 // out = in: where the curve would run with no compressor
                 using (var dash = new Pen(Theme.BorderStrong) { DashStyle = DashStyle.Dash }) g.DrawLine(dash, c.X, c.Bottom, c.Right, c.Y);
             }
+            CeilFader(g, limC, lim, ch);
 
             // the curve
             if (doCurve) CurveBlock(g, c, true);
@@ -1529,6 +1607,7 @@ namespace RedTune
             var shown = drag != Part.None ? drag : hot;
             string hint;
             if (shown == Part.Ceil) hint = "Потолок: " + CeilText + " · " + "тянется вверх-вниз";
+            else if (shown == Part.CeilFader) hint = "Потолок: " + CeilText + " · " + L.T("Не выпускает звук выше потолка, сколько бы ни поднял эквалайзер: без хрипа и перегруза") + " · " + "тяните вверх-вниз или крутите колесо";
             else if (Dim) hint = "Компрессор выключен";
             else if (shown == Part.Thr || shown == Part.Line) hint = "Порог: " + DbText(Q.Thr) + " · " + "колено: " + DbText(Q.Knee) + (shown == Part.Thr ? " · " + "колесо меняет колено" : "");
             else if (shown == Part.Ratio) hint = "Степень сжатия: " + RatioText + " · " + "тянется вверх-вниз";
@@ -1576,8 +1655,8 @@ namespace RedTune
         {
             if (drag >= 0 || dragPart != Part.None) return;
             double top = 0;
-            for (int i = 0; i <= 30; i++) top = Math.Max(top, Math.Abs(AudioFx.Response(P, MinF * Math.Pow(MaxF / MinF, i / 30.0), Rate) - P.Preamp));
-            foreach (var b in P.Bands) if (b.HasGain) top = Math.Max(top, Math.Abs(b.Gain));
+            for (int i = 0; i <= 30; i++) top = Math.Max(top, Math.Abs(AudioFx.Response(P, MinF * Math.Pow(MaxF / MinF, i / 30.0), Rate)));
+            foreach (var b in P.Bands) top = Math.Max(top, Math.Abs((b.HasGain ? b.Gain : 0) + P.Preamp));
             Range = top > 17.9 ? 24 : 18;
         }
         int hot = -1, drag = -1; bool armed;
@@ -1593,8 +1672,10 @@ namespace RedTune
         // a dial for the width. They are the same values as the points: moving one moves the other, a band removed on
         // either side is gone on both, and after the last strip stands «+» while there are fewer than 12 bands.
         // The order is not changed while something is held, so a strip does not jump from under the mouse.
-        enum Part { None, Kind, Fader, Freq, Wide, Add }
-        const int StripW = 27, Gutter = 24;
+        // 20.11 (the user): the pre-gain («Общее усиление», before the equalizer) moved from a row of the page into the
+        // picture, as the first strip left of the bands' ones: a fader of ±24 dB by half a dB, its value under it.
+        enum Part { None, Kind, Fader, Freq, Wide, Add, Master }
+        const int StripW = 27, Gutter = 24, MasterW = 33, MasterDb = 24;
         int[] order = new int[0];
         Part hotPart, dragPart; int dragBand = -1, dragY; float dragFrom;
 
@@ -1607,12 +1688,14 @@ namespace RedTune
 
         int Slots { get { return P.Bands.Count + (P.Bands.Count < SoundParams.MaxBands ? 1 : 0); } }
         // no strips in a window so narrow that the plot would have nothing left
-        int PanelW { get { int w = Theme.S(Gutter + Slots * StripW); return Width - Theme.S(46 + 14 + 12) - w < Theme.S(170) ? 0 : w; } }
+        int PanelW { get { int w = Theme.S(MasterW + Gutter + Slots * StripW); return Width - Theme.S(46 + 14 + 12) - w < Theme.S(170) ? 0 : w; } }
         Rectangle Plot { get { int pw = PanelW; return new Rectangle(Theme.S(46), Theme.S(14), Width - Theme.S(46) - (pw > 0 ? pw + Theme.S(14 + 12) : Theme.S(18)), Height - Theme.S(72)); } }
         // 19.11: as tall as the plot, but standing in the middle of the card: the kind pictures as far from its top edge as
         // the lower dials from its bottom edge (level with the plot it stood high, the plot having its scale and the hint under it)
         internal Rectangle Panel { get { var r = Plot; return new Rectangle(r.Right + Theme.S(14), (Height - r.Height - Theme.S(2)) / 2, PanelW, r.Height); } }
-        internal int StripX(int slot) { return Panel.X + Theme.S(Gutter) + slot * Theme.S(StripW) + Theme.S(StripW) / 2; } // its middle
+        internal int StripX(int slot) { return Panel.X + Theme.S(MasterW + Gutter) + slot * Theme.S(StripW) + Theme.S(StripW) / 2; } // its middle
+        internal int MasterX { get { return Panel.X + Theme.S(StripW) / 2; } }
+        float MasterY(double db) { return (float)(FaderTop + (FaderBottom - FaderTop) * (0.5 - Math.Max(-MasterDb, Math.Min(MasterDb, db)) / (2.0 * MasterDb))); }
         internal int FaderTop { get { return Panel.Y + Theme.S(30); } }
         internal int FaderBottom { get { return Panel.Bottom - Theme.S(64); } }
         internal int FreqY { get { return Panel.Bottom - Theme.S(40); } }
@@ -1623,8 +1706,10 @@ namespace RedTune
         Part HitPanel(Point m, out int band)
         {
             band = -1;
-            var p = Panel; if (p.Width <= 0 || m.X < p.X + Theme.S(Gutter) || m.X >= p.Right || m.Y < p.Y - Theme.S(4) || m.Y > p.Bottom + Theme.S(4)) return Part.None;
-            int slot = (m.X - p.X - Theme.S(Gutter)) / Theme.S(StripW);
+            var p = Panel; if (p.Width <= 0 || m.X < p.X || m.X >= p.Right || m.Y < p.Y - Theme.S(4) || m.Y > p.Bottom + Theme.S(4)) return Part.None;
+            if (m.X < p.X + Theme.S(StripW)) return Part.Master;
+            if (m.X < p.X + Theme.S(MasterW + Gutter)) return Part.None;
+            int slot = (m.X - p.X - Theme.S(MasterW + Gutter)) / Theme.S(StripW);
             var ord = Order();
             if (slot == ord.Length && ord.Length < SoundParams.MaxBands) return Part.Add;
             if (slot < 0 || slot >= ord.Length) return Part.None;
@@ -1652,7 +1737,7 @@ namespace RedTune
         double FreqAt(float x) { var r = Plot; return MinF * Math.Pow(MaxF / MinF, Math.Max(0, Math.Min(1, (x - r.X) / (double)r.Width))); }
         float Y(double db) { var r = Plot; return (float)(r.Y + r.Height * (0.5 - Math.Max(-Range - 2, Math.Min(Range + 2, db)) / (2 * Range))); }
         double DbAt(float y) { var r = Plot; return (0.5 - (y - r.Y) / (double)r.Height) * 2 * Range; }
-        PointF Knob(int i) { var b = P.Bands[i]; return new PointF(X(b.Freq), Y(b.HasGain ? b.Gain : 0)); }
+        internal PointF Knob(int i) { var b = P.Bands[i]; return new PointF(X(b.Freq), Y((b.HasGain ? b.Gain : 0) + P.Preamp)); } // on the line, which the pre-gain moves
 
         int Hit(Point m)
         {
@@ -1672,12 +1757,20 @@ namespace RedTune
         // the fader follows the mouse; a dial turns with the mouse going up and down from where it was taken
         void DragStrip(int y)
         {
+            if (dragPart == Part.Master)
+            {
+                // from where it was taken, by the mouse's travel (20.11: the knob no longer jumps to the press)
+                double pdb = Math.Round((dragFrom + (dragY - y) * 2.0 * MasterDb / Math.Max(1, FaderBottom - FaderTop)) * 2) / 2;
+                if (Math.Abs(pdb) < 0.35) pdb = 0;
+                P.Preamp = (float)Math.Max(-MasterDb, Math.Min(MasterDb, pdb));
+                Fire(); return;
+            }
             if (dragBand < 0 || dragBand >= P.Bands.Count) return;
             var b = P.Bands[dragBand];
             if (dragPart == Part.Fader)
             {
                 if (!b.HasGain) return;
-                double gdb = Math.Round((0.5 - (y - FaderTop) / (double)Math.Max(1, FaderBottom - FaderTop)) * 2 * Range * 10) / 10;
+                double gdb = Math.Round((dragFrom + (dragY - y) * 2.0 * Range / Math.Max(1, FaderBottom - FaderTop)) * 10) / 10; // from where it was taken
                 if (Math.Abs(gdb) < 0.35) gdb = 0;
                 b.Gain = (float)Math.Max(-Range, Math.Min(Range, gdb));
             }
@@ -1697,11 +1790,22 @@ namespace RedTune
             if (part != Part.None)
             {
                 if (part == Part.Add) { if (e.Button == MouseButtons.Left) AddBand(); }
+                else if (part == Part.Master)
+                {
+                    // the pointer onto the knob, the knob stays (20.11)
+                    if (e.Button == MouseButtons.Left) { dragPart = part; dragBand = -1; dragFrom = P.Preamp; int ky = (int)Math.Round(MasterY(P.Preamp)); dragY = Theme.Warp(this, MasterX, ky) ? ky : e.Y; Invalidate(); }
+                }
                 else if (e.Button == MouseButtons.Right || part == Part.Kind) Menu(band, e.Location);
                 else if (e.Button == MouseButtons.Left)
                 {
                     dragPart = part; dragBand = band; dragY = e.Y; dragFrom = part == Part.Freq ? P.Bands[band].Freq : P.Bands[band].Q; hot = band;
-                    if (part == Part.Fader) DragStrip(e.Y); else Invalidate();
+                    // a fader: the pointer goes onto its knob and the knob stays where it is; the drag starts from there (20.11)
+                    if (part == Part.Fader && P.Bands[band].HasGain)
+                    {
+                        dragFrom = P.Bands[band].Gain; int ky = (int)Math.Round(FaderY(dragFrom));
+                        if (Theme.Warp(this, StripX(Array.IndexOf(Order(), band)), ky)) dragY = ky;
+                    }
+                    Invalidate();
                 }
                 base.OnMouseDown(e); return;
             }
@@ -1720,7 +1824,7 @@ namespace RedTune
             {
                 var b = P.Bands[drag];
                 b.Freq = (float)Math.Max(MinF, Math.Min(MaxF, RoundHz(FreqAt(e.X))));
-                if (b.HasGain) { double gdb = Math.Round(DbAt(e.Y) * 10) / 10; if (Math.Abs(gdb) < 0.35) gdb = 0; b.Gain = (float)Math.Max(-Range, Math.Min(Range, gdb)); }
+                if (b.HasGain) { double gdb = Math.Round((DbAt(e.Y) - P.Preamp) * 10) / 10; if (Math.Abs(gdb) < 0.35) gdb = 0; b.Gain = (float)Math.Max(-Range, Math.Min(Range, gdb)); }
                 Fire();
             }
             int band = -1; var part = drag >= 0 || Dim ? Part.None : HitPanel(e.Location, out band);
@@ -1741,20 +1845,29 @@ namespace RedTune
         // Over a point or a width dial it changes the width, over a fader the gain by half a dB, over a frequency dial the frequency
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (!armed || hot < 0 || hot >= P.Bands.Count || Dim) { base.OnMouseWheel(e); return; }
-            var b = P.Bands[hot]; bool up = e.Delta > 0;
-            if (hotPart == Part.Fader) { if (b.HasGain) b.Gain = (float)Math.Max(-Range, Math.Min(Range, Math.Round((b.Gain + (up ? 0.5 : -0.5)) * 2) / 2)); }
-            else if (hotPart == Part.Freq) b.Freq = (float)Math.Max(MinF, Math.Min(MaxF, RoundHz(b.Freq * (up ? 1.06 : 1 / 1.06))));
-            else if (hotPart == Part.Kind || hotPart == Part.Add) { base.OnMouseWheel(e); return; }
-            else b.Q = (float)Math.Max(0.2, Math.Min(12, Math.Round(b.Q * (up ? 1.15 : 1 / 1.15) * 100) / 100));
-            Fire();
+            bool master = armed && !Dim && hotPart == Part.Master;
+            if (!master && (!armed || hot < 0 || hot >= P.Bands.Count || Dim || hotPart == Part.Kind || hotPart == Part.Add)) { base.OnMouseWheel(e); return; }
             var he = e as HandledMouseEventArgs; if (he != null) he.Handled = true;
+            // 20.11: one notch = one step, also from a smooth wheel that sends a notch in parts (Theme.WheelNotches)
+            int n = Theme.WheelNotches(ref wheelAcc, e.Delta);
+            for (int i = 0; i < Math.Abs(n); i++)
+            {
+                bool up = n > 0;
+                if (master) { P.Preamp = (float)Math.Max(-MasterDb, Math.Min(MasterDb, Math.Round((P.Preamp + (up ? 0.5 : -0.5)) * 2) / 2)); continue; }
+                var b = P.Bands[hot];
+                if (hotPart == Part.Fader) { if (b.HasGain) b.Gain = (float)Math.Max(-Range, Math.Min(Range, Math.Round((b.Gain + (up ? 0.5 : -0.5)) * 2) / 2)); }
+                else if (hotPart == Part.Freq) b.Freq = (float)Math.Max(MinF, Math.Min(MaxF, RoundHz(b.Freq * (up ? 1.06 : 1 / 1.06))));
+                else b.Q = (float)Math.Max(0.2, Math.Min(12, Math.Round(b.Q * (up ? 1.15 : 1 / 1.15) * 100) / 100));
+            }
+            if (n != 0) Fire();
         }
+        int wheelAcc;
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             int band = -1; var part = Dim ? Part.None : HitPanel(e.Location, out band);
-            if (e.Button == MouseButtons.Left && band >= 0 && band < P.Bands.Count)
+            if (e.Button == MouseButtons.Left && part == Part.Master) { dragPart = Part.None; P.Preamp = 0; Fire(); } // a double click: back to no gain
+            else if (e.Button == MouseButtons.Left && band >= 0 && band < P.Bands.Count)
             {
                 dragPart = Part.None; dragBand = -1; // the second press of the pair took hold of the strip again
                 // a double click on a fader puts the gain to zero, on the width dial the width to 1
@@ -1768,7 +1881,7 @@ namespace RedTune
         void AddAt(Point at)
         {
             if (P.Bands.Count >= SoundParams.MaxBands) return;
-            double gdb = Math.Round(DbAt(at.Y) * 2) / 2;
+            double gdb = Math.Round((DbAt(at.Y) - P.Preamp) * 2) / 2;
             P.Bands.Add(new EqBand { Type = 1, Freq = (float)Math.Round(FreqAt(at.X)), Gain = (float)Math.Max(-Range, Math.Min(Range, gdb)), Q = 1f });
             hot = P.Bands.Count - 1;
             Fire();
@@ -1850,11 +1963,11 @@ namespace RedTune
             if (hot >= 0 && hot < P.Bands.Count)
             {
                 var one = new PointF[steps + 1];
-                for (int i = 0; i <= steps; i++) { double f = MinF * Math.Pow(MaxF / MinF, i / (double)steps); one[i] = new PointF(X(f), Y(AudioFx.Response(P, f, Rate, hot))); }
+                for (int i = 0; i <= steps; i++) { double f = MinF * Math.Pow(MaxF / MinF, i / (double)steps); one[i] = new PointF(X(f), Y(AudioFx.Response(P, f, Rate, hot) + P.Preamp)); }
                 using (var pen = new Pen(Color.FromArgb(120, Theme.Text2), Theme.S(1.2f)) { DashStyle = DashStyle.Dash }) g.DrawLines(pen, one);
             }
             var curve = new PointF[steps + 1];
-            for (int i = 0; i <= steps; i++) { double f = MinF * Math.Pow(MaxF / MinF, i / (double)steps); curve[i] = new PointF(X(f), Y(AudioFx.Response(P, f, Rate) - P.Preamp)); }
+            for (int i = 0; i <= steps; i++) { double f = MinF * Math.Pow(MaxF / MinF, i / (double)steps); curve[i] = new PointF(X(f), Y(AudioFx.Response(P, f, Rate))); } // with the pre-gain: the whole line goes up or down by it (20.11)
             using (var path = new GraphicsPath())
             {
                 path.AddLines(curve);
@@ -1914,7 +2027,9 @@ namespace RedTune
             DrawStrips(g, line);
 
             string hint;
-            if (hot >= 0 && hot < P.Bands.Count)
+            if (!Dim && (hotPart == Part.Master || dragPart == Part.Master))
+                hint = "Общее усиление" + ": " + Gain(P.Preamp) + " · " + L.T("До эквалайзера: убавьте, если полосы подняты высоко и лимитер срабатывает постоянно") + " · " + "тяните вверх-вниз или крутите колесо";
+            else if (hot >= 0 && hot < P.Bands.Count)
             {
                 var b = P.Bands[hot];
                 hint = Kinds[Math.Max(1, Math.Min(6, b.Type))] + " · " + Hz(b.Freq) + (b.HasGain ? " · " + Gain(b.Gain) : "") + " · " + "ширина Q " + b.Q.ToString("0.##", CultureInfo.InvariantCulture) + " · " + "колесо меняет ширину, правая кнопка — вид фильтра";
@@ -1957,6 +2072,34 @@ namespace RedTune
                 g.DrawLine(pen, cx + (float)Math.Cos(a) * inner * 0.25f, cy + (float)Math.Sin(a) * inner * 0.25f, cx + (float)Math.Cos(a) * inner * 0.95f, cy + (float)Math.Sin(a) * inner * 0.95f);
         }
 
+        // the pre-gain's strip: on top a flat line with arrows up and down (the whole curve moves), the fader, the value
+        // under it, «дБ» in the row of the widths; a thin line parts it from the bands' strips
+        void DrawMaster(Graphics g, Color line, int top, int bottom, int sw, float th)
+        {
+            var p = Panel; float cx = MasterX, mid = (top + bottom) / 2f;
+            bool h = !Dim && (hotPart == Part.Master || dragPart == Part.Master);
+            if (h) Theme.Fill(g, new RectangleF(cx - sw / 2f + 1, p.Y - Theme.S(4), sw - 2, p.Height + Theme.S(8)), Theme.S(6), Color.FromArgb(46, Theme.Text));
+            var ic = Dim ? Theme.Muted : h ? Theme.Text : Theme.Text2;
+            using (var pen = new Pen(ic, Theme.S(1.6f)) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+            {
+                float iy = p.Y + Theme.S(9), w = Theme.S(15);
+                g.DrawLine(pen, cx - w / 2, iy, cx - Theme.S(3.5f), iy); g.DrawLine(pen, cx + Theme.S(3.5f), iy, cx + w / 2, iy);
+                float a = Theme.S(2.5f), up = iy - Theme.S(4.5f), dn = iy + Theme.S(4.5f);
+                g.DrawLine(pen, cx, up, cx, dn);
+                g.DrawLines(pen, new[] { new PointF(cx - a, up + a), new PointF(cx, up), new PointF(cx + a, up + a) });
+                g.DrawLines(pen, new[] { new PointF(cx - a, dn - a), new PointF(cx, dn), new PointF(cx + a, dn - a) });
+            }
+            Theme.Tube(g, new RectangleF(cx - th / 2f, top, th, bottom - top));
+            using (var tick = new Pen(Theme.BorderStrong)) g.DrawLine(tick, cx - Theme.S(6), mid, cx + Theme.S(6), mid);
+            float y = MasterY(P.Preamp);
+            if (Math.Abs(y - mid) > 1f) Theme.Fill(g, new RectangleF(cx - th / 2f, Math.Min(y, mid), th, Math.Abs(y - mid)), th / 2f, Dim ? Theme.Muted : line);
+            Theme.GlassKnob(g, cx, y, Theme.S(h ? 16 : 14), Dim ? 0f : 1f, h ? Theme.AccentHover : line, th, Dim, y <= mid ? 90f : 270f, null, Dim ? 0f : Math.Abs(y - mid));
+            string v = P.Preamp == 0 ? "0" : (P.Preamp > 0 ? "+" : "−") + Math.Abs(P.Preamp).ToString("0.#", CultureInfo.InvariantCulture);
+            Theme.Text1(g, v, Theme.Small, new Rectangle((int)cx - Theme.S(20), FreqY - Theme.S(10), Theme.S(40), Theme.S(20)), Dim ? Theme.Muted : h ? Theme.Text : Theme.Text2, TextFormatFlags.HorizontalCenter);
+            Theme.Text1(g, "дБ", Theme.Small, new Rectangle((int)cx - Theme.S(20), WideY - Theme.S(10), Theme.S(40), Theme.S(20)), Theme.Muted, TextFormatFlags.HorizontalCenter);
+            using (var sep = new Pen(Theme.Border)) { float sx = p.X + Theme.S(StripW) + Theme.S(3); g.DrawLine(sep, sx, p.Y, sx, p.Bottom); }
+        }
+
         void DrawStrips(Graphics g, Color line)
         {
             var p = Panel; if (p.Width <= 0) return;
@@ -1964,8 +2107,9 @@ namespace RedTune
             int top = FaderTop, bottom = FaderBottom, sw = Theme.S(StripW);
             float th = Theme.S(5), mid = (top + bottom) / 2f;
             // what the two rows of dials are
-            Theme.Text1(g, "Гц", Theme.Small, new Rectangle(p.X - Theme.S(4), FreqY - Theme.S(10), Theme.S(Gutter), Theme.S(20)), Theme.Muted, TextFormatFlags.Right);
-            Theme.Text1(g, "Q", Theme.Small, new Rectangle(p.X - Theme.S(4), WideY - Theme.S(10), Theme.S(Gutter), Theme.S(20)), Theme.Muted, TextFormatFlags.Right);
+            Theme.Text1(g, "Гц", Theme.Small, new Rectangle(p.X + Theme.S(MasterW) - Theme.S(4), FreqY - Theme.S(10), Theme.S(Gutter), Theme.S(20)), Theme.Muted, TextFormatFlags.Right);
+            Theme.Text1(g, "Q", Theme.Small, new Rectangle(p.X + Theme.S(MasterW) - Theme.S(4), WideY - Theme.S(10), Theme.S(Gutter), Theme.S(20)), Theme.Muted, TextFormatFlags.Right);
+            DrawMaster(g, line, top, bottom, sw, th);
             using (var tick = new Pen(Theme.BorderStrong))
                 for (int k = 0; k < ord.Length; k++)
                 {

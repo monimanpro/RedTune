@@ -326,6 +326,16 @@ namespace RedTune
                 }
                 return 0;
             }
+            // --toggle-frames <file> [scale %]: how often a toggle's slide gets a frame while the sound page's live pictures are
+            // repainted 30 times a second beside it (20.11: the toggles on «Звук» looked slower than on the other pages)
+            i = at("--toggle-frames");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                int zoom = 150; if (i + 2 < args.Length) int.TryParse(args[i + 2], out zoom);
+                Theme.Init(zoom); L.Set("ru");
+                System.IO.File.WriteAllText(args[i + 1], "scale " + zoom + " %, a toggle slide (260 ms) beside the sound page's pictures:\r\n" + ToggleFrames.Run(), new System.Text.UTF8Encoding(true));
+                return 0;
+            }
             // --motion-check <file>: the movement of rows that come and go on the pages (PagePng.MotionCheck), a check on a page of its own; pictures go beside the file
             i = at("--motion-check");
             if (i >= 0 && i + 1 < args.Length) { Theme.Init(100); L.Set("ru"); PagePng.MotionCheck(args[i + 1]); return 0; }

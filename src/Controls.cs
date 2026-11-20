@@ -1499,7 +1499,9 @@ namespace RedTune
             int v = min + (int)Math.Round((double)(x - Pad) / Math.Max(1, TrackW - 2 * Pad) * (max - min));
             if (Step > 1) v = min + (int)Math.Round((v - min) / (double)Step) * Step;
             v = Math.Max(min, Math.Min(max, v));
-            if (v != value || unset) { value = v; unset = false; Invalidate(); var h = Changed; if (h != null) h(this, EventArgs.Empty); }
+            // 20.11: the knob paints itself before the page reacts — a heavy handler (the sound page's pictures) left it waiting
+            // for an empty queue, so it lagged behind the mouse
+            if (v != value || unset) { value = v; unset = false; Invalidate(); Update(); var h = Changed; if (h != null) h(this, EventArgs.Empty); }
         }
 
         // the wheel steps the value only after a click on this slider and while the mouse stays on it;
@@ -1579,11 +1581,13 @@ namespace RedTune
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             if (!armed) { base.OnMouseWheel(e); return; }
-            int v = Math.Max(min, Math.Min(max, value + (e.Delta > 0 ? Step : -Step)));
-            if (v != value || unset) { Grab(); value = v; unset = false; Invalidate(); var h = Changed; if (h != null) h(this, EventArgs.Empty); }
+            int n = Theme.WheelNotches(ref wheelAcc, e.Delta); // 20.11: one notch = one step, also from a smooth wheel
+            int v = Math.Max(min, Math.Min(max, value + n * Step));
+            if (n != 0 && (v != value || unset)) { Grab(); value = v; unset = false; Invalidate(); var h = Changed; if (h != null) h(this, EventArgs.Empty); }
             var he = e as HandledMouseEventArgs;
             if (he != null) he.Handled = true;
         }
+        int wheelAcc;
 
         protected override void OnPaint(PaintEventArgs e)
         {
