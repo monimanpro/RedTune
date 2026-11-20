@@ -558,10 +558,14 @@ namespace RedTune
         {
             var g = e.Graphics;
             bool glass = Backdrops.Paint(g, this); // the glass card and its rim are in the window's picture
-            if (!glass) g.Clear(BackColor);
+            // 20.11: a row that is a block of the mini panel: the window is the card (Windows rounds it and draws its rim).
+            // The row's own card showed inside it, with the page colour in its corners and another radius: two cards
+            // of two shapes, one in the other (the user's screenshot)
+            bool inBlock = Parent is IBackdrop;
+            if (!glass) g.Clear(inBlock ? Parent.BackColor : BackColor);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             var r = new RectangleF(0.5f, 0.5f, Width - 1.5f, Height - 1.5f);
-            if (!glass)
+            if (!glass && !inBlock)
             {
                 Theme.Fill(g, r, Theme.S(8), WarnStyle ? Theme.WarningBg : Theme.Card);
                 Theme.Stroke(g, r, Theme.S(8), WarnStyle ? Color.FromArgb(0x6b, 0x55, 0x1f) : Theme.Border);
