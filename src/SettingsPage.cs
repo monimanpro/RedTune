@@ -49,7 +49,7 @@ namespace RedTune
                 s.Expert = expert.Checked; Store.SaveSettings(s);
                 Hw.RaiseExpertChanged();
             };
-            Row("Экспертные функции", "«Кривая» и «Память» в меню, запись лимитов процессора AMD. Shift при запуске — безопасный запуск без них", expert);
+            Row("Экспертные функции", "«Кривая» и «Память» в меню, разгон видеокарты, запись лимитов процессора AMD. Shift при запуске — безопасный запуск без них", expert);
 
             // 17.11: the mini panel (a left click on the tray icon): which of its blocks are shown
             Section("Мини-панель");

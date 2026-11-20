@@ -99,6 +99,7 @@ namespace RedTune
             else if (blackBox != null) Warn("Перезагрузка без завершения работы. Перед ней работали: " + blackBox);
             // the watchdog takes the cores that were busy, unless an auto-tune was under way (then the restart is the tune's)
             if (blackBox != null && memCut == null && !tuner.HasRun) watch.ResetSeen(BlackBox.LastCores, blackBox);
+            BlackBox.Wanted = () => tuner.HasRun || CoreCurve.Measuring || settings.BlackBoxMode == 1 || (settings.BlackBoxMode == 0 && settings.WatchOn);
             BlackBox.Start();
             Ram.MemTest.Busy = () => tuner.Running;
             Ram.MemTest.CurveNow = () => curve.Active != null ? curve.Active.Values : null;
@@ -111,6 +112,7 @@ namespace RedTune
             System.Threading.Tasks.Task.Run(() => Lenovo.ApplyPendingIgpu());
             power.CurveWanted += OnCurveWanted;
             power.GpuWanted += OnGpuWanted;
+            PowerService.FnQCustom = () => settings.FnQCustom;
             power.ModeChanged += m =>
             {
                 if (PowerService.LltRunning) return; // LLT shows its own
@@ -133,7 +135,8 @@ namespace RedTune
             };
         }
 
-        bool NavFits(string key) { return key == NavBar.ToggleKey || Hw.PageFits(key) && (settings.Expert || !Hw.Risky(key)); }
+        // 20.11: «Видеокарта» is there without the expert functions too where its first row, the graphics mode, can be switched
+        bool NavFits(string key) { return key == NavBar.ToggleKey || Hw.PageFits(key) && (settings.Expert || !Hw.Risky(key) || key == "gpu" && GpuModeRow.Available); }
 
         // 19.11: in a narrow window the menu folds to its icons by itself, as the item «Свернуть меню» does, and gives its
         // width to the page; made wider again, the window gets the menu the user chose (settings.NavCompact). Folding
@@ -195,6 +198,8 @@ namespace RedTune
             if (pages.TryGetValue("sound", out gp) && gp.Visible && ((SoundPage)gp).HandleKey(keyData)) return true;
             // and on «Питание» (20.11): the values of the preset being edited
             if (pages.TryGetValue("power", out gp) && gp.Visible && gp is PowerPage && ((PowerPage)gp).HandleKey(keyData)) return true;
+            // and on «Кривая» (20.11): the grid's values and how they are set
+            if (pages.TryGetValue("curve", out gp) && gp.Visible && gp is CurvePage && ((CurvePage)gp).HandleKey(keyData)) return true;
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -391,8 +396,8 @@ namespace RedTune
         // full window open used to put the panel beside it)
         public void ToggleMini() { if (Mini.Toggle() && Visible) Hide(); }
         // 17.11: the panel as separate blocks with Windows' own blur (MiniBlocks). The one before it, with glass of its
-        // own making (MiniPanel: round blocks, frost and bending, but a frame or two behind the screen), is still in
-        // the source and takes the same arguments
+        // own making (MiniPanel: round blocks, frost and bending, but a frame or two behind the screen), was removed
+        // from the source on 20.11 (it is in the git history)
         MiniBlocks Mini { get { return mini ?? (mini = new MiniBlocks(settings, power, curve, SetModeFromMini, n => ApplyCurveNamed(n, "мини-панель"), OnGpuWanted, () => gpuApplying, () => curveApplying)); } }
 
         // a mode picked in the mini panel: as the buttons of «Главная» do it (the firmware sends no event for a mode set

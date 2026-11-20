@@ -313,6 +313,15 @@ f	8a824827	inicialização
 f	64b0614f	carregador
 f	d7b8a9de	bateria
 f	c81460e9	após a suspensão
+w	c91b3e82	Overclock
+w	ed77fcd8	A curva de frequência e as predefinições são funções avançadas: Configurações → Geral
+w	1d31bbca	Fn+Q inclui Personalizado
+w	de32aeba	Em ciclo: Silencioso → Equilibrado → Desempenho → Personalizado → Silencioso
+w	1b6b946f	Frequência mínima
+w	f244c01e	O processador não fica abaixo desta frequência
+w	8869f068	Caixa-preta
+w	cfba6cde	Com o vigia
+w	7a21f781	Só testes
 w	80b22750	Modo de energia do Windows
 w	454ec6c8	Tipo de plano
 w	adcdd377	Equilibrado
@@ -1081,7 +1090,7 @@ w	edc547fc	Limite de potência. Qual dos limites ele altera depende do processad
 w	261d4d4f	Aplicar agora
 w	104dd11f	Início seguro
 w	0ff66e96	Recursos avançados
-w	93646133	«Curva» e «Memória» no menu, gravação dos limites do processador AMD. Shift ao iniciar: um início seguro sem eles
+w	bf92fc28	«Curva» e «Memória» no menu, overclock da placa de vídeo, gravação dos limites do processador AMD. Shift ao iniciar: um início seguro sem eles
 w	b3826d07	A curva de tensão, os timings de memória e os limites diretos do processador alteram o que o fabricante definiu. Valores errados levam a travamentos, telas azuis ou a um notebook que não liga.\n\nSe algo der errado, segure Shift enquanto o Red Tune inicia: ele não aplicará nada.
 w	fd8c73cd	Ligar
 w	356be385	Som
@@ -1214,6 +1223,15 @@ w	5f11b887	as listas de efeitos originais não foram guardadas
 w	1a79d826	Graves à parte
 w	7c83b011	Os graves abaixo do corte e todo o resto são comprimidos separadamente: um bumbo não abaixa a voz nem os agudos
 w	4fbcff2c	Hz
+f	f6acd0a1	no plano 
+f	270a07ee	 % de 
+f	fc550669	, frequência mínima 
+f	c8c88e80	 · em páginas comuns
+f	cbfecb2b	Agora não está gravando · 
+f	2153a745	Gravando agora · 
+f	ab6f4aa0	enquanto a observação está ligada e durante os testes
+f	774d34af	sempre, a cada 2 segundos
+f	f2d6ae01	só durante um autoajuste e uma medição da curva dos núcleos
 f	abd087d5	 bits por canal
 f	b4501cda	Este modo tem um perfil próprio: o escolhido no modo padrão não vale aqui
 f	daa51691	. Sem perfil, o Windows gerencia as cores sozinho

@@ -60,7 +60,7 @@ namespace RedTune
                     return Convert.ToInt32(Other.InvokeMethod("GetFeatureValue", inp, null)["Value"]);
                 }
             }
-            catch { return int.MinValue; }
+            catch (Exception ex) { Store.Quiet("Lenovo: чтение 0x" + id.ToString("X8"), ex); return int.MinValue; }
         }
 
         // ---------- AMD overclocking (LLT 2.36 GodModeController.ApplyOcIfNeededAsync) ----------
@@ -160,7 +160,7 @@ namespace RedTune
                     if (gsync == 0 && IgpuModeSupported && GameZoneGet("GetIGPUModeStatus") != igpu) System.IO.File.WriteAllText(PendingIgpuFile, igpu.ToString());
                     else System.IO.File.Delete(PendingIgpuFile);
                 }
-                catch { }
+                catch (Exception ex) { Store.Quiet("видеокарта: режим iGPU после перезагрузки", ex); }
                 Store.Log("видеокарта: GSync -> " + gsync + " (" + GpuModeNames[mode] + "), нужна перезагрузка");
                 return true;
             }
@@ -183,23 +183,5 @@ namespace RedTune
 
         public static readonly int[] DefaultFanTable = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
         public static readonly int[] MinimumFanTable = { 1, 1, 1, 1, 1, 1, 1, 1, 3, 5 };
-
-        // custom-mode fan table thresholds for the hover hints: CPU sensor 4, GPU sensor 5
-        public static void FanTemps(out int[] cpu, out int[] gpu, out int[] rpm)
-        {
-            cpu = gpu = rpm = null;
-            try
-            {
-                using (var s = new ManagementObjectSearcher(new ManagementScope(@"root\WMI"), new ObjectQuery("SELECT * FROM LENOVO_FAN_TABLE_DATA WHERE Mode = 255")))
-                    foreach (ManagementObject o in s.Get())
-                    {
-                        int fanId = Convert.ToInt32(o["Fan_Id"]), sensor = Convert.ToInt32(o["Sensor_ID"]);
-                        var temps = ((Array)o["SensorTable_Data"]).Cast<object>().Select(Convert.ToInt32).ToArray();
-                        if (fanId == 1 && sensor == 4) { cpu = temps; rpm = ((Array)o["FanTable_Data"]).Cast<object>().Select(Convert.ToInt32).ToArray(); }
-                        if (fanId == 2 && sensor == 5) gpu = temps;
-                    }
-            }
-            catch { }
-        }
     }
 }

@@ -29,9 +29,21 @@ namespace RedTune.Ram
         {
             public DateTime Time; public string Mem = "";
             public List<Point> Points = new List<Point>();
+            // 21.11: measured on 2 MB pages (Windows gave them): no page lookups in the steps, the memory figure as AIDA64's
+            public bool Large;
             // the delay at the biggest measured block that is not over this size; NaN when there is none
             public double At(long bytes) { var p = Points.Where(x => x.Bytes <= bytes).OrderBy(x => x.Bytes).LastOrDefault(); return p == null ? double.NaN : p.Ns; }
-            public double Ram { get { return Points.Count > 0 ? Points.OrderBy(x => x.Bytes).Last().Ns : double.NaN; } }
+            // on large pages at a block of six times the L3 (AidaBytes; 192 MB here: 76.7–77.2 ns against AIDA64's 76.6 on
+            // 21.11; a bigger block adds misses of the 2 MB page entries too), else the biggest block, as before
+            public double Ram
+            {
+                get
+                {
+                    if (Points.Count == 0) return double.NaN;
+                    if (Large) { var a = At(AidaBytes); if (!double.IsNaN(a)) return a; }
+                    return Points.OrderBy(x => x.Bytes).Last().Ns;
+                }
+            }
             // inside a cache: at half its size, where the block surely fits beside everything else the core keeps there
             public double L1 { get { return CacheL1 > 0 ? At(CacheL1 / 2) : double.NaN; } }
             public double L2 { get { return CacheL2 > 0 ? At(CacheL2 / 2) : double.NaN; } }
@@ -45,6 +57,10 @@ namespace RedTune.Ram
 
         public const long MinBytes = 4 << 10; // 16.11: from inside the L1 (it was 64 KB, the L2)
         static long l1 = -1, l2 = -1, l3 = -1;
+        // 21.11 (the user's choice): six times the L3, so about the same share of the reads (~17 %) still come from it on any
+        // processor, as in AIDA64's 76.6 ns here; at least 64 MB (a small L3 would bring the block back into the caches);
+        // 192 MB when the L3 size is unknown
+        public static long AidaBytes { get { return CacheL3 > 0 ? Math.Max(64L << 20, 6 * CacheL3) : 192L << 20; } }
         public static long CacheL1 { get { if (l1 < 0) l1 = RedTune.Dist.Native.CacheBytes(1); return l1; } }
         public static long CacheL2 { get { if (l2 < 0) l2 = RedTune.Dist.Native.CacheBytes(2); return l2; } }
         public static long CacheL3 { get { if (l3 < 0) l3 = RedTune.Dist.Native.CacheBytes(3); return l3; } }
@@ -87,7 +103,16 @@ namespace RedTune.Ram
                     // one core, not the first (Windows keeps its own work there); the other thread of the core stays free
                     int core = Math.Min(1, Hw.CurveCores - 1), cpu = core * Hw.ThreadsPerCore;
                     if (cpu < 64) SetThreadAffinityMask(GetCurrentThread(), (UIntPtr)(1UL << cpu));
-                    block = VirtualAlloc(IntPtr.Zero, (UIntPtr)(ulong)max, 0x3000, 4);
+                    // 21.11: 2 MB pages where Windows gives them (the right to lock pages; the app runs as administrator):
+                    // ordinary 4 KB ones add a page lookup to every step past ~12 MB (about 16 ns on the memory, AIDA64 has none)
+                    long lp = (long)(ulong)GetLargePageMinimum();
+                    if (lp > 0 && LockPagesRight())
+                    {
+                        long want = (max + lp - 1) / lp * lp;
+                        block = VirtualAlloc(IntPtr.Zero, (UIntPtr)(ulong)want, 0x3000 | 0x20000000, 4);
+                        run.Large = block != IntPtr.Zero;
+                    }
+                    if (block == IntPtr.Zero) block = VirtualAlloc(IntPtr.Zero, (UIntPtr)(ulong)max, 0x3000, 4);
                     if (block == IntPtr.Zero) throw new Exception("Windows не дал " + (max >> 20) + " МБ памяти");
                     byte* b = (byte*)block;
                     // the clock up before the first point: the cache delays are counted in the core's cycles
@@ -136,6 +161,94 @@ namespace RedTune.Ram
             return null;
         }
 
+        // ---------- 21.11: a probe of why AIDA64 shows less (--latency-probe) ----------
+        [DllImport("kernel32.dll")] static extern UIntPtr GetLargePageMinimum();
+        [DllImport("advapi32.dll", SetLastError = true)] static extern bool OpenProcessToken(IntPtr process, uint access, out IntPtr token);
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)] static extern bool LookupPrivilegeValue(string system, string name, out long luid);
+        [DllImport("advapi32.dll", SetLastError = true)] static extern bool AdjustTokenPrivileges(IntPtr token, bool disableAll, ref TokPriv newState, int len, IntPtr prev, IntPtr retLen);
+        [DllImport("kernel32.dll")] static extern IntPtr GetCurrentProcess();
+        [StructLayout(LayoutKind.Sequential, Pack = 4)] struct TokPriv { public int Count; public long Luid; public int Attr; }
+
+        // the right to lock pages (large pages need it): enabled in this process if the account holds it
+        static bool LockPagesRight()
+        {
+            IntPtr tok; long luid;
+            if (!OpenProcessToken(GetCurrentProcess(), 0x28, out tok) || !LookupPrivilegeValue(null, "SeLockMemoryPrivilege", out luid)) return false;
+            var tp = new TokPriv { Count = 1, Luid = luid, Attr = 2 };
+            return AdjustTokenPrivileges(tok, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero) && Marshal.GetLastWin32Error() == 0;
+        }
+
+        static double Time(byte* p, out byte* end)
+        {
+            double best = double.MaxValue; var sw = new System.Diagnostics.Stopwatch();
+            for (int rep = 0; rep < 3; rep++)
+            {
+                long steps = 0; sw.Restart();
+                do { p = Chase(p, 1 << 17); steps += 1 << 17; } while (sw.ElapsedMilliseconds < 300);
+                best = Math.Min(best, sw.Elapsed.TotalMilliseconds * 1e6 / steps);
+            }
+            end = p; return best;
+        }
+
+        // one line in every 4 KB page of the block, the pages in one random loop, the line inside each page spread over
+        // the 64 (else all of them fall into the same cache sets): every step is a page lookup, the data itself from the L3
+        static void BuildPages(byte* b, long pages, ref ulong seed)
+        {
+            Func<long, long> at = i => i * 4096 + ((i * 37) & 63) * 64;
+            var order = new long[pages];
+            for (long i = 0; i < pages; i++) order[i] = i;
+            ulong s = seed;
+            for (long i = pages - 1; i > 0; i--) { s ^= s << 13; s ^= s >> 7; s ^= s << 17; long j = (long)(s % (ulong)i); long v = order[i]; order[i] = order[j]; order[j] = v; }
+            seed = s;
+            // order is one cycle (Sattolo): page i points to page order[i]
+            for (long i = 0; i < pages; i++) *(long*)(b + at(i)) = (long)(b + at(order[i]));
+        }
+
+        internal static string Probe()
+        {
+            var sb = new StringBuilder();
+            int core = Math.Min(1, Hw.CurveCores - 1), cpu = core * Hw.ThreadsPerCore;
+            if (cpu < 64) SetThreadAffinityMask(GetCurrentThread(), (UIntPtr)(1UL << cpu));
+            System.Threading.Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            var spin = System.Diagnostics.Stopwatch.StartNew(); double x = 1;
+            while (spin.ElapsedMilliseconds < 500) for (int i = 0; i < 100000; i++) x = Math.Sqrt(x + i);
+            long size = 1L << 30; ulong seed = 0x9E3779B97F4A7C15UL ^ (ulong)DateTime.Now.Ticks; byte* end;
+            // 1. large pages
+            bool right = LockPagesRight(); long lp = (long)(ulong)GetLargePageMinimum();
+            IntPtr big = right && lp > 0 ? VirtualAlloc(IntPtr.Zero, (UIntPtr)(ulong)size, 0x3000 | 0x20000000, 4) : IntPtr.Zero;
+            sb.AppendLine("large pages: right " + (right ? "yes" : "no") + ", page " + (lp >> 10) + " KB, block " + (big != IntPtr.Zero ? "given" : "not given (" + Marshal.GetLastWin32Error() + ")"));
+            if (big != IntPtr.Zero)
+            {
+                Build((byte*)big, size / 64, ref seed);
+                sb.AppendLine("  1 GB random on large pages: " + Time((byte*)big, out end).ToString("0.0", CultureInfo.InvariantCulture) + " ns");
+                foreach (long mb in new long[] { 48, 64, 96, 128, 192, 256, 384, 512 })
+                {
+                    Build((byte*)big, (mb << 20) / 64, ref seed);
+                    sb.AppendLine("  " + mb + " MB random on large pages: " + Time((byte*)big, out end).ToString("0.0", CultureInfo.InvariantCulture) + " ns");
+                }
+                VirtualFree(big, UIntPtr.Zero, 0x8000);
+            }
+            // 2. ordinary pages: the full random chase, the page lookups alone, the L3 alone
+            IntPtr blk = VirtualAlloc(IntPtr.Zero, (UIntPtr)(ulong)size, 0x3000, 4);
+            byte* b = (byte*)blk;
+            Build(b, size / 64, ref seed);
+            double full = Time(b, out end);
+            BuildPages(b, size / 4096, ref seed);
+            double walk = Time(b, out end);
+            Build(b, (8L << 20) / 64, ref seed); end = Chase(b, (8L << 20) / 64);
+            double l3 = Time(end, out end);
+            Build(b, (256L << 10) / 64, ref seed); end = Chase(b, (256L << 10) / 64);
+            double l2 = Time(end, out end);
+            VirtualFree(blk, UIntPtr.Zero, 0x8000);
+            Func<double, string> f = v => v.ToString("0.0", CultureInfo.InvariantCulture);
+            sb.AppendLine("1 GB random, 4 KB pages: " + f(full) + " ns");
+            sb.AppendLine("one line per page over 1 GB (lookup + L3): " + f(walk) + " ns");
+            sb.AppendLine("8 MB random (L3): " + f(l3) + " ns, 256 KB (L2): " + f(l2) + " ns  → clock ≈ " + (14 / l2).ToString("0.00", CultureInfo.InvariantCulture) + " GHz (L2 = 14 cycles)");
+            sb.AppendLine("page lookup ≈ " + f(walk - l3) + " ns → memory without it ≈ " + f(full - (walk - l3)) + " ns");
+            if (x < 0) sb.AppendLine("?");
+            return sb.ToString();
+        }
+
         // n lines of the block in one random loop: line i first holds i, Sattolo's shuffle makes the numbers one cycle
         // through all of them, then every number becomes the address of its line
         static void Build(byte* b, long n, ref ulong seed)
@@ -181,7 +294,7 @@ namespace RedTune.Ram
                 {
                     var p = line.Split('|'); DateTime t;
                     if (p.Length < 3 || !DateTime.TryParseExact(p[0], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out t)) continue;
-                    var run = new Run { Time = t, Mem = p[1] };
+                    var run = new Run { Time = t, Mem = p[1], Large = p.Length > 3 && p[3] == "lp" };
                     foreach (var pt in p[2].Split(','))
                     {
                         var xy = pt.Split(':'); long by; double ns;
@@ -199,7 +312,7 @@ namespace RedTune.Ram
             var all = Load(); all.Add(run);
             Directory.CreateDirectory(RamCore.DataDir);
             File.WriteAllLines(FilePath, all.Skip(Math.Max(0, all.Count - Keep)).Select(r => string.Join("|", r.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), r.Mem.Replace('|', '/'),
-                string.Join(",", r.Points.Select(q => q.Bytes + ":" + q.Ns.ToString("0.00", CultureInfo.InvariantCulture))))), new UTF8Encoding(true));
+                string.Join(",", r.Points.Select(q => q.Bytes + ":" + q.Ns.ToString("0.00", CultureInfo.InvariantCulture))) + (r.Large ? "|lp" : ""))), new UTF8Encoding(true));
         }
 
         // ---------- texts ----------
@@ -218,10 +331,12 @@ namespace RedTune.Ram
         public static string Summary(Run r, Run before)
         {
             var s = "RAM " + Ns(r.Ram) + " нс";
-            if (before != null && !double.IsNaN(before.Ram)) s += " (было " + Ns(before.Ram) + ")";
+            // a run on the other kind of pages is no comparison: 4 KB ones carry ~16 ns of page lookups
+            if (before != null && before.Large == r.Large && !double.IsNaN(before.Ram)) s += " (было " + Ns(before.Ram) + ")";
             if (!double.IsNaN(r.L3)) s += " · L3 " + Ns(r.L3) + " нс";
             if (!double.IsNaN(r.L2)) s += " · L2 " + Ns(r.L2) + " нс";
             if (!double.IsNaN(r.L1)) s += " · L1 " + Ns(r.L1) + " нс";
+            if (!r.Large) s += " · на обычных страницах";
             return s;
         }
     }

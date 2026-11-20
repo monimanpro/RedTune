@@ -583,7 +583,7 @@ namespace RedTune
                 }
                 ac = a; dc = d; have = true;
             }
-            catch { }
+            catch (Exception ex) { Store.Quiet("режим питания Windows: слежение", ex); }
         }
     }
 }

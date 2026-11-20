@@ -313,6 +313,15 @@ f	8a824827	khởi động
 f	64b0614f	bộ sạc
 f	d7b8a9de	pin
 f	c81460e9	sau khi ngủ
+w	c91b3e82	Ép xung
+w	ed77fcd8	Đường cong xung nhịp và các cấu hình sẵn là chức năng chuyên gia: Cài đặt → Chung
+w	1d31bbca	Fn+Q gồm cả Tùy chỉnh
+w	de32aeba	Theo vòng: Yên tĩnh → Cân bằng → Hiệu năng → Tùy chỉnh → Yên tĩnh
+w	1b6b946f	Xung nhịp tối thiểu
+w	f244c01e	Bộ xử lý không xuống dưới xung nhịp này
+w	8869f068	Hộp đen
+w	cfba6cde	Cùng bộ giám sát
+w	7a21f781	Chỉ khi kiểm tra
 w	80b22750	Chế độ nguồn của Windows
 w	454ec6c8	Loại gói nguồn
 w	adcdd377	Cân bằng
@@ -1081,7 +1090,7 @@ w	edc547fc	Giới hạn công suất. Nó thay đổi giới hạn nào tùy và
 w	261d4d4f	Áp dụng ngay
 w	104dd11f	Khởi động an toàn
 w	0ff66e96	Tính năng chuyên gia
-w	93646133	«Đường cong» và «Bộ nhớ» trong menu, ghi giới hạn bộ xử lý AMD. Giữ Shift khi khởi động: khởi động an toàn không có chúng
+w	bf92fc28	«Đường cong» và «Bộ nhớ» trong menu, ép xung card đồ họa, ghi giới hạn bộ xử lý AMD. Giữ Shift khi khởi động: khởi động an toàn không có chúng
 w	b3826d07	Đường cong điện áp, timing bộ nhớ và giới hạn trực tiếp của bộ xử lý thay đổi những gì nhà sản xuất đã đặt. Giá trị sai dẫn đến treo máy, màn hình xanh hoặc laptop không khởi động được.\n\nNếu có sự cố, hãy giữ Shift khi Red Tune khởi động: nó sẽ không áp dụng gì.
 w	fd8c73cd	Bật
 w	356be385	Âm thanh
@@ -1214,6 +1223,15 @@ w	5f11b887	danh sách hiệu ứng gốc không được giữ lại
 w	1a79d826	Âm trầm riêng
 w	7c83b011	Âm trầm dưới điểm chia và phần còn lại được nén riêng: tiếng trống kick không kéo giọng và âm cao xuống
 w	4fbcff2c	Hz
+f	f6acd0a1	trong sơ đồ 
+f	270a07ee	 % của 
+f	fc550669	, xung nhịp tối thiểu 
+f	c8c88e80	 · trên trang thường
+f	cbfecb2b	Hiện không ghi · 
+f	2153a745	Đang ghi · 
+f	ab6f4aa0	khi bật theo dõi và trong lúc kiểm tra
+f	774d34af	luôn luôn, mỗi 2 giây
+f	f2d6ae01	chỉ trong lúc tự tinh chỉnh và đo đường cong nhân
 f	abd087d5	 bit mỗi kênh
 f	b4501cda	Chế độ này có hồ sơ riêng: hồ sơ chọn ở chế độ tiêu chuẩn không có tác dụng ở đây
 f	daa51691	. Khi không có hồ sơ, Windows tự quản lý màu

@@ -313,6 +313,15 @@ f	8a824827	inicio
 f	64b0614f	cargador
 f	d7b8a9de	batería
 f	c81460e9	tras la suspensión
+w	c91b3e82	Overclocking
+w	ed77fcd8	La curva de frecuencia y los preajustes son funciones expertas: Ajustes → General
+w	1d31bbca	Fn+Q incluye Personalizado
+w	de32aeba	En ciclo: Silencioso → Equilibrado → Rendimiento → Personalizado → Silencioso
+w	1b6b946f	Frecuencia mínima
+w	f244c01e	El procesador no baja de esta frecuencia
+w	8869f068	Caja negra
+w	cfba6cde	Con el vigilante
+w	7a21f781	Solo pruebas
 w	80b22750	Modo de energía de Windows
 w	454ec6c8	Tipo de plan
 w	adcdd377	Equilibrado
@@ -1081,7 +1090,7 @@ w	edc547fc	Límite de potencia. Cuál de los límites cambia depende del procesa
 w	261d4d4f	Aplicar ahora
 w	104dd11f	Inicio seguro
 w	0ff66e96	Funciones expertas
-w	93646133	«Curva» y «Memoria» en el menú, escritura de los límites del procesador AMD. Mayús al iniciar: un inicio seguro sin ellas
+w	bf92fc28	«Curva» y «Memoria» en el menú, overclocking de la tarjeta gráfica, escritura de los límites del procesador AMD. Mayús al iniciar: un inicio seguro sin ellas
 w	b3826d07	La curva de voltaje, los tiempos de memoria y los límites directos del procesador cambian lo que fijó el fabricante. Valores incorrectos provocan cuelgues, pantallas azules o un portátil que no arranca.\n\nSi algo salió mal, mantén pulsada Mayús mientras se inicia Red Tune: no aplicará nada.
 w	fd8c73cd	Activar
 w	356be385	Sonido
@@ -1214,6 +1223,15 @@ w	5f11b887	no se conservaron las listas de efectos originales
 w	1a79d826	Graves aparte
 w	7c83b011	Los graves por debajo del corte y todo lo demás se comprimen por separado: un bombo no baja la voz ni los agudos
 w	4fbcff2c	Hz
+f	f6acd0a1	en el plan 
+f	270a07ee	 % de 
+f	fc550669	, frecuencia mínima 
+f	c8c88e80	 · en páginas normales
+f	cbfecb2b	Ahora no registra · 
+f	2153a745	Ahora registra · 
+f	ab6f4aa0	mientras la vigilancia está activa y durante las pruebas
+f	774d34af	siempre, cada 2 segundos
+f	f2d6ae01	solo durante un autoajuste y una medición de la curva de núcleos
 f	abd087d5	 bits por canal
 f	b4501cda	Este modo tiene su propio perfil: el elegido en el modo estándar no actúa aquí
 f	daa51691	. Sin perfil, Windows gestiona el color por sí mismo

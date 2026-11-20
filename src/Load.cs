@@ -302,8 +302,6 @@ namespace RedTune
             return list;
         }
 
-        public static List<string> Whea(DateTime since) { return WheaHits(since).Select(h => h.Text).ToList(); }
-
         // the core of a WHEA 47 whose MCA bank is the core's own, else −1. The x64 MCA section (WHEA_XPF_MCA_SECTION) starts
         // with VersionNumber and CpuVendor (2 = AMD), then Timestamp (8), ProcessorNumber (4), GlobalStatus (8),
         // InstructionPointer (8), BankNumber (4), Status (8)

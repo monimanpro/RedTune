@@ -567,6 +567,12 @@ namespace RedTune
                     page = pp;
                 }
                 else if (what == "curve") page = new CurvePage(new CurveService(s), new Tuner(s), () => { }, () => { }); // 20.11: the real page (the screenshots), reads the presets, applies nothing
+                else if (what == "watch") // 20.11: «Сторож» (reads its state, decides and saves nothing: Dry)
+                {
+                    var wcs = new CurveService(s);
+                    BlackBox.Wanted = () => s.BlackBoxMode == 1 || (s.BlackBoxMode == 0 && s.WatchOn);
+                    page = new WatchPage(new Watchdog(s, wcs, () => false) { Dry = true }, wcs, s, i => { });
+                }
                 else if (what == "tune") page = new TunePage(new Tuner(s), new CurveService(s), s, () => { }, () => { }); // 18.11: the auto-tune page with its mode switch (reads the tune's state, starts nothing)
                 else
                 {

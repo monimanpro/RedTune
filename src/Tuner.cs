@@ -410,7 +410,7 @@ namespace RedTune
                         if (!same) { Smu.Write(values); written = (int[])values.Clone(); wheaFrom = DateTime.Now; Thread.Sleep(3000); }
                         why = body(stop);
                         Load.StopAll();
-                        if (!SetPhase) { try { Smu.Write(new int[Hw.CurveCores]); } catch { } written = null; }
+                        if (!SetPhase) { try { Smu.Write(new int[Hw.CurveCores]); } catch (Exception ex) { Store.Quiet("автотюн: ядра на 0", ex); } written = null; }
                     }
                     if (stop.IsCancellationRequested && why == null) { State.Round = null; Save(); break; } // paused mid-round: the round doesn't count
                     if (why != null && why.StartsWith("WHEA")) State.Wheas++;
@@ -418,7 +418,7 @@ namespace RedTune
                     Record(why == null, why);
                     State.Round = null; Save();
                     Note(why == null ? "Пройден" : "Не пройден: " + why);
-                    if (Simulate == null && held && (!SetPhase || State.Done)) { try { Smu.Write(new int[Hw.CurveCores]); } catch { } written = null; }
+                    if (Simulate == null && held && (!SetPhase || State.Done)) { try { Smu.Write(new int[Hw.CurveCores]); } catch (Exception ex) { Store.Quiet("автотюн: ядра на 0", ex); } written = null; }
                     if (Simulate == null && !State.Done) stop.WaitHandle.WaitOne(held && why == null ? 1500 : Quick && State.Phase == 1 ? (Quick2 ? 5000 : 8000) : held ? 8000 : 30000); // cool down
                 }
                 if (State.Done) Finish();
@@ -429,7 +429,7 @@ namespace RedTune
                 Load.StopAll();
                 if (Simulate == null)
                 {
-                    try { Smu.Write(ActiveValues()); } catch { }
+                    try { Smu.Write(ActiveValues()); } catch (Exception ex) { Store.Quiet("автотюн: возврат активной кривой", ex); }
                     SetThreadExecutionState(0x80000000);
                     CoreCurve.CapEnd();
                 }

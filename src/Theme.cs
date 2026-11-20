@@ -263,50 +263,6 @@ namespace RedTune
             }
         }
 
-        // 16.11: a button of the same glass as the slider knobs (the core switches under «Кривые всех ядер»): a soft shadow
-        // under it, a body darker at the top, an inner shade, the bright rim strongest top left and bottom right. lit 0..1:
-        // the light inside, coming from below, with a bright dash near the lower edge; unlit, the dash is short and pale.
-        public static void GlassButton(Graphics g, RectangleF r, float rad, float lit, Color light)
-        {
-            float px = Scale;
-            lit = Math.Max(0, Math.Min(1, lit));
-            var sh = new RectangleF(r.X - 2f * px, r.Y - 0.5f * px, r.Width + 4f * px, r.Height + 4.5f * px);
-            using (var sp = Round(sh, rad + 2f * px))
-            using (var sb = new PathGradientBrush(sp) { CenterColor = Color.FromArgb(120, 0, 0, 0), SurroundColors = new[] { Color.FromArgb(0, 0, 0, 0) }, FocusScales = new PointF(0.8f, 0.6f) })
-                g.FillPath(sb, sp);
-            using (var path = Round(r, rad))
-            {
-                using (var body = new LinearGradientBrush(new RectangleF(r.X, r.Y - 1, r.Width, r.Height + 2), Mix(Card, Color.Black, 0.3f), Mix(Card, Color.White, 0.13f), 90f))
-                    g.FillPath(body, path);
-                var st = g.Save();
-                g.SetClip(path, CombineMode.Intersect);
-                float cx = r.X + r.Width / 2f;
-                if (lit > 0.01f)
-                    using (var gp = new GraphicsPath())
-                    {
-                        gp.AddEllipse(cx - r.Width * 0.75f, r.Y + r.Height * 0.15f, r.Width * 1.5f, r.Height * 1.5f);
-                        using (var pb = new PathGradientBrush(gp) { CenterColor = Color.FromArgb((int)(190 * lit), Mix(light, Color.White, 0.1f)), SurroundColors = new[] { Color.FromArgb(0, light) } })
-                            g.FillPath(pb, gp);
-                    }
-                // the dash: short and pale when dark, as wide as the light and in its colour when lit
-                float dh = 2.4f * px, half = r.Width * (0.16f + 0.2f * lit), dy = r.Bottom - 5.5f * px;
-                var pale = Mix(Card, Color.White, 0.3f);
-                using (var dp = Round(new RectangleF(cx - half, dy - dh / 2f, half * 2, dh), dh / 2f))
-                using (var db = new SolidBrush(Mix(pale, Mix(light, Color.White, 0.4f), lit)))
-                    g.FillPath(db, dp);
-                using (var ip = Round(RectangleF.Inflate(r, 1, 1), rad + 1))
-                using (var ib = new PathGradientBrush(ip) { CenterPoint = new PointF(cx, r.Y + r.Height * 0.7f), CenterColor = Color.FromArgb(0, 0, 0, 0), SurroundColors = new[] { Color.FromArgb(95, 0, 0, 0) }, FocusScales = new PointF(0.75f, 0.4f) })
-                    g.FillPath(ib, ip);
-                g.Restore(st);
-                using (var rb = new LinearGradientBrush(RectangleF.Inflate(r, 2, 2), Color.White, Color.White, 45f))
-                {
-                    float k = 2f - lit; // the rim of a dark button is half as bright
-                    rb.InterpolationColors = new ColorBlend { Colors = new[] { W((int)(235 / k)), W((int)(105 / k)), W((int)(80 / k)), W((int)(190 / k)) }, Positions = new[] { 0f, 0.42f, 0.62f, 1f } };
-                    using (var pen = new Pen(rb, 1.35f * px)) g.DrawPath(pen, path);
-                }
-            }
-        }
-
         // 16.11: a round lamp button, after the lit push buttons of studio gear (the core switches under «Кривые всех ядер»):
         // a dark socket sunk into the panel, in it a glass lens seen as rings (the rim, an inner ring, a crescent of
         // reflected light lower left), and the core in the middle. Dark: the core is black, the rings are grey glass.
@@ -465,17 +421,6 @@ namespace RedTune
             using (var p = Round(r, Rad(r, rad))) if (Pane(r)) Sheen(g, p, r);
         }
 
-        // 17.11: the light of a see-through pane alone, without the card colour (the mini panel's blocks put the colour
-        // on themselves, thinner towards the edge): the faint white frost and the sheen. rad: the corner as drawn
-        public static void GlassSheen(Graphics g, RectangleF r, float rad)
-        {
-            using (var p = Round(r, rad))
-            {
-                using (var b = new SolidBrush(W(10))) g.FillPath(b, p);
-                Sheen(g, p, r);
-            }
-        }
-
         // the glow inside the top and bottom edges: an ellipse of light centred on the edge, clipped to the pane
         static void Sheen(Graphics g, GraphicsPath pane, RectangleF r)
         {
@@ -574,86 +519,6 @@ namespace RedTune
         public static int Measure(Graphics g, string s, Font f)
         {
             return TextRenderer.MeasureText(g, L.T(s), f, Size.Empty, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width;
-        }
-
-        // load ring: track, arc from the top clockwise, value and caption in the middle
-        public static void DrawRing(Graphics g, RectangleF r, float fraction, string value, string caption)
-        {
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            float w = S(7);
-            var a = new RectangleF(r.X + w / 2, r.Y + w / 2, r.Width - w, r.Height - w);
-            // 14.11 (5), after a rod and a hollow that looked better in the head than on the screen: flat and clean. A thin
-            // quiet track; over it a wider arc in the gradient of the whole circle (dark red at the top, brighter the
-            // further round), cut straight at both ends; and at its end a fine light tick across it, a little longer than
-            // the arc is wide, like the needle of a gauge, with a soft glow. The eye finds the value by the tick.
-            using (var pen = new Pen(Border, Math.Max(2f, 2.4f * Scale))) g.DrawEllipse(pen, a);
-            fraction = Math.Max(0, Math.Min(1, fraction));
-            if (fraction > 0.003f)
-            {
-                float sweep = 360 * fraction;
-                float cx = a.X + a.Width / 2f, cy0 = a.Y + a.Height / 2f, rr = a.Width / 2f;
-                using (var pen = new Pen(Color.Black, w) { StartCap = LineCap.Flat, EndCap = LineCap.Flat })
-                using (var path = new GraphicsPath())
-                {
-                    path.AddArc(a, -90, sweep);
-                    path.Widen(pen);
-                    var box = Rectangle.Inflate(Rectangle.Ceiling(path.GetBounds()), 2, 2);
-                    using (var pic = Conic(box, cx, cy0, sweep))
-                    using (var tb = new TextureBrush(pic, WrapMode.Clamp))
-                    {
-                        tb.TranslateTransform(box.X, box.Y);
-                        g.FillPath(tb, path);
-                    }
-                }
-                double end = (-90 + sweep) * Math.PI / 180;
-                float ux = (float)Math.Cos(end), uy = (float)Math.Sin(end), ex = cx + rr * ux, ey = cy0 + rr * uy;
-                float gr = w * 1.5f;
-                using (var gp = new GraphicsPath())
-                {
-                    gp.AddEllipse(ex - gr, ey - gr, gr * 2, gr * 2);
-                    using (var pb = new PathGradientBrush(gp) { CenterColor = Color.FromArgb(80, Heat(fraction)), SurroundColors = new[] { Color.FromArgb(0, Heat(fraction)) } })
-                        g.FillPath(pb, gp);
-                }
-                float half = w / 2f + 2.2f * Scale;
-                using (var pen = new Pen(Mix(Heat(fraction), Color.White, 0.78f), Math.Max(1.5f, 1.5f * Scale)) { StartCap = LineCap.Round, EndCap = LineCap.Round })
-                    g.DrawLine(pen, ex - ux * half, ey - uy * half, ex + ux * half, ey + uy * half);
-            }
-            // the value and the caption as one block centred in the ring: from the top of the digits to the baseline of the
-            // caption (its descenders, «з», «у», hang below and don't count for the eye). Measured on 13.11: the block sat
-            // 7–9 px low; the rows below put it on the centre, with the caption 2 px closer to the value.
-            float cy = r.Y + r.Height / 2f;
-            // TextRenderer also centres the text 2 px left of the middle (measured): that goes back
-            int tx = (int)Math.Round(r.X + 1.6f * Scale), tw = (int)Math.Round(r.Width);
-            var vr = new Rectangle(tx, (int)Math.Round(cy - 19.4f * Scale), tw, S(24));
-            TextRenderer.DrawText(g, value, Big, vr, Text, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-            var cr = new Rectangle(tx, (int)Math.Round(cy + 1.1f * Scale), tw, S(16));
-            TextRenderer.DrawText(g, L.T(caption), Small, cr, Text2, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-        }
-
-        // the ring's colours as a picture over the box: each pixel coloured by its angle from the top, clockwise. Pixels just
-        // before the top (the round start) count as the start; the colour is that point of the whole circle.
-        static Bitmap Conic(Rectangle box, float cx, float cy, float sweep)
-        {
-            var bmp = new Bitmap(Math.Max(1, box.Width), Math.Max(1, box.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, bmp.PixelFormat);
-            try
-            {
-                var row = new int[bmp.Width];
-                float gap = (360f - sweep) / 2f;
-                for (int y = 0; y < bmp.Height; y++)
-                {
-                    for (int x = 0; x < bmp.Width; x++)
-                    {
-                        double deg = Math.Atan2(box.Y + y + 0.5 - cy, box.X + x + 0.5 - cx) * 180 / Math.PI + 90; // 0 = top, clockwise
-                        if (deg < 0) deg += 360;
-                        if (deg > sweep + gap) deg -= 360; // just before the top: the start
-                        row[x] = Heat((float)(deg / 360)).ToArgb();
-                    }
-                    System.Runtime.InteropServices.Marshal.Copy(row, 0, data.Scan0 + y * data.Stride, row.Length);
-                }
-            }
-            finally { bmp.UnlockBits(data); }
-            return bmp;
         }
     }
 
@@ -855,44 +720,6 @@ namespace RedTune
             }
             catch { shot.Dispose(); throw; }
         }
-
-        // 17.11: the screen under phys, a rectangle in real pixels, as it is, not brought to another size (the mini panel's
-        // live glass compares frame with frame first, and scaling every frame for that cost 26 ms on a 150 % screen)
-        public static Bitmap GrabRealRaw(Rectangle phys)
-        {
-            var big = new Bitmap(phys.Width, phys.Height);
-            try
-            {
-                IntPtr old = IntPtr.Zero;
-                try { old = SetThreadDpiAwarenessContext(PerMonitor); } catch { }
-                try { using (var g = Graphics.FromImage(big)) g.CopyFromScreen(phys.Location, Point.Empty, phys.Size); }
-                finally { if (old != IntPtr.Zero) SetThreadDpiAwarenessContext(old); }
-                return big;
-            }
-            catch { big.Dispose(); throw; }
-        }
-
-        // 17.11: the screen under phys (real pixels) copied into a memory DC of the caller's, no picture made in between
-        // (the mini panel's live glass on a monitor of another scaling reads a frame up to 60 times a second)
-        [System.Runtime.InteropServices.DllImport("user32.dll")] static extern IntPtr GetDC(IntPtr h);
-        [System.Runtime.InteropServices.DllImport("user32.dll")] static extern int ReleaseDC(IntPtr h, IntPtr dc);
-        [System.Runtime.InteropServices.DllImport("gdi32.dll")] static extern bool BitBlt(IntPtr dst, int x, int y, int w, int h, IntPtr src, int sx, int sy, uint rop);
-        public static bool BlitReal(IntPtr dc, Rectangle phys)
-        {
-            IntPtr old = IntPtr.Zero;
-            try { old = SetThreadDpiAwarenessContext(PerMonitor); } catch { }
-            try
-            {
-                IntPtr screen = GetDC(IntPtr.Zero);
-                if (screen == IntPtr.Zero) return false;
-                try { return BitBlt(dc, 0, 0, phys.Width, phys.Height, screen, phys.X, phys.Y, 0x00CC0020); }
-                finally { ReleaseDC(IntPtr.Zero, screen); }
-            }
-            finally { if (old != IntPtr.Zero) SetThreadDpiAwarenessContext(old); }
-        }
-
-        // r (in the coordinates this program is given) in the real pixels of its monitor
-        public static Rectangle Real(Rectangle r) { Rectangle phys; Physical(r, out phys); return phys; }
 
         // the real pixels of r; false when they are the same as r (nothing to convert)
         static bool Physical(Rectangle r, out Rectangle phys)

@@ -410,7 +410,8 @@ namespace RedTune.Ram
         {
             var runs = Latency.Load();
             var now = runs.Count > 0 ? runs[runs.Count - 1] : null;
-            var before = runs.Count > 1 ? runs[runs.Count - 2] : null;
+            // 21.11: the previous run of the same kind of pages (one on 4 KB pages reads ~20 ns slower and is no «было»)
+            var before = now == null ? null : runs.Take(runs.Count - 1).LastOrDefault(r => r.Large == now.Large);
             latGraph.Live = null; latGraph.Now = now; latGraph.Before = before;
             if (latGraph.Visible != (now != null)) latGraph.Visible = now != null;
             latGraph.Invalidate();

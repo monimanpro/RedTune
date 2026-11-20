@@ -201,8 +201,70 @@ namespace RedTune
             PowerSetActiveScheme(IntPtr.Zero, ref active); // the plan again: its values and the overlay's take effect
         }
 
+        // 21.11 (the user's wish): the plan's «minimum processor state» holds the clock up (80 % of the 2.5 GHz base =
+        // 2.0 GHz in the user's «Balance»), and the measurement stopped there. While it runs the minimum is 0 in the same
+        // scheme, put back right after, as the cap. Three settings (PROCTHROTTLEMIN, …1, …2: the core classes), AC and DC;
+        // one the scheme has not got stays uint.MaxValue and is not written.
+        static readonly Guid[] MinIds = { new Guid("893dee8e-2bef-41e0-89c6-b55d0929964c"), new Guid("893dee8e-2bef-41e0-89c6-b55d0929964d"), new Guid("893dee8e-2bef-41e0-89c6-b55d0929964e") };
+
+        static uint[] ReadMin(Guid scheme)
+        {
+            var r = new uint[MinIds.Length * 2];
+            for (int i = 0; i < MinIds.Length; i++)
+            {
+                var id = MinIds[i]; uint v;
+                r[2 * i] = PowerReadACValueIndex(IntPtr.Zero, ref scheme, ref Processor, ref id, out v) == 0 ? v : uint.MaxValue;
+                r[2 * i + 1] = PowerReadDCValueIndex(IntPtr.Zero, ref scheme, ref Processor, ref id, out v) == 0 ? v : uint.MaxValue;
+            }
+            return r;
+        }
+
+        // the values into the scheme (made active again by WriteCap, which follows)
+        static void WriteMin(Guid scheme, uint[] v)
+        {
+            for (int i = 0; i < MinIds.Length; i++)
+            {
+                var id = MinIds[i];
+                if (v[2 * i] != uint.MaxValue) PowerWriteACValueIndex(IntPtr.Zero, ref scheme, ref Processor, ref id, v[2 * i]);
+                if (v[2 * i + 1] != uint.MaxValue) PowerWriteDCValueIndex(IntPtr.Zero, ref scheme, ref Processor, ref id, v[2 * i + 1]);
+            }
+        }
+
+        // --minstate-check: on a copy of the active plan (made and deleted here, never active) the minimum is read,
+        // set to 0 and put back, as a measurement does
+        internal static string MinStateCheck()
+        {
+            var sb = new System.Text.StringBuilder();
+            Action<bool, string> line = (ok, t) => sb.AppendLine((ok ? "ok    " : "FAIL  ") + t);
+            var psi = new System.Diagnostics.ProcessStartInfo("powercfg.exe", "/duplicatescheme " + ActiveScheme()) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+            string outp; using (var p = System.Diagnostics.Process.Start(psi)) { outp = p.StandardOutput.ReadToEnd(); p.WaitForExit(); }
+            var m = System.Text.RegularExpressions.Regex.Match(outp, "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+            if (!m.Success) { line(false, "no copy of the plan: " + outp.Trim()); return sb.ToString(); }
+            var copy = new Guid(m.Value);
+            try
+            {
+                var set = ReadMin(copy).Select(v => v == uint.MaxValue ? v : 80u).ToArray(); WriteMin(copy, set);
+                var before = ReadMin(copy);
+                line(before[0] == 80, "the copy holds 80 %, as the user's plan: " + Mins(before));
+                WriteMin(copy, before.Select(v => v == uint.MaxValue ? v : 0u).ToArray());
+                var low = ReadMin(copy);
+                line(low.All(v => v == uint.MaxValue || v == 0), "lowered for the measurement: " + Mins(low) + " (" + low.Count(v => v != uint.MaxValue) + " of 6 settings)");
+                WriteMin(copy, before);
+                var back = ReadMin(copy);
+                line(back.SequenceEqual(before), "put back: " + Mins(back));
+                line(ActiveScheme() != copy, "the copy never became the active plan");
+            }
+            finally
+            {
+                using (var p = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("powercfg.exe", "/delete " + copy) { UseShellExecute = false, CreateNoWindow = true })) p.WaitForExit();
+            }
+            return sb.ToString();
+        }
+
+        static string Mins(uint[] v) { return v[0] == uint.MaxValue ? "—" : v[0] + " / " + (v[1] == uint.MaxValue ? "—" : v[1].ToString()) + " %"; }
+
         // the plan's own values, kept in a file while a measurement runs: if the app dies in the middle, the next start
-        // puts them back
+        // puts them back. scheme|cap AC|cap DC, and since 21.11 the six minimum states after them
         static string LeftPath { get { return Path.Combine(Store.DataDir, "maxstate.restore"); } }
 
         // the cap held by someone else than a measurement (the auto-tune's light-load and step stages, 14.11): begin keeps
@@ -230,7 +292,13 @@ namespace RedTune
             {
                 if (!File.Exists(LeftPath)) return;
                 var p = File.ReadAllText(LeftPath).Trim().Split('|');
-                if (p.Length == 3) { WriteCap(new Guid(p[0]), uint.Parse(p[1]), uint.Parse(p[2])); Store.Log("кривая ядра: максимальная частота процессора в плане возвращена (" + p[1] + " / " + p[2] + " МГц) после прерванного замера"); }
+                if (p.Length == 3 + MinIds.Length * 2)
+                {
+                    var mins = p.Skip(3).Select(uint.Parse).ToArray();
+                    WriteMin(new Guid(p[0]), mins);
+                    Store.Log("кривая ядра: минимальное состояние процессора в плане возвращено (" + Mins(mins) + ") после прерванного замера");
+                }
+                if (p.Length >= 3) { WriteCap(new Guid(p[0]), uint.Parse(p[1]), uint.Parse(p[2])); Store.Log("кривая ядра: максимальная частота процессора в плане возвращена (" + p[1] + " / " + p[2] + " МГц) после прерванного замера"); }
                 File.Delete(LeftPath);
             }
             catch (Exception ex) { Store.Log("кривая ядра: возврат плана: " + ex.Message); }
@@ -264,13 +332,22 @@ namespace RedTune
                 loadStop = false;
                 Thread load = null;
                 Guid scheme = Guid.Empty; uint ac = 100, dc = 100; bool capped = false;
+                uint[] mins = null; bool minLowered = false;
                 try
                 {
                     scheme = CapScheme();
                     ReadCap(scheme, out ac, out dc);
+                    mins = ReadMin(scheme);
                     Directory.CreateDirectory(Store.DataDir);
-                    File.WriteAllText(LeftPath, scheme + "|" + ac + "|" + dc);
+                    File.WriteAllText(LeftPath, scheme + "|" + ac + "|" + dc + "|" + string.Join("|", mins));
                     capped = true;
+                    // the minimum to 0 where it is above (it is written with the first cap, which makes the scheme active again)
+                    if (mins.Any(v => v != uint.MaxValue && v > 0))
+                    {
+                        WriteMin(scheme, mins.Select(v => v == uint.MaxValue ? v : 0u).ToArray());
+                        minLowered = true;
+                        Store.Log("кривая ядра: минимальное состояние процессора " + Mins(mins) + " → 0 на время замера");
+                    }
 
                     int cpu = core * Hw.ThreadsPerCore; // the core's first logical processor
                     load = new Thread(() =>
@@ -315,7 +392,17 @@ namespace RedTune
                 finally
                 {
                     loadStop = true;
-                    if (capped) { try { WriteCap(scheme, ac, dc); File.Delete(LeftPath); } catch (Exception ex) { Store.Log("кривая ядра: возврат плана: " + ex.Message); } }
+                    if (capped)
+                    {
+                        try
+                        {
+                            if (minLowered) WriteMin(scheme, mins);
+                            WriteCap(scheme, ac, dc); // also makes the scheme active again: the minimum and the cap take effect
+                            File.Delete(LeftPath);
+                            if (minLowered) Store.Log("кривая ядра: минимальное состояние процессора возвращено (" + Mins(mins) + ")");
+                        }
+                        catch (Exception ex) { Store.Log("кривая ядра: возврат плана: " + ex.Message); }
+                    }
                     if (load != null) load.Join(1000);
                     Measuring = false;
                 }

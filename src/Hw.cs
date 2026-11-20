@@ -188,6 +188,28 @@ namespace RedTune
 
         // ---------- the cores of the curve ----------
         // Smu gives one value per enabled physical core; the page groups them by chiplet (CCD1, CCD2)
+        // 21.11: the processor's base (nominal) clock, what Windows counts the plan's «minimum processor state» from (80 %
+        // held the 8945HX at 2.0 GHz). Windows writes it at boot as ~MHz (2495 here for 2.5 GHz); rounded to 100 MHz, as
+        // AMD's base clocks are. 0 when it cannot be read: the row then stays in percent.
+        static int baseMhz = -1;
+        public static int BaseMhz
+        {
+            get
+            {
+                if (baseMhz < 0)
+                {
+                    try
+                    {
+                        int v = Convert.ToInt32(Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0", "~MHz", 0));
+                        int r = (v + 50) / 100 * 100;
+                        baseMhz = v >= 800 && v <= 7000 ? (Math.Abs(r - v) <= 60 ? r : v) : 0;
+                    }
+                    catch { baseMhz = 0; }
+                }
+                return baseMhz;
+            }
+        }
+
         public static int CurveCores { get { return Math.Max(1, Cores); } }
         public static int CurveChips { get { return Chips >= 2 ? Chips : 1; } }
         public static int PerChip { get { return Math.Max(1, CurveCores / CurveChips); } }

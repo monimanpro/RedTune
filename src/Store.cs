@@ -78,6 +78,11 @@ namespace RedTune
         // 16.11: «Сторож» (Watchdog): reads the processor's corrected errors in ordinary use; the offer to go a step deeper
         // after WatchDays quiet days is a switch of its own
         public bool WatchOn, WatchDeepen; public int WatchDays = 5;
+        // 20.11: when the black box records: 0 while the watchdog is on, 1 always, 2 only during the tests (an auto-tune
+        // and a core-curve measurement record in every mode: the auto-tune tells a reset by it)
+        public int BlackBoxMode;
+        // 21.11: Fn+Q goes round through «Свой» too (PowerService.ModeNow)
+        public bool FnQCustom = true;
         public bool GpuAsked;       // the first «Применить» on «Видеокарта» was confirmed
         public bool NavCompact;     // the side menu shows only its icons (13.11)
         public int OsdLook = 2; // 2 = the clear glass (12.11): the old default darkening 47 % moves to 20 % once
@@ -191,7 +196,9 @@ namespace RedTune
                     case "Expert": s.Expert = v == "1"; sawExpert = true; break;
                     case "UnverifiedSeen": s.UnverifiedSeen = v == "1"; break;
                     case "WatchOn": s.WatchOn = v == "1"; break;
+                    case "FnQCustom": s.FnQCustom = v == "1"; break;
                     case "WatchDeepen": s.WatchDeepen = v == "1"; break;
+                    case "BlackBoxMode": int bm; if (int.TryParse(v, out bm) && bm >= 0 && bm <= 2) s.BlackBoxMode = bm; break;
                     case "WatchDays": int wd; if (int.TryParse(v, out wd) && wd > 0) s.WatchDays = wd; break;
                     case "GpuAsked": s.GpuAsked = v == "1"; break;
                     case "NavCompact": s.NavCompact = v == "1"; break;
@@ -220,7 +227,7 @@ namespace RedTune
                 "FanSafety=" + b(s.FanSafety), "FanCritical=" + b(s.FanCritical), "FanHyst=" + b(s.FanHyst), "FanEma=" + b(s.FanEma),
                 "FanGlide=" + b(s.FanGlide), "FanBoost=" + b(s.FanBoost), "FanSync=" + b(s.FanSync), "FanPredict=" + b(s.FanPredict), "SyncBrightness=" + b(s.SyncBrightness), "HzAuto=" + b(s.HzAuto), "AcmOff=" + s.AcmOff, "HzAc=" + s.HzAc, "HzDc=" + s.HzDc,
                 "OsdOn=" + b(s.OsdOn), "OsdTopmost=" + b(s.OsdTopmost), "OsdAllMonitors=" + b(s.OsdAllMonitors), "OsdFollow=" + b(s.OsdFollow), "CompByFreq=" + b(s.CompByFreq), "AsusMode=" + s.AsusMode, "AsusCharge=" + s.AsusCharge, "AsusLight=" + s.AsusLight, "OverlayOn=" + b(s.OverlayOn), "OverlayAlways=" + b(s.OverlayAlways), "OverlayCorner=" + s.OverlayCorner, "OverlaySize=" + s.OverlaySize, "OsdPosition=" + s.OsdPosition, "OsdMs=" + s.OsdMs, "OsdOff=" + s.OsdOff, "MiniOff=" + s.MiniOff,
-                "OsdGlass=" + b(s.OsdGlass), "OsdShine=" + b(s.OsdShine), "OsdLive=" + b(s.OsdLive), "CleanKeep=" + s.CleanKeep, "CleanClose=" + s.CleanClose, "CleanVer=" + s.CleanVer, "OsdBlur=" + s.OsdBlur, "OsdTint=" + s.OsdTint, "OsdLook=" + s.OsdLook, "AmdPowerOn=" + b(s.AmdPowerOn), "AmdPowerAsked=" + b(s.AmdPowerAsked), "Expert=" + b(s.Expert), "UnverifiedSeen=" + b(s.UnverifiedSeen), "WatchOn=" + b(s.WatchOn), "WatchDeepen=" + b(s.WatchDeepen), "WatchDays=" + s.WatchDays, "GpuAsked=" + b(s.GpuAsked), "NavCompact=" + b(s.NavCompact), "AmdPpt=" + s.AmdPpt, "AmdTdc=" + s.AmdTdc, "AmdEdc=" + s.AmdEdc, "AmdStapm=" + s.AmdStapm, "AmdFast=" + s.AmdFast, "AmdSlow=" + s.AmdSlow,
+                "OsdGlass=" + b(s.OsdGlass), "OsdShine=" + b(s.OsdShine), "OsdLive=" + b(s.OsdLive), "CleanKeep=" + s.CleanKeep, "CleanClose=" + s.CleanClose, "CleanVer=" + s.CleanVer, "OsdBlur=" + s.OsdBlur, "OsdTint=" + s.OsdTint, "OsdLook=" + s.OsdLook, "AmdPowerOn=" + b(s.AmdPowerOn), "AmdPowerAsked=" + b(s.AmdPowerAsked), "Expert=" + b(s.Expert), "UnverifiedSeen=" + b(s.UnverifiedSeen), "WatchOn=" + b(s.WatchOn), "FnQCustom=" + b(s.FnQCustom), "WatchDeepen=" + b(s.WatchDeepen), "WatchDays=" + s.WatchDays, "BlackBoxMode=" + s.BlackBoxMode, "GpuAsked=" + b(s.GpuAsked), "NavCompact=" + b(s.NavCompact), "AmdPpt=" + s.AmdPpt, "AmdTdc=" + s.AmdTdc, "AmdEdc=" + s.AmdEdc, "AmdStapm=" + s.AmdStapm, "AmdFast=" + s.AmdFast, "AmdSlow=" + s.AmdSlow,
             }, Utf8Bom);
         }
 
@@ -294,6 +301,28 @@ namespace RedTune
                 if (list.Count >= max) break;
             }
             return list;
+        }
+
+        // 20.11: a failure that is caught and gone on from (the program keeps working) still goes to the log, once per
+        // place and kind of error an hour: a sensor that fails every half second writes one line an hour, not seven thousand.
+        // Never throws.
+        static readonly Dictionary<string, DateTime> quietSeen = new Dictionary<string, DateTime>();
+        public static void Quiet(string where, Exception ex)
+        {
+            try
+            {
+                string what = ex == null ? "?" : ex.GetType().Name + ": " + (ex.Message ?? "").Replace("\r", " ").Replace("\n", " ").Trim();
+                string key = where + "|" + what;
+                lock (quietSeen)
+                {
+                    DateTime last;
+                    if (quietSeen.TryGetValue(key, out last) && (DateTime.Now - last).TotalHours < 1) return;
+                    if (quietSeen.Count > 500) quietSeen.Clear();
+                    quietSeen[key] = DateTime.Now;
+                }
+                Log("тихая ошибка (" + where + "): " + what);
+            }
+            catch { }
         }
 
         public static void Log(string text)

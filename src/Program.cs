@@ -77,6 +77,8 @@ namespace RedTune
                 return 0;
             }
             // --latency <file>: the memory latency measurement of «Память» into a text file; the run is not kept in the store
+            i = at("--latency-probe"); // 21.11: why AIDA64 shows less
+            if (i >= 0 && i + 1 < args.Length) { Hw.Detect(); System.IO.File.WriteAllText(args[i + 1], RedTune.Ram.Latency.Probe(), new System.Text.UTF8Encoding(true)); return 0; }
             i = at("--latency");
             if (i >= 0 && i + 1 < args.Length)
             {
@@ -254,8 +256,22 @@ namespace RedTune
             if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Energy.BatteryReport(), new System.Text.UTF8Encoding(true)); return 0; }
             i = at("--display-check");
             if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Display.Check(), new System.Text.UTF8Encoding(true)); return 0; }
+            i = at("--minstate-check"); // 21.11: the core-curve measurement lowers the plan's minimum state and puts it back
+            if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], CoreCurve.MinStateCheck(), new System.Text.UTF8Encoding(true)); return 0; }
             i = at("--slider-warp-check");
-            if (i >= 0 && i + 1 < args.Length) { Theme.Init(100); L.Set("ru"); System.IO.File.WriteAllText(args[i + 1], Slider.WarpCheck(), new System.Text.UTF8Encoding(true)); return 0; }
+            if (i >= 0 && i + 1 < args.Length) { Theme.Init(100); L.Set("ru"); Hw.Detect(); System.IO.File.WriteAllText(args[i + 1], Slider.WarpCheck(), new System.Text.UTF8Encoding(true)); return 0; }
+            i = at("--curve-undo-check");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                // Ctrl+Z / Ctrl+Y on «Кривая» (CurvePage.UndoCheck); nothing applied or saved
+                var su = Store.LoadSettings(); Comp.S = su; Theme.Init(100); L.Set("ru"); Hw.Detect();
+                // the service posts its readings to the context it was made on: the UI thread here, as in the app
+                System.Threading.SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+                var cs = new CurveService(su); var cp = new CurvePage(cs, new Tuner(su), () => { }, () => { });
+                using (var f = new Form { ShowInTaskbar = false, StartPosition = FormStartPosition.Manual, Location = new System.Drawing.Point(-4000, -4000), Size = new System.Drawing.Size(1000, 800) })
+                { f.Controls.Add(cp); f.Show(); Application.DoEvents(); System.IO.File.WriteAllText(args[i + 1], cp.UndoCheck(), new System.Text.UTF8Encoding(true)); }
+                return 0;
+            }
             i = at("--power-undo-check");
             if (i >= 0 && i + 1 < args.Length)
             {
@@ -376,7 +392,7 @@ namespace RedTune
             i = at("--page-png");
             if (i >= 0 && i + 2 < args.Length)
             {
-                var s0 = args.Contains("--fresh") ? new Settings() : Store.LoadSettings(); if (args.Contains("--expert")) s0.Expert = true; if (args.Contains("--strict")) s0.TuneMode = "strict"; if (args.Contains("--daily")) s0.TuneMode = "daily"; // the auto-tune page in a mode (not saved)
+                var s0 = args.Contains("--fresh") ? new Settings() : Store.LoadSettings(); if (args.Contains("--expert")) s0.Expert = true; if (args.Contains("--novice")) s0.Expert = false; /* 20.11: as without the expert functions */ if (args.Contains("--strict")) s0.TuneMode = "strict"; if (args.Contains("--daily")) s0.TuneMode = "daily"; // the auto-tune page in a mode (not saved)
                 int li = at("--lang"); if (li >= 0 && li + 1 < args.Length) s0.Language = args[li + 1]; // --lang <code>: the page in that language
                 int zi = at("--ui-scale"), zv; if (zi >= 0 && zi + 1 < args.Length && int.TryParse(args[zi + 1], out zv) && zv >= 50 && zv <= 400) s0.UiScale = zv; // --ui-scale <percent>: a sharper picture (not saved)
                 Comp.S = s0; Theme.Init(s0.UiScale); L.Set(s0.Language); Hw.Detect(); PagePng.Render(args[i + 1], args[i + 2], s0); return 0;
@@ -426,9 +442,6 @@ namespace RedTune
             if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], L.Coverage(), new System.Text.UTF8Encoding(true)); return 0; }
 
             // --osd-png <out.png> <backdrop.png> [--all] [--noglass]: the notification drawn over a picture (a check; the live one is not in screenshots)
-            i = at("--glass-png");
-            if (i >= 0 && i + 2 < args.Length) { Theme.Init(150); MiniPanel.GlassPng(args[i + 1], args[i + 2]); return 0; }
-
             i = at("--osd-png");
             if (i >= 0 && i + 2 < args.Length) { Theme.Init(100); Osd.RenderTo(args[i + 1], args[i + 2], args.Contains("--all"), !args.Contains("--noglass")); return 0; }
 

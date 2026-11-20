@@ -1,0 +1,7 @@
+{
+"w1b6b946f": {"es":"Frecuencia mínima","pt":"Frequência mínima","zh":"最低频率","ko":"최소 클럭","th":"ความถี่ต่ำสุด","vi":"Xung nhịp tối thiểu","id":"Frekuensi minimum"},
+"wf244c01e": {"es":"El procesador no baja de esta frecuencia","pt":"O processador não fica abaixo desta frequência","zh":"处理器不会低于这个频率","ko":"프로세서가 이 클럭 아래로 내려가지 않습니다","th":"โปรเซสเซอร์จะไม่ลดต่ำกว่าความถี่นี้","vi":"Bộ xử lý không xuống dưới xung nhịp này","id":"Prosesor tidak turun di bawah frekuensi ini"},
+"ff6acd0a1": {"es":"en el plan ","pt":"no plano ","zh":"写入方案：","ko":"전원 계획에 ","th":"ในแผนพลังงาน ","vi":"trong sơ đồ ","id":"di skema "},
+"f270a07ee": {"es":" % de ","pt":" % de ","zh":" %，基于 ","ko":" % / 기준 ","th":" % ของ ","vi":" % của ","id":" % dari "},
+"ffc550669": {"es":", frecuencia mínima ","pt":", frequência mínima ","zh":"，最低频率 ","ko":", 최소 클럭 ","th":" ความถี่ต่ำสุด ","vi":", xung nhịp tối thiểu ","id":", frekuensi minimum "}
+}

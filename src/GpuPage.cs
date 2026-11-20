@@ -380,11 +380,18 @@ namespace RedTune
         string baseline; // the preset the steps of «История правок» start from (null: what the card has)
         int shiftShown;
         bool loading;
+        // 20.11: the page is in the menu for everyone where the mode can be switched; the curve and the presets (oc) are
+        // an expert function, without it a line says where they are
+        readonly System.Collections.Generic.List<Control> oc = new System.Collections.Generic.List<Control>();
+        Row expertHint;
 
         public GpuPage(Settings s)
         {
             this.s = s;
             GpuStore.Load();
+            if (GpuModeRow.Available) { GpuModeRow.Add(this); Section("Разгон"); }
+            expertHint = Row("Разгон видеокарты", "Кривая частоты и пресеты — в экспертных функциях: Настройки → Основное");
+            int ocFrom = Controls.Count;
             head = Row("Кривая частоты видеокарты", "Читаю…");
             warnRow = Row("MSI Afterburner запущен", "Он тоже применяет свою кривую: программы будут перезаписывать друг друга. Закройте его или уберите из автозагрузки");
             warnRow.WarnStyle = true; warnRow.Visible = false;
@@ -400,6 +407,7 @@ namespace RedTune
             Section("Пресеты");
             presetRow = Row("Пресет", "", presetBtn, saveBtn, delBtn);
             Row("Применять при запуске", "Драйвер забывает кривую после перезагрузки: Red Tune вернёт выбранный пресет", onStart);
+            foreach (Control c in Controls) if (Controls.GetChildIndex(c) >= ocFrom) oc.Add(c);
 
             graph.Changed += (o, e) => { Edited(); };
             graph.SelectionChanged += (o, e) => ShowPoint();
@@ -429,10 +437,26 @@ namespace RedTune
             undo.Click += (o, e) => { if (curve != null) Show(curve, lastMem); };
             undo.Enabled = false;
             VisibleChanged += (o, e) => { if (Visible) Reload(true); };
+            Action onExpert = () => { ApplyExpert(); if (s.Expert && Visible) Reload(); };
+            Hw.ExpertChanged += onExpert;
+            Disposed += (o, e) => Hw.ExpertChanged -= onExpert;
+            ApplyExpert();
+        }
+
+        // without the expert functions: the mode only (and the line saying where the rest is); the card is not read
+        void ApplyExpert()
+        {
+            bool ex = s.Expert;
+            foreach (var c in oc) if (c != warnRow) c.Visible = ex;
+            if (!ex) warnRow.Visible = false;
+            expertHint.Visible = !ex;
+            Footer = ex ? bar : null;
+            Relayout();
         }
 
         void Reload(bool keepEdits = false)
         {
+            if (!s.Expert) return; // 20.11: the curve is not shown: nothing to read
             warnRow.Visible = Process.GetProcessesByName("MSIAfterburner").Length > 0;
             if (keepEdits && undo.Enabled) return; // something is changed and not applied: keep it on screen
             Task.Run(() =>

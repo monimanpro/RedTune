@@ -64,10 +64,13 @@ namespace RedTune
             presetBtn.Click += (o, e) => ShowPresetMenu();
             saveBtn.Click += (o, e) => SavePreset();
             applyBtn.Click += (o, e) => Apply();
-            resetBtn.Click += (o, e) => Select(selected); // back to the saved preset
+            // back to the saved preset; 20.11: as a step of its own, Ctrl+Z brings the edits back
+            resetBtn.Click += (o, e) => ResetEdits();
             readBtn.Click += (o, e) => { livePill.Set("читаю…", PillKind.Muted); curve.Refresh(); };
             historyBtn.Click += (o, e) => ShowHistory();
-            card.Grid.Changed += (o, e) => UpdateButtons();
+            card.Grid.Changed += (o, e) => { Record(); UpdateButtons(); };
+            gestureEnd.Tick += (o, e) => { if (Control.MouseButtons != MouseButtons.None) return; gestureEnd.Stop(); gesture = false; }; // a run of changes ends
+            Disposed += (o, e) => gestureEnd.Dispose();
             // a core's number opens its measured voltage/clock curve (14.11)
             card.Grid.CoreClicked += core =>
             {
@@ -103,7 +106,119 @@ namespace RedTune
             card.Grid.LoadState(p);
             card.Grid.ReadOnly = false;
             presetBtn.Text = p.Name + "  ▾";
+            Baseline();
             UpdateButtons();
+        }
+
+        // ---------- 20.11 (the user's wish): Ctrl+Z / Ctrl+Y, as «Питание», «Звук» and «Видеокарта» have ----------
+        // A step is the grid's state: the per-core values, the mode, the chip and common values. A run of changes with
+        // less than half a second between them, or made while a mouse button is held (a slider dragged), is one step;
+        // «Сбросить» and a set from the history are steps too. The steps belong to the preset shown: another preset picked
+        // starts afresh; saving and applying keep them. Nothing is applied by a step: «Применить» does that.
+        readonly System.Collections.Generic.List<CurvePreset> back = new System.Collections.Generic.List<CurvePreset>(), forward = new System.Collections.Generic.List<CurvePreset>();
+        CurvePreset seen; string seenName; bool gesture;
+        readonly Timer gestureEnd = new Timer { Interval = 500 };
+
+        void ResetEdits() { gesture = false; card.Grid.LoadState(selected); card.Grid.ReadOnly = false; Record(); UpdateButtons(); }
+
+        // the grid as a preset (null while a cell is not a number)
+        CurvePreset State()
+        {
+            var v = card.Grid.Values;
+            if (v == null) return null;
+            var p = new CurvePreset { Name = selected.Name };
+            Keep(p, (int[])v.Clone());
+            return p;
+        }
+
+        static bool Same(CurvePreset a, CurvePreset b)
+        {
+            Func<int[], int[], bool> eq = (x, y) => x == null ? y == null : y != null && x.SequenceEqual(y);
+            return a.Mode == b.Mode && a.All == b.All && eq(a.Values, b.Values) && eq(a.Chip, b.Chip) && eq(a.Core, b.Core);
+        }
+
+        // a preset loaded into the grid: another one starts the steps afresh, the same one (saved, applied) keeps them
+        void Baseline()
+        {
+            if (seenName != selected.Name) { back.Clear(); forward.Clear(); }
+            gesture = false; gestureEnd.Stop();
+            seen = State(); seenName = selected.Name;
+        }
+
+        // a change in the grid: the state before it is a step back (once per run of changes)
+        void Record()
+        {
+            var now = State();
+            if (now == null) return; // a cell being typed, not a number yet
+            if (seen == null) { seen = now; return; }
+            if (Same(now, seen)) return;
+            if (!gesture) { back.Add(seen); if (back.Count > 200) back.RemoveAt(0); forward.Clear(); gesture = true; }
+            seen = now;
+            gestureEnd.Stop(); gestureEnd.Start();
+        }
+
+        bool Step(System.Collections.Generic.List<CurvePreset> from, System.Collections.Generic.List<CurvePreset> to)
+        {
+            var now = State();
+            if (from.Count == 0 || now == null) return false;
+            to.Add(now);
+            var snap = from[from.Count - 1]; from.RemoveAt(from.Count - 1);
+            card.Grid.Restore(snap, selected.Values);
+            card.Grid.ReadOnly = false;
+            seen = State(); gesture = false; gestureEnd.Stop();
+            UpdateButtons();
+            return true;
+        }
+
+        // Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z from the main window while this page is shown. The grid's own cells hand them to
+        // the page too (each typed number is in the steps); any other text field keeps its own.
+        public bool HandleKey(Keys keyData)
+        {
+            bool undo = keyData == (Keys.Control | Keys.Z), redo = keyData == (Keys.Control | Keys.Y) || keyData == (Keys.Control | Keys.Shift | Keys.Z);
+            if (!Visible || selected == null || (!undo && !redo)) return false;
+            var form = FindForm();
+            var tb = form != null ? form.ActiveControl as TextBoxBase : null;
+            if (tb != null && tb.Parent != card.Grid) return false;
+            if (Control.MouseButtons != MouseButtons.None) return true; // something is being dragged: not under its hand
+            if (undo) Step(back, forward); else Step(forward, back);
+            return true;
+        }
+
+        // --curve-undo-check: the steps back and forward in the grid, nothing applied or saved
+        internal string UndoCheck()
+        {
+            var sb = new System.Text.StringBuilder();
+            Action<bool, string> line = (ok, text) => sb.AppendLine((ok ? "ok    " : "FAIL  ") + text);
+            var z = Keys.Control | Keys.Z; var y = Keys.Control | Keys.Y;
+            var g = card.Grid;
+            g.SetMode(0, false); g.LoadState(selected); Baseline(); back.Clear(); forward.Clear();
+            var v0 = (int[])g.Values.Clone();
+            line(HandleKey(z) && g.Values.SequenceEqual(v0), "nothing changed yet: Ctrl+Z is taken and changes nothing");
+            var v1 = (int[])v0.Clone(); v1[0] = v0[0] > -20 ? v0[0] - 5 : v0[0] + 5; v1[1] = v0[1] > -20 ? v0[1] - 3 : v0[1] + 3;
+            g.Load(new[] { v1[0] }.Concat(v0.Skip(1)).ToArray(), selected.Values); Record();
+            g.Load(v1, selected.Values); Record();
+            line(back.Count == 1, "two cores moved in one run: one step back (" + back.Count + ")");
+            gesture = false; gestureEnd.Stop();
+            int m2 = Hw.CurveChips > 1 ? 1 : 2;
+            g.SetMode(m2, false);
+            line(back.Count == 2 && g.Mode == m2, "after a pause the mode switched: a second step (" + back.Count + ")");
+            HandleKey(z);
+            line(g.Mode == 0 && g.Values.SequenceEqual(v1) && back.Count == 1 && forward.Count == 1, "Ctrl+Z: the mode is back, the cores stay moved (" + g.Values[0] + ", " + g.Values[1] + ")");
+            HandleKey(z);
+            line(g.Values.SequenceEqual(v0) && back.Count == 0 && forward.Count == 2 && !Dirty(g.Values), "Ctrl+Z again: the preset's values, nothing unsaved");
+            line(!saveBtn.Enabled, "«Сохранить» is grey again");
+            HandleKey(z);
+            line(g.Values.SequenceEqual(v0) && forward.Count == 2, "a third Ctrl+Z: nothing more to take back");
+            HandleKey(y); HandleKey(Keys.Control | Keys.Shift | Keys.Z);
+            line(g.Mode == m2 && forward.Count == 0 && back.Count == 2 && saveBtn.Enabled, "Ctrl+Y and Ctrl+Shift+Z: both steps again, «Сохранить» lit");
+            HandleKey(z); gesture = false;
+            ResetEdits();
+            line(g.Values.SequenceEqual(v0) && g.Mode == 0 && back.Count == 2 && forward.Count == 0, "«Сбросить» after an edit is a step of its own (" + back.Count + ")");
+            HandleKey(z);
+            line(g.Values.SequenceEqual(v1), "Ctrl+Z after «Сбросить»: the edit is back (" + g.Values[0] + ", " + g.Values[1] + ")");
+            HandleKey(z);
+            line(g.Values.SequenceEqual(v0) && !Dirty(g.Values), "and once more: the preset as it was");
+            return sb.ToString();
         }
 
         void UpdateButtons()
@@ -176,7 +291,7 @@ namespace RedTune
             }
             if (!dirty || !selected.BuiltIn) { curve.Settings.ActivePreset = selected.Name; Store.SaveSettings(curve.Settings); }
             applyBtn.Enabled = false; livePill.Set("применяю…", PillKind.Muted);
-            curve.Apply(v, selected.Name + (dirty && selected.BuiltIn ? " (изменён)" : ""), "вручную", ok => { Select(selected); card.Grid.Load(v, selected.Values); UpdateButtons(); });
+            curve.Apply(v, selected.Name + (dirty && selected.BuiltIn ? " (изменён)" : ""), "вручную", ok => { Select(selected); card.Grid.Load(v, selected.Values); seen = State(); UpdateButtons(); });
         }
 
         void SavePreset()
@@ -244,8 +359,10 @@ namespace RedTune
             using (var f = new HistoryForm())
                 if (f.ShowDialog(FindForm()) == DialogResult.OK && f.Picked != null)
                 {
+                    gesture = false; // a step of its own
                     card.Grid.SetMode(0, false); // a set from the history is a value per core
                     card.Grid.Load(f.Picked.Values, selected.Values);
+                    Record();
                     UpdateButtons();
                 }
         }

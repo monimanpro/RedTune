@@ -313,6 +313,15 @@ f	8a824827	saat mulai
 f	64b0614f	pengisi daya
 f	d7b8a9de	baterai
 f	c81460e9	setelah tidur
+w	c91b3e82	Overclock
+w	ed77fcd8	Kurva frekuensi dan preset adalah fungsi ahli: Pengaturan → Umum
+w	1d31bbca	Fn+Q termasuk Kustom
+w	de32aeba	Bergilir: Senyap → Seimbang → Performa → Kustom → Senyap
+w	1b6b946f	Frekuensi minimum
+w	f244c01e	Prosesor tidak turun di bawah frekuensi ini
+w	8869f068	Kotak hitam
+w	cfba6cde	Bersama pengawas
+w	7a21f781	Hanya pengujian
 w	80b22750	Mode daya Windows
 w	454ec6c8	Jenis paket
 w	adcdd377	Seimbang
@@ -1081,7 +1090,7 @@ w	edc547fc	Batas daya. Batas mana yang diubahnya bergantung pada prosesor: pada 
 w	261d4d4f	Terapkan sekarang
 w	104dd11f	Mulai aman
 w	0ff66e96	Fitur ahli
-w	93646133	«Kurva» dan «Memori» di menu, penulisan batas prosesor AMD. Shift saat mulai: mulai aman tanpa fitur itu
+w	bf92fc28	«Kurva» dan «Memori» di menu, overclock kartu grafis, penulisan batas prosesor AMD. Shift saat mulai: mulai aman tanpa fitur itu
 w	b3826d07	Kurva tegangan, timing memori, dan batas langsung prosesor mengubah apa yang ditetapkan pembuatnya. Nilai yang salah menyebabkan macet, layar biru, atau laptop yang tidak mau menyala.\n\nJika terjadi masalah, tahan Shift saat Red Tune mulai: ia tidak akan menerapkan apa pun.
 w	fd8c73cd	Nyalakan
 w	356be385	Suara
@@ -1214,6 +1223,15 @@ w	5f11b887	daftar efek asli tidak tersimpan
 w	1a79d826	Bass terpisah
 w	7c83b011	Bass di bawah titik bagi dan sisanya dikompresi terpisah: kick drum tidak menurunkan vokal dan nada tinggi
 w	4fbcff2c	Hz
+f	f6acd0a1	di skema 
+f	270a07ee	 % dari 
+f	fc550669	, frekuensi minimum 
+f	c8c88e80	 · pada halaman biasa
+f	cbfecb2b	Sekarang tidak merekam · 
+f	2153a745	Sedang merekam · 
+f	ab6f4aa0	selama pengawasan aktif dan saat pengujian
+f	774d34af	selalu, setiap 2 detik
+f	f2d6ae01	hanya saat tala otomatis dan pengukuran kurva inti
 f	abd087d5	 bit per kanal
 f	b4501cda	Mode ini punya profil sendiri: yang dipilih di mode standar tidak berlaku di sini
 f	daa51691	. Tanpa profil, Windows mengelola warna sendiri

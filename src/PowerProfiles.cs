@@ -465,11 +465,29 @@ namespace RedTune
             catch (Exception ex) { Store.Log("смена режима: " + ex.Message); }
         }
 
+        // 21.11 (the user's wish): the firmware's Fn+Q goes round Тихий → Баланс → Макс (→ Экстремальный) and back, «Свой»
+        // is not in it (six presses at 00:38 never reached it). Where this is on, the step from the last mode back to
+        // «Тихий» becomes «Свой» instead: Тихий → Баланс → Макс → Свой → Тихий. Only for the firmware's own event (Fn+Q):
+        // a mode set by a program, this one's home page included, raises none, and Notify passes announce = false.
+        public static Func<bool> FnQCustom = () => false;
+
         void ModeNow(bool announce)
         {
             {
                 int m = Lenovo.GetPowerMode();
                 if (m == lastMode) return;
+                if (announce && m == Lenovo.Quiet && (lastMode == Lenovo.Performance || lastMode == Lenovo.Extreme) && FnQCustom())
+                {
+                    try
+                    {
+                        Lenovo.SetPowerMode(Lenovo.Custom);
+                        Thread.Sleep(150);
+                        int now = Lenovo.GetPowerMode();
+                        if (now == Lenovo.Custom) { m = now; Store.Log("Fn+Q: «Свой» вместо «Тихого» (круг через «Свой»)"); }
+                        else Store.Log("Fn+Q: «Свой» не встал, режим " + now);
+                    }
+                    catch (Exception ex) { Store.Log("Fn+Q: «Свой» не включился: " + ex.Message); }
+                }
                 bool first = lastMode == -1;
                 lastMode = m;
                 if (!first && announce) { var h = ModeChanged; if (h != null) ui.Post(_ => h(m), null); }
@@ -492,19 +510,6 @@ namespace RedTune
         // ---------- LLT: it writes the same settings ----------
 
         public static bool LltRunning { get { return Process.GetProcessesByName("Lenovo Legion Toolkit").Length > 0; } }
-
-        public static void StopLlt()
-        {
-            int code;
-            var list = Tasks.Run("/Query /FO CSV /NH", out code);
-            foreach (var line in list.Split('\n'))
-            {
-                var name = line.Split(',')[0].Trim().Trim('"');
-                if (name.IndexOf("LenovoLegionToolkit", StringComparison.OrdinalIgnoreCase) >= 0) Tasks.Run("/Change /TN \"" + name + "\" /Disable", out code);
-            }
-            foreach (var p in Process.GetProcessesByName("Lenovo Legion Toolkit")) try { p.Kill(); p.WaitForExit(3000); } catch { }
-            Store.Log("LLT: автозапуск выключен, процесс закрыт");
-        }
 
         public void Dispose() { if (watcher != null) try { watcher.Stop(); watcher.Dispose(); } catch { } }
     }

@@ -1,0 +1,10 @@
+{
+"w8869f068": {"es":"Caja negra","pt":"Caixa-preta","zh":"黑匣子","ko":"블랙박스","th":"กล่องดำ","vi":"Hộp đen","id":"Kotak hitam"},
+"wcfba6cde": {"es":"Con el vigilante","pt":"Com o vigia","zh":"随看门狗","ko":"감시견과 함께","th":"พร้อมผู้เฝ้าระวัง","vi":"Cùng bộ giám sát","id":"Bersama pengawas"},
+"w7a21f781": {"es":"Solo pruebas","pt":"Só testes","zh":"仅测试","ko":"테스트만","th":"เฉพาะการทดสอบ","vi":"Chỉ khi kiểm tra","id":"Hanya pengujian"},
+"fcbfecb2b": {"es":"Ahora no registra · ","pt":"Agora não está gravando · ","zh":"当前未记录 · ","ko":"지금은 기록하지 않음 · ","th":"ขณะนี้ไม่ได้บันทึก · ","vi":"Hiện không ghi · ","id":"Sekarang tidak merekam · "},
+"f2153a745": {"es":"Ahora registra · ","pt":"Gravando agora · ","zh":"正在记录 · ","ko":"지금 기록 중 · ","th":"กำลังบันทึก · ","vi":"Đang ghi · ","id":"Sedang merekam · "},
+"fab6f4aa0": {"es":"mientras la vigilancia está activa y durante las pruebas","pt":"enquanto a observação está ligada e durante os testes","zh":"监视开启时以及测试期间","ko":"감시가 켜져 있을 때와 테스트 중","th":"ขณะเปิดการเฝ้าดูและระหว่างการทดสอบ","vi":"khi bật theo dõi và trong lúc kiểm tra","id":"selama pengawasan aktif dan saat pengujian"},
+"f774d34af": {"es":"siempre, cada 2 segundos","pt":"sempre, a cada 2 segundos","zh":"始终，每 2 秒一次","ko":"항상, 2초마다","th":"ตลอดเวลา ทุก 2 วินาที","vi":"luôn luôn, mỗi 2 giây","id":"selalu, setiap 2 detik"},
+"ff2d6ae01": {"es":"solo durante un autoajuste y una medición de la curva de núcleos","pt":"só durante um autoajuste e uma medição da curva dos núcleos","zh":"仅在自动调校和核心曲线测量期间","ko":"자동 튜닝과 코어 커브 측정 중에만","th":"เฉพาะระหว่างการปรับอัตโนมัติและการวัดเคิร์ฟของคอร์","vi":"chỉ trong lúc tự tinh chỉnh và đo đường cong nhân","id":"hanya saat tala otomatis dan pengukuran kurva inti"}
+}

@@ -699,7 +699,7 @@ namespace RedTune.Ram
                 Directory.CreateDirectory(DataDir);
                 File.WriteAllText(PendingFile, new JavaScriptSerializer().Serialize(o), Encoding.UTF8);
             }
-            catch { }
+            catch (Exception ex) { global::RedTune.Store.Quiet("память: запись плана на перезагрузку", ex); }
         }
 
         public static bool HasPending { get { return File.Exists(PendingFile); } }
@@ -729,7 +729,7 @@ namespace RedTune.Ram
                 if (pd.TryGetValue("fclk", out so)) { var v = Des(so); d.FclkManual = v != null; if (v != null) d.FclkRaw = v.Value; }
                 if (pd.TryGetValue("uclk", out so)) { var v = Des(so); d.UclkManual = v != null; if (v != null) d.UclkRaw = v.Value; }
             }
-            catch { }
+            catch (Exception ex) { global::RedTune.Store.Quiet("память: чтение плана", ex); }
         }
 
         public static Tuple<bool, string> CheckPending(RamData d, Dictionary<string, string> lv)

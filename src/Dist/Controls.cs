@@ -94,46 +94,6 @@ namespace RedTune.Dist
         }
     }
 
-    class CheckOption : Painted
-    {
-        bool on;
-        public event EventHandler CheckedChanged;
-
-        public CheckOption(string text)
-        {
-            Text = text; Cursor = Cursors.Hand;
-            Size = new Size(TextRenderer.MeasureText(text, Theme.Body).Width + Theme.S(30), Theme.S(28));
-        }
-
-        public bool Checked
-        {
-            get { return on; }
-            set { if (on == value) return; on = value; Invalidate(); var h = CheckedChanged; if (h != null) h(this, EventArgs.Empty); }
-        }
-
-        protected override void OnClick(EventArgs e) { Checked = !Checked; base.OnClick(e); }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            var g = e.Graphics;
-            g.Clear(BackColor);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            float k = Theme.S(16), y = (Height - k) / 2f;
-            var box = new RectangleF(1, y, k, k);
-            if (on)
-            {
-                Theme.Fill(g, box, Theme.S(4), Theme.Accent);
-                using (var pen = new Pen(Color.White, Theme.S(1.8f)))
-                {
-                    pen.StartCap = LineCap.Round; pen.EndCap = LineCap.Round; pen.LineJoin = LineJoin.Round;
-                    g.DrawLines(pen, new[] { new PointF(box.X + k * 0.24f, box.Y + k * 0.52f), new PointF(box.X + k * 0.43f, box.Y + k * 0.72f), new PointF(box.X + k * 0.78f, box.Y + k * 0.3f) });
-                }
-            }
-            else Theme.Stroke(g, box, Theme.S(4), Theme.BorderStrong);
-            Theme.Text1(g, Text, Font, new Rectangle(Theme.S(24), 0, Width - Theme.S(24), Height), Theme.Text2);
-        }
-    }
-
     // One program: grip, icon, name with state, path pattern, group pill (menu), on/off switch. The whole row can be dragged.
     class RuleRow : Painted
     {

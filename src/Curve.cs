@@ -110,13 +110,5 @@ namespace RedTune
                 catch { return false; }
             }
         }
-
-        public static void StopUxtu()
-        {
-            int code;
-            Tasks.Run("/Change /TN \"UXTU\" /Disable", out code);
-            foreach (var p in Process.GetProcessesByName("Universal x86 Tuning Utility")) try { p.Kill(); p.WaitForExit(3000); } catch { }
-            Store.Log("UXTU: автозапуск выключен, процесс закрыт");
-        }
     }
 }

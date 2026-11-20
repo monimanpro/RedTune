@@ -14,7 +14,10 @@ namespace RedTune
         readonly Toggle onToggle = new Toggle(), deepToggle = new Toggle();
         static readonly int[] DayChoices = { 3, 5, 7 };
         readonly Segmented daysSeg = new Segmented("3 дня", "5 дней", "7 дней");
-        readonly Row onRow, deepRow, daysRow, stateRow, deepenRow;
+        readonly Row onRow, deepRow, daysRow, stateRow, deepenRow, boxRow;
+        // 20.11: when the black box records (Settings.BlackBoxMode)
+        readonly Segmented boxSeg = new Segmented("Всегда", "Только тесты", "Со сторожем");
+        static readonly int[] BoxModes = { 1, 2, 0 }; // the buttons in that order → BlackBoxMode (the stored value stays as it was)
         readonly Pill statePill = new Pill();
         readonly Row[] coreRows;
         readonly SectionLabel adviceLabel;
@@ -36,6 +39,15 @@ namespace RedTune
             helpBtn.Click += (s, e) => { help.Visible = !help.Visible; Relayout(); };
             onRow = Row("Слежение", "", onToggle);
             stateRow = Row("Состояние", "", statePill);
+            boxRow = Row("Чёрный ящик", "", boxSeg);
+            boxSeg.Selected = Math.Max(0, Array.IndexOf(BoxModes, settings.BlackBoxMode));
+            boxSeg.Changed += (s, e) =>
+            {
+                if (boxSeg.Selected < 0 || BoxModes[boxSeg.Selected] == settings.BlackBoxMode) return;
+                settings.BlackBoxMode = BoxModes[boxSeg.Selected]; Store.SaveSettings(settings);
+                Store.Log("чёрный ящик: режим " + (new[] { "со сторожем", "всегда", "только тесты" })[settings.BlackBoxMode]);
+                ShowState();
+            };
 
             adviceLabel = Section("Советы");
             coreRows = new Row[Hw.CurveCores];
@@ -104,6 +116,11 @@ namespace RedTune
         {
             var st = watch.State;
             bool on = settings.WatchOn;
+            // the black box follows within 2 s; the line says what the choice means and whether it records now
+            int bm = settings.BlackBoxMode;
+            bool rec = BlackBox.Wanted();
+            boxRow.SetSub((rec ? "Сейчас пишет · " : "Сейчас не пишет · ") + (bm == 1 ? "всегда, каждые 2 секунды" : bm == 2 ? "только во время автотюна и замера кривых ядер"
+                : "пока включено слежение и во время тестов"));
             var preset = curve.Active;
             onRow.SetSub(!on ? "Выключено: журнал ошибок никто не читает"
                 : "Включено · проверка раз в минуту" + (watch.LastCheck > DateTime.MinValue ? " · последняя " + Ago(DateTime.Now - watch.LastCheck) : ""));

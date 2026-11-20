@@ -11,7 +11,7 @@ namespace RedTune
 {
     // 17.11: the mini panel as separate blocks, each a window of its own with Windows' own blur behind it.
     //
-    // The panel before this (MiniPanel, still in the source) made its glass itself: it read the screen under it,
+    // The panel before this (MiniPanel, removed 20.11, in the git history) made its glass itself: it read the screen under it,
     // frosted and bent that picture and drew it under the blocks. However fast that was made, the glass came one
     // or two frames after what moved behind it, and that could be seen. Windows blurs what is behind a window
     // inside its own compositor, in step with the screen and at no cost to this program, but only as a whole
@@ -193,7 +193,7 @@ namespace RedTune
             return res;
         }
 
-        // The light on a block. 17.11: it was the sheen of a card (Theme.GlassSheen: a glow inside the top edge, a
+        // The light on a block. 17.11: it was the sheen of a card (a glow inside the top edge, a
         // weaker one inside the bottom edge, both white). Asked for: less of it at the top, and at the bottom the
         // opposite, a shade. So: a faint glow and a thin line of light under the top edge, the bottom edge going dark.
         const int TopGlow = 22, TopLine = 18, BottomShade = 84;
@@ -270,7 +270,7 @@ namespace RedTune
         }
     }
 
-    // The panel: what is switched many times a day (the rows of MiniPanel, see there for what each does), as blocks.
+    // The panel: what is switched many times a day (the rows the old MiniPanel had), as blocks.
     // A left click on the tray icon opens it by the icon; a click anywhere else closes it.
     class MiniBlocks
     {
@@ -402,7 +402,7 @@ namespace RedTune
         }
 
         // a write on its way (a mode brings its own graphics card preset and curve, and writing them takes a second or
-        // two): the list shows the preset that is coming with a running dot and takes no clicks; see MiniPanel
+        // two): the list shows the preset that is coming with a running dot and takes no clicks
         void Expect(int ms) { expectUntil = DateTime.Now.AddMilliseconds(ms); Watch(); }
 
         void Watch()

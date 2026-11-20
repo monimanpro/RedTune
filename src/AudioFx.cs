@@ -590,7 +590,7 @@ namespace RedTune
 
         public static void SetVolume(Guid id, int percent)
         {
-            try { var v = Volume(id); var ctx = Guid.Empty; if (v != null) v.SetMasterVolumeLevelScalar(Math.Max(0, Math.Min(100, percent)) / 100f, ref ctx); } catch { }
+            try { var v = Volume(id); var ctx = Guid.Empty; if (v != null) v.SetMasterVolumeLevelScalar(Math.Max(0, Math.Min(100, percent)) / 100f, ref ctx); } catch (Exception ex) { Store.Quiet("звук: громкость", ex); }
         }
 
         public static bool? GetMute(Guid id)
@@ -600,7 +600,7 @@ namespace RedTune
 
         public static void SetMute(Guid id, bool mute)
         {
-            try { var v = Volume(id); var ctx = Guid.Empty; if (v != null) v.SetMute(mute, ref ctx); } catch { }
+            try { var v = Volume(id); var ctx = Guid.Empty; if (v != null) v.SetMute(mute, ref ctx); } catch (Exception ex) { Store.Quiet("звук: без звука", ex); }
         }
 
         // the device every program plays to (all three roles, as the Windows settings do)

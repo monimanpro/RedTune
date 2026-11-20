@@ -27,6 +27,11 @@ namespace RedTune
         static readonly List<string> lines = new List<string>();
         const int Keep = 30, EveryMs = 2000;
 
+        // 20.11: whether to record now (Settings.BlackBoxMode, an auto-tune, a core-curve measurement); asked every 2 s.
+        // Paused, it reads and writes nothing; the file is left "clean", so a reset then is not taken for the cores' fault.
+        public static Func<bool> Wanted = () => true;
+        public static bool Recording { get; private set; }
+
         // what the recorder saw just before the last unexpected restart; null when the last end was clean or nothing is known
         public static string LastReport { get; private set; }
         // the cores of that report that were busy (30 % and more), for the watchdog (16.11)
@@ -84,6 +89,15 @@ namespace RedTune
             {
                 while (!stop)
                 {
+                    bool want = true;
+                    try { want = Wanted(); } catch { }
+                    if (!want)
+                    {
+                        if (Recording) { try { lock (lines) { lines.Clear(); Write("clean"); } } catch { } Recording = false; Store.Log("чёрный ящик: пауза"); }
+                        Thread.Sleep(EveryMs);
+                        continue;
+                    }
+                    if (!Recording) { Recording = true; Store.Log("чёрный ящик: запись"); }
                     try
                     {
                         var s = CoreCurve.Sample();
@@ -97,7 +111,7 @@ namespace RedTune
                             }
                         }
                     }
-                    catch { }
+                    catch (Exception ex) { Store.Quiet("чёрный ящик: запись", ex); }
                     Thread.Sleep(EveryMs);
                 }
             }) { IsBackground = true, Name = "black box", Priority = ThreadPriority.BelowNormal };

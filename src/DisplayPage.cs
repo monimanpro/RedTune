@@ -361,7 +361,7 @@ namespace RedTune
                     catch (Exception ex) { Store.Log("автоуправление цветом: " + m.Title + ": " + ex.Message); }
                 }
             }
-            catch { }
+            catch (Exception ex) { Store.Quiet("автоуправление цветом: проверка", ex); }
             finally { busy = 0; }
         }
     }

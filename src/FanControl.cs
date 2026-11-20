@@ -243,6 +243,10 @@ namespace RedTune
         public int CpuTemp = -1, GpuTemp = -1;
         public readonly int[] Rpm = new int[2], Target = new int[2];
         public event Action Updated; // from the worker thread
+        // 20.11: «Питание» is open and shows the live temperatures and speeds. While the curve is off and nobody looks,
+        // the loop reads nothing: 4 firmware reads every half second cost ~3 % of a core in Windows' WMI service for
+        // numbers nobody used. The fans themselves are the firmware's then; the curve, once on, is read as before.
+        public volatile bool Watched;
         public event Action<int, int> Sent; // a speed the firmware took: fan (0 CPU, 1 GPU), RPM; from the worker thread
 
         static FanControl current;
@@ -302,7 +306,7 @@ namespace RedTune
             {
                 if (!Active) return;
                 Active = false;
-                foreach (var id in Ids) try { Lenovo.SetFeature(id, 0); } catch { }
+                foreach (var id in Ids) try { Lenovo.SetFeature(id, 0); } catch (Exception ex) { Store.Quiet("вентиляторы: отдать прошивке", ex); }
                 brain.Reset(); Target[0] = Target[1] = 0; panicSaid = false;
                 Store.Log("вентиляторы: управление отдано прошивке (" + why + ")");
             }
@@ -323,12 +327,13 @@ namespace RedTune
 
         void Cycle()
         {
+            var p = presetNow();
+            string off = suspended || stop ? "пауза" : p == null || !p.FanCurveOn ? "кривая выключена" : p.FanMax ? "полная скорость" : modeNow() != Lenovo.Custom ? "не «Свой» режим" : null;
+            if (off != null && !Active && !Watched) return; // the firmware drives the fans and nobody shows the numbers
+
             int cpu = Temp(Lenovo.CpuTemp), gpu = Temp(Lenovo.GpuTemp);
             CpuTemp = cpu; GpuTemp = gpu;
             for (int i = 0; i < 2; i++) { var r = Lenovo.GetFeature(Ids[i]); Rpm[i] = r == int.MinValue ? 0 : r; }
-
-            var p = presetNow();
-            string off = suspended || stop ? "пауза" : p == null || !p.FanCurveOn ? "кривая выключена" : p.FanMax ? "полная скорость" : modeNow() != Lenovo.Custom ? "не «Свой» режим" : null;
             lock (gate)
             {
                 if (off != null) { Release(off); return; }

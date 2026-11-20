@@ -30,43 +30,8 @@ namespace RedTune
             var usbRow = Row("Питание USB", "Заряжать устройства по USB, когда ноутбук спит или выключен", usb);
             BindChoice(usb, usbRow, "Заряжать устройства по USB, когда ноутбук спит или выключен", () => (int)Energy.GetUsbPower(), i => Energy.SetUsbPower((UsbPower)i));
 
-            Section("Видеокарта");
-            var gpuBtn = new DropButton();
-            const string gpuSub = "Гибридный бережёт батарею, дискретный — всё через RTX";
-            var gpuRow = Row("Режим работы видеокарты", gpuSub, gpuBtn);
-            int gpuNow = -1;
-            gpuBtn.Changed += (s, e) =>
-            {
-                if (loading) return;
-                int want = gpuBtn.Index;
-                if (want == gpuNow) return;
-                bool gsync = (want == Lenovo.GpuDiscrete) != (gpuNow == Lenovo.GpuDiscrete);
-                var text = "Переключить на «" + Lenovo.GpuModeNames[want] + "»?\n\n" + (gsync ? "Переход между гибридным и дискретным режимом включится только после перезагрузки." : "Режим переключится сразу; если что-то не подхватится, поможет перезагрузка.");
-                if (!ConfirmDialog.Ask(FindForm(), "Режим видеокарты", text, "Переключить", "Отмена")) { loading = true; gpuBtn.Set(gpuBtn.Items, gpuNow); loading = false; return; }
-                Task.Run(() =>
-                {
-                    string err = null; bool reboot = false;
-                    try { reboot = Lenovo.SetGpuMode(want); } catch (Exception ex) { err = ex.Message; Store.Log("видеокарта: " + err); }
-                    try
-                    {
-                        BeginInvoke((Action)(() =>
-                        {
-                            if (err != null) { gpuRow.SetSub("Не удалось: " + err); foreach (var r in refreshers) r(); return; }
-                            gpuNow = want;
-                            gpuRow.SetSub(reboot ? "Выбрано «" + Lenovo.GpuModeNames[want] + "» — включится после перезагрузки" : gpuSub);
-                            if (reboot && ConfirmDialog.Ask(FindForm(), "Перезагрузка", "Режим видеокарты сменится после перезагрузки. Перезагрузить сейчас? Сохраните открытые файлы.", "Перезагрузить", "Позже"))
-                                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("shutdown.exe", "/r /t 5") { UseShellExecute = false, CreateNoWindow = true });
-                        }));
-                    }
-                    catch { }
-                });
-            };
-            refreshers.Add(() => Read(() => Lenovo.IgpuModeSupported ? Lenovo.GetGpuMode() : (Lenovo.GSyncSupported ? Lenovo.GetGpuMode() : -1), v =>
-            {
-                gpuRow.Visible = v >= 0;
-                if (v >= 0) { gpuNow = v; gpuBtn.Set(Lenovo.GpuModeNames, v); }
-                Relayout();
-            }, gpuRow));
+            // 20.11: the graphics mode lives on «Видеокарта» (GpuModeRow); here only where that page is not in the menu
+            if (!Hw.PageFits("gpu") && GpuModeRow.Available) { Section("Видеокарта"); GpuModeRow.Add(this); }
 
             // 20.11: the screen («Экран») is a section of its own now, «Дисплей» (DisplayPage)
 
@@ -78,6 +43,14 @@ namespace RedTune
             BindToggle("Блокировка Fn", "F1–F12 работают без Fn", () => Energy.GetFnLock(), Energy.SetFnLock);
             BindToggle("Блокировка клавиши Windows", "Только на встроенной клавиатуре", () => Lenovo.GameZoneGet("GetWinKeyStatus") == 1, v => Lenovo.GameZoneSet("SetWinKeyStatus", v ? 1 : 0));
             BindToggle("Микрофон", "Все микрофоны вкл. или выкл.", () => Audio.MicOn() ?? false, Audio.SetMic);
+            // 21.11: «Свой» in the round of Fn+Q (a setting of the app, PowerService.ModeNow)
+            if (Hw.GameZone)
+            {
+                var fnq = new Toggle();
+                Row("Fn+Q включает «Свой»", "По кругу: Тихий → Баланс → Макс → Свой → Тихий", fnq);
+                fnq.Set(settings.FnQCustom);
+                fnq.CheckedChanged += (s, e) => { settings.FnQCustom = fnq.Checked; Store.SaveSettings(settings); Store.Log("Fn+Q через «Свой»: " + (fnq.Checked ? "да" : "нет")); };
+            }
 
             VisibleChanged += (s, e) => { if (Visible) foreach (var r in refreshers) r(); };
         }

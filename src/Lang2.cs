@@ -16,6 +16,12 @@ namespace RedTune
 
         static readonly Dictionary<string, string> More = new Dictionary<string, string>
         {
+            // 20.11: the black box's mode on «Сторож»
+            { "Разгон", "Overclocking" },
+            { "Кривая частоты и пресеты — в экспертных функциях: Настройки → Основное", "The clock curve and the presets are expert functions: Settings → General" },
+            { "Fn+Q включает «Свой»", "Fn+Q includes Custom" }, { "По кругу: Тихий → Баланс → Макс → Свой → Тихий", "In a round: Quiet → Balance → Performance → Custom → Quiet" },
+            { "Минимальная частота", "Minimum clock" }, { "Ниже этой частоты процессор не опускается", "The processor does not go below this clock" },
+            { "Чёрный ящик", "Black box" }, { "Со сторожем", "With the watchdog" }, { "Только тесты", "Tests only" },
             { "Режим питания Windows", "Windows power mode" },
             { "Тип схемы", "Plan kind" }, { "Сбалансированная", "Balanced" },
             { "Режим питания Windows действует только на сбалансированные схемы", "The Windows power mode works only on balanced plans" },
@@ -556,7 +562,7 @@ namespace RedTune
             { "Применить сейчас", "Apply now" },
             { "Безопасный запуск", "Safe start" },
             { "Экспертные функции", "Expert features" },
-            { "«Кривая» и «Память» в меню, запись лимитов процессора AMD. Shift при запуске — безопасный запуск без них", "«Curve» and «Memory» in the menu, writing the AMD processor limits. Shift at start: a safe start without them" },
+            { "«Кривая» и «Память» в меню, разгон видеокарты, запись лимитов процессора AMD. Shift при запуске — безопасный запуск без них", "«Curve» and «Memory» in the menu, graphics card overclocking, writing the AMD processor limits. Shift at start: a safe start without them" },
             { "Кривая напряжения, тайминги памяти и прямые лимиты процессора меняют то, что задал производитель. Неверные значения приводят к сбоям, синим экранам или к тому, что ноутбук не загрузится.\n\nЕсли что-то пошло не так, зажмите Shift при запуске Red Tune — он ничего не применит.", "The voltage curve, memory timings and direct processor limits change what the maker set. Wrong values lead to crashes, blue screens or a laptop that will not boot.\n\nIf something went wrong, hold Shift while Red Tune starts: it will apply nothing." },
             { "Включить", "Turn on" },
             // 18.11: «Звук» (SoundPage, AudioFx)
@@ -672,6 +678,12 @@ namespace RedTune
 
         static readonly Dictionary<string, string> MoreFragments = new Dictionary<string, string>
         {
+            { "в схеме ", "in the plan " }, { " % от ", " % of " }, { ", минимальная частота ", ", minimum clock " },
+            { " · на обычных страницах", " · on ordinary pages" },
+            { "Сейчас не пишет · ", "Not recording now · " }, { "Сейчас пишет · ", "Recording now · " },
+            { "пока включено слежение и во время тестов", "while watching is on and during the tests" },
+            { "всегда, каждые 2 секунды", "always, every 2 seconds" },
+            { "только во время автотюна и замера кривых ядер", "only during an auto-tune and a core curve measurement" },
             // 20.11: «Дисплей»: what Windows or a monitor answers
             { " бит на канал", " bits per channel" },
             { "Профиль для этого режима свой: выбранный в обычном режиме здесь не действует", "This mode has a profile of its own: the one picked in the standard mode does not act here" }, { ". Без профиля Windows управляет цветом сама", ". Without a profile Windows manages the colour itself" },

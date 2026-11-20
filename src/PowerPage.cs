@@ -199,12 +199,16 @@ namespace RedTune
             cfgSrc.Selected = SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Offline ? 0 : 1;
             cfgPlanRow = Row("Схема", CfgSub, cfgSrc, cfgPlan); // the plan on the right, under the buttons of the rows above (the user's order)
             cfgKindRow = Row("Тип схемы", "Режим питания Windows действует только на сбалансированные схемы", cfgKind);
+            // 21.11 (the user's order): the energy preference right after the plan's kind, the minimum clock right after the cap
+            cfgEppRow = Row("Предпочтение энергии", CfgNone, cfgEpp);
             cfgModeRow = Row("Режим питания Windows", "Общий для всех сбалансированных схем; от сети и от батареи — свой", cfgMode);
+            // 21.11 (the user's order): the boost right after Windows' power mode
+            cfgBoostRow = Row("Буст", "Как процессор поднимает частоту выше базовой", cfgBoost);
             cfgFreq = SliderRow("Потолок частоты", "Выше процессор не поднимается. Справа до упора — без потолка", new[] { 1000, cfgNoCap }, "МГц");
             cfgFreq.Step = 100; cfgFreq.Caption = v => v >= cfgNoCap ? "нет" : null;
-            cfgBoostRow = Row("Буст", "Как процессор поднимает частоту выше базовой", cfgBoost);
-            cfgEppRow = Row("Предпочтение энергии", CfgNone, cfgEpp);
-            cfgMin = SliderRow("Минимальное состояние процессора", "Ниже этой доли своей частоты процессор не опускается", new[] { 0, 100 }, "%");
+            // 21.11 (the user's wish): in MHz where the base clock is known; the plan still gets percent of it (MinFromUi)
+            if (Hw.BaseMhz > 0) { cfgMin = SliderRow("Минимальная частота", "Ниже этой частоты процессор не опускается", new[] { 0, Hw.BaseMhz }, "МГц"); cfgMin.Step = Math.Max(1, Hw.BaseMhz / 100); }
+            else cfgMin = SliderRow("Минимальное состояние процессора", "Ниже этой доли своей частоты процессор не опускается", new[] { 0, 100 }, "%");
             cfgParkRow = Row("Запретить парковку ядер", CfgNone, cfgPark);
             cfgWriteRow = Row("Запись в схему", CfgWriteSub, cfgUndo, cfgWrite);
             cfgWrite.Enabled = cfgUndo.Enabled = false;
@@ -218,8 +222,8 @@ namespace RedTune
             cfgBoost.Set(BoostNames, -1);
             cfgPlan.Changed += (s, e) => { if (cfgPlan.Index >= 0 && cfgPlan.Index < plans.Count) cfgId = plans[cfgPlan.Index].Id; LoadCfg(); };
             cfgSrc.Changed += (s, e) => LoadCfg();
-            cfgFreq.Changed += (s, e) => SetEdit(WinPower.Cpu.FreqMax, (uint)(cfgFreq.Value >= cfgNoCap ? 0 : cfgFreq.Value), null, false);
-            cfgMin.Changed += (s, e) => SetEdit(WinPower.Cpu.MinState, (uint)cfgMin.Value, null, false);
+            cfgFreq.Changed += (s, e) => FreqMoved();
+            cfgMin.Changed += (s, e) => MinMoved();
             cfgBoost.Changed += (s, e) => { if (cfgBoost.Index >= 0) SetEdit(WinPower.Cpu.Boost, (uint)cfgBoost.Index, null, true); };
             // the button the plan's own value lights is no change: «Баланс» pressed again over a plan with 25 leaves the 25
             cfgEpp.Changed += (s, e) => { if (cfgEpp.Selected < 0) return; uint now; SetEdit(WinPower.Cpu.Epp, Cfg(WinPower.Cpu.Epp, out now) && EppButton(now) == cfgEpp.Selected ? now : EppValues[cfgEpp.Selected], null, true); };
@@ -294,7 +298,7 @@ namespace RedTune
 
             LoadPlans();
             Select(power.Active);
-            VisibleChanged += (s, e) => { if (Visible) { LoadPlans(); FollowActive(); Edited(); ShowFanLive(); ShowAmps(); fanTimer.Start(); CheckBiosOc(); } else fanTimer.Stop(); };
+            VisibleChanged += (s, e) => { fans.Watched = Visible; if (Visible) { LoadPlans(); FollowActive(); Edited(); ShowFanLive(); ShowAmps(); fanTimer.Start(); CheckBiosOc(); } else fanTimer.Stop(); };
             // another preset became active while the page is open: follow it (a mode change alone doesn't move the editor)
             power.Changed += () => { if (Visible && power.Data.Active != followed) FollowActive(); };
             followed = power.Data.Active;
@@ -445,6 +449,41 @@ namespace RedTune
             fanOnRow.SetSub(who ?? FanOnSub);
         }
 
+        // the plan's minimum state (percent of the base clock) and the slider (MHz, or percent where the base is unknown)
+        static int MinToUi(uint pct) { return Hw.BaseMhz > 0 ? (int)Math.Round(pct * Hw.BaseMhz / 100.0) : (int)pct; }
+        static uint MinFromUi(int v) { return Hw.BaseMhz > 0 ? (uint)Math.Max(0, Math.Min(100, (int)Math.Round(v * 100.0 / Hw.BaseMhz))) : (uint)Math.Max(0, Math.Min(100, v)); }
+        // 21.11 (the user's wish): the cap and the minimum push each other. A minimum above the cap wins on this processor
+        // (the clock stayed at the minimum's 2.0 GHz under caps of 1.9 … 1.2 GHz), so the cap would do nothing there:
+        // the cap pulled down below the minimum takes the minimum down with it, the minimum pushed above the cap takes the
+        // cap up. «нет» (no cap) holds nothing back. Only in MHz (the base clock known).
+        void FreqMoved()
+        {
+            SetEdit(WinPower.Cpu.FreqMax, (uint)(cfgFreq.Value >= cfgNoCap ? 0 : cfgFreq.Value), null, false);
+            if (cfgLoading || Hw.BaseMhz <= 0 || !cfgMin.Enabled || cfgFreq.Value >= cfgNoCap || cfgMin.Value <= cfgFreq.Value) return;
+            uint pct = (uint)Math.Min(100, cfgFreq.Value * 100 / Hw.BaseMhz); // down to the step at or under the cap
+            cfgMin.Value = MinToUi(pct);
+            SetEdit(WinPower.Cpu.MinState, pct, null, false);
+            MinSub();
+        }
+
+        void MinMoved()
+        {
+            SetEdit(WinPower.Cpu.MinState, MinFromUi(cfgMin.Value), null, false);
+            MinSub();
+            if (cfgLoading || Hw.BaseMhz <= 0 || !cfgFreq.Enabled || cfgFreq.Value >= cfgNoCap || cfgMin.Value <= cfgFreq.Value) return;
+            int cap = Math.Min(cfgNoCap - 100, (cfgMin.Value + 99) / 100 * 100); // up to the cap's 100 MHz step at or over the minimum
+            cfgFreq.Value = cap;
+            SetEdit(WinPower.Cpu.FreqMax, (uint)cap, null, false);
+        }
+
+        // the row's line says what goes into the plan
+        void MinSub()
+        {
+            var row = cfgMin.Parent as Row;
+            if (row == null || Hw.BaseMhz <= 0) return;
+            row.SetSub(L.T("Ниже этой частоты процессор не опускается") + " · " + L.T("в схеме ") + MinFromUi(cfgMin.Value) + L.T(" % от ") + Hw.BaseMhz + L.T(" МГц"));
+        }
+
         Slider SliderRow(string title, string sub, int[] range, string unit)
         {
             var s = new Slider(range[0], range[1], range[0], unit) { Width = Theme.S(330), WarpToKnob = true }; // a press puts the pointer onto the knob (20.11)
@@ -512,7 +551,7 @@ namespace RedTune
                     {
                         uint f, e, mn;
                         bool hf = WinPower.ReadModeValue(mode, WinPower.Cpu.FreqMax, dc, out f), he = WinPower.ReadModeValue(mode, WinPower.Cpu.Epp, dc, out e), hm = WinPower.ReadModeValue(mode, WinPower.Cpu.MinState, dc, out mn);
-                        if (hf && he && hm) holds = "Держит поверх «Сбалансированных» схем: " + (f == 0 ? "без потолка частоты, предпочтение энергии " : "потолок частоты " + f + " МГц, предпочтение энергии ") + e + ", минимальное состояние " + mn + " %";
+                        if (hf && he && hm) holds = "Держит поверх «Сбалансированных» схем: " + (f == 0 ? "без потолка частоты, предпочтение энергии " : "потолок частоты " + f + " МГц, предпочтение энергии ") + e + (Hw.BaseMhz > 0 ? ", минимальная частота " + MinToUi(mn) + " МГц" : ", минимальное состояние " + mn + " %");
                     }
                     if (holds != cfgModeRow.Extra) { cfgModeRow.SetExtra(holds); Relayout(); }
                 }
@@ -540,7 +579,7 @@ namespace RedTune
                 if (Cfg(WinPower.Cpu.MinState, out v))
                 {
                     if (Pending(WinPower.Cpu.MinState, out pe)) v = pe.Value;
-                    cfgMin.Value = (int)Math.Min(100, v); cfgMin.Enabled = true;
+                    cfgMin.Value = MinToUi(Math.Min(100, v)); cfgMin.Enabled = true; MinSub();
                 }
                 else cfgMin.Enabled = false;
                 if (Cfg(WinPower.Cpu.MinCores, out v))
@@ -667,7 +706,7 @@ namespace RedTune
             say("two sides wait, the buttons are on: «" + cfgWriteRow.Sub + "»", cfgEdits.Count == 2 && cfgWrite.Enabled && cfgUndo.Enabled);
             say("the bottom «Сохранить» is on as well", saveBtn.Enabled);
             cfgSrc.Selected = 1; LoadCfg();
-            say("back on mains the controls show what waits: " + cfgFreq.Value + " МГц, boost " + cfgBoost.Index + ", preference button " + cfgEpp.Selected + ", minimum " + cfgMin.Value, cfgFreq.Value == 3300 && cfgBoost.Index == 4 && cfgEpp.Selected == 0 && cfgMin.Value == 37);
+            say("back on mains the controls show what waits: " + cfgFreq.Value + " МГц, boost " + cfgBoost.Index + ", preference button " + cfgEpp.Selected + ", minimum " + cfgMin.Value, cfgFreq.Value == 3300 && cfgBoost.Index == 4 && cfgEpp.Selected == 0 && cfgMin.Value == MinToUi(37));
             // a value put back to what the plan has waits for nothing
             uint min0; WinPower.ReadCpu(plan, WinPower.Cpu.MinState, false, out min0);
             SetEdit(WinPower.Cpu.MinState, min0, null, false);
@@ -683,7 +722,7 @@ namespace RedTune
             say("a change waits again: the bottom «Сохранить» is on", saveBtn.Enabled);
             UndoCfgEdits();
             say("«Отменить»: the bottom «Сохранить» is off", !saveBtn.Enabled);
-            say("«Отменить»: the plan is as written (" + read(true) + "), the slider is back at " + cfgMin.Value, read(true) == dc1 && cfgEdits.Count == 0 && cfgMin.Value == 12);
+            say("«Отменить»: the plan is as written (" + read(true) + "), the slider is back at " + cfgMin.Value, read(true) == dc1 && cfgEdits.Count == 0 && cfgMin.Value == MinToUi(12));
             ParkEdit(false);
             say("parking allowed again waits: «" + cfgParkRow.Sub + "»", Pending(WinPower.Cpu.MinCores, out gone) && read(true) == dc1);
             WriteCfgEdits();
@@ -703,6 +742,43 @@ namespace RedTune
             say("the other settings of the plan are as they were: mains " + read(false), read(false) == ac1);
             KindEdit(k0); WriteCfgEdits();
             say("written back: " + (WinPower.ReadKind(plan, out kNow) ? kNow.ToString() : "?"), kNow == k0);
+            // 21.11: the cap and the minimum push each other (nothing written: «Отменить» at the end)
+            if (Hw.BaseMhz > 0 && cfgFreq.Enabled && cfgMin.Enabled)
+            {
+                cfgSrc.Selected = 1; LoadCfg();
+                cfgFreq.Value = 3000; FreqMoved(); cfgMin.Value = MinToUi(60); MinMoved(); // a cap with room under it, the minimum at 60 %
+                int minWas = cfgMin.Value; cfgFreq.Value = 1200; FreqMoved();
+                CfgEdit pm, pf;
+                say("the cap pulled under the minimum (" + cfgFreq.Value + " МГц) took it down from " + minWas + " to " + cfgMin.Value + " МГц", minWas > 1200 && cfgMin.Value <= cfgFreq.Value && cfgFreq.Value - cfgMin.Value < Math.Max(1, Hw.BaseMhz / 100) && Pending(WinPower.Cpu.MinState, out pm) && MinToUi(pm.Value) == cfgMin.Value);
+                cfgMin.Value = Hw.BaseMhz; MinMoved();
+                say("the minimum pushed to " + cfgMin.Value + " МГц took the cap up to " + cfgFreq.Value + " МГц", cfgFreq.Value >= cfgMin.Value && Pending(WinPower.Cpu.FreqMax, out pf) && pf.Value == cfgFreq.Value);
+                cfgFreq.Value = cfgNoCap; FreqMoved(); int m2 = cfgMin.Value;
+                cfgMin.Value = 0; MinMoved(); cfgMin.Value = m2; MinMoved();
+                say("with no cap the minimum moves alone: the cap still «нет»", cfgFreq.Value >= cfgNoCap);
+                UndoCfgEdits();
+                say("«Отменить»: nothing waits", !CfgDirty);
+            }
+            // 21.11: Ctrl+Z / Ctrl+Y in the block, also over a write to the plan
+            gesture = false; gestureEnd.Stop();
+            cfgSrc.Selected = 1; LoadCfg();
+            uint m1; WinPower.ReadCpu(plan, WinPower.Cpu.MinState, false, out m1);
+            uint mNew = m1 == 50 ? 60u : 50u;
+            SetEdit(WinPower.Cpu.MinState, mNew, null, false);
+            CfgEdit pe; say("a minimum moved in the block waits: " + mNew + " (the plan has " + m1 + ")", Pending(WinPower.Cpu.MinState, out pe) && pe.Value == mNew);
+            Step(this.back, forward);
+            say("Ctrl+Z: nothing waits, the slider shows the plan's " + m1 + " (" + cfgMin.Value + ")", !Pending(WinPower.Cpu.MinState, out pe) && cfgMin.Value == MinToUi(m1) && !CfgDirty);
+            Step(forward, this.back);
+            say("Ctrl+Y: it waits again", Pending(WinPower.Cpu.MinState, out pe) && pe.Value == mNew && cfgMin.Value == MinToUi(mNew));
+            WriteCfgEdits();
+            uint mNow; WinPower.ReadCpu(plan, WinPower.Cpu.MinState, false, out mNow);
+            say("«Записать в схему»: the plan has " + mNow + ", nothing waits", mNow == mNew && !CfgDirty);
+            gesture = false; gestureEnd.Stop();
+            Step(this.back, forward);
+            WinPower.ReadCpu(plan, WinPower.Cpu.MinState, false, out mNow);
+            say("Ctrl+Z after the write: the old " + m1 + " waits to be written back, the plan still has " + mNow, Pending(WinPower.Cpu.MinState, out pe) && pe.Value == m1 && mNow == mNew && cfgWrite.Enabled);
+            WriteCfgEdits();
+            WinPower.ReadCpu(plan, WinPower.Cpu.MinState, false, out mNow);
+            say("written back: the plan has " + mNow + " again", mNow == m1);
             sb.AppendLine(bad == 0 ? "all as expected" : bad + " FAILED");
             return sb.ToString();
         }
@@ -867,36 +943,130 @@ namespace RedTune
         // overclocking, the plan, the curve and the GPU preset tied to it). A run of changes with less than half a
         // second between them, or made while a mouse button is held (a slider dragged), is one step. The steps belong to
         // the preset shown: another preset picked starts afresh; saving keeps them (a step back then makes the editor
-        // differ from the saved preset again). The block «Настройки процессора в схеме» is not in them: it writes to the
-        // Windows plan with its own «Записать» / «Отменить».
-        readonly System.Collections.Generic.List<PowerPreset> back = new System.Collections.Generic.List<PowerPreset>(), forward = new System.Collections.Generic.List<PowerPreset>();
+        // differ from the saved preset again).
+        // 21.11 (the user's wish): the block «Настройки процессора в схеме» is in the same steps. A step keeps, beside the
+        // preset's values, what the block wants for every setting it has touched in this history: the value waiting to be
+        // written, or the plan's own. Values, not the waiting list, so a step back works after «Записать в схему» too: the
+        // old value then waits to be written again. Keys: "c|plan|dc|setting", "m|dc" (Windows' power mode), "k|plan" (kind).
+        class CfgVal { public uint Value; public uint?[] Classes; public Guid Mode; }
+        class UndoSnap { public PowerPreset Edit; public System.Collections.Generic.Dictionary<string, CfgVal> Cfg; }
+        readonly System.Collections.Generic.List<UndoSnap> back = new System.Collections.Generic.List<UndoSnap>(), forward = new System.Collections.Generic.List<UndoSnap>();
         PowerPreset seen; string seenName; bool gesture;
+        System.Collections.Generic.Dictionary<string, CfgVal> seenCfg = new System.Collections.Generic.Dictionary<string, CfgVal>();
+        readonly System.Collections.Generic.HashSet<string> cfgKnown = new System.Collections.Generic.HashSet<string>();
         readonly Timer gestureEnd = new Timer { Interval = 500 };
+
+        static string CpuKey(Guid id, bool dc, WinPower.Cpu what) { return "c|" + id + "|" + (dc ? 1 : 0) + "|" + (int)what; }
+
+        System.Collections.Generic.IEnumerable<string> PendingKeys()
+        {
+            foreach (var t in cfgEdits.Values) foreach (var w in t.Edits.Keys) yield return CpuKey(t.Id, t.Dc, w);
+            foreach (var dc in modeEdits.Keys) yield return "m|" + (dc ? 1 : 0);
+            foreach (var id in kindEdits.Keys) yield return "k|" + id;
+        }
+
+        // what the Windows plan holds for the key now (null: not readable, the plan is gone)
+        static CfgVal PlanVal(string key)
+        {
+            try
+            {
+                var p = key.Split('|');
+                if (p[0] == "c")
+                {
+                    var id = new Guid(p[1]); bool dc = p[2] == "1"; var what = (WinPower.Cpu)int.Parse(p[3]);
+                    if (what == WinPower.Cpu.MinCores) { var c = WinPower.ReadCpuClasses(id, what, dc); return c[0] == null ? null : new CfgVal { Value = c[0].Value, Classes = c }; }
+                    uint v; return WinPower.ReadCpu(id, what, dc, out v) ? new CfgVal { Value = v } : null;
+                }
+                if (p[0] == "m") { Guid g; return WinPower.ReadMode(p[1] == "1", out g) ? new CfgVal { Mode = g } : null; }
+                if (p[0] == "k") { uint k; return WinPower.ReadKind(new Guid(p[1]), out k) ? new CfgVal { Value = k } : null; }
+            }
+            catch { }
+            return null;
+        }
+
+        // what the block wants for the key: the value waiting, or the plan's own
+        CfgVal WantVal(string key)
+        {
+            var p = key.Split('|');
+            if (p[0] == "c") { CfgTarget t; CfgEdit e; if (cfgEdits.TryGetValue(CfgKey(new Guid(p[1]), p[2] == "1"), out t) && t.Edits.TryGetValue((WinPower.Cpu)int.Parse(p[3]), out e)) return new CfgVal { Value = e.Value, Classes = e.Classes }; }
+            else if (p[0] == "m") { Guid g; if (modeEdits.TryGetValue(p[1] == "1", out g)) return new CfgVal { Mode = g }; }
+            else if (p[0] == "k") { uint k; if (kindEdits.TryGetValue(new Guid(p[1]), out k)) return new CfgVal { Value = k }; }
+            return PlanVal(key);
+        }
+
+        static bool SameVal(CfgVal a, CfgVal b)
+        {
+            if (a == null || b == null) return a == b;
+            if (a.Value != b.Value || a.Mode != b.Mode) return false;
+            return a.Classes == null || b.Classes == null || a.Classes.SequenceEqual(b.Classes);
+        }
+
+        System.Collections.Generic.Dictionary<string, CfgVal> CfgNow() { return cfgKnown.ToDictionary(k => k, WantVal); }
+
+        static bool SameCfg(System.Collections.Generic.Dictionary<string, CfgVal> a, System.Collections.Generic.Dictionary<string, CfgVal> b)
+        {
+            foreach (var k in a.Keys.Union(b.Keys)) { CfgVal x, y; a.TryGetValue(k, out x); b.TryGetValue(k, out y); if (!SameVal(x, y)) return false; }
+            return true;
+        }
+
+        // a step's values back into the block's waiting lists: equal to the plan → nothing waits, else that value waits
+        void PutCfg(System.Collections.Generic.Dictionary<string, CfgVal> want)
+        {
+            foreach (var kv in want)
+            {
+                var w = kv.Value; if (w == null) continue;
+                bool same = SameVal(PlanVal(kv.Key), w);
+                var p = kv.Key.Split('|');
+                if (p[0] == "c")
+                {
+                    var id = new Guid(p[1]); bool dc = p[2] == "1"; var what = (WinPower.Cpu)int.Parse(p[3]);
+                    string key = CfgKey(id, dc); CfgTarget t;
+                    if (!cfgEdits.TryGetValue(key, out t)) { if (same) continue; cfgEdits[key] = t = new CfgTarget { Id = id, Dc = dc }; }
+                    if (same) t.Edits.Remove(what);
+                    else t.Edits[what] = new CfgEdit { Value = w.Value, Classes = what == WinPower.Cpu.MinCores ? w.Classes : null };
+                    if (t.Edits.Count == 0) cfgEdits.Remove(key);
+                }
+                else if (p[0] == "m") { bool dc = p[1] == "1"; if (same) modeEdits.Remove(dc); else modeEdits[dc] = w.Mode; }
+                else if (p[0] == "k") { var id = new Guid(p[1]); if (same) kindEdits.Remove(id); else kindEdits[id] = w.Value; }
+            }
+        }
 
         void Baseline()
         {
             if (seen != null && seenName == selected.Name && seen.SameAs(edit)) return; // saved as it stood: the steps stay
             back.Clear(); forward.Clear(); gesture = false; gestureEnd.Stop();
             seen = edit.Clone(); seenName = selected.Name;
+            // what already waits in the block is where the new history starts
+            cfgKnown.Clear(); foreach (var k in PendingKeys().ToList()) cfgKnown.Add(k);
+            seenCfg = CfgNow();
         }
 
-        // a change was taken into the editor: the values before it are a step back (once per run of changes)
+        // a change was taken into the editor or the block: the values before it are a step back (once per run of changes)
         void Record()
         {
-            if (seen == null || edit.SameAs(seen)) return;
-            if (!gesture) { back.Add(seen); if (back.Count > 200) back.RemoveAt(0); forward.Clear(); gesture = true; }
-            seen = edit.Clone();
+            if (seen == null) return;
+            // a setting of the block touched for the first time had the plan's value in every state before
+            foreach (var k in PendingKeys().ToList())
+                if (cfgKnown.Add(k)) { var pv = PlanVal(k); seenCfg[k] = pv; foreach (var s in back) s.Cfg[k] = pv; foreach (var s in forward) s.Cfg[k] = pv; }
+            var nowCfg = CfgNow();
+            if (edit.SameAs(seen) && SameCfg(nowCfg, seenCfg)) return;
+            if (!gesture) { back.Add(new UndoSnap { Edit = seen, Cfg = seenCfg }); if (back.Count > 200) back.RemoveAt(0); forward.Clear(); gesture = true; }
+            seen = edit.Clone(); seenCfg = nowCfg;
             gestureEnd.Stop(); gestureEnd.Start();
         }
 
-        bool Step(System.Collections.Generic.List<PowerPreset> from, System.Collections.Generic.List<PowerPreset> to)
+        bool Step(System.Collections.Generic.List<UndoSnap> from, System.Collections.Generic.List<UndoSnap> to)
         {
             if (edit == null || from.Count == 0) return false;
-            to.Add(edit.Clone());
+            to.Add(new UndoSnap { Edit = edit.Clone(), Cfg = CfgNow() });
             var snap = from[from.Count - 1]; from.RemoveAt(from.Count - 1);
-            edit = snap.Clone(); edit.Name = selected.Name;
-            seen = edit.Clone(); gesture = false; gestureEnd.Stop();
-            ShowEdit();
+            bool samePlan = snap.Edit.Plan == edit.Plan; Guid shown = cfgId; // the block stays on the plan it shows, unless the step changes the preset's plan
+            edit = snap.Edit.Clone(); edit.Name = selected.Name;
+            PutCfg(snap.Cfg);
+            seen = edit.Clone(); seenCfg = CfgNow(); gesture = false; gestureEnd.Stop();
+            ShowEdit(); // (it puts the block on the preset's plan)
+            if (samePlan && shown != Guid.Empty && shown != cfgId) { cfgId = shown; ShowCfgPlans(); }
+            LoadCfg();
             return true;
         }
 

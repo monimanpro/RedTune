@@ -58,14 +58,6 @@ namespace RedTune
         }
     }
 
-    class PlaceholderPage : Page
-    {
-        public PlaceholderPage(string title, string stage, string what)
-        {
-            Row(title + " — " + stage, what);
-        }
-    }
-
     // what the curve, the memory page and the auto-tune need: found or not, where it is, where it comes from;
     // every row can point to another folder ("Указать папку") and go back to the default ("Сбросить")
     class ComponentsPage : Page
