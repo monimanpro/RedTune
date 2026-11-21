@@ -319,6 +319,93 @@ w	1d31bbca	Fn+Q inclui Personalizado
 w	de32aeba	Em ciclo: Silencioso → Equilibrado → Desempenho → Personalizado → Silencioso
 w	1b6b946f	Frequência mínima
 w	f244c01e	O processador não fica abaixo desta frequência
+w	c983bc18	Reverberação
+w	183562a5	Pré-compressor
+w	9c07f315	Caráter do pré-compressor
+w	3b9fe70c	Mistura do pré-compressor
+w	d9f61a44	Comprime primeiro, antes do equalizador, e prepara o som para o compressor; o compressor com o limitador fica por último
+w	46751dc3	O efeito é de uma versão anterior: o pré-compressor funcionará após reiniciar o som do Windows
+w	f3dd3880	Caráter do segundo
+w	8693c009	Mistura do segundo
+w	2b1cd27d	Comprime primeiro, antes do equalizador; os ajustes dele ficam abaixo, antes dos do principal, e o principal com o limitador fica por último
+w	ef926644	Segundo compressor
+w	f9b7b3da	Vem logo depois do primeiro: por exemplo, um rápido pega os picos e um suave nivela o volume
+w	a2545708	Mistura
+w	f79ebb96	Quanto do som comprimido sai: menos deixa o som sem compressão ao lado (compressão paralela)
+w	323b87a7	Quão rápido começa a comprimir quando o som fica mais alto
+w	065d15da	O efeito é de uma versão anterior: o segundo compressor funciona depois que o som do Windows reiniciar
+w	7a35b487	própria
+w	578d3b66	larga
+w	27244899	Caráter
+w	36b56552	Coloração
+w	0c01a6d2	Intensidade da coloração
+w	2ba532be	Quanto mais alto o som, mais coloração; funciona junto com o compressor
+w	1dda651d	Limpo
+w	31dd0d20	FET
+w	ed2dd690	Óptico
+w	03ebe7b7	Válvula
+w	505048ed	Limpo: comprime de forma uniforme e exata, como ajustado
+w	bd5be015	FET: rápido e denso, pega os picos na hora
+w	382401f4	Óptico: suave e fluido, solta em duas etapas; quanto mais tempo comprimiu, mais devagar
+w	84353f75	Válvula: o mais suave, quase não comprime o som baixo, a compressão cresce com o volume
+w	6da37b9f	Nenhuma
+w	0c832f31	Válvula
+w	ea8cbb6e	Transistor
+w	f2ddeac2	Fita
+w	2fb2fb89	Transformador
+w	d4a93ab5	Sem coloração: o som como está
+w	806bb412	Válvula: quente e redondo, harmônicos pares
+w	0f5626ef	Transistor: denso e brilhante, harmônicos pares e ímpares
+w	229f7175	Fita: suave, vintage, arredonda os picos e realça um pouco os graves
+w	ca80fe24	Transformador: graves densos e encorpados, os agudos ficam limpos
+w	b10b89b3	Auto
+w	2fa87fcc	Faixa
+w	7a9e1ebf	Onde procurar o chiado: o som acima e abaixo fica intacto
+w	56f6362b	de-esser
+w	2e623a14	kHz
+w	968d3bcb	De-esser
+w	5e3d13d6	Suaviza os «s» e «ch» ásperos: abaixa os agudos só enquanto se destacam
+w	624cefbc	O som acima dela conta como chiado
+w	a8d54dc6	Quanto os agudos precisam se destacar do som todo: mais baixo atua com mais frequência
+w	29cd23dd	Quanto os chiados podem ser abaixados
+w	7db02619	O efeito é de uma versão anterior: o de-esser funciona depois que o som do Windows reiniciar
+w	399932bb	Modelo
+w	e45dcfcd	RNNoise é leve (1 % de um núcleo); DeepFilterNet limpa melhor no ruído, mas usa 4 % de um núcleo e chega 30 ms depois
+w	5339d6d2	A rede neural DeepFilterNet remove o ruído mesmo enquanto você fala: ventiladores, teclado, rua, zumbido
+w	78527afd	Quanto o ruído pode ser reduzido: menos deixa a voz mais natural
+w	584c7c2e	O efeito é de uma versão anterior: o DeepFilterNet funciona depois que o som do Windows reiniciar
+w	0c17150a	suave
+w	7cc5b025	reto
+w	a1d9f905	Remove a cauda ressonante da sala depois das palavras; percebe sozinho quanto a sala ressoa
+w	378e79f0	Quanto a cauda da sala diminui: mais é mais seco, mas a voz pode soar aguada
+w	4725083c	O efeito é de uma versão anterior: o removedor de reverberação funciona depois que o som do Windows reiniciar
+w	60768c00	Ruído
+w	7aa9a914	Supressor de ruído
+w	4caeb4ef	Intensidade
+w	d8608263	A rede neural RNNoise remove o ruído mesmo enquanto você fala: ventiladores, teclado, rua, zumbido
+w	a55487ee	Quanto do som limpo substitui o original: menos deixa a voz mais natural
+w	710236a2	O efeito é de uma versão anterior: o supressor funciona depois que o som do Windows reiniciar
+w	625d7831	Todos os ajustes do processamento de uma vez; você pode salvar os seus
+w	d09d4170	Sala silenciosa
+w	5b14d7ed	Barulho em volta
+w	3d51ebc6	Ouvir a si mesmo
+w	9da9c1f0	O som do microfone, já processado, vai direto para o dispositivo de saída: você ouve os ajustes enquanto os muda
+w	1487303c	Ouvir
+w	72e8dab2	Nenhum dispositivo de saída
+w	c97b6372	Saída
+w	1c8ac030	Noise gate
+w	f624ce12	Gate
+w	e7fb7c34	Profundidade
+w	93d4c71c	Liberação
+w	6dcfdb1e	Deixa o som passar só enquanto ele está acima do limiar: nas pausas o ruído não é ouvido
+w	e2380d55	O som mais baixo que isto é abafado
+w	a265b336	Quanto mais baixo fica o som abaixo do limiar
+w	5919f41b	Com que rapidez o gate se fecha quando o som para (após esperar 150 ms)
+w	fc4612bb	Nenhum microfone ligado
+w	b8551b21	Padrão: todos os programas o escutam
+w	86eff107	Não é o padrão: os programas escutam outro microfone
+w	e343d844	O microfone não está sendo ouvido agora: o nível aparece quando o som chegar
+w	a42e9afa	O efeito é de uma versão anterior: o gate funciona depois que o som do Windows reiniciar
 w	824265b0	Instalar
 w	25c6214e	Reiniciar
 w	ea638838	Driver de acesso ao processador: a curva, os limites da AMD, a temperatura
@@ -1159,6 +1246,9 @@ w	34ae8cd5	Corte de agudos
 w	b556b2d9	Rejeição
 w	c4770fd5	Ganho em zero
 w	1b220d9d	Excluir o ponto
+w	092e0dac	Redefinir o ponto
+w	0508d459	Redefinir todos os pontos
+w	e6812640	Arraste os pontos: esquerda-direita é a frequência, cima-baixo o ganho. Clique direito num ponto: tipo de filtro ou redefinir
 w	6af22088	Adicionar um ponto
 w	f2c7ee73	Todos os ganhos em zero
 w	bbd3efbb	O equalizador está desativado
@@ -1234,6 +1324,31 @@ f	f6acd0a1	no plano
 f	270a07ee	 % de 
 f	fc550669	, frequência mínima 
 f	c8c88e80	 · em páginas comuns
+f	46ed9339	Entrando agora: 
+f	1abcff36	 · agora: voz
+f	47473037	Pelo caráter. 
+f	7bb8928f	 · agora: 
+f	73e44a25	 · inativo agora
+f	ef07a51a	Inclinação 
+f	4f28143a	inclinação 
+f	8daff661	 dB/oit
+f	9f66674b	 · agora: só ruído
+f	38108a9c	 · a sala ressoa 
+f	90bf329a	 s
+f	9199ad12	 · ouvindo a sala…
+f	d74401c5	 · sem processamento
+f	53077d66	O som do microfone vai para «
+f	9fe6a5ec	» com um atraso de alguns centésimos de segundo.
+f	75ad79dd	Se forem alto-falantes e não fones, o microfone vai ouvi-los e microfonar: é melhor ouvir com fones.
+f	f393fe2a	Ouvindo: o som vai para «
+f	6693e15f	Não se ouve: 
+f	8fbdd719	o formato do dispositivo de saída não é compatível
+f	b23700a7	o formato do microfone não é compatível
+f	2c93a141	o dispositivo de saída sumiu
+f	4816e1c2	a saída não abriu: 
+f	8dcd4592	nenhum dispositivo de saída
+f	e4dc2201	 · gate fechado
+f	5534ae56	 · gate aberto
 f	8d2a7695	Não foi instalado: código 
 f	40d16675	Não foi instalado: 
 f	cbfecb2b	Agora não está gravando · 

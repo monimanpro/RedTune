@@ -17,7 +17,7 @@
 #include <new>
 #include "rtdsp.h"
 
-#define RTA_VERSION 1u
+#define RTA_VERSION 8u /* 2 (21.11): the noise gate; 3: the denoiser (RNNoise); 4: the reverb remover; 5: DeepFilterNet; 6: the de-esser (layout 3); 7: the second compressor (layout 4); 8: it in parts, first in the chain (layout 5) */
 
 // {E4B6C2A1-7F3D-4C58-9B1E-5A2D8C6F0E37}
 static const GUID CLSID_RedTuneApo = { 0xe4b6c2a1, 0x7f3d, 0x4c58, { 0x9b, 0x1e, 0x5a, 0x2d, 0x8c, 0x6f, 0x0e, 0x37 } };
@@ -94,13 +94,20 @@ class RedTuneApo : public CBaseAudioProcessingObject, public IAudioSystemEffects
     HANDLE file, mapping; RtaShared* shared; bool canWrite;
     RtaSlot* slot; long lastSeq; uint32_t sinceLook;
     RtDsp* dsp;                     // made in LockForProcess, off the sound thread
+    DenoiseState* ns;               // 21.11: the denoiser's state (RNNoise), made with dsp
+    // 21.11, DeepFilterNet's worker: a thread of this object that runs the model on the blocks the sound thread queues
+    // (RtDsp::DfWork). The model is made the first time the denoiser asks for it (about a quarter of a second, on this
+    // thread); devices that never use it never load it. 21.11 (the user): a minute after the denoiser stopped asking for
+    // it (switched off, or RNNoise picked) it is freed again: 13.5 MB of Windows' sound process, 9.4 of them given back.
+    // RNNoise's state is 30 KB and stays.
+    HANDLE workEv, workTh; volatile bool workStop; void* dfModel; bool dfTried;
     uint32_t tail;                  // frames of real sound still inside the effect after the input went silent
     uint32_t ringPos;
     uint32_t misses;                // interfaces asked for and not there (for the journal)
 
 public:
     RedTuneApo(IUnknown* unkOuter) : CBaseAudioProcessingObject(g_reg), refs(1), outer(unkOuter), haveEndpoint(false),
-        file(INVALID_HANDLE_VALUE), mapping(NULL), shared(NULL), canWrite(false), slot(NULL), lastSeq(-1), sinceLook(0), dsp(NULL), tail(0), ringPos(0), misses(0)
+        file(INVALID_HANDLE_VALUE), mapping(NULL), shared(NULL), canWrite(false), slot(NULL), lastSeq(-1), sinceLook(0), dsp(NULL), ns(NULL), workEv(NULL), workTh(NULL), workStop(false), dfModel(NULL), dfTried(false), tail(0), ringPos(0), misses(0)
     {
         memset(&endpoint, 0, sizeof(endpoint));
         InterlockedIncrement(&g_objects);
@@ -110,8 +117,14 @@ public:
     virtual ~RedTuneApo()
     {
         Trace(L"object %p released", this);
+        StopWorker();
+#ifdef RTD_DFN
+        if (dfModel) { rtdf_free(dfModel); dfModel = NULL; }
+#endif
+        if (workEv) { CloseHandle(workEv); workEv = NULL; }
         Unmap();
         if (dsp) { VirtualFree(dsp, 0, MEM_RELEASE); dsp = NULL; }
+        if (ns) { rnnoise_destroy(ns); ns = NULL; }
         InterlockedDecrement(&g_objects);
     }
 
@@ -154,6 +167,70 @@ public:
         HRESULT hr = CBaseAudioProcessingObject::GetRegistrationProperties(props);
         Trace(L"object %p: GetRegistrationProperties 0x%08X", this, hr);
         return hr;
+    }
+
+    static void Wake(void* ev) { SetEvent((HANDLE)ev); }
+    static DWORD WINAPI WorkMain(void* me) { ((RedTuneApo*)me)->Work(); return 0; }
+    void Work()
+    {
+        SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+        uint32_t loggedMiss = 0; DWORD lastLog = GetTickCount(), lastMap = GetTickCount(), unusedSince = 0;
+        while (!workStop)
+        {
+            /* nothing to run: a look twice a second (the shared file, the model to make or free) instead of ten times */
+            bool busy = dsp && (dsp->dfWantA.load(std::memory_order_relaxed) || dfModel);
+            WaitForSingleObject(workEv, busy ? 100 : 500);
+            if (workStop || !dsp) continue;
+            // 21.11: no shared file in a form this build reads (Windows' sound came back before the program had made it
+            // anew, after an update that changed its layout): looked for again every two seconds, off the sound thread
+            if (!shared && haveEndpoint && GetTickCount() - lastMap > 2000)
+            {
+                lastMap = GetTickCount(); Map();
+                if (shared) Trace(L"object %p: the shared file found again", this);
+            }
+#ifdef RTD_DFN
+            if (dsp->dfWantA.load(std::memory_order_relaxed) && !dfModel && !dfTried)
+            {
+                dfTried = true; DWORD t0 = GetTickCount();
+                dfModel = rtdf_create(100.f);
+                Trace(L"object %p: DeepFilterNet %s in %u ms", this, dfModel ? L"made" : L"NOT made", GetTickCount() - t0);
+            }
+            /* not asked for a minute: freed (DfWork runs here only, so nothing else holds it) */
+            if (dsp->dfWantA.load(std::memory_order_relaxed)) unusedSince = 0;
+            else if (dfModel)
+            {
+                if (!unusedSince) unusedSince = GetTickCount();
+                else if (GetTickCount() - unusedSince > 60000)
+                {
+                    dsp->df = NULL; rtdf_free(dfModel); dfModel = NULL; dfTried = false; unusedSince = 0;
+                    Trace(L"object %p: DeepFilterNet freed (a minute unused)", this);
+                }
+            }
+            dsp->df = dfModel;
+#endif
+            dsp->DfWork();
+            /* blocks that came back too late (they went out without the denoiser): into the journal, at most every 10 s */
+            if (dsp->dfMiss != loggedMiss && GetTickCount() - lastLog > 10000)
+            {
+                Trace(L"object %p: DeepFilterNet: %u blocks not back in time so far; the model at most %.1f ms a block, a block back at most %.1f ms",
+                      this, dsp->dfMiss, dsp->dfRunMax / 1000.0, dsp->dfTurnMax / 1000.0);
+                loggedMiss = dsp->dfMiss; lastLog = GetTickCount();
+            }
+        }
+    }
+    void StartWorker()
+    {
+        if (workTh) return;
+        if (!workEv) workEv = CreateEventW(NULL, FALSE, FALSE, NULL);
+        if (!workEv) return;
+        workStop = false;
+        workTh = CreateThread(NULL, 0, WorkMain, this, 0, NULL);
+    }
+    void StopWorker()
+    {
+        if (!workTh) return;
+        workStop = true; SetEvent(workEv);
+        WaitForSingleObject(workTh, 5000); CloseHandle(workTh); workTh = NULL;
     }
 
     STDMETHODIMP UnlockForProcess()
@@ -243,7 +320,13 @@ public:
             if (!dsp) { CBaseAudioProcessingObject::UnlockForProcess(); return E_OUTOFMEMORY; }
             VirtualLock(dsp, sizeof(RtDsp));
         }
+        StopWorker();   // Init clears what the worker reads
         dsp->Init(GetFramesPerSecond(), (int)GetSamplesPerFrame());
+        // 21.11: the denoiser's state, made here off the sound thread, kept for the object's life (Init clears the pointer)
+        if (!ns) ns = rnnoise_create(NULL); else rnnoise_init(ns, NULL);
+        dsp->ns = ns;
+        dsp->df = dfModel; dsp->dfWake = Wake;
+        StartWorker(); dsp->dfWakeCtx = workEv;
         if (!shared) Map();
         slot = NULL; lastSeq = -1; sinceLook = 0; tail = 0;
         Find();
@@ -314,9 +397,13 @@ private:
         if (silent) { Poll(); dsp->Meters(0, 0, 0, 1, NULL, NULL); }
         if (!slot || !canWrite) return;
         RtaMeters* m = &slot->m;
-        m->rate = (uint32_t)dsp->rate; m->channels = (uint32_t)dsp->ch; m->frames = frames;
+        m->rate = (uint32_t)dsp->rate; m->channels = (uint32_t)dsp->ch; m->frames = (frames & 0xFFFFu) | ((uint32_t)(dsp->drT60Meter * 1000.f + 0.5f) << 16);
         m->inPeak = dsp->inPeak; m->outPeak = dsp->outPeak; m->grDb = dsp->grMin; m->limDb = dsp->limMin;
         for (int b = 0; b < 3; b++) { m->bandGr[b] = dsp->bandGr[b]; m->bandLv[b] = dsp->bandLv[b]; }
+        m->gateDb = dsp->gateMin;
+        m->vad = dsp->vadMeter;
+        m->dsDb = dsp->dsMin;
+        for (int i = 0; i < 3; i++) { m->c2Gr[i] = dsp->c2Min[i]; m->c2Lv[i] = dsp->c2LvNow[i]; }
         m->pid = GetCurrentProcessId(); m->version = RTA_VERSION; m->faults = dsp->faults; m->ringPos = ringPos;
         m->beat++;
     }
@@ -374,10 +461,13 @@ private:
         if (!GetFileSizeEx(file, &size) || size.QuadPart < (LONGLONG)sizeof(RtaShared)) { Unmap(); return; }
         mapping = CreateFileMappingW(file, NULL, canWrite ? PAGE_READWRITE : PAGE_READONLY, 0, 0, NULL);
         if (!mapping) { Unmap(); return; }
-        shared = (RtaShared*)MapViewOfFile(mapping, canWrite ? FILE_MAP_ALL_ACCESS : FILE_MAP_READ, 0, 0, sizeof(RtaShared));
-        if (!shared) { Unmap(); return; }
-        if (shared->magic != RTA_MAGIC || shared->layout != RTA_LAYOUT || shared->slotSize != sizeof(RtaSlot) || shared->slotCount != RTA_SLOTS) { Unmap(); return; }
-        VirtualLock(shared, sizeof(RtaShared));
+        // 21.11: checked before it is shown to the sound thread (the worker may map again while sound plays)
+        RtaShared* view = (RtaShared*)MapViewOfFile(mapping, canWrite ? FILE_MAP_ALL_ACCESS : FILE_MAP_READ, 0, 0, sizeof(RtaShared));
+        if (!view) { Unmap(); return; }
+        if (view->magic != RTA_MAGIC || view->layout != RTA_LAYOUT || view->slotSize != sizeof(RtaSlot) || view->slotCount != RTA_SLOTS) { UnmapViewOfFile(view); Unmap(); return; }
+        VirtualLock(view, sizeof(RtaShared));
+        MemoryBarrier();
+        shared = view;
     }
 
     void Unmap()

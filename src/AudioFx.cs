@@ -27,8 +27,18 @@ namespace RedTune
     class EqBand
     {
         public int Type = 1; public float Freq = 1000, Gain, Q = 1f;
+        // 21.11 (the user): the slope 1..4 of every kind (the dial «Крутизна»): a cut 12..48 dB/oct, a shelf a steeper
+        // turn, a bell from smooth to straight, a notch deeper (rtd_plan in native\apo\rtdsp.h). Written as a fifth number
+        // of the band, and to the effect in bits 8..15 of its type.
+        public int Slope = 1;
+        public const int MaxSlope = 4;
         public EqBand Clone() { return (EqBand)MemberwiseClone(); }
         public bool HasGain { get { return Type >= 1 && Type <= 3; } }
+        public bool IsCut { get { return Type == 4 || Type == 5; } }
+        // 21.11: the sections of this band as AudioFx.Plan made them last, for the settings they were made for (the curve
+        // asks for them at every point it draws; a straight bell takes a few passes to make). A clone shares them: they
+        // are never changed, only replaced.
+        internal List<double[]> planOf; internal double planKey0, planKey1, planKey2, planRate; internal int planType = -1, planSlope;
     }
 
     // the compressor's settings of one part of the sound
@@ -68,24 +78,105 @@ namespace RedTune
         // Not a setting: never saved, not part of a preset or of a step back; the page sets it before every write.
         public int Mute;
 
+        // 21.11, the noise gate (microphones; native\apo: RTA_GATE, the three words after mute): under GateThr (dB) the
+        // sound is turned down by GateRange (dB, <= 0) and comes back down over GateRelease (ms) after a 150 ms hold
+        public bool Gate;
+        public float GateThr = -50, GateRange = -40, GateRelease = 150;
+        // 21.11, the denoiser (RNNoise in the effect; RTA_DENOISE, the strength in bits 8..15 of mute): how much of the
+        // cleaned sound replaces the untouched one, 0..100 %
+        public bool Denoise;
+        public float DenoiseAmount = 100;
+        // 21.11 (the user): the denoiser's model: 0 RNNoise, 1 DeepFilterNet 3 (RTA_DFN); with it the strength is how deep the noise may go
+        public int DenoiseModel;
+        // 21.11, the reverb remover (RTA_DEREVERB, the strength in bits 16..23 of mute): how deep the room's tail is taken off
+        public bool Dereverb;
+        public float DereverbAmount = 70;
+        // 21.11 (the user): the de-esser after the equalizer (RTA_DEESS): the top above DeEssHz turned down while it stands
+        // out of the whole sound by more than DeEssThr, by at most DeEssRange (<= 0)
+        public bool DeEss;
+        public float DeEssHz = 6500, DeEssThr = -15, DeEssRange = -8;
+        public float DeEssHz2 = 10000;   // 21.11 (the user): the band's top edge; 20000 = none (all of the top)
+        // 21.11 (the user): the compressor's character (0 clean, 1 FET, 2 optical, 3 vari-mu tube) and its colour: by the
+        // character (ColorAuto) or one picked (ColorType 0 none, 1 tube, 2 transistor, 3 tape, 4 transformer), its strength
+        public int CompChar;
+        public bool ColorAuto = true;
+        public int ColorType;
+        public float ColorAmt = 50;
+        public static readonly int[] ColorOfChar = { 0, 2, 4, 1 };   // clean: none; FET: transistor; optical: transformer; tube: tube
+        public int ColorNow { get { return ColorAuto ? ColorOfChar[Math.Max(0, Math.Min(3, CompChar))] : ColorType; } }
+        // 21.11 (the user): the second compressor (microphones), first in the chain, in up to three parts as the main one
+        // (RTA_COMP2): C2Parts [0] the bass or the whole sound, [1] the middle, [2] the top; C2Split / C2Split2 as Split / Split2
+        public bool Comp2;
+        public CompPart[] C2Parts = { C2Start(), C2Start(), C2Start() };
+        static CompPart C2Start() { return new CompPart { Thr = -20, Ratio = 3, Attack = 10, Release = 150, Knee = 6, Makeup = 0 }; }
+        public CompPart C2 { get { return C2Parts[0]; } }
+        public float C2Split, C2Split2;
+        public float C2Mix = 100;
+        public float C2Thr { get { return C2.Thr; } set { C2.Thr = value; } }
+        public float C2Ratio { get { return C2.Ratio; } set { C2.Ratio = value; } }
+        public float C2Att { get { return C2.Attack; } set { C2.Attack = value; } }
+        public float C2Rel { get { return C2.Release; } set { C2.Release = value; } }
+        public float C2Knee { get { return C2.Knee; } set { C2.Knee = value; } }
+        public float C2Mk { get { return C2.Makeup; } set { C2.Makeup = value; } }
+        public int C2Char = 2;
+
         public SoundParams Clone()
         {
             var p = (SoundParams)MemberwiseClone();
             p.Bands = Bands.Select(b => b.Clone()).ToList();
             p.Parts = Parts.Select(q => q.Clone()).ToArray();
+            p.C2Parts = C2Parts.Select(q => q.Clone()).ToArray();
             return p;
         }
 
-        // five points at no gain: where a new device starts
+        // where a new device starts: the twelve points of EvenBands
         public static SoundParams Start()
         {
             var p = new SoundParams();
-            p.Bands.Add(new EqBand { Type = 2, Freq = 80, Q = 0.7f });
-            p.Bands.Add(new EqBand { Type = 1, Freq = 250, Q = 1f });
-            p.Bands.Add(new EqBand { Type = 1, Freq = 1000, Q = 1f });
-            p.Bands.Add(new EqBand { Type = 1, Freq = 4000, Q = 1f });
-            p.Bands.Add(new EqBand { Type = 3, Freq = 10000, Q = 0.7f });
+            p.Bands = EvenBands();
             return p;
+        }
+
+        // 21.11 (the user): the points at rest: twelve bells of no gain spread evenly along the whole line, 20 Hz .. 20 kHz
+        // (the middles of twelve equal steps in octaves: 27, 47, 84 Hz .. 15 kHz), the width of one step
+        public static List<EqBand> EvenBands()
+        {
+            var list = new List<EqBand>();
+            for (int i = 0; i < MaxBands; i++)
+            {
+                double f = 20 * Math.Pow(1000, (i + 0.5) / MaxBands);
+                f = f < 100 ? Math.Round(f) : f < 1000 ? Math.Round(f / 5) * 5 : f < 10000 ? Math.Round(f / 50) * 50 : Math.Round(f / 500) * 500;
+                list.Add(new EqBand { Type = 1, Freq = (float)f, Gain = 0, Q = 1.4f });
+            }
+            return list;
+        }
+
+        // 21.11 (the user): «Сбросить»: every effect off and every setting as it comes, the points at rest; the processing
+        // itself (On) stays as it is, so the device keeps its effect
+        public static SoundParams Defaults(bool on)
+        {
+            var p = Start();
+            p.On = on; p.Eq = false; p.Comp = false; p.Limit = false; p.Gate = false; p.Denoise = false; p.Dereverb = false;
+            return p;
+        }
+
+        // 21.11 (the user): the equalizer always has all twelve points, there is no «+» any more. Settings with fewer get
+        // bells of no gain (they leave the sound exactly as it is) in the widest gaps, and only then the points are put in
+        // order of frequency, once. Settings that have all twelve keep their order as saved (21.11, the user: a point
+        // dragged past another must keep its strip after a restart too).
+        public void FillBands()
+        {
+            if (Bands.Count >= MaxBands) return;
+            while (Bands.Count < MaxBands)
+            {
+                var fs = new List<double> { 20 }; fs.AddRange(Bands.Select(b => (double)b.Freq).OrderBy(x => x)); fs.Add(20000);
+                int at = 0; double widest = -1;
+                for (int i = 0; i + 1 < fs.Count; i++) { double gap = Math.Log(Math.Max(fs[i + 1], fs[i] + 1e-3) / fs[i]); if (gap > widest) { widest = gap; at = i; } }
+                double f = Math.Sqrt(fs[at] * fs[at + 1]);
+                f = f < 100 ? Math.Round(f) : f < 1000 ? Math.Round(f / 5) * 5 : f < 10000 ? Math.Round(f / 50) * 50 : Math.Round(f / 500) * 500;
+                Bands.Add(new EqBand { Type = 1, Freq = (float)f, Gain = 0, Q = 1f });
+            }
+            Bands = Bands.OrderBy(b => b.Freq).ToList();
         }
 
         static string F(float v) { return v.ToString("0.###", CultureInfo.InvariantCulture); }
@@ -98,9 +189,23 @@ namespace RedTune
             sb.Append(" knee=").Append(F(Knee)).Append(" mk=").Append(F(Makeup)).Append(" mix=").Append(F(Mix)).Append(" ceil=").Append(F(Ceil));
             if (Split > 0) sb.Append(" xo=").Append(F(Split));
             if (Split > 0 && Split2 > 0) sb.Append(" xo2=").Append(F(Split2));
+            sb.Append(" gate=").Append(Gate ? 1 : 0).Append(" gthr=").Append(F(GateThr)).Append(" grange=").Append(F(GateRange)).Append(" grel=").Append(F(GateRelease));
+            sb.Append(" dn=").Append(Denoise ? 1 : 0).Append(" dns=").Append(F(DenoiseAmount)).Append(" dnm=").Append(DenoiseModel);
+            sb.Append(" dr=").Append(Dereverb ? 1 : 0).Append(" drs=").Append(F(DereverbAmount));
+            sb.Append(" ds=").Append(DeEss ? 1 : 0).Append(" dshz=").Append(F(DeEssHz)).Append(" dsthr=").Append(F(DeEssThr)).Append(" dsrange=").Append(F(DeEssRange)).Append(" dshz2=").Append(F(DeEssHz2));
+            sb.Append(" cch=").Append(CompChar).Append(" cauto=").Append(ColorAuto ? 1 : 0).Append(" ctype=").Append(ColorType).Append(" camt=").Append(F(ColorAmt));
+            sb.Append(" c2=").Append(Comp2 ? 1 : 0).Append(" c2thr=").Append(F(C2Thr)).Append(" c2ratio=").Append(F(C2Ratio)).Append(" c2att=").Append(F(C2Att)).Append(" c2rel=").Append(F(C2Rel))
+              .Append(" c2knee=").Append(F(C2Knee)).Append(" c2mk=").Append(F(C2Mk)).Append(" c2mix=").Append(F(C2Mix)).Append(" c2ch=").Append(C2Char);
+            sb.Append(" c2p2=").Append(C2Parts[1]).Append(" c2p3=").Append(C2Parts[2]);
+            if (C2Split > 0) sb.Append(" c2xo=").Append(F(C2Split));
+            if (C2Split > 0 && C2Split2 > 0) sb.Append(" c2xo2=").Append(F(C2Split2));
             // the settings of the upper parts: kept also while they are not at work, so a choice of three parts is not lost by trying one
             sb.Append(" p2=").Append(Parts[1]).Append(" p3=").Append(Parts[2]);
-            foreach (var b in Bands) sb.Append(" b=").Append(b.Type).Append(',').Append(F(b.Freq)).Append(',').Append(F(b.Gain)).Append(',').Append(F(b.Q));
+            foreach (var b in Bands)
+            {
+                sb.Append(" b=").Append(b.Type).Append(',').Append(F(b.Freq)).Append(',').Append(F(b.Gain)).Append(',').Append(F(b.Q));
+                if (b.Slope > 1) sb.Append(',').Append(b.Slope);
+            }
             return sb.ToString();
         }
 
@@ -111,6 +216,13 @@ namespace RedTune
             {
                 int eq = part.IndexOf('='); if (eq <= 0) continue;
                 string k = part.Substring(0, eq), v = part.Substring(eq + 1); float f;
+                if (k == "c2p2" || k == "c2p3")
+                {
+                    var x = v.Split(','); var n = new float[6]; bool ok = x.Length == 6;
+                    for (int i = 0; ok && i < 6; i++) ok = Num(x[i], out n[i]);
+                    if (ok) p.C2Parts[k == "c2p2" ? 1 : 2] = new CompPart { Thr = n[0], Ratio = n[1], Attack = n[2], Release = n[3], Knee = n[4], Makeup = n[5] };
+                    continue;
+                }
                 if (k == "p2" || k == "p3")
                 {
                     var x = v.Split(','); var n = new float[6]; bool ok = x.Length == 6;
@@ -120,9 +232,10 @@ namespace RedTune
                 }
                 if (k == "b")
                 {
-                    var x = v.Split(','); int t; float fr, g, q;
-                    if (x.Length == 4 && int.TryParse(x[0], out t) && Num(x[1], out fr) && Num(x[2], out g) && Num(x[3], out q) && p.Bands.Count < MaxBands)
-                        p.Bands.Add(new EqBand { Type = Math.Max(1, Math.Min(6, t)), Freq = fr, Gain = g, Q = q });
+                    var x = v.Split(','); int t, sl = 1; float fr, g, q;
+                    if ((x.Length == 4 || x.Length == 5) && int.TryParse(x[0], out t) && Num(x[1], out fr) && Num(x[2], out g) && Num(x[3], out q) && p.Bands.Count < MaxBands
+                        && (x.Length == 4 || int.TryParse(x[4], out sl)))
+                        p.Bands.Add(new EqBand { Type = Math.Max(1, Math.Min(6, t)), Freq = fr, Gain = g, Q = q, Slope = Math.Max(1, Math.Min(EqBand.MaxSlope, sl)) });
                     continue;
                 }
                 if (!Num(v, out f)) continue;
@@ -131,12 +244,20 @@ namespace RedTune
                     case "on": p.On = f != 0; break; case "eq": p.Eq = f != 0; break; case "comp": p.Comp = f != 0; break; case "lim": p.Limit = f != 0; break;
                     case "pre": p.Preamp = f; break; case "thr": p.Thr = f; break; case "ratio": p.Ratio = f; break; case "att": p.Attack = f; break; case "rel": p.Release = f; break;
                     case "knee": p.Knee = f; break; case "mk": p.Makeup = f; break; case "mix": p.Mix = f; break; case "ceil": p.Ceil = f; break; case "xo": p.Split = f; break; case "xo2": p.Split2 = f; break;
+                    case "gate": p.Gate = f != 0; break; case "gthr": p.GateThr = f; break; case "grange": p.GateRange = f; break; case "grel": p.GateRelease = f; break;
+                    case "dn": p.Denoise = f != 0; break; case "dns": p.DenoiseAmount = f; break; case "dnm": p.DenoiseModel = f >= 1 ? 1 : 0; break;
+                    case "dr": p.Dereverb = f != 0; break; case "drs": p.DereverbAmount = f; break;
+                    case "ds": p.DeEss = f != 0; break; case "dshz": p.DeEssHz = f; break; case "dsthr": p.DeEssThr = f; break; case "dsrange": p.DeEssRange = f; break; case "dshz2": p.DeEssHz2 = f; break;
+                    case "cch": p.CompChar = (int)f; break; case "cauto": p.ColorAuto = f != 0; break; case "ctype": p.ColorType = (int)f; break; case "camt": p.ColorAmt = f; break;
+                    case "c2": p.Comp2 = f != 0; break; case "c2thr": p.C2Thr = f; break; case "c2ratio": p.C2Ratio = f; break; case "c2att": p.C2Att = f; break;
+                    case "c2rel": p.C2Rel = f; break; case "c2knee": p.C2Knee = f; break; case "c2mk": p.C2Mk = f; break; case "c2mix": p.C2Mix = f; break; case "c2xo": p.C2Split = f; break; case "c2xo2": p.C2Split2 = f; break; case "c2ch": p.C2Char = (int)f; break;
                 }
             }
             // settings written before the parts had their own (19.11): every part as the first, which is what they did then
             if (!own2) p.Parts[1] = p.Parts[0].Clone();
             if (!own3) p.Parts[2] = p.Parts[0].Clone();
             p.Fit();
+            p.FillBands();
             return p;
         }
 
@@ -155,6 +276,19 @@ namespace RedTune
             Mix = Clamp(Mix, 0, 100); Ceil = Clamp(Ceil, -12, 0);
             Split = float.IsNaN(Split) || Split < 40 ? 0 : Clamp(Split, 60, 1000);
             Split2 = Split <= 0 || float.IsNaN(Split2) || Split2 < 200 ? 0 : Clamp(Split2, Math.Max(400, Split * 2), 12000);
+            GateThr = Clamp(GateThr, -90, 0); GateRange = Clamp(GateRange, -90, 0); GateRelease = Clamp(GateRelease, 10, 2000);
+            DenoiseAmount = Clamp(DenoiseAmount, 0, 100); DereverbAmount = Clamp(DereverbAmount, 0, 100);
+            DeEssHz = Clamp(DeEssHz, 2000, 16000); DeEssThr = Clamp(DeEssThr, -40, 0); DeEssRange = Clamp(DeEssRange, -24, 0);
+            DeEssHz2 = Clamp(DeEssHz2, DeEssHz * 1.25f, 20000);
+            CompChar = Math.Max(0, Math.Min(3, CompChar)); ColorType = Math.Max(0, Math.Min(4, ColorType)); ColorAmt = Clamp(ColorAmt, 0, 100);
+            foreach (var q in C2Parts)
+            {
+                q.Thr = Clamp(q.Thr, -60, 0); q.Ratio = Clamp(q.Ratio, 1, 30); q.Attack = Clamp(q.Attack, 0.1f, 300); q.Release = Clamp(q.Release, 5, 3000);
+                q.Knee = Clamp(q.Knee, 0, 24); q.Makeup = Clamp(q.Makeup, -12, 24);
+            }
+            C2Split = float.IsNaN(C2Split) || C2Split < 40 ? 0 : Clamp(C2Split, 60, 1000);
+            C2Split2 = C2Split <= 0 || float.IsNaN(C2Split2) || C2Split2 < 200 ? 0 : Clamp(C2Split2, Math.Max(400, C2Split * 2), 12000);
+            C2Mix = Clamp(C2Mix, 0, 100); C2Char = Math.Max(0, Math.Min(3, C2Char));
         }
 
         static float Clamp(float v, float lo, float hi) { return float.IsNaN(v) ? lo : Math.Max(lo, Math.Min(hi, v)); }
@@ -163,30 +297,50 @@ namespace RedTune
     class SoundDevice
     {
         public Guid Id; public string Name, Adapter; public bool Default;
+        public bool Capture; // 21.11: a microphone or another input (MMDevices\Audio\Capture)
         public string Full { get { return string.IsNullOrEmpty(Adapter) ? Name : Name + " (" + Adapter + ")"; } }
     }
 
     class SoundMeters
     {
-        public uint Beat, Rate, Channels, Pid, Faults, RingPos; public float InPeak, OutPeak, GrDb, LimDb;
+        public uint Beat, Rate, Channels, Pid, Faults, RingPos, Version; public float InPeak, OutPeak, GrDb, LimDb;
+        public float GateDb; // 21.11: what the gate takes off, dB (<= 0); an effect older than version 2 has no gate and leaves 0
+        public float Vad;    // 21.11: the denoiser's voice probability 0..1 (version 3 and newer)
+        public float Room;   // 21.11: the room's reverb time the reverb remover hears, s (version 4; 0 while off or not heard yet)
+        public float DsDb;   // 21.11: what the de-esser takes off the top, dB (<= 0; version 6, layout 3)
+        public float[] C2Gr = new float[3], C2Lv = { -140, -140, -140 };   // 21.11: the second compressor's parts: what each takes off and reads, dB (version 8, layout 5)
+        public float C2Db { get { return Math.Min(C2Gr[0], Math.Min(C2Gr[1], C2Gr[2])); } }
         // per part of the compressor (the order of SoundParams.Parts): the gain it takes off and the level it reads, dB
         public float[] PartGr = new float[3], PartLv = new float[3];
     }
 
-    class SoundPreset { public string Name; public SoundParams P; public bool BuiltIn; }
+    // 21.11: Mic — a preset of the microphone tab (the two tabs have lists of their own)
+    class SoundPreset { public string Name; public SoundParams P; public bool BuiltIn, Mic; }
 
     static class AudioFx
     {
         public const string Clsid = "{E4B6C2A1-7F3D-4C58-9B1E-5A2D8C6F0E37}";
         const string Fx = "{d04e05a6-594b-4fb6-a80d-01af5eed7d1d}", Modes = "{d3993a3f-99c2-4402-b5ec-a92a0367664b}", DefaultMode = "{C18E2F7E-933D-4965-B7D1-1EEF228D2AF3}";
         const string RenderKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\Render";
+        // 21.11: microphones and other inputs, the same effect with settings of their own (a device id is unique across both)
+        const string CaptureKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\Capture";
+        static readonly Dictionary<Guid, bool> kinds = new Dictionary<Guid, bool>();
+        public static bool IsCapture(Guid id)
+        {
+            bool c;
+            lock (kinds) if (kinds.TryGetValue(id, out c)) return c;
+            try { using (var k = Registry.LocalMachine.OpenSubKey(CaptureKey + "\\" + id.ToString("B"))) c = k != null; } catch { c = false; }
+            lock (kinds) kinds[id] = c;
+            return c;
+        }
+        static string RootOf(Guid id) { return IsCapture(id) ? CaptureKey : RenderKey; }
         const string OwnKey = @"SOFTWARE\RedTune\Audio"; // what Attach created, to take exactly that away again
 
         // ---- the shared file (native\apo\shared.h) ----
-        const uint Magic = 0x55415452, Layout = 2;
+        const uint Magic = 0x55415452, Layout = 5;   // 3 (21.11): the de-esser, spare words; 4, 5: the second compressor (native\apo\shared.h)
         const int Slots = 16, MaxBands = 12, Ring = 4096;
         // layout 2 (19.11): the settings 304 bytes (the compressor's parts), the meters 80 (per part)
-        const int Header = 64, SlotSize = 16792, OffSeq = 16, OffParams = 24, OffMeters = 328, OffRing = 408, Total = Header + Slots * SlotSize;
+        const int Header = 64, SlotSize = 16980, OffSeq = 16, OffParams = 24, OffMeters = 480, OffRing = 596, Total = Header + Slots * SlotSize;
 
         public static string SharedPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "RedTune", "audio.bin"); } }
         public static string SettingsPath { get { return Path.Combine(Store.DataDir, "sound.txt"); } }
@@ -224,7 +378,9 @@ namespace RedTune
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
                     bool fresh = !File.Exists(path) || new FileInfo(path).Length != Total;
                     var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete);
-                    if (fs.Length != Total) fs.SetLength(Total);
+                    // another size: an older layout. Windows does not let it change while an effect has it mapped (after an
+                    // update, until Windows' sound restarts): then not now (Init writes again after the restart)
+                    if (fs.Length != Total) { try { fs.SetLength(Total); } catch (IOException) { fs.Dispose(); return false; } }
                     map = MemoryMappedFile.CreateFromFile(fs, null, Total, MemoryMappedFileAccess.ReadWrite, null, HandleInheritability.None, false);
                     view = map.CreateViewAccessor(0, Total, MemoryMappedFileAccess.ReadWrite);
                     byte* p = null; view.SafeMemoryMappedViewHandle.AcquirePointer(ref p); mem = p;
@@ -307,23 +463,33 @@ namespace RedTune
                 byte* s = Slot(id, create); if (s == null) return false;
                 Interlocked.Increment(ref *(int*)(s + OffSeq)); // odd: being written
                 byte* p = s + OffParams;
-                *(uint*)p = (sp.On ? 1u : 0) | (sp.Eq ? 2u : 0) | (sp.Comp ? 4u : 0) | (sp.Limit ? 8u : 0);
+                *(uint*)p = (sp.On ? 1u : 0) | (sp.Eq ? 2u : 0) | (sp.Comp ? 4u : 0) | (sp.Limit ? 8u : 0) | (sp.Gate ? 16u : 0) | (sp.Denoise ? 32u : 0) | (sp.Dereverb ? 64u : 0) | (sp.Denoise && sp.DenoiseModel == 1 ? 128u : 0) | (sp.DeEss && IsCapture(id) ? 256u : 0) | (sp.Comp2 && IsCapture(id) ? 512u : 0);   // 21.11 (the user): the de-esser is the microphone's only
                 *(float*)(p + 4) = sp.Preamp;
                 for (int i = 0; i < MaxBands; i++)
                 {
                     byte* b = p + 8 + i * 16; var band = i < sp.Bands.Count ? sp.Bands[i] : null;
-                    *(uint*)b = band == null ? 0u : (uint)band.Type; *(float*)(b + 4) = band == null ? 1000f : band.Freq;
+                    *(uint*)b = band == null ? 0u : (uint)band.Type | ((uint)(Math.Max(1, Math.Min(EqBand.MaxSlope, band.Slope)) - 1) << 8); *(float*)(b + 4) = band == null ? 1000f : band.Freq; // 21.11: the slope in bits 8..15 of the type
                     *(float*)(b + 8) = band == null || !band.HasGain ? 0f : band.Gain; *(float*)(b + 12) = band == null ? 0.707f : band.Q;
                 }
                 float* c = (float*)(p + 8 + MaxBands * 16);
                 c[0] = sp.Thr; c[1] = sp.Ratio; c[2] = sp.Attack; c[3] = sp.Release; c[4] = sp.Knee; c[5] = sp.Makeup; c[6] = sp.Mix; c[7] = sp.Ceil; c[8] = sp.Split;
-                c[9] = sp.Split > 0 ? sp.Split2 : 0; c[11] = c[12] = c[13] = 0;
-                *(uint*)(c + 10) = (uint)(sp.Mute & 7); // RtaParams.mute
+                c[9] = sp.Split > 0 ? sp.Split2 : 0;
+                c[11] = sp.GateThr; c[12] = sp.GateRange; c[13] = sp.GateRelease; // 21.11: the gate (the words that were reserved)
+                *(uint*)(c + 10) = (uint)(sp.Mute & 7) | ((uint)Math.Round(Math.Max(0, Math.Min(100, sp.DenoiseAmount))) << 8)
+                    | ((uint)Math.Round(Math.Max(0, Math.Min(100, sp.DereverbAmount))) << 16); // RtaParams.mute (21.11: the denoiser's strength in bits 8..15, the reverb remover's in 16..23)
                 for (int k = 1; k <= 2; k++)
                 {
                     var q = sp.Parts[k]; float* b = c + 14 + (k - 1) * 6;
                     b[0] = q.Thr; b[1] = q.Ratio; b[2] = q.Attack; b[3] = q.Release; b[4] = q.Knee; b[5] = q.Makeup;
                 }
+                c[26] = sp.DeEssHz; c[27] = sp.DeEssThr; c[28] = sp.DeEssRange; c[29] = sp.DeEssHz2; c[30] = sp.CompChar; c[31] = sp.ColorNow; c[32] = sp.ColorAmt; c[33] = 0;   // 21.11: the de-esser, the character and colour, a spare word
+                for (int k = 0; k < 3; k++)   // the second compressor's parts (RtaParams.c2b), its splits, mix and character
+                {
+                    var q = sp.C2Parts[k]; float* b = c + 34 + k * 6;
+                    b[0] = q.Thr; b[1] = q.Ratio; b[2] = q.Attack; b[3] = q.Release; b[4] = q.Knee; b[5] = q.Makeup;
+                }
+                c[52] = sp.C2Split; c[53] = sp.C2Split2; c[54] = sp.C2Mix; c[55] = sp.C2Char;
+                for (int k = 56; k < 64; k++) c[k] = 0;
                 Interlocked.Increment(ref *(int*)(s + OffSeq));
                 return true;
             }
@@ -345,7 +511,10 @@ namespace RedTune
                 var sm = new SoundMeters
                 {
                     Beat = *(uint*)m, Rate = *(uint*)(m + 4), Channels = *(uint*)(m + 8), InPeak = *(float*)(m + 16), OutPeak = *(float*)(m + 20),
-                    GrDb = *(float*)(m + 24), LimDb = *(float*)(m + 28), Pid = *(uint*)(m + 32), Faults = *(uint*)(m + 40), RingPos = *(uint*)(m + 44),
+                    GrDb = *(float*)(m + 24), LimDb = *(float*)(m + 28), Pid = *(uint*)(m + 32), Version = *(uint*)(m + 36), Faults = *(uint*)(m + 40), RingPos = *(uint*)(m + 44),
+                    GateDb = *(float*)(m + 72), Vad = *(float*)(m + 76),
+                    Room = (*(uint*)(m + 12) >> 16) / 1000f, // RtaMeters.frames, high 16 bits (an older effect leaves them 0)
+                    DsDb = *(float*)(m + 80), C2Gr = new[] { *(float*)(m + 84), *(float*)(m + 88), *(float*)(m + 92) }, C2Lv = new[] { *(float*)(m + 96), *(float*)(m + 100), *(float*)(m + 104) },
                 };
                 for (int k = 0; k < 3; k++) { sm.PartGr[k] = *(float*)(m + 48 + k * 4); sm.PartLv[k] = *(float*)(m + 60 + k * 4); }
                 return sm;
@@ -401,6 +570,77 @@ namespace RedTune
             return data.Count + " samples, " + rate + " Hz, " + (data.Count / (double)rate).ToString("0.00", CultureInfo.InvariantCulture) + " s of sound, lost " + lost;
         }
 
+        // the width of section j of a cut of n sections (rtd_cutq in native\apo\rtdsp.h): a Butterworth of order 2n, the
+        // band's own Q scaling the narrowest section
+        public static double CutQ(int n, int j, double q)
+        {
+            if (n <= 1) return q;
+            double w = 1.0 / (2.0 * Math.Sin((2 * j + 1) * Math.PI / (4.0 * n)));
+            return j == 0 ? w * q / 0.7071067811865476 : w;
+        }
+
+        // one section's response at f (the analogue prototype, frequency warped), multiplied into re/im
+        static void SecMul(int type, double fc, double gain, double q, double f, double rate, ref double re, ref double im)
+        {
+            double A = Math.Pow(10, gain / 40), g = Math.Tan(Math.PI * fc / rate), k = 1 / q, m0 = 1, m1 = 0, m2 = 0;
+            switch (type)
+            {
+                case 1: k = 1 / (q * A); m1 = k * (A * A - 1); break;
+                case 2: g /= Math.Sqrt(A); m1 = k * (A - 1); m2 = A * A - 1; break;
+                case 3: g *= Math.Sqrt(A); m0 = A * A; m1 = k * (1 - A) * A; m2 = 1 - A * A; break;
+                case 4: m1 = -k; m2 = -1; break;
+                case 5: m0 = 0; m2 = 1; break;
+                case 6: m1 = -k; break;
+                default: return;
+            }
+            // s = j*w; H = m0 + (m1*s + m2) / (s*s + k*s + 1)
+            double w = Math.Tan(Math.PI * Math.Min(f, rate * 0.499) / rate) / g;
+            double dr = 1 - w * w, di = k * w, nr = m2, ni = m1 * w, dd = dr * dr + di * di;
+            double hr = m0 + (nr * dr + ni * di) / dd, hi = (ni * dr - nr * di) / dd;
+            double tr = re * hr - im * hi; im = re * hi + im * hr; re = tr;
+        }
+
+        static double SecDb(int type, double fc, double gain, double q, double f, double rate)
+        {
+            double re = 1, im = 0; SecMul(type, fc, gain, q, f, rate, ref re, ref im);
+            return 10 * Math.Log10(re * re + im * im + 1e-30);
+        }
+
+        // 21.11: the sections a band is made of by its slope, as rtd_plan in native\apo\rtdsp.h (see there): {type, f, gain, q}
+        public static bool PlanCache = true;   // the check measures the curve with and without it
+        public static List<double[]> Plan(EqBand b, double rate)
+        {
+            if (PlanCache && b.planOf != null && b.planType == b.Type && b.planSlope == b.Slope && b.planKey0 == b.Freq && b.planKey1 == b.Gain && b.planKey2 == b.Q && b.planRate == rate)
+                return b.planOf;
+            var made = MakePlan(b, rate);
+            b.planOf = made; b.planType = b.Type; b.planSlope = b.Slope; b.planKey0 = b.Freq; b.planKey1 = b.Gain; b.planKey2 = b.Q; b.planRate = rate;
+            return made;
+        }
+        static List<double[]> MakePlan(EqBand b, double rate)
+        {
+            var s = new List<double[]>();
+            double f = Math.Max(10, Math.Min(Math.Min(22000, rate * 0.45), b.Freq)), g = b.HasGain ? Math.Max(-24, Math.Min(24, b.Gain)) : 0, q = Math.Max(0.1, Math.Min(20, b.Q));
+            int n = Math.Max(1, Math.Min(EqBand.MaxSlope, b.Slope)), k = b.Type;
+            if (k < 1 || k > 6) return s;
+            if (n <= 1) { s.Add(new double[] { k, f, g, q }); return s; }
+            if (k == 1)
+            {
+                double bw = Math.Max(0.6, 2.0 * Asinh(1.0 / (2.0 * q)) / Math.Log(2)), r = Math.Pow(2, bw / 2), top = rate * 0.45;
+                double f2 = Math.Min(top, f * r), f1 = Math.Max(10, f / r), gg = g / n;
+                for (int it = 0; it < 3 && Math.Abs(g) > 1e-4; it++)
+                {
+                    double c = 0; for (int j = 0; j < n; j++) { double cq = CutQ(n, j, 0.7071067811865476); c += SecDb(2, f2, gg, cq, f, rate) + SecDb(2, f1, -gg, cq, f, rate); }
+                    if (Math.Abs(c) < 1e-6) break;
+                    gg *= Math.Max(0.5, Math.Min(3, g / c));
+                }
+                for (int j = 0; j < n; j++) { double cq = CutQ(n, j, 0.7071067811865476); s.Add(new double[] { 2, f2, gg, cq }); s.Add(new double[] { 2, f1, -gg, cq }); }
+                return s;
+            }
+            for (int j = 0; j < n; j++) s.Add(new double[] { k, f, k == 2 || k == 3 ? g / n : 0, k == 6 ? q : CutQ(n, j, q) });
+            return s;
+        }
+        static double Asinh(double x) { return Math.Log(x + Math.Sqrt(x * x + 1)); }
+
         // ---- the curve: the same filters as rtd_coef in native\apo\rtdsp.h, as their analogue prototypes ----
         public static double Response(SoundParams p, double f, double rate, int only = -1)
         {
@@ -408,24 +648,7 @@ namespace RedTune
             for (int i = 0; i < p.Bands.Count && i < MaxBands; i++)
             {
                 if (only >= 0 && i != only) continue;
-                var b = p.Bands[i];
-                double fr = Math.Max(10, Math.Min(Math.Min(22000, rate * 0.45), b.Freq)), gain = b.HasGain ? b.Gain : 0, q = Math.Max(0.1, Math.Min(20, b.Q));
-                double A = Math.Pow(10, gain / 40), g = Math.Tan(Math.PI * fr / rate), k = 1 / q, m0 = 1, m1 = 0, m2 = 0;
-                switch (b.Type)
-                {
-                    case 1: k = 1 / (q * A); m1 = k * (A * A - 1); break;
-                    case 2: g /= Math.Sqrt(A); m1 = k * (A - 1); m2 = A * A - 1; break;
-                    case 3: g *= Math.Sqrt(A); m0 = A * A; m1 = k * (1 - A) * A; m2 = 1 - A * A; break;
-                    case 4: m1 = -k; m2 = -1; break;
-                    case 5: m0 = 0; m2 = 1; break;
-                    case 6: m1 = -k; break;
-                    default: continue;
-                }
-                // s = j*w; H = m0 + (m1*s + m2) / (s*s + k*s + 1)
-                double w = Math.Tan(Math.PI * Math.Min(f, rate * 0.499) / rate) / g;
-                double dr = 1 - w * w, di = k * w, nr = m2, ni = m1 * w, dd = dr * dr + di * di;
-                double hr = m0 + (nr * dr + ni * di) / dd, hi = (ni * dr - nr * di) / dd;
-                double tr = re * hr - im * hi; im = re * hi + im * hr; re = tr;
+                foreach (var sec in Plan(p.Bands[i], rate)) SecMul((int)sec[0], sec[1], sec[2], sec[3], f, rate, ref re, ref im);
             }
             double mag = Math.Sqrt(re * re + im * im);
             return 20 * Math.Log10(Math.Max(1e-9, mag)) + (only >= 0 ? 0 : p.Preamp);
@@ -531,26 +754,28 @@ namespace RedTune
             [PreserveSig] int SetEndpointVisibility([MarshalAs(UnmanagedType.LPWStr)] string dev, int visible);
         }
 
-        static string EndpointId(Guid id) { return "{0.0.0.00000000}." + id.ToString("B"); }
+        static string EndpointId(Guid id) { return (IsCapture(id) ? "{0.0.1.00000000}." : "{0.0.0.00000000}.") + id.ToString("B"); }
 
-        public static Guid DefaultDevice()
+        // capture: the default microphone (eCapture) instead of the default output (eRender)
+        public static Guid DefaultDevice(bool capture = false)
         {
             try
             {
                 var en = (IMMDeviceEnumerator)new MMDeviceEnumerator(); IMMDevice d; string id;
-                if (en.GetDefaultAudioEndpoint(0, 1, out d) != 0 || d == null || d.GetId(out id) != 0) return Guid.Empty;
+                if (en.GetDefaultAudioEndpoint(capture ? 1 : 0, 1, out d) != 0 || d == null || d.GetId(out id) != 0) return Guid.Empty;
                 Guid g; return Guid.TryParse(id.Substring(id.LastIndexOf('{')), out g) ? g : Guid.Empty;
             }
             catch { return Guid.Empty; }
         }
 
         // the output devices that are plugged in and switched on (DeviceState 1), the default one first
-        public static List<SoundDevice> Devices()
+        // capture (21.11): the inputs instead of the outputs
+        public static List<SoundDevice> Devices(bool capture = false)
         {
-            var list = new List<SoundDevice>(); Guid def = DefaultDevice();
+            var list = new List<SoundDevice>(); Guid def = DefaultDevice(capture);
             try
             {
-                using (var root = Registry.LocalMachine.OpenSubKey(RenderKey))
+                using (var root = Registry.LocalMachine.OpenSubKey(capture ? CaptureKey : RenderKey))
                 {
                     if (root == null) return list;
                     foreach (var name in root.GetSubKeyNames())
@@ -562,7 +787,7 @@ namespace RedTune
                             using (var pk = k.OpenSubKey("Properties"))
                                 list.Add(new SoundDevice
                                 {
-                                    Id = g, Default = g == def,
+                                    Id = g, Default = g == def, Capture = capture,
                                     Name = (pk == null ? null : pk.GetValue("{a45c254e-df1c-4efd-8020-67d146a850e0},2") as string) ?? name,
                                     Adapter = pk == null ? null : pk.GetValue("{b3f8fa53-0004-438e-9003-51a46e139bfc},6") as string,
                                 });
@@ -572,6 +797,14 @@ namespace RedTune
             }
             catch (Exception ex) { Store.Log("звук: список устройств: " + ex.Message); }
             return list.OrderByDescending(d => d.Default).ThenBy(d => d.Full).ToList();
+        }
+
+        // 21.11: a COM interface of the device, on the calling thread (MicListen: the recording client)
+        public static object Activate(Guid id, Guid iid)
+        {
+            var en = (IMMDeviceEnumerator)new MMDeviceEnumerator(); IMMDevice d; object o;
+            if (en.GetDevice(EndpointId(id), out d) != 0 || d == null) return null;
+            return d.Activate(ref iid, 23, IntPtr.Zero, out o) == 0 ? o : null;
         }
 
         static IAudioEndpointVolume Volume(Guid id)
@@ -627,7 +860,7 @@ namespace RedTune
         static RegistryKey FxKey(Guid id, bool write)
         {
             // an administrator may set values here but not create keys, so exactly these rights are asked for
-            return Registry.LocalMachine.OpenSubKey(RenderKey + "\\" + id.ToString("B") + "\\FxProperties", write ? RegistryKeyPermissionCheck.ReadWriteSubTree : RegistryKeyPermissionCheck.ReadSubTree,
+            return Registry.LocalMachine.OpenSubKey(RootOf(id) + "\\" + id.ToString("B") + "\\FxProperties", write ? RegistryKeyPermissionCheck.ReadWriteSubTree : RegistryKeyPermissionCheck.ReadSubTree,
                 write ? RegistryRights.QueryValues | RegistryRights.SetValue : RegistryRights.QueryValues);
         }
 
@@ -818,7 +1051,11 @@ namespace RedTune
                     if (st.Composite)
                     {
                         if (k.GetValue(Fx + ",15") == null) own.SetValue("CreatedList", 1);
-                        k.SetValue(Fx + ",15", new[] { Clsid }.Concat(st.End).ToArray(), RegistryValueKind.MultiString);
+                        // 21.11: on an input the end-stage effects work on the microphone's own sound before it goes on; the
+                        // effect goes LAST among them, after the vendor's (Realtek's recording effect: its echo and noise
+                        // handling sees the sound as the microphone gave it), on an output first, as before
+                        bool input = IsCapture(id);
+                        k.SetValue(Fx + ",15", (input ? st.End.Concat(new[] { Clsid }) : new[] { Clsid }.Concat(st.End)).ToArray(), RegistryValueKind.MultiString);
                     }
                     else if (st.End.Length == 0 && k.GetValue(Modes + ",7") == null)
                     {
@@ -923,8 +1160,9 @@ namespace RedTune
             var r = new List<Guid>();
             try
             {
-                using (var root = Registry.LocalMachine.OpenSubKey(RenderKey))
-                    foreach (var name in root.GetSubKeyNames()) { Guid g; if (Guid.TryParse(name, out g) && State(g).Attached) r.Add(g); }
+                foreach (var key in new[] { RenderKey, CaptureKey }) // 21.11: the inputs too
+                    using (var root = Registry.LocalMachine.OpenSubKey(key))
+                        if (root != null) foreach (var name in root.GetSubKeyNames()) { Guid g; if (Guid.TryParse(name, out g) && State(g).Attached) r.Add(g); }
             }
             catch { }
             return r;
@@ -999,7 +1237,7 @@ namespace RedTune
         // Called when the page shows, before it takes a device's settings.
         public static void Refresh() { if (loaded && FileStamp() != stamp) { loaded = false; ByDevice.Clear(); } Load(); }
 
-        static SoundPreset Built(string name, string text) { return new SoundPreset { Name = name, P = SoundParams.Parse(text), BuiltIn = true }; }
+        static SoundPreset Built(string name, string text, bool mic = false) { return new SoundPreset { Name = name, P = SoundParams.Parse(text), BuiltIn = true, Mic = mic }; }
 
         public static List<SoundPreset> BuiltIn()
         {
@@ -1010,6 +1248,12 @@ namespace RedTune
                 Built("Голос", "eq=1 comp=1 lim=1 thr=-22 ratio=3 att=8 rel=120 knee=8 mk=4 b=4,90,0,0.7 b=1,300,-2.5,1 b=1,2500,3.5,1 b=1,5000,2,1.4 b=3,10000,1.5,0.7"),
                 Built("Динамики ноутбука", "eq=1 comp=1 lim=1 pre=-4 thr=-20 ratio=2.5 att=10 rel=160 knee=8 mk=3 b=4,70,0,0.7 b=2,180,6,0.7 b=1,450,-3,1.2 b=1,3000,2.5,1 b=3,9000,3.5,0.7"),
                 Built("Ночной режим", "eq=1 comp=1 lim=1 thr=-30 ratio=5 att=5 rel=250 knee=10 mk=10 b=2,100,-4,0.7 b=1,250,0,1 b=1,1000,0,1 b=1,3000,2,1 b=3,10000,0,0.7"),
+                // 21.11, the microphone's own: a low cut against rumble and breath, presence for clarity, an even level, and
+                // the gate (its threshold depends on the microphone and the room: a start to move with the level in sight)
+                Built("Ровно", "eq=1 comp=0 lim=1 ceil=-1 gate=0 gthr=-50 grange=-40 grel=150 b=4,80,0,0.7 b=1,250,0,1 b=1,1000,0,1 b=1,4000,0,1 b=3,10000,0,0.7", true),
+                Built("Голос", "eq=1 comp=1 lim=1 ceil=-1 thr=-24 ratio=3 att=5 rel=120 knee=8 mk=6 gate=1 gthr=-50 grange=-30 grel=150 dn=1 dns=80 ds=1 dshz=6500 dsthr=-15 dsrange=-6 b=4,90,0,0.7 b=1,300,-2,1 b=1,1000,0,1 b=1,3000,3,1 b=3,10000,1.5,0.7", true),
+                Built("Тихая комната", "eq=1 comp=1 lim=1 ceil=-1 thr=-26 ratio=2.5 att=8 rel=150 knee=8 mk=4 gate=1 gthr=-55 grange=-20 grel=250 b=4,70,0,0.7 b=1,250,-1,1 b=1,1000,0,1 b=1,3500,2,1 b=3,10000,1,0.7", true),
+                Built("Шумно вокруг", "eq=1 comp=1 lim=1 ceil=-1 thr=-22 ratio=4 att=4 rel=100 knee=6 mk=5 gate=1 gthr=-40 grange=-40 grel=100 dn=1 dns=100 b=4,120,0,0.7 b=1,400,-3,1 b=1,1000,0,1 b=1,3000,3.5,1 b=3,8000,-2,0.7", true),
             };
         }
 
@@ -1024,7 +1268,11 @@ namespace RedTune
                 {
                     var x = line.Split('\t'); Guid g;
                     if (x.Length >= 3 && x[0] == "device" && Guid.TryParse(x[1], out g)) ByDevice[g] = SoundParams.Parse(x[2]);
-                    else if (x.Length >= 3 && x[0] == "preset" && !Presets.Any(p => p.Name == x[1])) Presets.Add(new SoundPreset { Name = x[1], P = SoundParams.Parse(x[2]) });
+                    else if (x.Length >= 3 && (x[0] == "preset" || x[0] == "micpreset"))
+                    {
+                        bool mic = x[0] == "micpreset"; // 21.11: the microphone's presets on lines of their own
+                        if (!Presets.Any(p => p.Name == x[1] && p.Mic == mic)) Presets.Add(new SoundPreset { Name = x[1], P = SoundParams.Parse(x[2]), Mic = mic });
+                    }
                 }
             }
             catch (Exception ex) { Store.Log("звук: настройки: " + ex.Message); }
@@ -1034,7 +1282,7 @@ namespace RedTune
         {
             try
             {
-                var lines = ByDevice.Select(kv => "device\t" + kv.Key.ToString("B") + "\t" + kv.Value).Concat(Presets.Where(p => !p.BuiltIn).Select(p => "preset\t" + p.Name.Replace('\t', ' ') + "\t" + p.P));
+                var lines = ByDevice.Select(kv => "device\t" + kv.Key.ToString("B") + "\t" + kv.Value).Concat(Presets.Where(p => !p.BuiltIn).Select(p => (p.Mic ? "micpreset\t" : "preset\t") + p.Name.Replace('\t', ' ') + "\t" + p.P));
                 Directory.CreateDirectory(Store.DataDir);
                 File.WriteAllLines(SettingsPath, lines, new UTF8Encoding(true)); stamp = FileStamp();
             }
@@ -1045,7 +1293,12 @@ namespace RedTune
         {
             Load();
             SoundParams p;
-            if (!ByDevice.TryGetValue(id, out p)) { p = SoundParams.Start(); ByDevice[id] = p; }
+            if (!ByDevice.TryGetValue(id, out p))
+            {
+                // 21.11: a microphone starts from its own «Ровно» (a low cut, the gate ready but off)
+                var start = IsCapture(id) ? Presets.FirstOrDefault(x => x.Mic && x.BuiltIn) : null;
+                p = start != null ? start.P.Clone() : SoundParams.Start(); ByDevice[id] = p;
+            }
             return p;
         }
 
@@ -1076,6 +1329,9 @@ namespace RedTune
                             }
                             var why = Register(); if (why == null) why = RestartAudio();
                             Store.Log("звук: обработчик обновлён до новой сборки" + (why == null ? "" : ": не удалось: " + why));
+                            // 21.11: a new layout of the shared file could not be made while the old effect held it: now
+                            // that Windows let go of it, the settings once more (the new effect finds the file by itself)
+                            foreach (var g in attached) Write(g, For(g), true);
                         }
                         catch (Exception ex) { Store.Log("звук: обновление обработчика: " + ex.Message); }
                     });

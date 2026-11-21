@@ -1,0 +1,6 @@
+{
+"w2fa87fcc": {"es":"Banda","pt":"Faixa","zh":"频段","ko":"대역","th":"ช่วงความถี่","vi":"Dải","id":"Pita"},
+"w7a9e1ebf": {"es":"Dónde buscar el siseo: el sonido por encima y por debajo no se toca","pt":"Onde procurar o chiado: o som acima e abaixo fica intacto","zh":"在哪里寻找齿音：此范围上下的声音不受影响","ko":"치찰음을 찾을 범위. 위아래 소리는 건드리지 않습니다","th":"ช่วงที่หาเสียงฟ่อ: เสียงที่สูงและต่ำกว่านี้จะไม่ถูกแตะต้อง","vi":"Nơi tìm âm xuýt: âm thanh trên và dưới dải này được giữ nguyên","id":"Tempat mencari desis: suara di atas dan di bawahnya tidak diubah"},
+"w56f6362b": {"es":"de-esser","pt":"de-esser","zh":"齿音消除","ko":"디에서","th":"ดีเอสเซอร์","vi":"khử âm xuýt","id":"de-esser"},
+"w2e623a14": {"es":"kHz","pt":"kHz","zh":"kHz","ko":"kHz","th":"kHz","vi":"kHz","id":"kHz"}
+}

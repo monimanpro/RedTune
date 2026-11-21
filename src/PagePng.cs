@@ -174,7 +174,17 @@ namespace RedTune
                 var q = new EqGraph { Location = new Point(0, 0), Width = Theme.S(860) };
                 int changes = 0; q.Changed += (o, e) => changes++;
                 f.Controls.Add(q); f.Show(); wait();
-                var p = q.P; // 80 (low shelf), 250, 1000, 4000 (bells), 10000 (high shelf), all at no gain
+                var p = q.P; // the points at rest: twelve bells of no gain, evenly from 27 Hz to 15 kHz (EvenBands)
+                // the check drives four of them as it did the old five: the lowest, 84 Hz, 845 Hz and 4.75 kHz
+                int i80 = 2, i250 = 4, i1k = 6, i4k = 9;
+                p.Bands[i80].Type = 2; p.Bands[i80].Freq = 80; p.Bands[i80].Q = 0.7f; p.Bands[i250].Freq = 250; p.Bands[i1k].Freq = 1000; p.Bands[i4k].Freq = 4000;
+                for (int b = 0; b < p.Bands.Count; b++) if (b != i80) p.Bands[b].Q = 1f;
+                var rest = SoundParams.EvenBands();
+                line(rest.Count == 12 && rest.All(b => b.Type == 1 && b.Gain == 0) && rest.Zip(rest.Skip(1), (x, y) => Math.Log(y.Freq / x.Freq)).All(r => Math.Abs(r - Math.Log(Math.Pow(1000, 1.0 / 12))) < 0.04),
+                    "the points at rest: twelve bells of no gain, evenly spread: " + string.Join(", ", rest.Select(b => b.Freq)));
+                var reset = SoundParams.Defaults(true);
+                line(reset.On && !reset.Eq && !reset.Comp && !reset.Limit && !reset.Gate && !reset.Denoise && !reset.Dereverb && reset.Preamp == 0 && reset.Split == 0 && reset.Bands.Count == 12,
+                    "«Сбросить»: every effect off, the processing kept on, the points at rest");
                 Action<int, int> down = (x, y) => SendMessage(q.Handle, 0x201, (IntPtr)1, at(x, y));
                 Action<int, int> move = (x, y) => SendMessage(q.Handle, 0x200, (IntPtr)1, at(x, y));
                 Action<int, int> hover = (x, y) => SendMessage(q.Handle, 0x200, IntPtr.Zero, at(x, y));
@@ -182,30 +192,44 @@ namespace RedTune
                 Action<int, int> wheelPress = (x, y) => { SendMessage(q.Handle, 0x207, (IntPtr)0x10, at(x, y)); SendMessage(q.Handle, 0x208, IntPtr.Zero, at(x, y)); }; // 20.11: the reset
                 int top = q.FaderTop, bottom = q.FaderBottom, mid = (top + bottom) / 2;
 
-                line(q.Panel.Width > 0 && q.Order().Length == 5, "five bands: five strips and «+» (panel " + q.Panel.Width + " px wide)");
+                line(q.Panel.Width > 0 && q.Order().Length == 12 && p.Bands.Count == 12, "twelve bands from the start: twelve strips (panel " + q.Panel.Width + " px wide): " + string.Join(", ", p.Bands.Select(b => b.Freq)));
 
                 // the fader of the third strip (1 kHz): a quarter down from the top is half the scale up, then all the way down
-                int x2 = q.StripX(2);
+                int x2 = q.StripX(i1k);
                 // (20.11: a press does not move the knob, the pointer goes onto it; the drag counts from where it was taken)
                 int y2 = top + (bottom - top) / 4;
-                down(x2, y2); float g0 = p.Bands[2].Gain; move(x2, y2 - (bottom - top) / 4); float g1 = p.Bands[2].Gain;
-                move(x2, bottom + 40); float g2 = p.Bands[2].Gain; up(x2, bottom + 40);
-                line(g0 == 0 && Math.Abs(g1 - 9f) < 0.3f && g2 == -18f && p.Bands[1].Gain == 0 && p.Bands[3].Gain == 0, "fader: the press leaves it at " + g0 + " dB, a quarter of the travel up gives " + g1 + " dB (9 expected), far below " + g2 + " dB (-18), the neighbours stay at 0");
+                down(x2, y2); float g0 = p.Bands[i1k].Gain; move(x2, y2 - (bottom - top) / 4); float g1 = p.Bands[i1k].Gain;
+                move(x2, bottom + 40); float g2 = p.Bands[i1k].Gain; up(x2, bottom + 40);
+                line(g0 == 0 && Math.Abs(g1 - 9f) < 0.3f && g2 == -18f && p.Bands[i1k - 1].Gain == 0 && p.Bands[i1k + 1].Gain == 0, "fader: the press leaves it at " + g0 + " dB, a quarter of the travel up gives " + g1 + " dB (9 expected), far below " + g2 + " dB (-18), the neighbours stay at 0");
 
                 // 20.11: a double click on it changes nothing any more; a press of the wheel: no gain
-                down(x2, mid + 30); up(x2, mid + 30); SendMessage(q.Handle, 0x203, (IntPtr)1, at(x2, mid + 30)); up(x2, mid + 30); float gd = p.Bands[2].Gain;
+                down(x2, mid + 30); up(x2, mid + 30); SendMessage(q.Handle, 0x203, (IntPtr)1, at(x2, mid + 30)); up(x2, mid + 30); float gd = p.Bands[i1k].Gain;
                 wheelPress(x2, mid + 30);
-                line(gd == -18f && p.Bands[2].Gain == 0, "double click on a fader keeps " + gd + " dB (-18); a press of the wheel: gain " + p.Bands[2].Gain + " dB");
+                line(gd == -18f && p.Bands[i1k].Gain == 0, "double click on a fader keeps " + gd + " dB (-18); a press of the wheel: gain " + p.Bands[i1k].Gain + " dB");
 
                 // the frequency dial of the first strip (80 Hz): half the travel up is half the range in octaves, x31.6
-                int x0 = q.StripX(0);
-                down(x0, q.FreqY); move(x0, q.FreqY - Theme.S(110)); float f1 = p.Bands[0].Freq; int[] during = (int[])q.Order().Clone();
+                int x0 = q.StripX(i80);
+                down(x0, q.FreqY); move(x0, q.FreqY - Theme.S(110)); float f1 = p.Bands[i80].Freq; int[] during = (int[])q.Order().Clone();
                 up(x0, q.FreqY - Theme.S(110)); hover(x0, q.FreqY); int[] after = q.Order();
-                line(f1 > 2300 && f1 < 2800 && during[0] == 0 && after[0] == 1 && after[2] == 0, "frequency dial: 80 Hz -> " + f1 + " Hz; the strip stays first while held (" + string.Join(",", during) + "), then takes its place by frequency (" + string.Join(",", after) + ")");
+                line(f1 > 2300 && f1 < 2800 && during[i80] == i80 && after[i80] == i80, "frequency dial: 80 Hz -> " + f1 + " Hz; the strip stays where it was, held and after (21.11, the user)");
+                p.Bands[i80].Freq = 80;
 
                 // the width dial of the strip that is first now (250 Hz): a quarter of the travel down
-                down(q.StripX(0), q.WideY); move(q.StripX(0), q.WideY + Theme.S(55)); float w1 = p.Bands[1].Q; up(q.StripX(0), q.WideY + Theme.S(55));
+                down(q.StripX(i250), q.WideY); move(q.StripX(i250), q.WideY + Theme.S(55)); float w1 = p.Bands[i250].Q; up(q.StripX(i250), q.WideY + Theme.S(55));
                 line(w1 < 0.5f && w1 > 0.2f, "width dial: Q 1 -> " + w1 + " (about 0.36 expected)");
+                // 21.11: a press of the wheel on a frequency dial: back to where that strip stands at rest
+                p.Bands[i250].Freq = 333; wheelPress(q.StripX(i250), q.FreqY); float fr = p.Bands[i250].Freq;
+                wheelPress(q.StripX(i250), q.WideY); float qr = p.Bands[i250].Q;
+                line(fr == SoundParams.EvenBands()[i250].Freq && qr == SoundParams.EvenBands()[i250].Q, "a press of the wheel: the frequency dial back to " + fr + " Hz, the width dial to Q " + qr + " (at rest)");
+                p.Bands[i250].Freq = 250; p.Bands[i250].Q = w1;
+                // 21.11: the wheel over a kind picture goes through the kinds; a press of the wheel there: a bell
+                int kx = q.StripX(i4k), ky = q.Panel.Y + Theme.S(9);
+                down(kx, ky); up(kx, ky);   /* a left click on the picture takes it (no list), and the wheel works at once */
+                SendMessage(q.Handle, 0x20A, (IntPtr)(-120 << 16), at(0, 0)); int kd1 = p.Bands[i4k].Type;
+                SendMessage(q.Handle, 0x20A, (IntPtr)(-120 << 16), at(0, 0)); int kd2 = p.Bands[i4k].Type;
+                SendMessage(q.Handle, 0x20A, (IntPtr)(120 << 16), at(0, 0)); int kd3 = p.Bands[i4k].Type;
+                wheelPress(kx, ky); int kd4 = p.Bands[i4k].Type;
+                line(kd1 == 2 && kd2 == 3 && kd3 == 2 && kd4 == 1, "the wheel over a kind picture: bell -> " + EqGraph.Kinds[kd1] + " -> " + EqGraph.Kinds[kd2] + ", back -> " + EqGraph.Kinds[kd3] + "; a press of the wheel -> " + EqGraph.Kinds[kd4]);
 
                 // the wheel over a fader after a click on the graph: half a dB a notch
                 hover(q.StripX(3), mid); SendMessage(q.Handle, 0x20A, (IntPtr)(120 << 16), at(0, 0)); SendMessage(q.Handle, 0x20A, (IntPtr)(120 << 16), at(0, 0));
@@ -214,35 +238,74 @@ namespace RedTune
 
                 // 20.11: the pre-gain's strip left of the bands: its fader (±24 dB by half a dB), the points ride on the line
                 // it moves, a point dragged keeps its own gain, the wheel and a double click
-                int xm = q.MasterX; float k0 = q.Knob(2).Y;
+                int xm = q.MasterX; float k0 = q.Knob(i1k).Y;
                 int ym = top + (bottom - top) / 4; down(xm, ym); float m0 = p.Preamp;
                 move(xm, ym - (bottom - top) / 4); float m1 = p.Preamp; move(xm, bottom + 40); float m2 = p.Preamp; move(xm, ym + (bottom - top) / 8); float m3 = p.Preamp; up(xm, ym + (bottom - top) / 8);
-                float k1 = q.Knob(2).Y;
+                float k1 = q.Knob(i1k).Y;
                 line(m0 == 0 && Math.Abs(m1 - 12f) < 0.6f && m2 == -24f && Math.Abs(m3 + 6f) < 0.6f && p.Bands.All(b => b.Gain == 0 || b == p.Bands[q.Order()[3]]),
                     "pre-gain fader: the press leaves it at " + m0 + ", a quarter of the travel up " + m1 + " dB (12), far below " + m2 + " (-24), an eighth under where it was taken " + m3 + " (-6); the bands keep their gains");
                 line(k1 > k0 + 5, "the points ride on the line: the 1 kHz point went down " + (k1 - k0).ToString("0") + " px with the pre-gain at " + p.Preamp + " dB");
-                var kp = q.Knob(2); down((int)kp.X, (int)kp.Y); move((int)kp.X, (int)kp.Y - 1); up((int)kp.X, (int)kp.Y - 1);
-                line(Math.Abs(p.Bands[2].Gain) < 0.35f, "a point taken where it is drawn keeps its gain: " + p.Bands[2].Gain + " dB with the pre-gain at " + p.Preamp);
+                var kp = q.Knob(i1k); down((int)kp.X, (int)kp.Y); move((int)kp.X, (int)kp.Y - 1); up((int)kp.X, (int)kp.Y - 1);
+                line(Math.Abs(p.Bands[i1k].Gain) < 0.35f, "a point taken where it is drawn keeps its gain: " + p.Bands[i1k].Gain + " dB with the pre-gain at " + p.Preamp);
                 hover(xm, mid); SendMessage(q.Handle, 0x20A, (IntPtr)(120 << 16), at(0, 0)); float m4 = p.Preamp;
                 wheelPress(xm, mid);
                 line(Math.Abs(m4 - m3 - 0.5f) < 0.01f && p.Preamp == 0, "pre-gain: the wheel " + m3 + " -> " + m4 + " dB, a press of the wheel -> " + p.Preamp);
-                p.Bands[2].Gain = 0;
+                p.Bands[i1k].Gain = 0;
 
-                // «+»: a sixth band, in the widest gap, with no gain
-                int xAdd = q.StripX(5); down(xAdd, mid); up(xAdd, mid);
-                line(p.Bands.Count == 6 && p.Bands[5].Gain == 0 && q.Order().Length == 6, "«+»: bands " + p.Bands.Count + ", the new one at " + (p.Bands.Count == 6 ? p.Bands[5].Freq + " Hz" : "?"));
+                // 21.11: a point dragged on the plot past its neighbours keeps its strip; a click right of the last strip adds nothing
+                var k4 = q.Knob(i1k); down((int)k4.X, (int)k4.Y); move((int)k4.X + Theme.S(160), (int)k4.Y); int[] held = (int[])q.Order().Clone(); up((int)k4.X + Theme.S(160), (int)k4.Y);
+                float fMoved = p.Bands[i1k].Freq; int[] left = q.Order();
+                down(q.StripX(11) + Theme.S(27), mid); up(q.StripX(11) + Theme.S(27), mid);
+                line(fMoved > 4000 && held[i1k] == i1k && left[i1k] == i1k && p.Bands.Count == 12, "a point dragged past 4 kHz (now " + fMoved + " Hz) keeps strip " + left[i1k] + "; past the last strip nothing is added (" + p.Bands.Count + " bands)");
+                // ...and after the settings are saved and read again (a restart), it is still on the same strip
+                var again = SoundParams.Parse(p.ToString());
+                line(again.Bands[i1k].Freq == fMoved && again.Bands.Select(x => x.Freq).SequenceEqual(p.Bands.Select(x => x.Freq)), "read back after a restart the points keep their strips: strip " + i1k + " still " + again.Bands[i1k].Freq + " Hz");
+                p.Bands[i1k].Freq = 1000;
+                // settings with fewer points get the rest: the old five, a preset of four
+                var four = SoundParams.Parse("eq=1 b=1,100,3,1 b=1,500,0,1 b=1,2000,0,1 b=3,8000,2,0.7");
+                line(four.Bands.Count == 12 && four.Bands.Count(b => b.Gain != 0) == 2 && four.Bands.Zip(four.Bands.Skip(1), (a, b) => a.Freq <= b.Freq).All(x => x),
+                    "a preset of four points gets twelve, in order, its gains kept: " + string.Join(", ", four.Bands.Select(b => b.Freq + (b.Gain != 0 ? "(" + b.Gain + ")" : ""))));
 
-                // a point removed is a strip removed; twelve bands leave no «+»
-                p.Bands.RemoveAt(0); q.Invalidate(); wait(); int five = q.Order().Length;
-                while (p.Bands.Count < SoundParams.MaxBands) { int xa = q.StripX(p.Bands.Count); down(xa, mid); up(xa, mid); }
-                int twelve = p.Bands.Count; down(q.StripX(12), mid); up(q.StripX(12), mid);
-                line(five == 5 && twelve == 12 && p.Bands.Count == 12 && q.Order().Length == 12 && q.Panel.Width > 0, "a band removed: " + five + " strips; «+» up to " + twelve + " bands and no further (" + p.Bands.Count + "), plot " + (q.Width - q.Panel.Width) + " px of " + q.Width);
+                // 21.11: the slope dial: dragged up a long way 48 dB/oct on a cut, the wheel a step down, kept in the text
+                p.Bands[i80].Type = 4; p.Bands[i80].Freq = 1000; p.Bands[i80].Q = 0.707f; q.Invalidate(); wait();
+                int xs = q.StripX(i80); float fwas = p.Bands[i80].Gain; down(xs, q.SlopeRowY); move(xs, q.SlopeRowY - Theme.S(160)); int sTop = p.Bands[i80].Slope; up(xs, q.SlopeRowY - Theme.S(160));
+                double r500 = AudioFx.Response(p, 500, 48000, i80), r1k = AudioFx.Response(p, 1000, 48000, i80);
+                hover(xs, q.SlopeRowY); SendMessage(q.Handle, 0x20A, (IntPtr)(-120 << 16), at(0, 0)); int sWheel = p.Bands[i80].Slope;
+                var back = SoundParams.Parse(p.ToString()); var cut = back.Bands.FirstOrDefault(b => b.Type == 4);
+                line(sTop == 4 && Math.Abs(r500 + 48.2) < 0.3 && Math.Abs(r1k + 3.01) < 0.05 && sWheel == 3 && cut != null && cut.Slope == 3,
+                    "cut slope: the slope dial dragged up gives " + sTop + " (48 dB/oct: " + r500.ToString("0.0") + " dB an octave under, " + r1k.ToString("0.00") + " at 1 kHz); the wheel a notch down " + sWheel + "; read back " + (cut != null ? cut.Slope.ToString() : "?"));
+                // 21.11 (the user: the slope dial lagged): drawing the curve of twelve straight bells, with and without the
+                // sections kept per band
+                {
+                    var twelve = new SoundParams(); twelve.Bands = SoundParams.EvenBands(); foreach (var b in twelve.Bands) { b.Gain = 6; b.Slope = 4; }
+                    Func<double> paint = () => { var sw = System.Diagnostics.Stopwatch.StartNew(); for (int k = 0; k < 3; k++) for (int i = 0; i <= 400; i++) AudioFx.Response(twelve, 20 * Math.Pow(1000, i / 400.0), 48000); return sw.Elapsed.TotalMilliseconds / 3; };
+                    AudioFx.PlanCache = false; double slow = paint(); AudioFx.PlanCache = true; paint(); double fast = paint();
+                    line(fast < 15 && fast < slow / 3, "the curve of twelve straight bells: " + fast.ToString("0.0") + " ms a picture with the sections kept, " + slow.ToString("0.0") + " ms without");
+                }
+                // 21.11: what one picture of the equalizer costs (it is drawn 30 times a second while «Звук» is open, with the spectrum)
+                {
+                    var spec = new double[1025]; for (int i = 0; i < spec.Length; i++) spec[i] = -40 - 30.0 * i / spec.Length;
+                    q.Feed(spec);
+                    using (var bmp = new Bitmap(q.Width, q.Height))
+                    {
+                        q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size));
+                        var sw = System.Diagnostics.Stopwatch.StartNew(); for (int k = 0; k < 20; k++) q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size));
+                        double ms = sw.Elapsed.TotalMilliseconds / 20;
+                        line(ms < 12, "one picture of the equalizer with the spectrum: " + ms.ToString("0.0") + " ms (30 a second: " + (ms * 3).ToString("0") + " % of a core)");
+                    }
+                    q.Feed(null);
+                }
+                // a bell made straight keeps its gain at its frequency
+                var bell = new EqBand { Type = 1, Freq = 1000, Gain = 9, Q = 1, Slope = 3 }; var sp1 = new SoundParams(); sp1.Bands.Add(bell);
+                double atF = AudioFx.Response(sp1, 1000, 48000), atEdge = AudioFx.Response(sp1, 1000 * Math.Pow(2, 0.4), 48000);
+                line(Math.Abs(atF - 9) < 0.6 && atEdge > 8, "a straight bell (slope 3): " + atF.ToString("0.0") + " dB at its frequency, " + atEdge.ToString("0.0") + " dB 0.4 octave out");
+                p.Bands[i80].Type = 2; p.Bands[i80].Freq = 80; p.Bands[i80].Q = 0.7f; p.Bands[i80].Slope = 1;
 
                 // switched off: nothing moves
-                q.Dim = true; float was = p.Bands[2].Gain; down(q.StripX(2), top + 10); move(q.StripX(2), top + 20); up(q.StripX(2), top + 20);
-                line(p.Bands[2].Gain == was, "equalizer switched off: a fader does not move");
+                q.Dim = true; float was = p.Bands[i1k].Gain; down(q.StripX(i1k), top + 10); move(q.StripX(i1k), top + 20); up(q.StripX(i1k), top + 20);
+                line(p.Bands[i1k].Gain == was, "equalizer switched off: a fader does not move");
                 sb.AppendLine("changes reported: " + changes);
-                using (var bmp = new Bitmap(q.Width, q.Height)) { q.Dim = false; p.Preamp = -6; p.Bands[1].Gain = 6; q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size)); bmp.Save(System.IO.Path.ChangeExtension(file, ".png"), System.Drawing.Imaging.ImageFormat.Png); }
+                using (var bmp = new Bitmap(q.Width, q.Height)) { q.Dim = false; p.Preamp = -6; p.Bands[i250].Gain = 6; q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size)); bmp.Save(System.IO.Path.ChangeExtension(file, ".png"), System.Drawing.Imaging.ImageFormat.Png); }
             }
             System.IO.File.WriteAllText(file, sb.ToString(), new System.Text.UTF8Encoding(true));
         }
@@ -268,6 +331,30 @@ namespace RedTune
                 Action<int, int> wheelPress = (x, y) => { SendMessage(q.Handle, 0x207, (IntPtr)0x10, at(x, y)); SendMessage(q.Handle, 0x208, IntPtr.Zero, at(x, y)); }; // 20.11: the reset
                 Func<CompGraph.Part, Point> knob = part => Point.Round(q.KnobAt(part));
                 double perDb = q.Curve.Height / 60.0;
+                // 21.11 (the user): a dial the character does not listen to is grey and not taken (the tube: the knee; the optical: the release)
+                {
+                    float kneeWas = p.Knee, relWas = p.Release;
+                    p.CompChar = 3; q.Invalidate(); wait();
+                    var kd = Point.Round(q.DialAt(2)); down(kd.X, kd.Y); move(kd.X, kd.Y - 80); up(kd.X, kd.Y - 80);
+                    SendMessage(q.Handle, 0x200, IntPtr.Zero, at(kd.X, kd.Y)); SendMessage(q.Handle, 0x20A, (IntPtr)(120 << 16), at(0, 0)); float kneeTube = p.Knee;
+                    p.CompChar = 2; q.Invalidate(); wait();
+                    var rd = Point.Round(q.DialAt(1)); down(rd.X, rd.Y); move(rd.X, rd.Y - 80); up(rd.X, rd.Y - 80); float relOpto = p.Release;
+                    p.CompChar = 0; q.Invalidate(); wait();
+                    down(kd.X, kd.Y); move(kd.X, kd.Y - 40); up(kd.X, kd.Y - 40); float kneeClean = p.Knee;
+                    line(kneeTube == kneeWas && relOpto == relWas && kneeClean != kneeWas, "dials by the character: the tube's knee stays " + kneeTube + " (dragged, wheeled), the optical's release stays " + relOpto + "; the clean one's knee moves (" + kneeWas + " -> " + kneeClean + ")");
+                    p.Knee = kneeWas; p.CompChar = 0; q.Invalidate(); wait();
+                }
+                // 21.11: what one picture of the compressor costs, with its meters moving (30 a second while «Звук» is open)
+                {
+                    for (int kc = 0; kc < 200; kc++) q.Feed(true, 0.3f + 0.2f * (kc % 7) / 7f, 0.25f, -4f - (kc % 5), -1f, -20f + (kc % 9));
+                    using (var bmp = new Bitmap(q.Width, q.Height))
+                    {
+                        q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size));
+                        var sw = System.Diagnostics.Stopwatch.StartNew(); for (int kc = 0; kc < 20; kc++) { q.Feed(true, 0.4f, 0.3f, -5f, -1f, -18f); q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size)); }
+                        double ms = sw.Elapsed.TotalMilliseconds / 20;
+                        line(ms < 12, "one picture of the compressor with its meters: " + ms.ToString("0.0") + " ms (30 a second: " + (ms * 3).ToString("0") + " % of a core)");
+                    }
+                }
 
                 line(q.History.Width > 0 && q.Panel.Width > 0, "at this width the curve, the last seconds (" + q.History.Width + " px) and the dials (" + q.Panel.Width + " px) all show");
                 line(Math.Abs(q.Gr(0) + 12) < 0.001 && q.Gr(-30) == 0, "the curve's formula: threshold -18, 3:1, at 0 dB in it takes " + q.Gr(0).ToString("0.##") + " dB (-12 expected), under the threshold nothing");
@@ -545,6 +632,8 @@ namespace RedTune
                     // 18.11: «Звук» (reads the devices and their effects, changes nothing). RT_COMP_DEMO=1: a made-up sound in the compressor's picture
                     var sound = new SoundPage(s); page = sound;
                     if (Environment.GetEnvironmentVariable("RT_COMP_DEMO") == "1") late = () => sound.DemoComp();
+                    if (Environment.GetEnvironmentVariable("RT_MIC") == "1") { var before = late; late = () => { if (before != null) before(); sound.ShowMic(); }; } // 21.11: the «Микрофон» tab
+                    if (Environment.GetEnvironmentVariable("RT_C2") == "1") { var before2 = late; late = () => { if (before2 != null) before2(); sound.ShowComp2Demo(); }; } // the second compressor shown on
                 }
                 else if (what == "device") page = Hw.AsusFw ? (Page)new AsusDevicePage(s) : new DevicePage(s); // 18.11: «Устройство» (reads the laptop's settings when it shows, sets nothing)
                 else if (what == "power")

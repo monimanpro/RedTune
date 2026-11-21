@@ -1,0 +1,4 @@
+{
+"w092e0dac": {"es":"Restablecer el punto","pt":"Redefinir o ponto","zh":"重置此点","ko":"점 초기화","th":"รีเซ็ตจุด","vi":"Đặt lại điểm","id":"Atur ulang titik"},
+"we6812640": {"es":"Arrastra los puntos: izquierda-derecha es la frecuencia, arriba-abajo la ganancia. Clic derecho en un punto: tipo de filtro o restablecer","pt":"Arraste os pontos: esquerda-direita é a frequência, cima-baixo o ganho. Clique direito num ponto: tipo de filtro ou redefinir","zh":"拖动这些点：左右调频率，上下调增益。右键点击某点可选择滤波器类型或重置","ko":"점을 끌어 보세요. 좌우는 주파수, 위아래는 게인입니다. 점을 오른쪽 클릭하면 필터 종류를 고르거나 초기화합니다","th":"ลากจุด: ซ้าย-ขวาคือความถี่ ขึ้น-ลงคืออัตราขยาย คลิกขวาที่จุดเพื่อเลือกชนิดฟิลเตอร์หรือรีเซ็ต","vi":"Kéo các điểm: trái-phải là tần số, lên-xuống là độ khuếch đại. Nhấp chuột phải vào điểm để chọn loại bộ lọc hoặc đặt lại","id":"Seret titik-titik: kiri-kanan frekuensi, atas-bawah penguatan. Klik kanan pada titik untuk memilih jenis filter atau mengatur ulang"}
+}

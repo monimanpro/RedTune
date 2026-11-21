@@ -6,19 +6,83 @@ that is not Red Tune's own, and the projects Red Tune learned the hardware's int
 ## 1. What ships with Red Tune
 
 Four files, unchanged, next to the executable: three modules for the PawnIO driver (small programs the driver runs to
-reach the hardware) and the driver's own installer. Their licenses apply to them. Everything else in the build is Red
-Tune's own code.
+reach the hardware) and the driver's own installer. Two libraries are built into Red Tune's sound effect: RNNoise and DeepFilterNet (with the Rust crates it needs). Their
+licenses apply to them. Everything else in the build is Red Tune's own code.
 
 | Component | Where in the build | What it is used for | Author | License | Source |
 |---|---|---|---|---|---|
 | PawnIO module RyzenSMU | `ram\RyzenSMU.bin` | Reaching the processor's system management unit through the PawnIO driver: the Curve Optimizer, the power limits, the power table, the processor temperature; taken from ryzen-smu-cli 0.1.5 (sp00n build from CoreCycler 0.11) | namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
 | PawnIO module AMDFamily17 | `ram\AMDFamily17.bin` | Reading the processor's registers through the PawnIO driver: the memory timings; taken from ZenStates-Core 1.79, which carries it | namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
 | PawnIO module SmbusPIIX4 | `ram\SmbusPIIX4.bin` | The SMBus of the AMD chipset through the PawnIO driver: the temperature of the memory modules; taken from ZenStates-Core 1.79, which carries it | Steve-Tech, namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
+| DeepFilterNet 3 (libDF 0.5.7-pre) and its model | built into `audio\RedTuneApo.dll` through Red Tune's wrapper `native\apo\dfn\src\lib.rs` (libDF and the model unchanged in `native\apo\dfn\DeepFilterNet`, commit 7b14b895fe7f) | The other model of the denoiser in «Sound → Microphone»: a neural network that removes noise from a voice, with its trained weights (DeepFilterNet3_onnx) | Hendrik Schröter and contributors | MIT or Apache-2.0 (MIT text below) | https://github.com/Rikorose/DeepFilterNet |
+| Rust crates under DeepFilterNet (tract, ndarray, flate2, tar and others, 95 in all) | built into `audio\RedTuneApo.dll` with it; the list with versions and licenses in `native\apo\dfn\CRATES.md` | The engine that runs the model and what it needs | their authors (Sonos for tract) | MIT, Apache-2.0, Unlicense, Zlib, BSD-2, CC0 (each crate's own; all permissive) | https://crates.io |
+| RNNoise 0.2 | built into `audio\RedTuneApo.dll` (sources unchanged in `native\apo\rnnoise`) | The denoiser of «Sound → Microphone»: a small neural network that removes noise from a voice, with its trained weights | Jean-Marc Valin, Xiph.Org Foundation, Mozilla, Amazon and contributors | BSD-3-Clause (text below) | https://github.com/xiph/rnnoise (release v0.2) |
 | PawnIO 2.2.0 installer | `pawnio\PawnIO_setup.exe` | Installs the PawnIO driver (signed by Microsoft) when it is missing: by the Red Tune setup (a task, on by default) and by «Install» on the «Components» page, both with its own `-install -silent`. The official release file, unchanged: SHA-256 `1f519a22e47187f70a1379a48ca604981c4fcf694f4e65b734aaa74a9fba3032`, signed by namazso.eu | namazso | GPL-2.0 with an exception for programs using its IOCTL interface (the driver) | https://github.com/namazso/PawnIO (source), https://github.com/namazso/PawnIO.Setup/releases/tag/2.2.0 (this file) |
 
 Not shipped, installed by you if you want them:
 
 - **Prime95** — optional for the auto-tune, which has a load of its own; point Red Tune to it on the «Components» page.
+
+### DeepFilterNet license (MIT; Apache-2.0 is the other choice it offers)
+
+```
+The MIT License (MIT)
+Copyright (c) 2021 Hendrik Schröter
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+### RNNoise license
+
+```
+Copyright (c) 2007-2017, 2024 Jean-Marc Valin
+Copyright (c) 2023 Amazon
+Copyright (c) 2017, Mozilla
+Copyright (c) 2005-2017, Xiph.Org Foundation
+Copyright (c) 2003-2004, Mark Borgerding
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+- Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+- Neither the name of the Xiph.Org Foundation nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION
+OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
 
 ## 2. Where the knowledge of the hardware came from
 

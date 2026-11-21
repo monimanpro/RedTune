@@ -18,19 +18,26 @@ namespace RedTune
         public SoundParams P = SoundParams.Start();
         public double Rate = 48000;
         public bool Dim;
+        // 21.11 (the user): the de-esser's band, shown on the plot and not edited there; DsDb: how deep it takes it down now
+        public bool DsOn; public float DsLo = 6500, DsHi = 10000, DsDb;
         public event EventHandler Changed;
         const double MinF = 20, MaxF = 20000;
         // 19.11: the scale is ±18 dB, and ±24 while the curve goes beyond that (a preset fitted to Nahimic's measured
         // response raises the bass by 23 dB): otherwise the curve ran along the edge of the plot. Not changed while a
         // point is held, so the scale does not jump under the mouse.
+        // 21.11 (the user, a quiet microphone with +20.5 dB of pre-gain): the curve went off the top of the plot at ±24,
+        // so the scale grows on to ±36 and ±48 (pre-gain 24 + a band's 24). A band's own gain stays within ±24 (GainMax),
+        // and its fader keeps a scale of at most ±24: only the picture of the whole curve grows.
         float Range = 18;
+        const float GainMax = 24;
+        float FaderRange { get { return Math.Min(Range, GainMax); } }
         void FitRange()
         {
             if (drag >= 0 || dragPart != Part.None) return;
             double top = 0;
             for (int i = 0; i <= 30; i++) top = Math.Max(top, Math.Abs(AudioFx.Response(P, MinF * Math.Pow(MaxF / MinF, i / 30.0), Rate)));
             foreach (var b in P.Bands) top = Math.Max(top, Math.Abs((b.HasGain ? b.Gain : 0) + P.Preamp));
-            Range = top > 17.9 ? 24 : 18;
+            Range = top > 35.9 ? 48 : top > 23.9 ? 36 : top > 17.9 ? 24 : 18;
         }
         int hot = -1, drag = -1; bool armed;
         float[] spec; bool specOn;
@@ -40,40 +47,47 @@ namespace RedTune
         public EqGraph() { BackColor = Theme.Window; Height = Theme.S(390); } // 19.11: 300 -> 390, the user asked for the block 30 % taller
 
         // 19.11, the strips on the right of the plot (the user: the same bands as knobs, as mixing programs have them).
-        // One strip per band, in the order of the bands' frequencies, so a strip stands where its point stands along the
-        // plot: the kind of filter on top (a click opens the list), a fader for the gain, a dial for the frequency and
-        // a dial for the width. They are the same values as the points: moving one moves the other, a band removed on
-        // either side is gone on both, and after the last strip stands «+» while there are fewer than 12 bands.
-        // The order is not changed while something is held, so a strip does not jump from under the mouse.
+        // One strip per band: the kind of filter on top (a click opens the list), a fader for the gain, a dial for the
+        // frequency and a dial for the width. They are the same values as the points: moving one moves the other.
+        // 21.11 (the user): always all twelve bands and no «+»; the strips stand in the bands' own order (by frequency
+        // when the settings were loaded, SoundParams.FillBands) and do not move when a point is dragged past another.
         // 20.11 (the user): the pre-gain («Общее усиление», before the equalizer) moved from a row of the page into the
         // picture, as the first strip left of the bands' ones: a fader of ±24 dB by half a dB, its value under it.
-        enum Part { None, Kind, Fader, Freq, Wide, Add, Master }
+        enum Part { None, Kind, Fader, Freq, Wide, Slope, Master }
         const int StripW = 27, Gutter = 24, MasterW = 33, MasterDb = 24;
         int[] order = new int[0];
         Part hotPart, dragPart; int dragBand = -1, dragY; float dragFrom;
 
         internal int[] Order()
         {
-            if (order.Length != P.Bands.Count || (drag < 0 && dragPart == Part.None))
-                order = Enumerable.Range(0, P.Bands.Count).OrderBy(i => P.Bands[i].Freq).ThenBy(i => i).ToArray();
+            if (order.Length != P.Bands.Count) order = Enumerable.Range(0, P.Bands.Count).ToArray();
             return order;
         }
 
-        int Slots { get { return P.Bands.Count + (P.Bands.Count < SoundParams.MaxBands ? 1 : 0); } }
+        int Slots { get { return P.Bands.Count; } }
         // no strips in a window so narrow that the plot would have nothing left
         int PanelW { get { int w = Theme.S(MasterW + Gutter + Slots * StripW); return Width - Theme.S(46 + 14 + 12) - w < Theme.S(170) ? 0 : w; } }
         Rectangle Plot { get { int pw = PanelW; return new Rectangle(Theme.S(46), Theme.S(14), Width - Theme.S(46) - (pw > 0 ? pw + Theme.S(14 + 12) : Theme.S(18)), Height - Theme.S(72)); } }
         // 19.11: as tall as the plot, but standing in the middle of the card: the kind pictures as far from its top edge as
         // the lower dials from its bottom edge (level with the plot it stood high, the plot having its scale and the hint under it)
+        // 21.11: what a moment of the sound changes: the plot (the spectrum and the de-esser's depth are clipped to it). A
+        // point on its edge is drawn whole and clipped here; its part outside did not change, so it stays as it was
+        Rectangle LiveArea { get { return Rectangle.Inflate(Plot, 1, 1); } }
+        public void InvalidateLive() { LiveInvalidate(LiveArea); }
         internal Rectangle Panel { get { var r = Plot; return new Rectangle(r.Right + Theme.S(14), (Height - r.Height - Theme.S(2)) / 2, PanelW, r.Height); } }
         internal int StripX(int slot) { return Panel.X + Theme.S(MasterW + Gutter) + slot * Theme.S(StripW) + Theme.S(StripW) / 2; } // its middle
         internal int MasterX { get { return Panel.X + Theme.S(StripW) / 2; } }
         float MasterY(double db) { return (float)(FaderTop + (FaderBottom - FaderTop) * (0.5 - Math.Max(-MasterDb, Math.Min(MasterDb, db)) / (2.0 * MasterDb))); }
         internal int FaderTop { get { return Panel.Y + Theme.S(30); } }
-        internal int FaderBottom { get { return Panel.Bottom - Theme.S(64); } }
-        internal int FreqY { get { return Panel.Bottom - Theme.S(40); } }
-        internal int WideY { get { return Panel.Bottom - Theme.S(12); } }
-        float FaderY(double db) { return (float)(FaderTop + (FaderBottom - FaderTop) * (0.5 - Math.Max(-Range, Math.Min(Range, db)) / (2 * Range))); }
+        internal int FaderBottom { get { return Panel.Bottom - Theme.S(92); } }
+        internal int FreqY { get { return Panel.Bottom - Theme.S(68); } }
+        internal int WideY { get { return Panel.Bottom - Theme.S(40); } }
+        internal int SlopeRowY { get { return Panel.Bottom - Theme.S(12); } }
+        // 21.11 (the user): a third dial under each band, its slope 1..4 for every kind: a cut 12..48 dB/oct, the others
+        // from smooth to straight
+        internal static string SlopeText(EqBand b) { return b.IsCut ? (12 * b.Slope).ToString(CultureInfo.InvariantCulture) + " дБ/окт" : L.T("крутизна ") + b.Slope + "/4"; }
+        static string SlopeItem(EqBand b, int s) { return b.IsCut ? (12 * s).ToString(CultureInfo.InvariantCulture) + " дБ/окт" : s == 1 ? "1 · " + L.T("плавно") : s == EqBand.MaxSlope ? s + " · " + L.T("прямо") : s.ToString(); }
+        float FaderY(double db) { return (float)(FaderTop + (FaderBottom - FaderTop) * (0.5 - Math.Max(-FaderRange, Math.Min(FaderRange, db)) / (2 * FaderRange))); }
 
         // what of the strips is under the mouse; band: its index among the bands
         Part HitPanel(Point m, out int band)
@@ -84,28 +98,17 @@ namespace RedTune
             if (m.X < p.X + Theme.S(MasterW + Gutter)) return Part.None;
             int slot = (m.X - p.X - Theme.S(MasterW + Gutter)) / Theme.S(StripW);
             var ord = Order();
-            if (slot == ord.Length && ord.Length < SoundParams.MaxBands) return Part.Add;
             if (slot < 0 || slot >= ord.Length) return Part.None;
             band = ord[slot];
             if (m.Y < FaderTop - Theme.S(8)) return Part.Kind;
             if (m.Y <= FaderBottom + Theme.S(8)) return Part.Fader;
             if (Math.Abs(m.Y - FreqY) <= Theme.S(13)) return Part.Freq;
-            return Part.Wide;
+            if (Math.Abs(m.Y - WideY) <= Theme.S(13)) return Part.Wide;
+            return Part.Slope;
         }
 
         static double RoundHz(double f) { return f < 100 ? Math.Round(f) : f < 1000 ? Math.Round(f / 5) * 5 : f < 10000 ? Math.Round(f / 50) * 50 : Math.Round(f / 500) * 500; }
 
-        // a new band from «+»: a bell with no gain in the widest gap between the bands there are
-        void AddBand()
-        {
-            if (P.Bands.Count >= SoundParams.MaxBands) return;
-            var fs = new List<double> { MinF }; fs.AddRange(P.Bands.Select(b => (double)b.Freq).OrderBy(f => f)); fs.Add(MaxF);
-            int at = 0; double widest = 0;
-            for (int i = 0; i + 1 < fs.Count; i++) { double gap = Math.Log(fs[i + 1] / fs[i]); if (gap > widest) { widest = gap; at = i; } }
-            P.Bands.Add(new EqBand { Type = 1, Freq = (float)RoundHz(Math.Sqrt(fs[at] * fs[at + 1])), Gain = 0, Q = 1f });
-            hot = P.Bands.Count - 1;
-            Fire();
-        }
         float X(double f) { var r = Plot; return (float)(r.X + r.Width * Math.Log(f / MinF) / Math.Log(MaxF / MinF)); }
         double FreqAt(float x) { var r = Plot; return MinF * Math.Pow(MaxF / MinF, Math.Max(0, Math.Min(1, (x - r.X) / (double)r.Width))); }
         float Y(double db) { var r = Plot; return (float)(r.Y + r.Height * (0.5 - Math.Max(-Range - 2, Math.Min(Range + 2, db)) / (2 * Range))); }
@@ -140,12 +143,20 @@ namespace RedTune
             }
             if (dragBand < 0 || dragBand >= P.Bands.Count) return;
             var b = P.Bands[dragBand];
-            if (dragPart == Part.Fader)
+            if (dragPart == Part.Slope)
+            {
+                // four steps over 70 units of travel (21.11: over 110 it felt stuck between the steps)
+                int s = (int)Math.Round(dragFrom + (dragY - y) * (EqBand.MaxSlope - 1.0) / Theme.S(70));
+                s = Math.Max(1, Math.Min(EqBand.MaxSlope, s));
+                if (s == b.Slope) return;
+                b.Slope = s;
+            }
+            else if (dragPart == Part.Fader)
             {
                 if (!b.HasGain) return;
-                double gdb = Math.Round((dragFrom + (dragY - y) * 2.0 * Range / Math.Max(1, FaderBottom - FaderTop)) * 10) / 10; // from where it was taken
+                double gdb = Math.Round((dragFrom + (dragY - y) * 2.0 * FaderRange / Math.Max(1, FaderBottom - FaderTop)) * 10) / 10; // from where it was taken
                 if (Math.Abs(gdb) < 0.35) gdb = 0;
-                b.Gain = (float)Math.Max(-Range, Math.Min(Range, gdb));
+                b.Gain = (float)Math.Max(-FaderRange, Math.Min(FaderRange, gdb)); // as far as the fader shows (its scale grows after)
             }
             else
             {
@@ -163,16 +174,17 @@ namespace RedTune
             int band = -1; var part = Dim ? Part.None : HitPanel(e.Location, out band);
             if (part != Part.None)
             {
-                if (part == Part.Add) { if (e.Button == MouseButtons.Left) AddBand(); }
-                else if (part == Part.Master)
+                if (part == Part.Master)
                 {
                     // the pointer onto the knob, the knob stays (20.11)
                     if (e.Button == MouseButtons.Left) { dragPart = part; dragBand = -1; dragFrom = P.Preamp; int ky = (int)Math.Round(MasterY(P.Preamp)); dragY = Theme.Warp(this, MasterX, ky) ? ky : e.Y; Invalidate(); }
                 }
-                else if (e.Button == MouseButtons.Right || part == Part.Kind) Menu(band, e.Location);
+                else if (e.Button == MouseButtons.Right) Menu(band, e.Location);
+                // 21.11 (the user): a left click on the kind picture only takes it, for the wheel; the list is on the right button
+                else if (part == Part.Kind) { if (e.Button == MouseButtons.Left) { hot = band; hotPart = Part.Kind; Invalidate(); } }
                 else if (e.Button == MouseButtons.Left)
                 {
-                    dragPart = part; dragBand = band; dragY = e.Y; dragFrom = part == Part.Freq ? P.Bands[band].Freq : P.Bands[band].Q; hot = band;
+                    dragPart = part; dragBand = band; dragY = e.Y; dragFrom = part == Part.Freq ? P.Bands[band].Freq : part == Part.Slope ? P.Bands[band].Slope : P.Bands[band].Q; hot = band;
                     // a fader: the pointer goes onto its knob and the knob stays where it is; the drag starts from there (20.11)
                     if (part == Part.Fader && P.Bands[band].HasGain)
                     {
@@ -198,12 +210,12 @@ namespace RedTune
             {
                 var b = P.Bands[drag];
                 b.Freq = (float)Math.Max(MinF, Math.Min(MaxF, RoundHz(FreqAt(e.X))));
-                if (b.HasGain) { double gdb = Math.Round((DbAt(e.Y) - P.Preamp) * 10) / 10; if (Math.Abs(gdb) < 0.35) gdb = 0; b.Gain = (float)Math.Max(-Range, Math.Min(Range, gdb)); }
+                if (b.HasGain) { double gdb = Math.Round((DbAt(e.Y) - P.Preamp) * 10) / 10; if (Math.Abs(gdb) < 0.35) gdb = 0; b.Gain = (float)Math.Max(-GainMax, Math.Min(GainMax, gdb)); }
                 Fire();
             }
             int band = -1; var part = drag >= 0 || Dim ? Part.None : HitPanel(e.Location, out band);
             int ht = drag >= 0 ? drag : Dim ? -1 : part != Part.None ? band : Hit(e.Location);
-            Cursor = part == Part.Kind || part == Part.Add ? Cursors.Hand : part != Part.None ? Cursors.SizeNS : ht >= 0 ? Cursors.SizeAll : Cursors.Default;
+            Cursor = part == Part.Kind ? Cursors.Hand : part != Part.None ? Cursors.SizeNS : ht >= 0 ? Cursors.SizeAll : Cursors.Default;
             if (ht != hot || part != hotPart) { hot = ht; hotPart = part; Invalidate(); }
             base.OnMouseMove(e);
         }
@@ -220,7 +232,7 @@ namespace RedTune
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             bool master = armed && !Dim && hotPart == Part.Master;
-            if (!master && (!armed || hot < 0 || hot >= P.Bands.Count || Dim || hotPart == Part.Kind || hotPart == Part.Add)) { base.OnMouseWheel(e); return; }
+            if (!master && (!armed || hot < 0 || hot >= P.Bands.Count || Dim)) { base.OnMouseWheel(e); return; }
             var he = e as HandledMouseEventArgs; if (he != null) he.Handled = true;
             // 20.11: one notch = one step, also from a smooth wheel that sends a notch in parts (Theme.WheelNotches)
             int n = Theme.WheelNotches(ref wheelAcc, e.Delta);
@@ -229,7 +241,10 @@ namespace RedTune
                 bool up = n > 0;
                 if (master) { P.Preamp = (float)Math.Max(-MasterDb, Math.Min(MasterDb, Math.Round((P.Preamp + (up ? 0.5 : -0.5)) * 2) / 2)); continue; }
                 var b = P.Bands[hot];
-                if (hotPart == Part.Fader) { if (b.HasGain) b.Gain = (float)Math.Max(-Range, Math.Min(Range, Math.Round((b.Gain + (up ? 0.5 : -0.5)) * 2) / 2)); }
+                // 21.11 (the user): over the kind picture the wheel goes through the kinds, in the order of the list
+                if (hotPart == Part.Kind) { SetKind(b, Math.Max(1, Math.Min(Kinds.Length - 1, b.Type + (up ? -1 : 1)))); continue; }
+                if (hotPart == Part.Fader) { if (b.HasGain) b.Gain = (float)Math.Max(-GainMax, Math.Min(GainMax, Math.Round((b.Gain + (up ? 0.5 : -0.5)) * 2) / 2)); }
+                else if (hotPart == Part.Slope) b.Slope = Math.Max(1, Math.Min(EqBand.MaxSlope, b.Slope + (up ? 1 : -1)));
                 else if (hotPart == Part.Freq) b.Freq = (float)Math.Max(MinF, Math.Min(MaxF, RoundHz(b.Freq * (up ? 1.06 : 1 / 1.06))));
                 else b.Q = (float)Math.Max(0.2, Math.Min(12, Math.Round(b.Q * (up ? 1.15 : 1 / 1.15) * 100) / 100));
             }
@@ -237,7 +252,8 @@ namespace RedTune
         }
         int wheelAcc;
 
-        // a press of the wheel: «Общ.» back to no gain, a band's fader to zero, its width dial to 1 (20.11, the user's wish:
+        // a press of the wheel: «Общ.» back to no gain, a band's fader to zero, its width, frequency and slope dials to where
+        // they are at rest (SoundParams.EvenBands; 20.11, the user's wish:
         // it was a double click, which went off by itself when a fader was clicked twice quickly)
         void ResetAt(Point at)
         {
@@ -246,25 +262,18 @@ namespace RedTune
             else if (band >= 0 && band < P.Bands.Count)
             {
                 if (part == Part.Fader && P.Bands[band].HasGain) { P.Bands[band].Gain = 0; Fire(); }
-                else if (part == Part.Wide) { P.Bands[band].Q = 1f; Fire(); }
+                else if (part == Part.Slope) { P.Bands[band].Slope = 1; Fire(); }
+                else if (part == Part.Kind) { SetKind(P.Bands[band], 1); Fire(); }   // 21.11: the kind back to a bell
+                else if (part == Part.Wide) { P.Bands[band].Q = SoundParams.EvenBands()[band].Q; Fire(); }
+                // 21.11 (the user): the frequency dial back to where this strip stands at rest (the even spread)
+                else if (part == Part.Freq && band < SoundParams.MaxBands) { P.Bands[band].Freq = SoundParams.EvenBands()[band].Freq; Fire(); }
             }
         }
 
-        // a double click on empty space adds a point (that one stays a double click: it adds, it does not reset)
-        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        // another kind of filter for a band (the list, the wheel over its picture, a press of the wheel)
+        static void SetKind(EqBand b, int type)
         {
-            int band = -1; var part = Dim ? Part.None : HitPanel(e.Location, out band);
-            if (e.Button == MouseButtons.Left && !Dim && part == Part.None && Hit(e.Location) < 0 && Plot.Contains(e.Location)) AddAt(e.Location);
-            base.OnMouseDoubleClick(e);
-        }
-
-        void AddAt(Point at)
-        {
-            if (P.Bands.Count >= SoundParams.MaxBands) return;
-            double gdb = Math.Round((DbAt(at.Y) - P.Preamp) * 2) / 2;
-            P.Bands.Add(new EqBand { Type = 1, Freq = (float)Math.Round(FreqAt(at.X)), Gain = (float)Math.Max(-Range, Math.Min(Range, gdb)), Q = 1f });
-            hot = P.Bands.Count - 1;
-            Fire();
+            b.Type = type; if (!b.HasGain) b.Gain = 0; if (type >= 4 && b.Q > 3 && type != 6) b.Q = 0.7f;
         }
 
         void Menu(int band, Point at)
@@ -277,17 +286,28 @@ namespace RedTune
                 {
                     int type = t;
                     var it = new ToolStripMenuItem(Kinds[t]) { Checked = b.Type == t };
-                    it.Click += (s, e) => { b.Type = type; if (!b.HasGain) b.Gain = 0; if (type >= 4 && b.Q > 3 && type != 6) b.Q = 0.7f; Fire(); };
+                    it.Click += (s, e) => { SetKind(b, type); Fire(); };
+                    m.Items.Add(it);
+                }
+                m.Items.Add(new ToolStripSeparator());
+                // 21.11: the slope, for every kind
+                for (int s = 1; s <= EqBand.MaxSlope; s++)
+                {
+                    int sl = s;
+                    var it = new ToolStripMenuItem(L.T("Крутизна ") + SlopeItem(b, s)) { Checked = b.Slope == s };
+                    it.Click += (o, e) => { b.Slope = sl; Fire(); };
                     m.Items.Add(it);
                 }
                 m.Items.Add(new ToolStripSeparator());
                 var zero = new ToolStripMenuItem("Усиление в ноль"); zero.Click += (s, e) => { b.Gain = 0; Fire(); }; zero.Enabled = b.HasGain; m.Items.Add(zero);
-                var del = new ToolStripMenuItem("Удалить точку"); del.Click += (s, e) => { P.Bands.Remove(b); hot = -1; Fire(); }; m.Items.Add(del);
+                // 21.11: the twelve points stay; «Сбросить точку» makes it a bell of no gain where it stands
+                var reset = new ToolStripMenuItem("Сбросить точку"); reset.Click += (s, e) => { b.Type = 1; b.Gain = 0; b.Q = 1f; b.Slope = 1; Fire(); }; m.Items.Add(reset);
             }
             else
             {
-                var add = new ToolStripMenuItem("Добавить точку"); add.Enabled = P.Bands.Count < SoundParams.MaxBands && Plot.Contains(at); add.Click += (s, e) => AddAt(at); m.Items.Add(add);
                 var flat = new ToolStripMenuItem("Все усиления в ноль"); flat.Click += (s, e) => { foreach (var b in P.Bands) b.Gain = 0; Fire(); }; m.Items.Add(flat);
+                // 21.11: the twelve points at rest, spread evenly along the line
+                var even = new ToolStripMenuItem("Сбросить все точки"); even.Click += (s, e) => { P.Bands = SoundParams.EvenBands(); hot = -1; Fire(); }; m.Items.Add(even);
             }
             m.Show(this, at);
         }
@@ -318,10 +338,10 @@ namespace RedTune
                 spec[px] = now > spec[px] ? spec[px] + (now - spec[px]) * 0.6f : spec[px] + (now - spec[px]) * 0.12f;
             }
             specOn = true;
-            // the whole picture every moment, as it always was: 20.11 the user tried the plot alone with its still parts
-            // kept as pictures and the point felt late under the mouse, and wanted the equalizer back as it was (the
-            // compressor keeps its cached curve)
-            Invalidate();
+            // the plot drawn whole every moment (no pictures kept: 20.11 the user tried the still parts kept as pictures
+            // and the point felt late under the mouse). 21.11: only the plot, not the strips and the scale's words, which
+            // a moment of the sound does not change; whatever the mouse changes still repaints the whole control at once
+            InvalidateLive();
         }
 
         protected override void OnEnabledChanged(EventArgs e) { base.OnEnabledChanged(e); Invalidate(); }
@@ -380,43 +400,65 @@ namespace RedTune
             if (r.Width < 20 || r.Height < 20) return;
             FitRange();
             Color line = Dim ? Theme.Muted : Theme.Accent;
+            // 21.11: a paint of the plot alone (a moment of the sound) skips the words around it and the strips
+            var want = e.ClipRectangle;
+            bool dbWords = want.X < r.X - Theme.S(4), hzWords = want.Bottom > r.Bottom + Theme.S(2);
 
             using (var pen = new Pen(Theme.Border))
             using (var zeroPen = new Pen(Theme.BorderStrong))
             {
-                for (int db = -(int)Range; db <= Range; db += 6)
+                for (int db = -(int)Range; db <= Range; db += Range > 24 ? 12 : 6)
                 {
                     float y = Y(db);
                     g.DrawLine(db == 0 ? zeroPen : pen, r.X, y, r.Right, y);
-                    Theme.Text1(g, (db > 0 ? "+" : db < 0 ? "−" : "") + Math.Abs(db), Theme.Small, new Rectangle(0, (int)y - Theme.S(10), r.X - Theme.S(8), Theme.S(20)), Theme.Muted, TextFormatFlags.Right);
+                    if (dbWords) Theme.Text1(g, (db > 0 ? "+" : db < 0 ? "−" : "") + Math.Abs(db), Theme.Small, new Rectangle(0, (int)y - Theme.S(10), r.X - Theme.S(8), Theme.S(20)), Theme.Muted, TextFormatFlags.Right);
                 }
                 foreach (var f in new[] { 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000 })
                 {
                     float x = X(f);
                     g.DrawLine(pen, x, r.Y, x, r.Bottom);
-                    Theme.Text1(g, f >= 1000 ? f / 1000 + "k" : f.ToString(), Theme.Small, new Rectangle((int)x - Theme.S(30), r.Bottom + Theme.S(4), Theme.S(60), Theme.S(18)), Theme.Muted, TextFormatFlags.HorizontalCenter);
+                    if (hzWords) Theme.Text1(g, f >= 1000 ? f / 1000 + "k" : f.ToString(), Theme.Small, new Rectangle((int)x - Theme.S(30), r.Bottom + Theme.S(4), Theme.S(60), Theme.S(18)), Theme.Muted, TextFormatFlags.HorizontalCenter);
                 }
             }
 
             // what plays now (-84 dB at the bottom of the plot, 0 dB at its top), then the curve and its points
             var clip = g.Clip; g.SetClip(r);
             SpectrumFill(new GdiLive(g), r);
+            if (DsOn) DeEssBand(g, r);
             g.Clip = clip;
             CurveAndKnobs(g, r, line);
+            if (want.Right > Panel.X) DrawStrips(g, line);
 
-            DrawStrips(g, line);
-
+            if (!hzWords) return;
             string hint;
             if (!Dim && (hotPart == Part.Master || dragPart == Part.Master))
                 hint = "Общее усиление" + ": " + Gain(P.Preamp) + " · " + L.T("До эквалайзера: убавьте, если полосы подняты высоко и лимитер срабатывает постоянно") + " · " + "тяните вверх-вниз или крутите колесо";
             else if (hot >= 0 && hot < P.Bands.Count)
             {
                 var b = P.Bands[hot];
-                hint = Kinds[Math.Max(1, Math.Min(6, b.Type))] + " · " + Hz(b.Freq) + (b.HasGain ? " · " + Gain(b.Gain) : "") + " · " + "ширина Q " + b.Q.ToString("0.##", CultureInfo.InvariantCulture) + " · " + "колесо меняет ширину, правая кнопка — вид фильтра";
+                hint = Kinds[Math.Max(1, Math.Min(6, b.Type))] + " · " + Hz(b.Freq) + (b.HasGain ? " · " + Gain(b.Gain) : "") + " · " + SlopeText(b) + " · " + "ширина Q " + b.Q.ToString("0.##", CultureInfo.InvariantCulture) + " · " + "колесо меняет ширину, правая кнопка — вид фильтра";
             }
             else if (Dim) hint = "Эквалайзер выключен";
-            else hint = "Тяните точки. Двойной щелчок по пустому месту добавляет точку, правая кнопка на точке — вид фильтра или удаление";
+            else hint = "Тяните точки: влево-вправо частота, вверх-вниз усиление. Правая кнопка на точке — вид фильтра или сброс";
             Theme.Text1(g, hint, Theme.Small, new Rectangle(r.X, r.Bottom + Theme.S(28), Width - r.X - Theme.S(14), Theme.S(22)), Theme.Text2);
+        }
+
+        // the de-esser's band: a light column with dashed edges and its name; while it works, how deep it takes the band
+        // down, from the 0 dB line
+        void DeEssBand(Graphics g, Rectangle r)
+        {
+            float a = X(Math.Max(MinF, DsLo)), b = X(Math.Min(MaxF, DsHi));
+            if (b - a < 2) return;
+            using (var fill = new SolidBrush(Color.FromArgb(Dim ? 10 : 22, Theme.Text))) g.FillRectangle(fill, a, r.Y, b - a, r.Height);
+            if (DsDb < -0.5f && !Dim)
+            {
+                float y0 = Y(0), y1 = Y(Math.Max(-Range, DsDb));
+                using (var cut = new SolidBrush(Color.FromArgb(70, Theme.Accent))) g.FillRectangle(cut, a, y0, b - a, Math.Max(1, y1 - y0));
+            }
+            using (var pen = new Pen(Color.FromArgb(Dim ? 40 : 90, Theme.Text), Theme.S(1)) { DashStyle = DashStyle.Dash })
+            { g.DrawLine(pen, a, r.Y, a, r.Bottom); g.DrawLine(pen, b, r.Y, b, r.Bottom); }
+            Theme.Text1(g, L.T("де-эссер") + (DsDb < -0.5f ? " " + Math.Round(DsDb).ToString(CultureInfo.InvariantCulture) + " " + L.T("дБ") : ""), Theme.Small,
+                new Rectangle((int)a + Theme.S(4), r.Y + Theme.S(2), Math.Max(Theme.S(40), (int)(b - a) + Theme.S(60)), Theme.S(18)), Dim ? Theme.Muted : Theme.Text2);
         }
 
         // the kind of a filter as a small picture of its curve, in a box w x h around (cx, cy)
@@ -489,6 +531,12 @@ namespace RedTune
             // what the two rows of dials are
             Theme.Text1(g, "Гц", Theme.Small, new Rectangle(p.X + Theme.S(MasterW) - Theme.S(4), FreqY - Theme.S(10), Theme.S(Gutter), Theme.S(20)), Theme.Muted, TextFormatFlags.Right);
             Theme.Text1(g, "Q", Theme.Small, new Rectangle(p.X + Theme.S(MasterW) - Theme.S(4), WideY - Theme.S(10), Theme.S(Gutter), Theme.S(20)), Theme.Muted, TextFormatFlags.Right);
+            // the slopes' row: a small steep line for a label
+            using (var pen = new Pen(Theme.Muted, Theme.S(1.4f)) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+            {
+                float lx = p.X + Theme.S(MasterW) + Theme.S(Gutter) - Theme.S(6), ly = SlopeRowY;
+                g.DrawLines(pen, new[] { new PointF(lx - Theme.S(11), ly + Theme.S(5)), new PointF(lx - Theme.S(6), ly + Theme.S(5)), new PointF(lx - Theme.S(2), ly - Theme.S(5)), new PointF(lx + Theme.S(1), ly - Theme.S(5)) });
+            }
             DrawMaster(g, line, top, bottom, sw, th);
             using (var tick = new Pen(Theme.BorderStrong))
                 for (int k = 0; k < ord.Length; k++)
@@ -506,19 +554,8 @@ namespace RedTune
                     Theme.GlassKnob(g, cx, y, Theme.S(h && (hotPart == Part.Fader || dragPart == Part.Fader) ? 16 : 14), gain ? 1f : 0f, h ? Theme.AccentHover : line, th, !gain, y <= mid ? 90f : 270f, null, gain ? Math.Abs(y - mid) : 0f);
                     Dial(g, cx, FreqY, (float)(Math.Log(b.Freq / MinF) / Math.Log(MaxF / MinF)), Dim ? Theme.Muted : h ? Theme.AccentHover : line, h && (hotPart == Part.Freq || dragPart == Part.Freq), Dim);
                     Dial(g, cx, WideY, (float)(Math.Log(Math.Max(0.2, b.Q) / 0.2) / Math.Log(60)), Dim ? Theme.Muted : h ? Theme.AccentHover : line, h && (hotPart == Part.Wide || dragPart == Part.Wide), Dim);
+                    Dial(g, cx, SlopeRowY, (b.Slope - 1f) / (EqBand.MaxSlope - 1f), Dim ? Theme.Muted : h ? Theme.AccentHover : line, h && (hotPart == Part.Slope || dragPart == Part.Slope), Dim);
                 }
-            if (ord.Length < SoundParams.MaxBands)
-            {
-                // «+»: one more band
-                float cx = StripX(ord.Length), s = Theme.S(18); bool h = hotPart == Part.Add && !Dim;
-                var box = new RectangleF(cx - s / 2, mid - s / 2, s, s);
-                if (h) Theme.Fill(g, box, Theme.S(5), Theme.Raised);
-                Theme.Stroke(g, box, Theme.S(5), h ? Theme.BorderStrong : Theme.Border);
-                using (var pen = new Pen(Dim ? Theme.Muted : h ? Theme.Text : Theme.Text2, Theme.S(1.6f)) { StartCap = LineCap.Round, EndCap = LineCap.Round })
-                {
-                    g.DrawLine(pen, cx - Theme.S(4), mid, cx + Theme.S(4), mid); g.DrawLine(pen, cx, mid - Theme.S(4), cx, mid + Theme.S(4));
-                }
-            }
         }
     }
 }

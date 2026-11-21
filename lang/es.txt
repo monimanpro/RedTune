@@ -319,6 +319,93 @@ w	1d31bbca	Fn+Q incluye Personalizado
 w	de32aeba	En ciclo: Silencioso → Equilibrado → Rendimiento → Personalizado → Silencioso
 w	1b6b946f	Frecuencia mínima
 w	f244c01e	El procesador no baja de esta frecuencia
+w	c983bc18	Reverberación
+w	183562a5	Precompresor
+w	9c07f315	Carácter del precompresor
+w	3b9fe70c	Mezcla del precompresor
+w	d9f61a44	Comprime primero, antes del ecualizador, y prepara el sonido para el compresor; el compresor con el limitador queda al final
+w	46751dc3	El efecto es de una versión anterior: el precompresor funcionará tras reiniciar el sonido de Windows
+w	f3dd3880	Carácter del segundo
+w	8693c009	Mezcla del segundo
+w	2b1cd27d	Comprime primero, antes del ecualizador; sus ajustes van abajo, antes de los del principal, y el principal con el limitador queda al final
+w	ef926644	Segundo compresor
+w	f9b7b3da	Va justo después del primero: por ejemplo, uno rápido atrapa los picos y uno suave nivela el volumen
+w	a2545708	Mezcla
+w	f79ebb96	Cuánto sonido comprimido sale: menos deja el sonido sin comprimir al lado (compresión paralela)
+w	323b87a7	Qué tan rápido empieza a comprimir cuando el sonido sube
+w	065d15da	El efecto es de una compilación anterior: el segundo compresor funcionará tras reiniciar el sonido de Windows
+w	7a35b487	propia
+w	578d3b66	ancha
+w	27244899	Carácter
+w	36b56552	Color
+w	0c01a6d2	Intensidad del color
+w	2ba532be	Cuanto más fuerte el sonido, más color; funciona junto con el compresor
+w	1dda651d	Limpio
+w	31dd0d20	FET
+w	ed2dd690	Óptico
+w	03ebe7b7	Válvulas
+w	505048ed	Limpio: comprime de forma uniforme y exacta, como se ajustó
+w	bd5be015	FET: rápido y denso, atrapa los picos al instante
+w	382401f4	Óptico: suave y fluido, suelta en dos etapas; cuanto más comprimió, más despacio
+w	84353f75	Válvulas: el más suave, apenas comprime lo bajo, la compresión crece con el volumen
+w	6da37b9f	Ninguno
+w	0c832f31	Válvula
+w	ea8cbb6e	Transistor
+w	f2ddeac2	Cinta
+w	2fb2fb89	Transformador
+w	d4a93ab5	Sin color: el sonido tal cual
+w	806bb412	Válvula: cálido y redondo, armónicos pares
+w	0f5626ef	Transistor: denso y brillante, armónicos pares e impares
+w	229f7175	Cinta: suave, vintage, redondea los picos y realza un poco los graves
+w	ca80fe24	Transformador: graves densos y gruesos, los agudos quedan limpios
+w	b10b89b3	Auto
+w	2fa87fcc	Banda
+w	7a9e1ebf	Dónde buscar el siseo: el sonido por encima y por debajo no se toca
+w	56f6362b	de-esser
+w	2e623a14	kHz
+w	968d3bcb	De-esser
+w	5e3d13d6	Suaviza las «s» y «sh» ásperas: baja los agudos solo mientras sobresalen
+w	624cefbc	El sonido por encima cuenta como siseo
+w	a8d54dc6	Cuánto deben sobresalir los agudos del sonido completo: más bajo actúa más a menudo
+w	29cd23dd	Cuánto se pueden bajar los siseos
+w	7db02619	El efecto es de una compilación anterior: el de-esser funcionará tras reiniciar el sonido de Windows
+w	399932bb	Modelo
+w	e45dcfcd	RNNoise es ligero (1 % de un núcleo); DeepFilterNet limpia mejor en ruido, pero usa 4 % de un núcleo y llega 30 ms más tarde
+w	5339d6d2	La red neuronal DeepFilterNet quita el ruido incluso mientras hablas: ventiladores, teclado, calle, zumbido
+w	78527afd	Cuánto puede bajar el ruido: menos deja la voz más natural
+w	584c7c2e	El efecto es de una compilación anterior: DeepFilterNet funcionará tras reiniciar el sonido de Windows
+w	0c17150a	suave
+w	7cc5b025	recto
+w	a1d9f905	Quita la cola resonante de la sala tras las palabras; detecta solo cuánto resuena la sala
+w	378e79f0	Cuánto baja la cola de la sala: más es más seco, pero la voz puede sonar acuosa
+w	4725083c	El efecto es de una compilación anterior: el quitarreverberación funcionará tras reiniciar el sonido de Windows
+w	60768c00	Ruido
+w	7aa9a914	Supresor de ruido
+w	4caeb4ef	Intensidad
+w	d8608263	La red neuronal RNNoise quita el ruido incluso mientras hablas: ventiladores, teclado, calle, zumbido
+w	a55487ee	Cuánto sonido limpio sustituye al original: menos deja la voz más natural
+w	710236a2	El efecto es de una compilación anterior: el supresor funcionará tras reiniciar el sonido de Windows
+w	625d7831	Todos los ajustes del procesamiento a la vez; puedes guardar los tuyos
+w	d09d4170	Habitación tranquila
+w	5b14d7ed	Mucho ruido alrededor
+w	3d51ebc6	Escucharte
+w	9da9c1f0	El sonido del micrófono, ya procesado, va directo al dispositivo de salida: oyes los ajustes mientras los cambias
+w	1487303c	Escuchar
+w	72e8dab2	No hay dispositivo de salida
+w	c97b6372	Salida
+w	1c8ac030	Puerta de ruido
+w	f624ce12	Puerta
+w	e7fb7c34	Profundidad
+w	93d4c71c	Recuperación
+w	6dcfdb1e	Deja pasar el sonido solo mientras supera el umbral: en las pausas no se oye el ruido
+w	e2380d55	El sonido más bajo que esto se atenúa
+w	a265b336	Cuánto más bajo queda el sonido bajo el umbral
+w	5919f41b	Con qué rapidez se cierra la puerta cuando el sonido calla (tras esperar 150 ms)
+w	fc4612bb	No hay micrófonos activados
+w	b8551b21	Predeterminado: todos los programas lo escuchan
+w	86eff107	No es el predeterminado: los programas escuchan otro micrófono
+w	e343d844	El micrófono no se está escuchando ahora: el nivel aparece cuando llegue sonido
+w	a42e9afa	El efecto es de una compilación anterior: la puerta funcionará tras reiniciar el sonido de Windows
 w	824265b0	Instalar
 w	25c6214e	Reiniciar
 w	ea638838	Controlador de acceso al procesador: la curva, los límites de AMD, la temperatura
@@ -1159,6 +1246,9 @@ w	34ae8cd5	Corte de agudos
 w	b556b2d9	Rechazo
 w	c4770fd5	Ganancia a cero
 w	1b220d9d	Eliminar el punto
+w	092e0dac	Restablecer el punto
+w	0508d459	Restablecer todos los puntos
+w	e6812640	Arrastra los puntos: izquierda-derecha es la frecuencia, arriba-abajo la ganancia. Clic derecho en un punto: tipo de filtro o restablecer
 w	6af22088	Añadir un punto
 w	f2c7ee73	Todas las ganancias a cero
 w	bbd3efbb	El ecualizador está desactivado
@@ -1234,6 +1324,31 @@ f	f6acd0a1	en el plan
 f	270a07ee	 % de 
 f	fc550669	, frecuencia mínima 
 f	c8c88e80	 · en páginas normales
+f	46ed9339	Entrando ahora: 
+f	1abcff36	 · ahora: voz
+f	47473037	Según el carácter. 
+f	7bb8928f	 · ahora: 
+f	73e44a25	 · inactivo ahora
+f	ef07a51a	Pendiente 
+f	4f28143a	pendiente 
+f	8daff661	 dB/oct
+f	9f66674b	 · ahora: solo ruido
+f	38108a9c	 · la sala resuena 
+f	90bf329a	 s
+f	9199ad12	 · escuchando la sala…
+f	d74401c5	 · sin procesamiento
+f	53077d66	El sonido del micrófono irá a «
+f	9fe6a5ec	» con un retraso de unas centésimas de segundo.
+f	75ad79dd	Si son altavoces y no auriculares, el micrófono los oirá y se acoplará: mejor escucha con auriculares.
+f	f393fe2a	Escuchando: el sonido va a «
+f	6693e15f	No se oye: 
+f	8fbdd719	el formato del dispositivo de salida no es compatible
+f	b23700a7	el formato del micrófono no es compatible
+f	2c93a141	el dispositivo de salida desapareció
+f	4816e1c2	la salida no se abrió: 
+f	8dcd4592	no hay dispositivo de salida
+f	e4dc2201	 · puerta cerrada
+f	5534ae56	 · puerta abierta
 f	8d2a7695	No se instaló: código 
 f	40d16675	No se instaló: 
 f	cbfecb2b	Ahora no registra · 

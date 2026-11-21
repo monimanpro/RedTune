@@ -319,6 +319,93 @@ w	1d31bbca	Fn+Q gồm cả Tùy chỉnh
 w	de32aeba	Theo vòng: Yên tĩnh → Cân bằng → Hiệu năng → Tùy chỉnh → Yên tĩnh
 w	1b6b946f	Xung nhịp tối thiểu
 w	f244c01e	Bộ xử lý không xuống dưới xung nhịp này
+w	c983bc18	Tiếng vang
+w	183562a5	Bộ nén trước
+w	9c07f315	Tính chất bộ nén trước
+w	3b9fe70c	Trộn của bộ nén trước
+w	d9f61a44	Nén trước tiên, trước bộ cân bằng, và chuẩn bị âm thanh cho bộ nén; bộ nén với bộ giới hạn vẫn ở cuối
+w	46751dc3	Hiệu ứng thuộc bản cũ: bộ nén trước sẽ hoạt động sau khi khởi động lại âm thanh Windows
+w	f3dd3880	Tính chất bộ thứ hai
+w	8693c009	Trộn của bộ thứ hai
+w	2b1cd27d	Nén trước tiên, trước bộ cân bằng; cài đặt của nó ở dưới, trước bộ chính, còn bộ chính với bộ giới hạn vẫn ở cuối
+w	ef926644	Bộ nén thứ hai
+w	f9b7b3da	Đi ngay sau bộ thứ nhất: ví dụ bộ nhanh bắt đỉnh, bộ mềm san đều âm lượng
+w	a2545708	Trộn
+w	f79ebb96	Bao nhiêu âm đã nén đi ra: ít hơn thì âm chưa nén còn lại bên cạnh (nén song song)
+w	323b87a7	Bắt đầu nén nhanh thế nào khi âm to lên
+w	065d15da	Bộ xử lý là bản cũ: bộ nén thứ hai sẽ hoạt động sau khi khởi động lại âm thanh Windows
+w	7a35b487	riêng
+w	578d3b66	rộng
+w	27244899	Tính chất
+w	36b56552	Màu âm
+w	0c01a6d2	Độ mạnh màu âm
+w	2ba532be	Âm càng to thì màu càng mạnh; hoạt động cùng bộ nén
+w	1dda651d	Sạch
+w	31dd0d20	FET
+w	ed2dd690	Quang
+w	03ebe7b7	Đèn điện tử
+w	505048ed	Sạch: nén đều và chính xác như đã đặt
+w	bd5be015	FET: nhanh và dày, bắt đỉnh tức thì
+w	382401f4	Quang: mềm và mượt, nhả hai giai đoạn; nén càng lâu nhả càng chậm
+w	84353f75	Đèn điện tử: mềm nhất, gần như không nén âm nhỏ, độ nén tăng theo âm lượng
+w	6da37b9f	Không
+w	0c832f31	Đèn điện tử
+w	ea8cbb6e	Bóng bán dẫn
+w	f2ddeac2	Băng từ
+w	2fb2fb89	Biến áp
+w	d4a93ab5	Không màu: âm thanh như vốn có
+w	806bb412	Đèn điện tử: ấm và tròn, hài bậc chẵn
+w	0f5626ef	Bóng bán dẫn: dày và sáng, hài bậc chẵn và lẻ
+w	229f7175	Băng từ: mượt, cổ điển, làm tròn đỉnh và nâng nhẹ âm trầm
+w	ca80fe24	Biến áp: âm trầm dày và đầy, dải cao vẫn sạch
+w	b10b89b3	Tự động
+w	2fa87fcc	Dải
+w	7a9e1ebf	Nơi tìm âm xuýt: âm thanh trên và dưới dải này được giữ nguyên
+w	56f6362b	khử âm xuýt
+w	2e623a14	kHz
+w	968d3bcb	Khử âm xuýt
+w	5e3d13d6	Làm dịu âm «s», «sh» chói: chỉ hạ dải cao khi nó nổi lên
+w	624cefbc	Âm thanh trên mức này được coi là âm xuýt
+w	a8d54dc6	Dải cao phải nổi hơn toàn bộ âm thanh bao nhiêu: thấp hơn thì hoạt động thường xuyên hơn
+w	29cd23dd	Có thể hạ âm xuýt bao nhiêu
+w	7db02619	Bộ xử lý là bản cũ: khử âm xuýt sẽ hoạt động sau khi khởi động lại âm thanh Windows
+w	399932bb	Mô hình
+w	e45dcfcd	RNNoise nhẹ (1 % một lõi); DeepFilterNet sạch hơn trong tiếng ồn, nhưng tốn 4 % một lõi và trễ hơn 30 ms
+w	5339d6d2	Mạng nơ-ron DeepFilterNet loại bỏ tiếng ồn ngay cả khi bạn đang nói: quạt, bàn phím, đường phố, tiếng ù
+w	78527afd	Tiếng ồn có thể giảm sâu đến mức nào: ít hơn thì giọng tự nhiên hơn
+w	584c7c2e	Bộ xử lý là bản cũ: DeepFilterNet sẽ hoạt động sau khi khởi động lại âm thanh Windows
+w	0c17150a	mượt
+w	7cc5b025	thẳng
+w	a1d9f905	Loại bỏ đuôi vang của căn phòng sau lời nói; tự nhận biết phòng vang bao lâu
+w	378e79f0	Đuôi vang của phòng giảm bao nhiêu: nhiều hơn thì khô hơn, nhưng giọng có thể nghe như bị nước
+w	4725083c	Bộ xử lý là bản cũ: khử vang sẽ hoạt động sau khi khởi động lại âm thanh Windows
+w	60768c00	Tiếng ồn
+w	7aa9a914	Khử ồn
+w	4caeb4ef	Cường độ
+w	d8608263	Mạng nơ-ron RNNoise loại bỏ tiếng ồn ngay cả khi bạn đang nói: quạt, bàn phím, đường phố, tiếng ù
+w	a55487ee	Bao nhiêu âm thanh đã làm sạch thay cho âm gốc: ít hơn thì giọng tự nhiên hơn
+w	710236a2	Bộ xử lý là bản cũ: khử ồn sẽ hoạt động sau khi khởi động lại âm thanh Windows
+w	625d7831	Toàn bộ thiết lập xử lý cùng lúc; có thể lưu thiết lập của bạn
+w	d09d4170	Phòng yên tĩnh
+w	5b14d7ed	Xung quanh ồn
+w	3d51ebc6	Nghe chính mình
+w	9da9c1f0	Âm thanh micrô sau khi xử lý đi thẳng ra thiết bị đầu ra: nghe được thiết lập ngay khi đang chỉnh
+w	1487303c	Nghe
+w	72e8dab2	Không có thiết bị đầu ra
+w	c97b6372	Đầu ra
+w	1c8ac030	Cổng chặn nhiễu
+w	f624ce12	Cổng chặn
+w	e7fb7c34	Độ sâu
+w	93d4c71c	Thời gian nhả
+w	6dcfdb1e	Chỉ cho âm thanh đi qua khi nó lớn hơn ngưỡng: lúc ngắt nghỉ sẽ không nghe thấy tiếng ồn
+w	e2380d55	Âm thanh nhỏ hơn mức này sẽ bị giảm đi
+w	a265b336	Âm thanh dưới ngưỡng nhỏ đi bao nhiêu
+w	5919f41b	Cổng đóng nhanh thế nào khi âm thanh dừng (sau khi chờ 150 ms)
+w	fc4612bb	Không có micrô nào đang bật
+w	b8551b21	Mặc định: mọi chương trình đều nghe micrô này
+w	86eff107	Không mặc định: các chương trình nghe micrô khác
+w	e343d844	Micrô hiện không được nghe: mức âm sẽ hiện khi có âm thanh
+w	a42e9afa	Bộ xử lý là bản cũ: cổng chặn sẽ hoạt động sau khi khởi động lại âm thanh Windows
 w	824265b0	Cài đặt
 w	25c6214e	Khởi động lại
 w	ea638838	Trình điều khiển truy cập bộ xử lý: đường cong, giới hạn AMD, nhiệt độ
@@ -1159,6 +1246,9 @@ w	34ae8cd5	Cắt cao
 w	b556b2d9	Notch
 w	c4770fd5	Khuếch đại về 0
 w	1b220d9d	Xóa điểm
+w	092e0dac	Đặt lại điểm
+w	0508d459	Đặt lại tất cả các điểm
+w	e6812640	Kéo các điểm: trái-phải là tần số, lên-xuống là độ khuếch đại. Nhấp chuột phải vào điểm để chọn loại bộ lọc hoặc đặt lại
 w	6af22088	Thêm điểm
 w	f2c7ee73	Mọi khuếch đại về 0
 w	bbd3efbb	Bộ cân bằng đang tắt
@@ -1234,6 +1324,31 @@ f	f6acd0a1	trong sơ đồ
 f	270a07ee	 % của 
 f	fc550669	, xung nhịp tối thiểu 
 f	c8c88e80	 · trên trang thường
+f	46ed9339	Đang vào: 
+f	1abcff36	 · hiện: giọng nói
+f	47473037	Theo tính chất. 
+f	7bb8928f	 · hiện: 
+f	73e44a25	 · hiện không hoạt động
+f	ef07a51a	Độ dốc 
+f	4f28143a	độ dốc 
+f	8daff661	 dB/quãng tám
+f	9f66674b	 · hiện: chỉ có tiếng ồn
+f	38108a9c	 · phòng vang 
+f	90bf329a	 giây
+f	9199ad12	 · đang nghe căn phòng…
+f	d74401c5	 · không xử lý
+f	53077d66	Âm thanh micrô sẽ đi tới «
+f	9fe6a5ec	» với độ trễ vài phần trăm giây.
+f	75ad79dd	Nếu đó là loa chứ không phải tai nghe, micrô sẽ thu lại và gây hú: nên nghe bằng tai nghe.
+f	f393fe2a	Đang nghe: âm thanh đi tới «
+f	6693e15f	Không nghe được: 
+f	8fbdd719	định dạng của thiết bị đầu ra không được hỗ trợ
+f	b23700a7	định dạng của micrô không được hỗ trợ
+f	2c93a141	thiết bị đầu ra đã mất
+f	4816e1c2	không mở được đầu ra: 
+f	8dcd4592	không có thiết bị đầu ra
+f	e4dc2201	 · cổng đóng
+f	5534ae56	 · cổng mở
 f	8d2a7695	Chưa cài được: mã 
 f	40d16675	Chưa cài được: 
 f	cbfecb2b	Hiện không ghi · 

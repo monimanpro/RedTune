@@ -13,11 +13,33 @@ $obj = Join-Path $env:TEMP "redtune-apo-obj"; New-Item -ItemType Directory -Forc
 $out = Join-Path $obj "RedTuneApo.dll"
 # /MT: the C++ runtime inside the dll (audiodg has none to share); /fp:precise: the bench compares bit for bit
 $flags = "/nologo /O2 /Oi /MT /W3 /EHsc /fp:precise /DUNICODE /D_UNICODE /DNOMINMAX /D_CRT_SECURE_NO_WARNINGS"
+# 21.11: RNNoise (rnnoise\, BSD-3), the denoiser: its own C files with AVX2 (every Ryzen has it; vec_avx.h), linked in
+$rnnObj = Join-Path $obj "rnn"; New-Item -ItemType Directory -Force $rnnObj | Out-Null
+$rnnSrc = (Get-ChildItem "$here\rnnoise\src\*.c").FullName | ForEach-Object { "`"$_`"" }
+$rnnFlags = "/nologo /c /O2 /arch:AVX2 /MT /W1 /D_USE_MATH_DEFINES /I`"$here\rnnoise\include`" /I`"$here\rnnoise\src`""
+$rnnLib = (Get-ChildItem "$here\rnnoise\src\*.c").BaseName | ForEach-Object { "`"$rnnObj\$_.obj`"" }
+# 21.11: DeepFilterNet 3 (dfn\DeepFilterNet, MIT/Apache-2.0) through Red Tune's Rust wrapper (dfn\src\lib.rs): cargo
+# builds it into a static library (the versions pinned by dfn\Cargo.lock; AVX2 and the static C runtime by
+# dfn\.cargo\config.toml, which cargo reads from the folder it runs in). Without cargo a library built before is used;
+# without either the effect is built without it (RNNoise only).
+$cargo = Join-Path $env:USERPROFILE ".cargo\bin\cargo.exe"
+if (-not (Test-Path $cargo)) { $c = Get-Command cargo -ErrorAction SilentlyContinue; $cargo = if ($c) { $c.Source } else { $null } }
+$dfTarget = Join-Path $obj "dfn"; $dfLib = Join-Path $dfTarget "release\rtdf.lib"
+if ($cargo) {
+    Push-Location "$here\dfn"; $ErrorActionPreference = "Continue"
+    & $cargo build --release --locked --target-dir $dfTarget 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match "error|warning: unused|Finished" }
+    $ok = $LASTEXITCODE -eq 0; $ErrorActionPreference = "Stop"; Pop-Location
+    if (-not $ok) { throw "DeepFilterNet (dfn): cargo build failed" }
+}
+$dfFlags = ""; $dfLink = ""
+if (Test-Path $dfLib) { $dfFlags = "/DRTD_DFN"; $dfLink = "`"$dfLib`" ws2_32.lib userenv.lib bcrypt.lib ntdll.lib synchronization.lib oleaut32.lib" }
+else { Write-Host "DeepFilterNet left out: no cargo and no library built before" }
 $cmd = @(
     "call `"$($vcvars.FullName)`" >nul 2>nul",
-    "cl $flags /c /Fo`"$obj\apo.obj`" `"$here\apo.cpp`"",
-    "link /nologo /DLL /OPT:REF /OPT:ICF /NODEFAULTLIB:atls.lib /DEF:`"$here\RedTuneApo.def`" /OUT:`"$out`" /IMPLIB:`"$obj\RedTuneApo.lib`" `"$obj\apo.obj`" audiobaseprocessingobject.lib audiomediatypecrt.lib legacy_stdio_definitions.lib audioeng.lib ole32.lib shell32.lib advapi32.lib user32.lib uuid.lib",
-    "cl $flags /Fo`"$obj\apotest.obj`" /Fe`"$obj\apotest.exe`" `"$here\apotest.cpp`" /link /NODEFAULTLIB:atls.lib audiomediatypecrt.lib legacy_stdio_definitions.lib audioeng.lib ole32.lib uuid.lib"
+    "cl $rnnFlags /Fo`"$rnnObj\\`" $($rnnSrc -join ' ')",
+    "cl $flags $dfFlags /c /Fo`"$obj\apo.obj`" `"$here\apo.cpp`"",
+    "link /nologo /DLL /OPT:REF /OPT:ICF /NODEFAULTLIB:atls.lib /DEF:`"$here\RedTuneApo.def`" /OUT:`"$out`" /IMPLIB:`"$obj\RedTuneApo.lib`" `"$obj\apo.obj`" $($rnnLib -join ' ') $dfLink audiobaseprocessingobject.lib audiomediatypecrt.lib legacy_stdio_definitions.lib audioeng.lib ole32.lib shell32.lib advapi32.lib user32.lib uuid.lib",
+    "cl $flags $dfFlags /Fo`"$obj\apotest.obj`" /Fe`"$obj\apotest.exe`" `"$here\apotest.cpp`" $($rnnLib -join ' ') $dfLink /link /STACK:16777216 /NODEFAULTLIB:atls.lib audiomediatypecrt.lib legacy_stdio_definitions.lib audioeng.lib ole32.lib uuid.lib"
 ) -join " && "
 $ErrorActionPreference = "Continue" # the compiler's notes on stderr are not failures; its exit code is what counts
 cmd /c "$cmd 2>&1"

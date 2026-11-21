@@ -319,6 +319,93 @@ w	1d31bbca	Fn+Q termasuk Kustom
 w	de32aeba	Bergilir: Senyap → Seimbang → Performa → Kustom → Senyap
 w	1b6b946f	Frekuensi minimum
 w	f244c01e	Prosesor tidak turun di bawah frekuensi ini
+w	c983bc18	Gema
+w	183562a5	Pra-kompresor
+w	9c07f315	Karakter pra-kompresor
+w	3b9fe70c	Campuran pra-kompresor
+w	d9f61a44	Menekan lebih dulu, sebelum equalizer, dan menyiapkan suara untuk kompresor; kompresor dengan limiter tetap terakhir
+w	46751dc3	Efek dari versi lama: pra-kompresor akan bekerja setelah suara Windows dimulai ulang
+w	f3dd3880	Karakter yang kedua
+w	8693c009	Campuran yang kedua
+w	2b1cd27d	Menekan lebih dulu, sebelum equalizer; pengaturannya di bawah, sebelum yang utama, dan yang utama dengan limiter tetap terakhir
+w	ef926644	Kompresor kedua
+w	f9b7b3da	Tepat setelah yang pertama: misalnya yang cepat menangkap puncak dan yang lembut meratakan volume
+w	a2545708	Campuran
+w	f79ebb96	Seberapa banyak suara terkompresi yang keluar: lebih sedikit menyisakan suara asli di sampingnya (kompresi paralel)
+w	323b87a7	Seberapa cepat mulai menekan saat suara makin keras
+w	065d15da	Efek masih versi lama: kompresor kedua bekerja setelah suara Windows dimulai ulang
+w	7a35b487	sendiri
+w	578d3b66	lebar
+w	27244899	Karakter
+w	36b56552	Warna
+w	0c01a6d2	Kekuatan warna
+w	2ba532be	Semakin keras suara, semakin kuat warnanya; bekerja bersama kompresor
+w	1dda651d	Bersih
+w	31dd0d20	FET
+w	ed2dd690	Optik
+w	03ebe7b7	Tabung
+w	505048ed	Bersih: menekan rata dan tepat sesuai pengaturan
+w	bd5be015	FET: cepat dan padat, menangkap puncak seketika
+w	382401f4	Optik: lembut dan halus, melepas dua tahap; makin lama menekan, makin lambat
+w	84353f75	Tabung: paling lembut, hampir tidak menekan suara pelan, tekanan bertambah dengan volume
+w	6da37b9f	Tidak ada
+w	0c832f31	Tabung
+w	ea8cbb6e	Transistor
+w	f2ddeac2	Pita
+w	2fb2fb89	Trafo
+w	d4a93ab5	Tanpa warna: suara apa adanya
+w	806bb412	Tabung: hangat dan bulat, harmonik genap
+w	0f5626ef	Transistor: padat dan cerah, harmonik genap dan ganjil
+w	229f7175	Pita: halus dan vintage, membulatkan puncak dan sedikit menaikkan bass
+w	ca80fe24	Trafo: bass padat dan tebal, nada tinggi tetap bersih
+w	b10b89b3	Otomatis
+w	2fa87fcc	Pita
+w	7a9e1ebf	Tempat mencari desis: suara di atas dan di bawahnya tidak diubah
+w	56f6362b	de-esser
+w	2e623a14	kHz
+w	968d3bcb	De-esser
+w	5e3d13d6	Meredam bunyi «s» dan «sy» yang tajam: menurunkan nada tinggi hanya saat menonjol
+w	624cefbc	Suara di atasnya dianggap desis
+w	a8d54dc6	Seberapa banyak nada tinggi harus menonjol dari seluruh suara: lebih rendah bekerja lebih sering
+w	29cd23dd	Seberapa jauh bunyi desis boleh diturunkan
+w	7db02619	Efek masih versi lama: de-esser bekerja setelah suara Windows dimulai ulang
+w	399932bb	Model
+w	e45dcfcd	RNNoise ringan (1 % satu inti); DeepFilterNet lebih bersih dalam derau, tetapi memakai 4 % satu inti dan 30 ms lebih lambat
+w	5339d6d2	Jaringan saraf DeepFilterNet menghapus derau bahkan saat Anda bicara: kipas, keyboard, jalan, dengung
+w	78527afd	Seberapa dalam derau boleh diturunkan: lebih sedikit membuat suara lebih alami
+w	584c7c2e	Efek masih versi lama: DeepFilterNet bekerja setelah suara Windows dimulai ulang
+w	0c17150a	halus
+w	7cc5b025	tegak
+w	a1d9f905	Menghapus ekor gema ruangan setelah kata-kata; mendeteksi sendiri berapa lama ruangan bergema
+w	378e79f0	Seberapa pelan ekor ruangan: lebih banyak lebih kering, tetapi suara bisa terdengar berair
+w	4725083c	Efek masih versi lama: penghapus gema bekerja setelah suara Windows dimulai ulang
+w	60768c00	Derau
+w	7aa9a914	Peredam derau
+w	4caeb4ef	Kekuatan
+w	d8608263	Jaringan saraf RNNoise menghapus derau bahkan saat Anda bicara: kipas, keyboard, jalan, dengung
+w	a55487ee	Seberapa banyak suara bersih menggantikan aslinya: lebih sedikit membuat suara lebih alami
+w	710236a2	Efek masih versi lama: peredam derau bekerja setelah suara Windows dimulai ulang
+w	625d7831	Semua setelan pemrosesan sekaligus; setelan sendiri bisa disimpan
+w	d09d4170	Ruang tenang
+w	5b14d7ed	Sekitar bising
+w	3d51ebc6	Dengarkan diri sendiri
+w	9da9c1f0	Suara mikrofon setelah diproses langsung ke perangkat keluaran: pengaturan terdengar saat diubah
+w	1487303c	Dengarkan
+w	72e8dab2	Tidak ada perangkat keluaran
+w	c97b6372	Keluaran
+w	1c8ac030	Gerbang derau
+w	f624ce12	Gerbang
+w	e7fb7c34	Kedalaman
+w	93d4c71c	Pelepasan
+w	6dcfdb1e	Meloloskan suara hanya saat lebih keras dari ambang: saat jeda derau tidak terdengar
+w	e2380d55	Suara yang lebih pelan dari ini diredam
+w	a265b336	Seberapa pelan suara di bawah ambang
+w	5919f41b	Seberapa cepat gerbang menutup setelah suara berhenti (setelah menunggu 150 ms)
+w	fc4612bb	Tidak ada mikrofon yang aktif
+w	b8551b21	Default: semua program mendengarkannya
+w	86eff107	Bukan default: program mendengarkan mikrofon lain
+w	e343d844	Mikrofon sedang tidak didengar: level muncul saat suara masuk
+w	a42e9afa	Efek masih versi lama: gerbang bekerja setelah suara Windows dimulai ulang
 w	824265b0	Pasang
 w	25c6214e	Mulai ulang
 w	ea638838	Driver akses prosesor: kurva, batas AMD, suhu
@@ -1159,6 +1246,9 @@ w	34ae8cd5	Potong tinggi
 w	b556b2d9	Notch
 w	c4770fd5	Gain ke nol
 w	1b220d9d	Hapus titik
+w	092e0dac	Atur ulang titik
+w	0508d459	Atur ulang semua titik
+w	e6812640	Seret titik-titik: kiri-kanan frekuensi, atas-bawah penguatan. Klik kanan pada titik untuk memilih jenis filter atau mengatur ulang
 w	6af22088	Tambah titik
 w	f2c7ee73	Semua gain ke nol
 w	bbd3efbb	Equalizer dimatikan
@@ -1234,6 +1324,31 @@ f	f6acd0a1	di skema
 f	270a07ee	 % dari 
 f	fc550669	, frekuensi minimum 
 f	c8c88e80	 · pada halaman biasa
+f	46ed9339	Masuk sekarang: 
+f	1abcff36	 · sekarang: suara
+f	47473037	Sesuai karakter. 
+f	7bb8928f	 · sekarang: 
+f	73e44a25	 · sedang tidak bekerja
+f	ef07a51a	Kemiringan 
+f	4f28143a	kemiringan 
+f	8daff661	 dB/oktaf
+f	9f66674b	 · sekarang: hanya derau
+f	38108a9c	 · ruangan bergema 
+f	90bf329a	 dtk
+f	9199ad12	 · mendengarkan ruangan…
+f	d74401c5	 · tanpa pemrosesan
+f	53077d66	Suara mikrofon akan masuk ke «
+f	9fe6a5ec	» dengan jeda beberapa perseratus detik.
+f	75ad79dd	Jika ini speaker, bukan headphone, mikrofon akan menangkapnya dan berdenging: lebih baik dengar dengan headphone.
+f	f393fe2a	Mendengarkan: suara masuk ke «
+f	6693e15f	Tidak terdengar: 
+f	8fbdd719	format perangkat keluaran tidak didukung
+f	b23700a7	format mikrofon tidak didukung
+f	2c93a141	perangkat keluaran hilang
+f	4816e1c2	keluaran tidak terbuka: 
+f	8dcd4592	tidak ada perangkat keluaran
+f	e4dc2201	 · gerbang tertutup
+f	5534ae56	 · gerbang terbuka
 f	8d2a7695	Tidak terpasang: kode 
 f	40d16675	Tidak terpasang: 
 f	cbfecb2b	Sekarang tidak merekam · 

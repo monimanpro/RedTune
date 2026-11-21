@@ -256,6 +256,12 @@ namespace RedTune
             if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Energy.BatteryReport(), new System.Text.UTF8Encoding(true)); return 0; }
             i = at("--display-check");
             if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Display.Check(), new System.Text.UTF8Encoding(true)); return 0; }
+            i = at("--mic-listen-check"); // 21.11: records 2 s from the default microphone (thrown away) and says what came; nothing goes out
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                var mid = AudioFx.DefaultDevice(true); MicListen.Start(mid); System.Threading.Thread.Sleep(2000); MicListen.Stop();
+                System.IO.File.WriteAllText(args[i + 1], "microphone " + mid.ToString("B") + " (capture: " + AudioFx.IsCapture(mid) + "): " + MicListen.Format + ", frames in 2 s: " + MicListen.Frames + "\r\n", new System.Text.UTF8Encoding(true)); return 0;
+            }
             i = at("--minstate-check"); // 21.11: the core-curve measurement lowers the plan's minimum state and puts it back
             if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], CoreCurve.MinStateCheck(), new System.Text.UTF8Encoding(true)); return 0; }
             i = at("--slider-warp-check");

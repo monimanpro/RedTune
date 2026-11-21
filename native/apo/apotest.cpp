@@ -12,6 +12,7 @@
 #include <complex>
 #include <vector>
 #include "rtdsp.h"
+#pragma comment(lib, "winmm.lib")   // timeBeginPeriod: the real-pace run of DeepFilterNet
 
 static int g_fail = 0;
 static void Check(bool ok, const char* what, const char* fmt = "", ...)
@@ -31,10 +32,15 @@ static double Analytic(const RtaParams& p, double f, double rate)
     {
         const RtaBand& b = p.bands[i];
         if (b.type == RTA_OFF) continue;
-        double A = pow(10.0, b.gainDb / 40.0), g = tan(PI * b.freq / rate), k = 1.0 / b.q, m0 = 1, m1 = 0, m2 = 0;
-        switch (b.type)
+        /* 21.11: the band's sections by its slope (rtd_plan) */
+        RtdSec sec[RTD_STAGES]; int n = rtd_plan(b.type, b.freq, b.gainDb, b.q, rate, sec);
+        for (int j = 0; j < n; j++)
         {
-        case RTA_BELL: k = 1.0 / (b.q * A); m1 = k * (A * A - 1); break;
+        double q = sec[j].q;
+        double A = pow(10.0, sec[j].g / 40.0), g = tan(PI * sec[j].f / rate), k = 1.0 / q, m0 = 1, m1 = 0, m2 = 0;
+        switch (sec[j].type)
+        {
+        case RTA_BELL: k = 1.0 / (q * A); m1 = k * (A * A - 1); break;
         case RTA_LOWSHELF: g /= sqrt(A); m1 = k * (A - 1); m2 = A * A - 1; break;
         case RTA_HIGHSHELF: g *= sqrt(A); m0 = A * A; m1 = k * (1 - A) * A; m2 = 1 - A * A; break;
         case RTA_HIGHPASS: m1 = -k; m2 = -1; break;
@@ -43,6 +49,7 @@ static double Analytic(const RtaParams& p, double f, double rate)
         }
         std::complex<double> s(0, tan(PI * f / rate) / g), d = s * s + k * s + 1.0;
         h *= m0 + (m1 * s + m2) / d;
+        }
     }
     return 20 * log10(abs(h));
 }
@@ -114,6 +121,58 @@ static void TestDsp()
         }
         char name[64]; sprintf(name, "equalizer vs formula at %.0f Hz", rate);
         Check(worst < 0.05, name, "(worst %.3f dB)", worst);
+    }
+
+    // 21.11, the slopes of the cuts: 12..48 dB/oct against the formula, and an 8th-order Butterworth where it must be
+    {
+        double worst = 0, at500 = 0, at1k = 0, lp = 0;
+        for (int n = 1; n <= 4; n++)
+            for (double f : freqs)
+            {
+                uint32_t sl = (uint32_t)(n - 1) << 8;
+                RtaParams c = Blank(); c.flags = RTA_ON | RTA_EQ; Band(c, 0, RTA_HIGHPASS | sl, 1000, 0, 0.707f); Band(c, 1, RTA_LOWPASS | sl, 12000, 0, 0.707f);
+                Band(c, 2, RTA_LOWSHELF | sl, 150, 6, 0.707f); Band(c, 3, RTA_BELL | sl, 2500, -7, 1.2f); Band(c, 4, RTA_HIGHSHELF | sl, 6000, 4, 0.707f); Band(c, 5, RTA_NOTCH | sl, 400, 0, 6);
+                RtDsp* d = new RtDsp; d->Init(48000, 2); d->Set(&c);
+                double got = SineGain(*d, f, 0.05, 1.0), want = Analytic(c, f, 48000);
+                if (want > -70 && fabs(got - want) > worst) worst = fabs(got - want);
+                delete d;
+            }
+        RtaParams c = Blank(); Band(c, 0, RTA_HIGHPASS | (3u << 8), 1000, 0, 0.707f);
+        at500 = Analytic(c, 500, 48000); at1k = Analytic(c, 1000, 48000);
+        Band(c, 0, RTA_LOWPASS | (2u << 8), 1000, 0, 0.707f); lp = Analytic(c, 2000, 48000);
+        Check(worst < 0.05, "slopes 1..4 of every kind vs formula (cuts, shelves, a bell, a notch)", "(worst %.3f dB)", worst);
+        Check(fabs(at500 + 48.2) < 0.3 && fabs(at1k + 3.01) < 0.05 && fabs(lp + 36.1) < 0.3, "cut slopes: Butterworth shapes",
+              "48 dB/oct: %.1f dB an octave under, %.2f dB at the frequency; 36 dB/oct low cut %.1f dB an octave over", at500, at1k, lp);
+        /* a slope changed while sound plays: no NaN, no burst */
+        /* the straight bell: the frequency keeps the gain, the top is flatter and the sides steeper than the smooth bell's */
+        {
+            bool ok = true; double worstPeak = 0, edgeS = 0, edgeT = 0, farS = 0, farT = 0;
+            for (int n = 2; n <= 4; n++) for (int gs = -1; gs <= 1; gs += 2)
+            {
+                RtaParams b = Blank(); Band(b, 0, RTA_BELL | ((uint32_t)(n - 1) << 8), 1000, 12.f * gs, 1.f);
+                double pk = Analytic(b, 1000, 48000); if (fabs(pk - 12 * gs) > worstPeak) worstPeak = fabs(pk - 12 * gs);
+                if (n == 3 && gs == 1)
+                {
+                    RtaParams sm = Blank(); Band(sm, 0, RTA_BELL, 1000, 12, 1.f);
+                    edgeS = Analytic(sm, 1000 * pow(2, 0.4), 48000); edgeT = Analytic(b, 1000 * pow(2, 0.4), 48000);
+                    farS = Analytic(sm, 1000 * pow(2, 2.0), 48000); farT = Analytic(b, 1000 * pow(2, 2.0), 48000);
+                }
+            }
+            ok = worstPeak < 0.6 && edgeT > edgeS + 1 && farT < farS - 0.5;
+            Check(ok, "straight bell: the gain at the frequency, a flat top, steep sides", "peak off by %.2f dB at most; 0.4 oct out %.1f vs %.1f dB (smooth); 2 oct out %.1f vs %.1f dB", worstPeak, edgeT, edgeS, farT, farS);
+        }
+        RtaParams s = Blank(); s.flags = RTA_ON | RTA_EQ; Band(s, 0, RTA_HIGHPASS, 200, 0, 0.707f);
+        RtDsp* d = new RtDsp; d->Init(48000, 2); d->Set(&s); double pk = 0;
+        std::vector<float> buf(2 * 480); g_rng = 3;
+        for (int t = 0; t < 100; t++)
+        {
+            if (t % 20 == 10) { s.bands[0].type = RTA_HIGHPASS | ((uint32_t)((t / 20) % 4) << 8); d->Set(&s); }
+            for (int i = 0; i < 480; i++) buf[2 * i] = buf[2 * i + 1] = 0.25f * Noise();
+            d->Process(buf.data(), buf.data(), 480);
+            for (float v : buf) { if (!(v == v)) pk = 1e9; else if (fabs(v) > pk) pk = fabs(v); }
+        }
+        delete d;
+        Check(pk < 1.0, "cut slopes: switching the slope while noise plays stays in range", "peak %.2f", pk);
     }
 
     // compressor: the level that comes out for the level that goes in
@@ -669,11 +728,647 @@ static void TestApo(const wchar_t* dll, const wchar_t* dir)
     UnmapViewOfFile(sh); CloseHandle(map); CloseHandle(file); DeleteFileW(path);
 }
 
+// 21.11, the noise gate: noise at about -50 dB, a -20 dB tone over it, the noise again. The noise must go down by the
+// range, the tone pass as it is, from its very first milliseconds (the detector reads 10 ms ahead), and the gate must
+// close again after the hold and the release.
+static void TestGate()
+{
+    RtDsp d; d.Init(48000, 2);
+    RtaParams p = Blank(); p.flags = RTA_ON | RTA_GATE; p.gateThrDb = -35; p.gateRangeDb = -40; p.gateReleaseMs = 100;
+    d.Set(&p);
+    const int R = 48000, n1 = R, n2 = R / 2, n3 = R, N = n1 + n2 + n3, L = d.Latency();
+    std::vector<float> in(2 * N), out(2 * N);
+    g_rng = 777;
+    for (int i = 0; i < N; i++)
+    {
+        float v = 0.003f * Noise();
+        if (i >= n1 && i < n1 + n2) v += (float)(0.1 * sin(2 * PI * 1000.0 * (i - n1) / R));
+        in[2 * i] = in[2 * i + 1] = v;
+    }
+    for (int t = 0; t < N; t += 480) { int k = N - t < 480 ? N - t : 480; memcpy(&out[2 * t], &in[2 * t], k * 2 * sizeof(float)); d.Process(&out[2 * t], &out[2 * t], k); }
+    // the level of out against in over [a, b) of the input's time (out is L samples late)
+    auto gain = [&](int a, int b) { double si = 0, so = 0; for (int i = a; i < b && i + L < N; i++) { si += (double)in[2 * i] * in[2 * i]; so += (double)out[2 * (i + L)] * out[2 * (i + L)]; } return 10 * log10((so + 1e-20) / (si + 1e-20)); };
+    double gNoise = gain(R / 2, n1 - R / 20);
+    Check(gNoise < -36 && gNoise > -44, "gate: the noise under the threshold goes down by the range", "%.1f dB (range -40)", gNoise);
+    double gTone = gain(n1 + R / 10, n1 + n2 - R / 10);
+    Check(fabs(gTone) < 0.3, "gate: the tone over the threshold passes as it is", "%.2f dB", gTone);
+    double gOnset = gain(n1, n1 + R / 200);
+    Check(gOnset > -1.5, "gate: the first 5 ms of the tone are not cut (the detector reads ahead)", "%.2f dB", gOnset);
+    double gHold = gain(n1 + n2 + R / 50, n1 + n2 + R / 10);
+    Check(gHold > -6, "gate: right after the tone it is still open (the hold)", "%.1f dB", gHold);
+    double gAfter = gain(n1 + n2 + R * 7 / 10, N - R / 20);
+    Check(gAfter < -36, "gate: closed again after the hold and the release", "%.1f dB", gAfter);
+    // switched off: the noise passes
+    RtDsp e; e.Init(48000, 2); RtaParams q = p; q.flags = RTA_ON; e.Set(&q);
+    std::vector<float> o2(in.begin(), in.begin() + 2 * n1);
+    for (int t = 0; t < n1; t += 480) e.Process(&o2[2 * t], &o2[2 * t], 480);
+    double si = 0, so = 0; int L2 = e.Latency();
+    for (int i = R / 2; i < n1 - L2; i++) { si += (double)in[2 * i] * in[2 * i]; so += (double)o2[2 * (i + L2)] * o2[2 * (i + L2)]; }
+    double gOff = 10 * log10(so / si);
+    Check(fabs(gOff) < 0.1, "gate off: the noise passes as it is", "%.2f dB", gOff);
+    Check(d.gateMin < -30, "gate: its meter shows what it takes off", "%.1f dB", d.gateMin);
+}
+
+// 21.11, the denoiser (RNNoise): steady noise must go down a lot at full strength, pass as it is at strength 0 (only
+// late), work at 44.1 kHz through the resampling without running dry, and cost little (it runs in Windows' sound process)
+static double NsRun(double rate, int strength, double seconds, int kind, double* cpuShare, uint32_t* under, float* vadOut)
+{
+    RtDsp d; d.Init(rate, 2); d.ns = rnnoise_create(NULL);
+    RtaParams p = Blank(); p.flags = RTA_ON | RTA_DENOISE; p.mute = (uint32_t)strength << 8; d.Set(&p);
+    int N = (int)(rate * seconds), from = (int)(rate * 1.0);
+    std::vector<float> buf(2 * 480);
+    double si = 0, so = 0; g_rng = 4242;
+    LARGE_INTEGER f0, t0, t1; QueryPerformanceFrequency(&f0); QueryPerformanceCounter(&t0);
+    for (int t = 0; t < N; t += 480)
+    {
+        int k = N - t < 480 ? N - t : 480;
+        for (int i = 0; i < k; i++)
+        {
+            double tt = (t + i) / rate, v;
+            if (kind == 0) v = 0.05 * Noise();
+            else
+            {
+                /* something like a voice: a 140 Hz buzz with two formants, in syllables, over quiet noise */
+                double env = 0.5 + 0.5 * sin(2 * PI * 3.0 * tt); env *= env;
+                double h = 0; for (int n = 1; n < 30; n++) { double fr = 140.0 * n; double a = exp(-pow((fr - 700) / 250, 2)) + 0.6 * exp(-pow((fr - 1200) / 300, 2)) + 0.05; h += a * sin(2 * PI * fr * tt) / n; }
+                v = 0.2 * env * h + 0.003 * Noise();
+            }
+            buf[2 * i] = buf[2 * i + 1] = (float)v;
+            if (t + i >= from) si += v * v;
+        }
+        d.Process(buf.data(), buf.data(), k);
+        for (int i = 0; i < k; i++) if (t + i >= from) so += (double)buf[2 * i] * buf[2 * i];
+    }
+    QueryPerformanceCounter(&t1);
+    if (cpuShare) *cpuShare = (double)(t1.QuadPart - t0.QuadPart) / f0.QuadPart / seconds;
+    if (under) *under = d.nsUnder;
+    if (vadOut) *vadOut = d.vadMeter;
+    rnnoise_destroy(d.ns);
+    return 10 * log10((so + 1e-20) / (si + 1e-20));
+}
+
+static void TestDenoise()
+{
+    double cpu; uint32_t under; float vad;
+    double g48 = NsRun(48000, 100, 4, 0, &cpu, &under, &vad);
+    Check(g48 < -15, "denoise: steady noise at full strength goes down a lot (48 kHz)", "%.1f dB", g48);
+    Check(cpu < 0.10, "denoise: it costs little", "%.1f %% of one core, the whole effect", cpu * 100);
+    double g0 = NsRun(48000, 0, 3, 0, NULL, NULL, NULL);
+    Check(fabs(g0) < 0.1, "denoise: at strength 0 the noise passes as it is", "%.2f dB", g0);
+    double g44 = NsRun(44100, 100, 4, 0, NULL, &under, NULL);
+    Check(g44 < -15, "denoise: works at 44.1 kHz through the resampling", "%.1f dB", g44);
+    Check(under == 0, "denoise: at 44.1 kHz the cleaned sound never runs dry", "%u gaps", under);
+    double gv = NsRun(48000, 100, 4, 1, NULL, NULL, &vad);
+    Check(gv > -12, "denoise: a voice-like sound is kept (not taken for noise)", "%.1f dB, voice probability %.2f", gv, vad);
+}
+
+// 21.11, the 48 kHz path and the reverb remover.
+// Something like a voice at 48 kHz: a 140 Hz buzz with two formants; in words of 150 ms with 300 ms of quiet between
+// (words=true), or in syllables without pauses
+static double Voice(double tt, bool words)
+{
+    double env;
+    if (words) { double ph = fmod(tt, 0.45); env = ph < 0.15 ? sin(PI * ph / 0.15) : 0; env = sqrt(env); }
+    else { env = 0.5 + 0.5 * sin(2 * PI * 3.0 * tt); env *= env; }
+    if (env == 0) return 0;
+    double h = 0; for (int n = 1; n < 30; n++) { double fr = 140.0 * n; double a = exp(-pow((fr - 700) / 250, 2)) + 0.6 * exp(-pow((fr - 1200) / 300, 2)) + 0.05; h += a * sin(2 * PI * fr * tt) / n; }
+    return 0.2 * env * h;
+}
+
+// a room: Schroeder's reverb (four combs, two all-passes) with a reverb time of t60 seconds, at rate
+struct Room
+{
+    std::vector<float> c[4], a[2]; int ci[4], ai[2]; double g[4];
+    void Init(double rate, double t60)
+    {
+        const double cd[4] = { 0.0297, 0.0371, 0.0411, 0.0437 }, ad[2] = { 0.005, 0.0017 };
+        for (int i = 0; i < 4; i++) { c[i].assign((size_t)(cd[i] * rate), 0.f); ci[i] = 0; g[i] = pow(10.0, -3.0 * cd[i] / t60); }
+        for (int i = 0; i < 2; i++) { a[i].assign((size_t)(ad[i] * rate), 0.f); ai[i] = 0; }
+    }
+    double Run(double x)
+    {
+        double s = 0;
+        for (int i = 0; i < 4; i++) { float& d = c[i][ci[i]]; double o = d; d = (float)(x + g[i] * o); s += o; if (++ci[i] >= (int)c[i].size()) ci[i] = 0; }
+        s *= 0.25;
+        for (int i = 0; i < 2; i++) { float& d = a[i][ai[i]]; double o = d; double v = s + 0.7 * o; d = (float)v; s = o - 0.7 * v; if (++ai[i] >= (int)a[i].size()) ai[i] = 0; }
+        return s;
+    }
+};
+
+// the whole effect with only the path on: the mono output; fills lat with the path's delay at that rate
+static std::vector<float> PathRun(double rate, const std::vector<float>& x, uint32_t flags, int dn, int dr, bool noNet, int* lat, double* t60, double* cpu)
+{
+    RtDsp d; d.Init(rate, 2); d.ns = rnnoise_create(NULL); d.nsNoNet = noNet;
+    RtaParams p = Blank(); p.flags = RTA_ON | flags; p.mute = ((uint32_t)dn << 8) | ((uint32_t)dr << 16); d.Set(&p);
+    int N = (int)x.size(); std::vector<float> y(N), buf(2 * 480);
+    LARGE_INTEGER f0, t0, t1; QueryPerformanceFrequency(&f0); QueryPerformanceCounter(&t0);
+    for (int t = 0; t < N; t += 480)
+    {
+        int k = N - t < 480 ? N - t : 480;
+        for (int i = 0; i < k; i++) buf[2 * i] = buf[2 * i + 1] = x[t + i];
+        d.Process(buf.data(), buf.data(), k);
+        for (int i = 0; i < k; i++) y[t + i] = buf[2 * i];
+    }
+    QueryPerformanceCounter(&t1);
+    if (cpu) *cpu = (double)(t1.QuadPart - t0.QuadPart) / f0.QuadPart / (N / rate);
+    if (lat) *lat = d.nsLat + d.Latency();   /* the path, then the look-aheads of the compressor and the limiter */
+    if (t60) *t60 = d.drTn >= 3 ? d.drT60 : 0;
+    rnnoise_destroy(d.ns);
+    return y;
+}
+
+// y against x delayed by lag, from "from" on: what differs, dB under x
+static double DiffDb(const std::vector<float>& x, const std::vector<float>& y, int lag, int from)
+{
+    double e = 0, s = 0;
+    for (int i = from; i < (int)y.size(); i++) { double r = x[i - lag]; e += (y[i] - r) * (y[i] - r); s += r * r; }
+    return 10 * log10((e + 1e-20) / (s + 1e-20));
+}
+
+static int BestLag(const std::vector<float>& x, const std::vector<float>& y, int lo, int hi, int from)
+{
+    int best = lo; double bv = -1e30;
+    for (int L = lo; L <= hi; L++) { double c = 0; for (int i = from; i < (int)y.size(); i++) c += (double)y[i] * x[i - L]; if (c > bv) { bv = c; best = L; } }
+    return best;
+}
+
+static void TestPath()
+{
+    /* RNNoise itself: its output is the block from two blocks before */
+    {
+        DenoiseState* st = rnnoise_create(NULL);
+        int N = 48000 * 2; std::vector<float> x(N), y(N); g_rng = 99;
+        for (int i = 0; i < N; i++) x[i] = (float)(Voice(i / 48000.0, false) + 0.002 * Noise());
+        float a[480], b[480];
+        for (int t = 0; t + 480 <= N; t += 480) { for (int i = 0; i < 480; i++) a[i] = x[t + i] * 32768.f; rnnoise_process_frame(st, b, a); for (int i = 0; i < 480; i++) y[t + i] = b[i] / 32768.f; }
+        rnnoise_destroy(st);
+        int L = BestLag(x, y, 0, 1500, 24000);
+        Check(L == 960, "path: RNNoise gives back the block from two blocks before", "%d samples late", L);
+    }
+    /* the path without the network is a pure delay of nsLat: the untouched sound and the processed one meet exactly */
+    {
+        int N = 48000 * 2; std::vector<float> x(N); g_rng = 5;
+        for (int i = 0; i < N; i++) x[i] = (float)(Voice(i / 48000.0, false) + 0.01 * Noise());
+        int lat; std::vector<float> y = PathRun(48000, x, RTA_DENOISE, 50, 0, true, &lat, NULL, NULL);
+        double e = DiffDb(x, y, lat, 24000);
+        Check(e < -100, "path: at 48 kHz it is exactly its delay, the strength mix in line", "%d samples, the rest %.0f dB", lat, e);
+        y = PathRun(48000, x, RTA_DEREVERB, 0, 0, true, &lat, NULL, NULL);
+        e = DiffDb(x, y, lat, 24000);
+        Check(e < -90, "path: the reverb remover at strength 0 gives the sound back as it was", "the rest %.0f dB", e);
+    }
+    {
+        double r = 44100; int N = (int)r * 2; std::vector<float> x(N);
+        for (int i = 0; i < N; i++) x[i] = (float)(0.3 * sin(2 * PI * 300 * i / r) + 0.2 * sin(2 * PI * 1100 * i / r));
+        int lat; std::vector<float> y = PathRun(r, x, RTA_DENOISE, 50, 0, true, &lat, NULL, NULL);
+        int L = BestLag(x, y, lat - 20, lat + 20, 22050);
+        double e = DiffDb(x, y, lat, 22050);
+        Check(L == lat && e < -20, "path: at 44.1 kHz the delay it counts on is the real one (the rest: the linear resampling)", "counted %d, real %d, the rest %.0f dB", lat, L, e);
+    }
+    /* the denoiser at half strength: the voice is not doubled (the old path mixed it 10 ms off) */
+    {
+        int N = 48000 * 3; std::vector<float> x(N); g_rng = 7;
+        for (int i = 0; i < N; i++) x[i] = (float)(Voice(i / 48000.0, false) + 0.003 * Noise());
+        int lat; std::vector<float> y = PathRun(48000, x, RTA_DENOISE, 50, 0, false, &lat, NULL, NULL);
+        double sxy = 0, sxx = 0, syy = 0; for (int i = 48000; i < N; i++) { double a = x[i - lat]; sxy += a * y[i]; sxx += a * a; syy += (double)y[i] * y[i]; }
+        double c = sxy / sqrt(sxx * syy + 1e-30);
+        Check(c > 0.97, "path: the denoiser at 50 % keeps the voice whole (in line with the untouched one)", "correlation %.3f", c);
+    }
+}
+
+// the reverb remover on words in a room: the tail between the words goes down, the words stay
+static void DrMeasure(double rate, double t60, bool dry, double* tailDb, double* wordDb, double* heard, double* cpu)
+{
+    int N = (int)(rate * 9); std::vector<float> x(N); Room room; room.Init(rate, t60 > 0 ? t60 : 0.3); g_rng = 31;
+    for (int i = 0; i < N; i++) { double v = Voice(i / rate, true); x[i] = (float)(v + (dry ? 0 : 1.2 * room.Run(v)) + 0.0003 * Noise()); }
+    int lat; double t; std::vector<float> y1 = PathRun(rate, x, RTA_DEREVERB, 0, 100, false, &lat, &t, cpu);
+    std::vector<float> y0 = PathRun(rate, x, RTA_DEREVERB, 0, 0, false, NULL, NULL, NULL);
+    double tw0 = 0, tw1 = 0, ww0 = 0, ww1 = 0;
+    for (int i = (int)(3 * rate); i + lat < N; i++)
+    {
+        double ph = fmod(i / rate, 0.45); int o = i + lat;
+        if (ph > 0.02 && ph < 0.13) { ww0 += (double)y0[o] * y0[o]; ww1 += (double)y1[o] * y1[o]; }
+        if (ph > 0.23 && ph < 0.43) { tw0 += (double)y0[o] * y0[o]; tw1 += (double)y1[o] * y1[o]; }
+    }
+    *tailDb = 10 * log10((tw1 + 1e-20) / (tw0 + 1e-20)); *wordDb = 10 * log10((ww1 + 1e-20) / (ww0 + 1e-20)); *heard = t;
+}
+
+static void TestDereverb()
+{
+    double tail, word, heard, cpu;
+    DrMeasure(48000, 0.6, false, &tail, &word, &heard, &cpu);
+    printf("      room 0.6 s: tail %.1f dB, words %.1f dB, heard %.2f s\n", tail, word, heard);
+    Check(tail < -6, "dereverb: the room's tail between words goes down (0.6 s room)", "%.1f dB", tail);
+    Check(word > -3, "dereverb: the words themselves stay", "%.1f dB", word);
+    Check(heard > 0.35 && heard < 0.95, "dereverb: it hears the room's time", "%.2f s for 0.6 s", heard);
+    Check(cpu < 0.05, "dereverb: it costs little", "%.1f %% of one core, the whole effect", cpu * 100);
+    DrMeasure(48000, 1.0, false, &tail, &word, &heard, NULL);
+    printf("      room 1.0 s: tail %.1f dB, words %.1f dB, heard %.2f s\n", tail, word, heard);
+    Check(heard > 0.6, "dereverb: a longer room is heard longer", "%.2f s for 1.0 s", heard);
+    DrMeasure(48000, 0, true, &tail, &word, &heard, NULL);
+    printf("      dry: words %.1f dB, heard %.2f s\n", word, heard);
+    Check(word > -2, "dereverb: a dry voice is left almost alone", "%.1f dB, heard %.2f s", word, heard);
+    DrMeasure(44100, 0.6, false, &tail, &word, &heard, NULL);
+    Check(tail < -6 && word > -3, "dereverb: works at 44.1 kHz", "tail %.1f dB, words %.1f dB, heard %.2f s", tail, word, heard);
+}
+
+#ifdef RTD_DFN
+// 21.11, DeepFilterNet as the denoiser's other model: the path with it is still exactly its delay, the model takes steady
+// noise down and keeps a voice, its strength is its limit, and on its own thread at the pace of real sound it keeps up
+static std::vector<float> DfRun(RtDsp& d, const std::vector<float>& x, int strength, int* lat, uint32_t* misses)
+{
+    RtaParams p = Blank(); p.flags = RTA_ON | RTA_DENOISE | RTA_DFN; p.mute = (uint32_t)strength << 8; d.Set(&p);
+    int N = (int)x.size(); std::vector<float> y(N), buf(2 * 480);
+    for (int t = 0; t < N; t += 480)
+    {
+        int k = N - t < 480 ? N - t : 480;
+        for (int i = 0; i < k; i++) buf[2 * i] = buf[2 * i + 1] = x[t + i];
+        d.Process(buf.data(), buf.data(), k);
+        for (int i = 0; i < k; i++) y[t + i] = buf[2 * i];
+    }
+    if (lat) *lat = d.nsLat + d.Latency();
+    if (misses) *misses = d.dfMiss;
+    return y;
+}
+
+struct DfThread { RtDsp* d; HANDLE ev; volatile bool stop; };
+static DWORD WINAPI DfThreadMain(void* p)
+{
+    DfThread* t = (DfThread*)p;
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+    while (!t->stop) { WaitForSingleObject(t->ev, 100); if (!t->stop) t->d->DfWork(); }
+    return 0;
+}
+static void WakeEv(void* ev) { SetEvent((HANDLE)ev); }
+
+static void TestDfn()
+{
+    int lat; uint32_t miss;
+    /* the path without the model (the worker hands each block back as it is): exactly its delay, at 48 and 44.1 kHz */
+    {
+        RtDsp* d = new RtDsp; d->Init(48000, 2); d->ns = NULL; d->dfSync = true; d->dfNoNet = true;
+        int N = 48000 * 2; std::vector<float> x(N); g_rng = 5;
+        for (int i = 0; i < N; i++) x[i] = (float)(Voice(i / 48000.0, false) + 0.01 * Noise());
+        std::vector<float> y = DfRun(*d, x, 100, &lat, &miss);
+        double e = DiffDb(x, y, lat, 24000);
+        Check(e < -100 && miss <= 1, "dfn: the path at 48 kHz is exactly its delay", "%d samples (%.0f ms), the rest %.0f dB, %u missed", lat, lat / 48.0, e, miss);
+        delete d;
+    }
+    {
+        double r = 44100; RtDsp* d = new RtDsp; d->Init(r, 2); d->ns = NULL; d->dfSync = true; d->dfNoNet = true;
+        int N = (int)r * 2; std::vector<float> x(N);
+        g_rng = 21; for (int i = 0; i < N; i++) x[i] = (float)(Voice(i / r, true) + 0.05 * Noise());   /* not periodic: a lag cannot hide */
+        std::vector<float> y = DfRun(*d, x, 100, &lat, NULL);
+        int L = BestLag(x, y, lat - 20, lat + 20, 22050);
+        Check(L == lat, "dfn: at 44.1 kHz the delay it counts on is the real one", "counted %d, real %d", lat, L);
+        delete d;
+    }
+    /* the model itself (made here; in the effect its worker makes it) */
+    void* model = rtdf_create(100.f);
+    Check(model != NULL, "dfn: the model is made");
+    if (!model) return;
+    {
+        RtDsp* d = new RtDsp; d->Init(48000, 2); d->ns = NULL; d->dfSync = true; d->df = model;
+        int N = 48000 * 5; std::vector<float> x(N); g_rng = 11; for (int i = 0; i < N; i++) x[i] = 0.05f * Noise();
+        LARGE_INTEGER f0, t0, t1; QueryPerformanceFrequency(&f0); QueryPerformanceCounter(&t0);
+        std::vector<float> y = DfRun(*d, x, 100, &lat, &miss);
+        QueryPerformanceCounter(&t1); double cpu = (double)(t1.QuadPart - t0.QuadPart) / f0.QuadPart / 5.0;
+        double si = 0, so = 0; for (int i = 48000 * 2; i < N; i++) { si += (double)x[i] * x[i]; so += (double)y[i] * y[i]; }
+        double g = 10 * log10(so / si);
+        Check(g < -20, "dfn: steady noise goes down a lot", "%.1f dB", g);
+        Check(cpu < 0.10, "dfn: it costs", "%.1f %% of one core, the whole effect", cpu * 100);
+        delete d;
+    }
+    {
+        RtDsp* d = new RtDsp; d->Init(48000, 2); d->ns = NULL; d->dfSync = true; d->df = model;
+        int N = 48000 * 5; std::vector<float> x(N); g_rng = 11; for (int i = 0; i < N; i++) x[i] = 0.05f * Noise();
+        std::vector<float> y = DfRun(*d, x, 50, NULL, NULL);
+        double si = 0, so = 0; for (int i = 48000 * 2; i < N; i++) { si += (double)x[i] * x[i]; so += (double)y[i] * y[i]; }
+        double g = 10 * log10(so / si);
+        Check(g > -8 && g < -4, "dfn: at 50 % it goes no deeper than 6 dB (its limit)", "%.1f dB", g);
+        delete d;
+    }
+    /* 21.11 (the user: «it cuts my voice off» on a quiet microphone): the sound goes to the model lifted to an ordinary
+       level and comes back put down by exactly the same gain. Checked here on the path without the model (exact, since
+       a synthetic buzz is not a voice to the model itself); on a real voice the model then keeps the voice at every
+       level: RedTune-devtools\denoise-compare (compare.cpp, the level test: 14.7..14.9 dB SI-SDR from -10 to -40 dBFS
+       peaks, where without the lift it was -15 at -30 and below). */
+    {
+        int N = 48000 * 6; std::vector<float> x(N); g_rng = 17;
+        for (int i = 0; i < N; i++) x[i] = (float)(0.01 * (Voice(i / 48000.0, true) + 0.02 * Noise()));
+        RtDsp* d = new RtDsp; d->Init(48000, 2); d->ns = NULL; d->dfSync = true; d->dfNoNet = true;
+        std::vector<float> y = DfRun(*d, x, 100, &lat, NULL);
+        double e = DiffDb(x, y, lat, 48000 * 3), lift = 20 * log10(d->dfLift);
+        Check(e < -100 && lift > 30 && lift < 45, "dfn: a quiet microphone (40 dB down) is lifted for the model and put back exactly", "lifted +%.0f dB, the rest %.0f dB", lift, e);
+        delete d;
+    }
+    /* on its own thread, at the pace of real sound, in the calls the user's microphone gets (44.1 kHz, 448 frames, so a
+       call now and then finishes two blocks): it keeps up */
+    {
+        const double rr = 44100; const int F = 448;
+        RtDsp* d = new RtDsp; d->Init(rr, 2); d->ns = NULL; d->df = model;
+        DfThread t = { d, CreateEventW(NULL, FALSE, FALSE, NULL), false };
+        d->dfWake = WakeEv; d->dfWakeCtx = t.ev;
+        HANDLE th = CreateThread(NULL, 0, DfThreadMain, &t, 0, NULL);
+        timeBeginPeriod(1);
+        RtaParams p = Blank(); p.flags = RTA_ON | RTA_DENOISE | RTA_DFN; p.mute = 100u << 8; d->Set(&p);
+        std::vector<float> buf(2 * F); g_rng = 13; double outE = 0; uint32_t missStart = 0;
+        LARGE_INTEGER f0, start, now; QueryPerformanceFrequency(&f0); QueryPerformanceCounter(&start);
+        for (int b = 0; b < 400; b++)
+        {
+            for (int i = 0; i < F; i++) buf[2 * i] = buf[2 * i + 1] = (float)(Voice((b * F + i) / rr, false) + 0.02 * Noise());
+            d->Process(buf.data(), buf.data(), F);
+            if (b > 50) for (int i = 0; i < F; i++) outE += (double)buf[2 * i] * buf[2 * i];
+            if (b == 50) missStart = d->dfMiss;
+            /* the next call when real time says so: slept to within 2 ms, then waited out exactly, as Windows' engine keeps
+               its period (Sleep alone oversleeps and the calls then come in bunches, which the engine does not do) */
+            for (;;)
+            {
+                QueryPerformanceCounter(&now); double left = (b + 1) * F / rr - (now.QuadPart - start.QuadPart) / (double)f0.QuadPart;
+                if (left <= 0) break;
+                if (left > 0.002) Sleep(1); else YieldProcessor();
+            }
+        }
+        timeEndPeriod(1);
+        t.stop = true; SetEvent(t.ev); WaitForSingleObject(th, 2000); CloseHandle(th); CloseHandle(t.ev);
+        Check(d->dfMiss <= 9 && outE > 1e-6,   /* up to 2 %: a block late goes out untouched; a busy machine (a build running beside) costs a few */ "dfn: on its own thread at real pace it keeps up (44.1 kHz, calls of 448 frames)", "%u of ~440 blocks not back in time (%u in the first half second); the model at most %.1f ms a block, a block back at most %.1f ms after it went", d->dfMiss, missStart, d->dfRunMax / 1000, d->dfTurnMax / 1000);
+        delete d;
+    }
+    /* 21.11: the denoiser switched off while DeepFilterNet stays picked: the model is not asked for and does not run */
+    {
+        RtDsp* d = new RtDsp; d->Init(48000, 2); d->ns = NULL; d->dfSync = true; d->df = model;
+        int N = 48000; std::vector<float> x(N); g_rng = 3; for (int i = 0; i < N; i++) x[i] = 0.05f * Noise();
+        DfRun(*d, x, 100, NULL, NULL); uint32_t seqOn = d->dfSeq;
+        RtaParams p = Blank(); p.flags = RTA_ON | RTA_DFN | RTA_DEREVERB; p.mute = (100u << 8) | (0u << 16); d->Set(&p);   /* the path stays (the reverb remover), the denoiser off */
+        std::vector<float> buf(2 * 480); for (int b = 0; b < 100; b++) { for (int i = 0; i < 960; i++) buf[i] = 0.05f * Noise(); d->Process(buf.data(), buf.data(), 480); }
+        Check(seqOn > 50 && d->dfSeq == seqOn && d->dfWantA.load() == 0, "dfn: with the denoiser off the model is not asked for and runs no block", "blocks run before %u, after %u", seqOn, d->dfSeq - seqOn);
+        delete d;
+    }
+    rtdf_free(model);
+}
+#endif
+
+// 21.11, the de-esser: a hiss like an "s" is turned down by its range, a vowel is left alone, a quiet microphone gets
+// the same, and switched off it changes nothing
+static double DsRun(int kind, double scale, bool on, double* meter, float top = 0)
+{
+    RtDsp* d = new RtDsp; d->Init(48000, 2);
+    RtaParams p = Blank(); p.flags = RTA_ON | (on ? RTA_DEESS : 0); p.dsHz = 6500; p.dsThrDb = -15; p.dsRangeDb = -8; p.dsHz2 = top; d->Set(&p);
+    int N = 48000 * 2; std::vector<float> buf(2 * 480); double si = 0, so = 0; float n1 = 0, n2 = 0; g_rng = 23;
+    std::vector<float> x(N); for (int i = 0; i < N; i++)
+    {
+        double v;
+        if (kind == 0) { float n = Noise(); v = 0.25 * (n - 2 * n1 + n2); n2 = n1; n1 = n; }   /* hiss: the noise's second difference, mostly above 8 kHz */
+        else if (kind == 2) v = 0.3 * sin(2 * PI * 7000 * i / 48000.0) * (fmod(i / 48000.0, 0.3) < 0.15 ? 1 : 0);   /* a whistle at 7 kHz, in bursts */
+        else if (kind == 3) v = 0.3 * sin(2 * PI * 16000 * i / 48000.0);                                             /* "air" at 16 kHz */
+        else v = Voice(i / 48000.0, false);                                                    /* a vowel: harmonics up to ~4 kHz */
+        x[i] = (float)(v * scale);
+    }
+    int lat = d->Latency();
+    std::vector<float> y(N);
+    for (int t = 0; t < N; t += 480) { for (int i = 0; i < 480; i++) buf[2 * i] = buf[2 * i + 1] = x[t + i]; d->Process(buf.data(), buf.data(), 480); for (int i = 0; i < 480; i++) y[t + i] = buf[2 * i]; }
+    for (int i = 48000; i < N; i++) { si += (double)x[i - lat] * x[i - lat]; so += (double)y[i] * y[i]; }
+    if (meter) *meter = d->dsMin;
+    double diff = 0; for (int i = 48000; i < N; i++) { double e = y[i] - x[i - lat]; diff += e * e; }
+    delete d;
+    return on ? 10 * log10(so / si) : 10 * log10((diff + 1e-30) / si);
+}
+
+static void TestDeEss()
+{
+    double m1, m2;
+    double hiss = DsRun(0, 1, true, &m1), vowel = DsRun(1, 1, true, NULL), quiet = DsRun(0, 0.01, true, &m2), off = DsRun(0, 1, false, NULL);
+    Check(hiss < -6 && hiss > -9, "de-esser: a hiss like an \"s\" goes down by its range (8 dB)", "%.1f dB, the meter %.1f dB", hiss, m1);
+    Check(fabs(vowel) < 0.5, "de-esser: a vowel is left alone", "%.2f dB", vowel);
+    Check(fabs(quiet - hiss) < 1, "de-esser: a quiet microphone (40 dB down) gets the same", "%.1f dB", quiet);
+    Check(off < -100, "de-esser: switched off it changes nothing", "the rest %.0f dB", off);
+    /* 21.11, the band's top edge at 10 kHz: a 7 kHz burst in the band is turned down, a 16 kHz "air" tone above it is not */
+    double inBand = DsRun(2, 1, true, NULL, 10000), air = DsRun(3, 1, true, NULL, 10000), airOpen = DsRun(3, 1, true, NULL, 0);
+    Check(inBand < -3 && fabs(air) < 0.5 && airOpen < -6, "de-esser: with a top edge at 10 kHz the band is turned down and what is above it left alone",
+          "7 kHz in the band %.1f dB, 16 kHz above it %.2f dB (without the edge %.1f dB)", inBand, air, airOpen);
+}
+
+// 21.11, the compressor's characters and the colour after it
+static RtaParams CharParams(int chr, float thr, float ratio, float att, float rel)
+{
+    RtaParams p = Blank(); p.flags = RTA_ON | RTA_COMP; p.thrDb = thr; p.ratio = ratio; p.attackMs = att; p.releaseMs = rel; p.kneeDb = 0; p.compChar = (float)chr;
+    return Alike(p);
+}
+/* a 1 kHz tone of amp for n samples through d, the envelope (dB) after each block of 48 */
+static void ToneEnv(RtDsp& d, double amp, int n, std::vector<double>* envs)
+{
+    std::vector<float> buf(2 * 48);
+    static long long ph = 0;
+    for (int t = 0; t < n; t += 48)
+    {
+        for (int i = 0; i < 48; i++) { double v = amp * sin(2 * PI * 1000 * (ph++) / 48000.0); buf[2 * i] = buf[2 * i + 1] = (float)v; }
+        d.Process(buf.data(), buf.data(), 48);
+        if (envs) envs->push_back(d.env);
+    }
+}
+static void TestCharacter()
+{
+    /* FET against clean, the same 10 ms attack: the time to reach 63 % of the reduction */
+    double t63[2];
+    for (int k = 0; k < 2; k++)
+    {
+        RtDsp* d = new RtDsp; d->Init(48000, 2); RtaParams p = CharParams(k ? 1 : 0, -30, 4, 10, 200); d->Set(&p);
+        ToneEnv(*d, 0.001, 48000, NULL);
+        std::vector<double> e; ToneEnv(*d, 0.5, 48000, &e);
+        double fin = e.back(); int i = 0; while (i < (int)e.size() && e[i] > 0.63 * fin) i++;
+        t63[k] = i * 1.0; delete d;   /* in ms (a block of 48 is 1 ms) */
+    }
+    Check(t63[1] < t63[0] * 0.6, "character FET: the attack is faster than the clean one's", "63 %% of the reduction in %.0f ms (clean %.0f ms)", t63[1], t63[0]);
+
+    /* optical: after a long loud stretch half of the reduction comes back fast, the rest slowly, and slower after a
+       longer stretch (its memory) */
+    double back100[2], left1s[2];
+    for (int k = 0; k < 2; k++)
+    {
+        RtDsp* d = new RtDsp; d->Init(48000, 2); RtaParams p = CharParams(2, -30, 4, 10, 200); d->Set(&p);
+        ToneEnv(*d, 0.001, 24000, NULL);
+        ToneEnv(*d, 0.5, k ? 48000 * 4 : 48000 / 2, NULL);
+        double start = d->env; std::vector<double> e; ToneEnv(*d, 0.001, 48000 * 2, &e);
+        back100[k] = 1 - e[100] / start; left1s[k] = e[1000] / start; delete d;
+    }
+    Check(back100[1] > 0.35 && left1s[1] > 0.1 && left1s[1] > left1s[0], "character optical: a release in two stages, with a memory",
+          "after 4 s of squeezing: %.0f %% back in 100 ms, %.0f %% still on after 1 s (after 0.5 s of squeezing: %.0f %%)", back100[1] * 100, left1s[1] * 100, left1s[0] * 100);
+
+    /* vari-mu: the ratio grows with the level */
+    {
+        RtDsp* d = new RtDsp; d->Init(48000, 2); RtaParams p = CharParams(3, -30, 4, 5, 100); d->Set(&p);
+        double gr[3]; const double lv[3] = { -24, -18, 0 };   /* dB of the tone's peak: 6, 12 and 30 dB over the threshold */
+        for (int k = 0; k < 3; k++) { ToneEnv(*d, pow(10, lv[k] / 20), 48000, NULL); gr[k] = d->env; }
+        double rLow = (lv[1] - lv[0]) / ((lv[1] + gr[1]) - (lv[0] + gr[0])), rHigh = (lv[2] - lv[1]) / ((lv[2] + gr[2]) - (lv[1] + gr[1]));
+        Check(rLow < 2.5 && rHigh > rLow + 1 && rHigh < 4.5, "character vari-mu: the ratio grows with the level", "%.1f:1 just over the threshold, %.1f:1 high over it (4:1 set)", rLow, rHigh);
+        delete d;
+    }
+}
+
+/* harmonics of a tone through the colour: the fundamental and the 2nd and 3rd, dB of the fundamental */
+static void ColorRun(int type, double f, double amp, double* h2, double* h3, double* fund, double probe = 0, double* atProbe = NULL)
+{
+    RtDsp* d = new RtDsp; d->Init(48000, 2);
+    RtaParams p = Blank(); p.flags = RTA_ON | RTA_COMP; p.ratio = 1; p.colorType = (float)type; p.colorAmt = 100; d->Set(&p);
+    int N = 48000 * 2; std::vector<float> buf(2 * 480), y(N);
+    for (int t = 0; t < N; t += 480) { for (int i = 0; i < 480; i++) { double v = amp * sin(2 * PI * f * (t + i) / 48000.0); buf[2 * i] = buf[2 * i + 1] = (float)v; } d->Process(buf.data(), buf.data(), 480); for (int i = 0; i < 480; i++) y[t + i] = buf[2 * i]; }
+    auto Lv = [&](double fr) { double re = 0, im = 0; for (int i = N / 2; i < N; i++) { double w = 0.5 - 0.5 * cos(2 * PI * (i - N / 2) / (N / 2)); re += y[i] * w * cos(2 * PI * fr * i / 48000.0); im += y[i] * w * sin(2 * PI * fr * i / 48000.0); } return 20 * log10(sqrt(re * re + im * im) + 1e-12); };
+    double a1 = Lv(f); *fund = a1; *h2 = Lv(2 * f) - a1; *h3 = Lv(3 * f) - a1;
+    if (atProbe) *atProbe = Lv(probe) - a1;
+    delete d;
+}
+static void TestColor()
+{
+    double h2, h3, a, al;
+    ColorRun(1, 1000, 0.5, &h2, &h3, &a);
+    Check(h2 > -45 && h2 > h3 + 6, "colour tube: the 2nd harmonic leads", "2nd %.0f dB, 3rd %.0f dB", h2, h3);
+    ColorRun(2, 1000, 0.5, &h2, &h3, &a);
+    Check(h2 > -45 && h3 > -45, "colour transistor: the 2nd and the 3rd", "2nd %.0f dB, 3rd %.0f dB", h2, h3);
+    ColorRun(3, 1000, 0.5, &h2, &h3, &a);
+    Check(h3 > -45 && h3 > h2 + 10, "colour tape: the 3rd, symmetric", "3rd %.0f dB, 2nd %.0f dB", h3, h2);
+    double lowA, hiA, x2, x3;
+    ColorRun(3, 80, 0.01, &x2, &x3, &lowA); ColorRun(3, 1000, 0.01, &x2, &x3, &hiA);
+    Check(lowA - hiA > 1, "colour tape: the bump at 80 Hz", "+%.1f dB at 80 Hz against 1 kHz, quiet", lowA - hiA);
+    double t1k2, t1k3, t60_2, t60_3;
+    ColorRun(4, 1000, 0.5, &t1k2, &t1k3, &a); ColorRun(4, 60, 0.5, &t60_2, &t60_3, &a);
+    Check(t60_3 > -40 && t1k3 < t60_3 - 15, "colour transformer: the bass saturates, the rest stays clean", "60 Hz: 3rd %.0f dB; 1 kHz: 3rd %.0f dB", t60_3, t1k3);
+    /* 15 kHz through the transistor: its 3rd (45 kHz) must not fold back to 3 kHz */
+    ColorRun(2, 15000, 0.7, &h2, &h3, &a, 3000, &al);
+    Check(al < -60, "colour: no folding back (15 kHz through the transistor)", "at 3 kHz %.0f dB", al);
+    /* strength 0: the sound as it was, only later */
+    {
+        RtDsp* d = new RtDsp; d->Init(48000, 2); RtaParams p = Blank(); p.flags = RTA_ON | RTA_COMP; p.ratio = 1; p.colorType = 1; p.colorAmt = 0; d->Set(&p);
+        int N = 48000; std::vector<float> x(N), y(N), buf(2 * 480); g_rng = 9; for (int i = 0; i < N; i++) x[i] = 0.3f * Noise();
+        for (int t = 0; t < N; t += 480) { for (int i = 0; i < 480; i++) buf[2 * i] = buf[2 * i + 1] = x[t + i]; d->Process(buf.data(), buf.data(), 480); for (int i = 0; i < 480; i++) y[t + i] = buf[2 * i]; }
+        double e = DiffDb(x, y, d->Latency(), 24000);
+        Check(e < -100, "colour at 0 %: the sound as it was, only its delay later", "the rest %.0f dB (delay %d samples)", e, d->Latency());
+        delete d;
+    }
+}
+
+// 21.11, the second compressor (first in the chain, in parts): alone it follows its formula, before the main one the main
+// one squeezes what it lets out, its parts squeeze apart, its mix is a parallel compression, and off it changes nothing
+static RtaParams C2Params(bool first, bool second, float mix, float thr2, float split, float ratioTop)
+{
+    RtaParams p = Blank(); p.flags = RTA_ON | (first ? RTA_COMP : 0) | (second ? RTA_COMP2 : 0);
+    p.thrDb = -30; p.ratio = 4; p.attackMs = 1; p.releaseMs = 300; p.kneeDb = 0; p = Alike(p);
+    for (int i = 0; i < 3; i++) { RtaCompBand q = { thr2, 3, 1, 300, 0, 0 }; p.c2b[i] = q; }
+    p.c2b[2].ratio = ratioTop; p.c2Split = split; p.c2Split2 = 0; p.c2Mix = mix; p.c2Char = 0;
+    return p;
+}
+static double C2Run(const RtaParams& p, double f, double inDb, double* gr0)
+{
+    RtDsp* d = new RtDsp; d->Init(48000, 2); d->Set(&p);
+    double outPeak; SineGain(*d, f, pow(10.0, inDb / 20.0), 3.0, &outPeak);
+    if (gr0) *gr0 = d->c2E[0];
+    delete d; return outPeak;
+}
+static void TestComp2()
+{
+    double worst = 0;
+    for (int in = -40; in <= 0; in += 5)
+    {
+        double out = C2Run(C2Params(false, true, 100, -20, 0, 3), 1000, in, NULL), want = in + rtd_want(in, -20, 1.0 / 3 - 1, 0, 0);
+        if (fabs(out - want) > worst) worst = fabs(out - want);
+    }
+    Check(worst < 0.6, "second compressor alone: its curve", "(worst %.2f dB)", worst);
+    /* before the main one: 0 dB in, the second (-20, 3:1) lets out -13.3; the main one (-30, 4:1) then takes 3/4 of 16.7 dB */
+    double sec = C2Run(C2Params(false, true, 100, -20, 0, 3), 1000, 0, NULL), both = C2Run(C2Params(true, true, 100, -20, 0, 3), 1000, 0, NULL);
+    double wantBoth = sec + rtd_want(sec, -30, 1.0 / 4 - 1, 0, 0);
+    Check(fabs(both - wantBoth) < 0.6, "second compressor first: the main one squeezes what it lets out", "second alone %.1f dB, both %.1f dB (%.1f expected)", sec, both, wantBoth);
+    /* in two parts at 500 Hz, the top at 1:1: the bass is squeezed, the top is not */
+    double bass = C2Run(C2Params(false, true, 100, -20, 500, 1), 100, 0, NULL), top = C2Run(C2Params(false, true, 100, -20, 500, 1), 4000, 0, NULL);
+    double wantBass = rtd_want(0, -20, 1.0 / 3 - 1, 0, 0);
+    Check(fabs(bass - wantBass) < 1 && fabs(top) < 0.3, "second compressor in parts: each part by its own settings", "100 Hz %.1f dB (%.1f expected), 4 kHz %.2f dB (1:1)", bass, wantBass, top);
+    double full = C2Run(C2Params(false, true, 100, -20, 0, 3), 1000, 0, NULL), half = C2Run(C2Params(false, true, 50, -20, 0, 3), 1000, 0, NULL);
+    double gl = pow(10.0, full / 20.0), wantHalf = 20 * log10(0.5 + 0.5 * gl);
+    Check(fabs(half - wantHalf) < 0.6, "second compressor mix 50 %: the plain sound beside (parallel)", "%.1f dB (%.1f expected; all squeezed %.1f)", half, wantHalf, full);
+    double off = C2Run(C2Params(false, false, 100, -20, 0, 3), 1000, -6, NULL);
+    Check(fabs(off + 6) < 0.05, "second compressor off: nothing changes", "%.2f dB", off);
+}
+
+// 21.11, what the chains cost (apotest --cost): each one fed 30 s of a voice with noise at the rate and in the calls the
+// real device gets, the best of three runs, as a share of one core (the model of DeepFilterNet run on the same thread,
+// so its share is in the sum; in the effect it runs on its own thread)
+static double CostOf(RtaParams p, double rate, int frames, bool dfn)
+{
+    double best = 1e9;
+    for (int run = 0; run < 3; run++)
+    {
+        RtDsp* d = new RtDsp; d->Init(rate, 2);
+#ifdef RTD_DFN
+        static void* model = NULL;
+        if (dfn) { if (!model) model = rtdf_create(100.f); d->dfSync = true; d->df = model; }
+#endif
+        d->Set(&p);
+        const int secs = 30, total = (int)(rate * secs) / frames * frames; std::vector<float> buf(2 * frames), x(total); g_rng = 7;
+        for (int i = 0; i < total; i++) x[i] = (float)(0.3 * Voice(i / rate, true) + 0.01 * Noise());   /* made before the clock starts */
+        LARGE_INTEGER f0, t0, t1; QueryPerformanceFrequency(&f0); QueryPerformanceCounter(&t0);
+        for (int t = 0; t < total; t += frames)
+        {
+            for (int i = 0; i < frames; i++) buf[2 * i] = buf[2 * i + 1] = x[t + i];
+            d->Process(buf.data(), buf.data(), frames);
+        }
+        QueryPerformanceCounter(&t1);
+        double c = (double)(t1.QuadPart - t0.QuadPart) / f0.QuadPart / secs;
+        if (c < best) best = c;
+        delete d;
+    }
+    return best;
+}
+static void CostRun()
+{
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+    auto eq = [](RtaParams& p) {
+        Band(p, 0, RTA_HIGHPASS | (3u << 8), 80, 0, 0.707f);   /* a cut at 48 dB/oct */
+        for (int i = 1; i < 12; i++) Band(p, i, RTA_BELL | (i == 6 ? (2u << 8) : 0), 50.f * (float)pow(1.75, i), (i % 2 ? 3.f : -3.f), 1.4f);
+    };
+    auto comp3 = [](RtaParams& p, float chr, float col) {
+        p.thrDb = -24; p.ratio = 4; p.attackMs = 10; p.releaseMs = 150; p.kneeDb = 6; p = Alike(p);
+        p.splitHz = 250; p.split2Hz = 4000; p.compChar = chr; p.colorType = col; p.colorAmt = col > 0 ? 50.f : 0.f; p.mixPct = 70;
+    };
+    struct Row { const char* name; RtaParams p; double rate; int frames; bool dfn; };
+    std::vector<Row> rows;
+    RtaParams p;
+    /* the output (headphones / speakers): 48 kHz, 480 frames */
+    p = Blank(); p.flags = 0; rows.push_back({ "output: the effect attached, switched off", p, 48000, 480, false });
+    p = Blank(); p.flags = RTA_ON; rows.push_back({ "output: on, every effect off", p, 48000, 480, false });
+    p = Blank(); p.flags = RTA_ON | RTA_EQ | RTA_COMP | RTA_LIMIT; eq(p); comp3(p, 0, 0); rows.push_back({ "output: EQ 12 + compressor in 3 parts + limiter", p, 48000, 480, false });
+    p = Blank(); p.flags = RTA_ON | RTA_EQ | RTA_COMP | RTA_LIMIT; eq(p); comp3(p, 3, 3); rows.push_back({ "output: the same, tube character + tape colour", p, 48000, 480, false });
+    /* the microphone: 44.1 kHz, 448 frames (as the user's) */
+    auto mic = [&](uint32_t extra) {
+        RtaParams q = Blank(); q.flags = RTA_ON | RTA_GATE | RTA_DENOISE | RTA_DEREVERB | RTA_EQ | RTA_DEESS | RTA_COMP2 | RTA_COMP | RTA_LIMIT | extra;
+        q.mute = (100u << 8) | (60u << 16); q.gateThrDb = -50; q.gateRangeDb = -20; q.gateReleaseMs = 150;
+        eq(q); q.dsHz = 5500; q.dsHz2 = 10000; q.dsThrDb = -20; q.dsRangeDb = -8; comp3(q, 3, 3);
+        for (int i = 0; i < 3; i++) { RtaCompBand b = { -20, 3, 5, 200, 6, 0 }; q.c2b[i] = b; }
+        q.c2Split = 250; q.c2Split2 = 4000; q.c2Mix = 100; q.c2Char = 1;
+        return q;
+    };
+    rows.push_back({ "mic: everything, RNNoise", mic(0), 44100, 448, false });
+#ifdef RTD_DFN
+    rows.push_back({ "mic: everything, DeepFilterNet 3", mic(RTA_DFN), 44100, 448, true });
+#endif
+    for (auto& r : rows) printf("  %-52s %6.2f %% of one core\n", r.name, CostOf(r.p, r.rate, r.frames, r.dfn) * 100);
+}
+
 int wmain(int argc, wchar_t** argv)
 {
     _mm_setcsr(_mm_getcsr() | 0x8040);
+    if (argc >= 2 && wcscmp(argv[1], L"--cost") == 0) { CostRun(); return 0; }
     TestDsp();
     TestLimiterQuality();
+    TestGate();
+    TestDenoise();
+    TestPath();
+    TestDereverb();
+    TestDeEss();
+    TestCharacter();
+    TestComp2();
+    TestColor();
+#ifdef RTD_DFN
+    TestDfn();
+#else
+    printf("      (DeepFilterNet not built in: its checks skipped)\n");
+#endif
     if (argc >= 3) { CoInitializeEx(NULL, COINIT_MULTITHREADED); TestApo(argv[1], argv[2]); }
     printf(g_fail ? "\n%d CHECK(S) FAILED\n" : "\nall checks passed\n", g_fail);
     return g_fail;

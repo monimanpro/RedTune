@@ -144,6 +144,13 @@ namespace RedTune
         }
         internal static Action<double> PaintProbe; // --motion-frames: how long each paint took (null: not measured)
 
+        // 21.11 (the user: the open sound page took ~38 % of a core): a moment of the sound repaints a control only while
+        // some of it is in sight. Windows still paints a control scrolled out of the page's view when it is invalidated
+        // (measured: 20 paints of 20), so the compressor below the window was drawn 30 times a second for nobody. When
+        // it scrolls back in, Windows paints the uncovered part as usual, with what it shows by then.
+        internal bool InView { get { var p = Parent; return p != null && Visible && p.ClientRectangle.IntersectsWith(Bounds); } }
+        protected void LiveInvalidate(Rectangle r) { if (InView) Invalidate(r); }
+
         protected Painted()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);

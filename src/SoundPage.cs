@@ -21,7 +21,7 @@ namespace RedTune
         bool loading, busy;
 
         readonly DropButton devBtn = new DropButton(), presetBtn = new DropButton();
-        readonly FlatButton makeDefault = new FlatButton("Сделать основным"), savePreset = new FlatButton("Сохранить как…"), dropPreset = new FlatButton("Удалить"), remove = new FlatButton("Убрать");
+        readonly FlatButton makeDefault = new FlatButton("Сделать основным"), savePreset = new FlatButton("Сохранить как…"), dropPreset = new FlatButton("Удалить"), resetAll = new FlatButton("Сбросить"), remove = new FlatButton("Убрать");
         readonly Toggle onT = new Toggle(), eqT = new Toggle(), compT = new Toggle(), limT = new Toggle(), muteT = new Toggle(), nahimicT = new Toggle();
         readonly Slider vol = new Slider(0, 100, 50, "%"), thr = new Slider(-60, 0, -18, "дБ"), ratio = new Slider(10, 200, 30, ""),
             mk = new Slider(-12, 24, 0, "дБ"), split = new Slider(80, 600, 250, "Гц"), split2 = new Slider(1200, 12000, 4000, "Гц");
@@ -34,6 +34,76 @@ namespace RedTune
         readonly CompGraph cgraph = new CompGraph();
         readonly LevelMeter meter = new LevelMeter();
         readonly Timer tick = new Timer { Interval = 33 }, saver = new Timer { Interval = 600 };
+        // 21.11 (the user's wish): the inputs too — «Вывод» or «Микрофон» on top; on a microphone the same equalizer,
+        // compressor and limiter, and first in the chain a noise gate (its own section, only there)
+        readonly PageTabs flowTabs = new PageTabs(0, "Вывод", "Микрофон");
+        bool mic;
+        readonly Toggle gateT = new Toggle();
+        readonly Slider gThr = new Slider(-90, 0, -50, "дБ") { WarpToKnob = true }, gRange = new Slider(-90, 0, -40, "дБ") { WarpToKnob = true },
+            gRel = new Slider(10, 2000, 150, "мс") { WarpToKnob = true, Step = 10 };
+        SectionLabel gateLabel; Row gateRow, gThrRow, gRangeRow, gRelRow;
+        // 21.11 (the user's wish): the denoiser (RNNoise) before the gate, in the same section
+        readonly Toggle dnT = new Toggle();
+        readonly Slider dnAmt = new Slider(0, 100, 100, "%") { WarpToKnob = true, Step = 5 };
+        Row dnRow, dnAmtRow;
+        const string DnSub = "Нейросеть RNNoise убирает шум и во время речи: вентилятор, клавиатуру, улицу, гул";
+        // 21.11 (the user): the model of the denoiser, RNNoise or DeepFilterNet 3
+        readonly Segmented dnModel = new Segmented("RNNoise", "DeepFilterNet");
+        Row dnModelRow;
+        const string DnSubDfn = "Нейросеть DeepFilterNet убирает шум и во время речи: вентилятор, клавиатуру, улицу, гул";
+        const string DnAmtRnn = "Сколько очищенного звука вместо исходного: меньше — голос естественнее";
+        const string DnAmtDfn = "Насколько глубоко можно убрать шум: меньше — голос естественнее";
+        string DnSubNow { get { return p != null && p.DenoiseModel == 1 ? DnSubDfn : DnSub; } }
+        // 21.11 (the user, after Supertone Clear): the reverb remover, after the denoiser
+        readonly Toggle drT = new Toggle();
+        readonly Slider drAmt = new Slider(0, 100, 70, "%") { WarpToKnob = true, Step = 5 };
+        Row drRow, drAmtRow;
+        const string DrSub = "Убирает гулкий хвост комнаты после слов; сколько звучит комната, слышит сам";
+        // 21.11 (the user): the de-esser, its own section after the equalizer
+        readonly Toggle dsT = new Toggle();
+        // 21.11 (the user): the band from both sides, one track with two knobs
+        readonly RangeSlider dsBand = new RangeSlider(2000, 20000, 6500, 10000) { Caption = (l, h) => KHz(l) + " – " + KHz(h) + " " + L.T("кГц") };
+        static string KHz(int hz) { return (hz / 1000.0).ToString(hz % 1000 == 0 ? "0" : "0.#", CultureInfo.InvariantCulture); }
+        readonly Slider dsThr = new Slider(-40, 0, -15, "дБ") { WarpToKnob = true },
+            dsRange = new Slider(-24, 0, -8, "дБ") { WarpToKnob = true };
+        Row dsRow, dsHzRow, dsThrRow, dsRangeRow; SectionLabel dsLabel;   // 21.11 (the user): the microphone's only
+        const string DsSub = "Убирает резкие «с», «ш», «щ»: приглушает верх, только пока он выделяется";
+        // 21.11 (the user): the compressor's character and its colour
+        readonly Segmented chrSeg = new Segmented("Чистый", "FET", "Оптический", "Ламповый");
+        readonly DropButton colBtn = new DropButton();
+        readonly Slider colAmt = new Slider(0, 100, 50, "%") { WarpToKnob = true, Step = 5 };
+        Row chrRow, colRow, colAmtRow;
+        static readonly string[] ChrSubs = {
+            "Чистый: жмёт ровно и точно, как настроено",
+            "FET: быстрый и плотный, мгновенно ловит пики",
+            "Оптический: мягкий и плавный, отпускает в две стадии; чем дольше жал, тем медленнее",
+            "Ламповый: самый мягкий, на тихом почти не жмёт, сжатие растёт с громкостью" };
+        static readonly string[] ColNames = { "Нет", "Лампа", "Транзистор", "Лента", "Трансформатор" };
+        // 21.11 (the user): the first compressor's mix (parallel compression), and the second compressor (microphones)
+        readonly Slider mixS = new Slider(0, 100, 100, "%") { WarpToKnob = true, Step = 5 };
+        Row mixRow;
+        readonly Toggle c2T = new Toggle();
+        readonly Segmented c2Seg = new Segmented("Чистый", "FET", "Оптический", "Ламповый");
+        readonly Slider c2Mix = new Slider(0, 100, 100, "%") { WarpToKnob = true, Step = 5 };
+        // (the user: «exactly the same, with the pictures»): its own compressor's picture in the second's mode
+        readonly CompGraph cgraph2 = new CompGraph { Second = true };
+        readonly SoundParams c2View = new SoundParams();
+        Row c2Row, c2ChrRow, c2MixRow;
+        const string C2Sub = "Жмёт первым, до эквалайзера, и готовит звук для компрессора; компрессор с лимитером остаётся последним";
+        static readonly string[] ColSubs = {
+            "Без окраски: звук как есть",
+            "Лампа: тёплый, округлый, чётные гармоники",
+            "Транзистор: плотный и яркий, чётные и нечётные гармоники",
+            "Лента: гладкий, винтажный, мягко скругляет пики и чуть поднимает низ",
+            "Трансформатор: плотный, жирный бас, верх остаётся чистым" };
+        // 21.11 (the user's wish): hear the microphone through the default output while setting it (MicListen.Monitor)
+        readonly Toggle monT = new Toggle(); Row monRow;
+        bool monAsking; // 21.11: the question is open; the status tick must not take the switch back meanwhile (the user: it went off by itself)
+        const string MonSub = "Звук микрофона после обработки сразу идёт в устройство вывода: настройки слышно, пока их меняешь";
+        const string PresetSubOut = "Все настройки обработки сразу; свои можно сохранить", PresetSubMic = PresetSubOut;
+        // the presets of the tab shown
+        List<SoundPreset> Shown() { return AudioFx.Presets.Where(x => x.Mic == mic).ToList(); }
+        const string GateSub = "Пропускает звук, только когда он громче порога: в паузах шум не слышен";
         uint lastBeat; int quiet = 100, ticks;
 
         // 19.11 (the user's wish): Ctrl+Z / Ctrl+Y on «Звук», as «Видеокарта» has for its curve. A step is everything of
@@ -122,23 +192,88 @@ namespace RedTune
         public SoundPage(Settings s)
         {
             settings = s;
+            Add(flowTabs, 0);
+            flowTabs.Picked += i =>
+            {
+                if ((i == 1) == mic) return;
+                flowTabs.Selected = i; mic = i == 1; dev = null;
+                MonitorOff(); MicListen.Stop(); Reload(); ShowFlow();
+            };
             Section("Устройство");
             devRow = Row("Устройство вывода", null, makeDefault, devBtn);
             volRow = Row("Громкость", null, muteT, vol);
             onRow = Row("Обработка звука", null, onT);
+            monRow = Row("Слушать себя", MonSub, monT);
+            monT.CheckedChanged += (o, e) => { if (!loading) SwitchMonitor(monT.Checked); };
             Add(meter);
+            // 21.11 (the user's wish): the preset is all of the processing at once, so it stands before the effects, not in
+            // the equalizer's section; the output and the microphone have lists of their own (Shown)
+            presetRow = Row("Пресет", PresetSubOut, resetAll, dropPreset, savePreset, presetBtn);
+            gateLabel = Section("Шум");
+            dnRow = Row("Шумодав", DnSub, dnT);
+            dnModelRow = Row("Модель", "RNNoise лёгкая (1 % ядра); DeepFilterNet чище в шуме, но 4 % ядра и на 30 мс позже", dnModel);
+            dnModel.Changed += (o, e) => { if (loading || dev == null || dnModel.Selected < 0) return; p.DenoiseModel = dnModel.Selected; Push(); ShowDenoise(); };
+            dnAmtRow = Row("Сила", DnAmtRnn, dnAmt);
+            dnT.CheckedChanged += (o, e) => { if (loading || dev == null) return; p.Denoise = dnT.Checked; Push(); ShowFlow(); };
+            dnAmt.Changed += (o, e) => { if (loading || dev == null) return; p.DenoiseAmount = dnAmt.Value; Push(); };
+            drRow = Row("Реверб", DrSub, drT);
+            drAmtRow = Row("Сила", "Насколько тише станет хвост комнаты: больше — суше, но голос может стать «водянистым»", drAmt);
+            drT.CheckedChanged += (o, e) => { if (loading || dev == null) return; p.Dereverb = drT.Checked; Push(); ShowFlow(); };
+            drAmt.Changed += (o, e) => { if (loading || dev == null) return; p.DereverbAmount = drAmt.Value; Push(); };
+            gateRow = Row("Гейт", GateSub, gateT);
+            gThrRow = Row("Порог", "Тише этого звук глушится", gThr);
+            gRangeRow = Row("Глубина", "Насколько тише становится звук под порогом", gRange);
+            gRelRow = Row("Отпускание", "За сколько гейт закрывается, когда звук стих (после 150 мс ожидания)", gRel);
+            gateT.CheckedChanged += (o, e) => { if (loading || dev == null) return; p.Gate = gateT.Checked; Push(); ShowFlow(); };
+            gThr.Changed += (o, e) => { if (loading || dev == null) return; p.GateThr = gThr.Value; Push(); };
+            gRange.Changed += (o, e) => { if (loading || dev == null) return; p.GateRange = gRange.Value; Push(); };
+            gRel.Changed += (o, e) => { if (loading || dev == null) return; p.GateRelease = gRel.Value; Push(); };
+            ShowFlow();
 
             Section("Эквалайзер");
-            presetRow = Row("Пресет", "Готовые настройки эквалайзера и компрессора; свои можно сохранить", dropPreset, savePreset, presetBtn);
             eqRow = Row("Эквалайзер", "Точки на графике тянутся мышью: влево-вправо частота, вверх-вниз усиление. Колесо на точке меняет ширину", eqT);
             Add(graph);
             // 20.11: «Общее усиление» is no longer a row here: it is the first strip of the equalizer (EqGraph, Part.Master)
 
+            dsLabel = Section("Де-эссер");
+            dsRow = Row("Де-эссер", DsSub, dsT);
+            dsHzRow = Row("Полоса", "Где искать шипящие: выше и ниже неё звук не трогается", dsBand);
+            dsThrRow = Row("Порог", "Насколько верх должен выделяться из всего звука: ниже — срабатывает чаще", dsThr);
+            dsRangeRow = Row("Глубина", "Насколько можно приглушить шипящие", dsRange);
+            dsT.CheckedChanged += (o, e) => { if (loading || dev == null) return; p.DeEss = dsT.Checked; Push(); ShowFlow(); ShowDeEss(); };
+            dsBand.Changed += (o, e) => { if (loading || dev == null) return; p.DeEssHz = dsBand.Lo; p.DeEssHz2 = dsBand.Hi; Push(); ShowDeEss(); };
+            dsThr.Changed += (o, e) => { if (loading || dev == null) return; p.DeEssThr = dsThr.Value; Push(); };
+            dsRange.Changed += (o, e) => { if (loading || dev == null) return; p.DeEssRange = dsRange.Value; Push(); };
+
+            cgraph2.Changed += (o, e) => { if (loading || dev == null) return; TickIfDue(); p.C2Split = c2View.Split; p.C2Split2 = c2View.Split2; Push(); };
+            c2T.CheckedChanged += (o, e) => { if (loading || dev == null) return; p.Comp2 = c2T.Checked; Push(); ShowFlow(); ShowComp2(); };
+            c2Seg.Changed += (o, e) => { if (loading || dev == null || c2Seg.Selected < 0) return; p.C2Char = c2Seg.Selected; Push(); ShowComp2(); };
+            c2Mix.Changed += (o, e) => { if (loading || dev == null) return; p.C2Mix = c2Mix.Value; c2View.Mix = p.C2Mix; Push(); };
+
             Section("Компрессор и лимитер"); // 19.11: one section and one picture for both (the user's wish)
+            // 21.11 (the user): the pre-compressor (microphones) first, in the order of the chain: it, the compressor, the limiter
+            c2Row = Row("Предкомпрессор", C2Sub, c2T);
             compRow = Row("Компрессор", "Убавляет громкие места: тихое слышнее, громкое не бьёт по ушам", compT);
             // 20.11 (the user's wish): the limiter's switch right under the compressor's; its ceiling is a fader in the picture,
             // right of the monitor (CompGraph, Part.CeilFader), no longer a row
             limRow = Row("Лимитер", "Не выпускает звук выше потолка, сколько бы ни поднял эквалайзер: без хрипа и перегруза", limT);
+            // the second compressor's rows and picture before the main one's: it comes first in the chain
+            c2ChrRow = Row("Характер предкомпрессора", ChrSubs[2], c2Seg);
+            c2MixRow = Row("Смешение предкомпрессора", "Сколько сжатого звука в итоге: меньше — рядом остаётся несжатый (параллельное сжатие)", c2Mix);
+            Add(cgraph2);
+            chrRow = Row("Характер", ChrSubs[0], chrSeg);
+            colRow = Row("Окраска", ColSubs[0], colBtn);
+            colAmtRow = Row("Сила окраски", "Чем громче звук, тем сильнее окраска; работает вместе с компрессором", colAmt);
+            chrSeg.Changed += (o, e) => { if (loading || dev == null || chrSeg.Selected < 0) return; p.CompChar = chrSeg.Selected; Push(); ShowColor(); cgraph.Invalidate(); };
+            colBtn.Changed += (o, e) =>
+            {
+                if (loading || dev == null || colBtn.Index < 0) return;
+                if (colBtn.Index == 0) p.ColorAuto = true; else { p.ColorAuto = false; p.ColorType = colBtn.Index - 1; }
+                Push(); ShowColor();
+            };
+            colAmt.Changed += (o, e) => { if (loading || dev == null) return; p.ColorAmt = colAmt.Value; Push(); };
+            mixRow = Row("Смешение", "Сколько сжатого звука в итоге: меньше — рядом остаётся несжатый (параллельное сжатие)", mixS);
+            mixS.Changed += (o, e) => { if (loading || dev == null) return; p.Mix = mixS.Value; Push(); };
             Add(cgraph); // 19.11: the compressor drawn, with its settings as points and dials (the user's wish)
             cgraph.ByFreq = s.CompByFreq;
             // the bands: how many, where they part, and which one the rows and the picture show. (Two bands is what «Бас
@@ -181,7 +316,7 @@ namespace RedTune
             nahimicT.CheckedChanged += (o, e) => { if (!loading) SwitchNahimic(nahimicT.Checked); };
             removeRow = Row("Убрать обработку с устройства", "Red Tune уберёт свой обработчик из цепочки эффектов этого устройства; настройки останутся", remove);
 
-            devBtn.Changed += (o, e) => { if (loading || devBtn.Index < 0 || devBtn.Index >= devices.Count) return; EndListen(); dev = devices[devBtn.Index]; LoadDevice(); };
+            devBtn.Changed += (o, e) => { if (loading || devBtn.Index < 0 || devBtn.Index >= devices.Count) return; EndListen(); MonitorOff(); dev = devices[devBtn.Index]; LoadDevice(); };
             makeDefault.Click += (o, e) =>
             {
                 if (dev == null) return;
@@ -225,9 +360,10 @@ namespace RedTune
             cgraph.ViewPicked += (o, e) => View(cgraph.ByFreq);
             presetBtn.Changed += (o, e) =>
             {
-                if (loading || presetBtn.Index < 0 || presetBtn.Index >= AudioFx.Presets.Count) return;
+                var list = Shown();
+                if (loading || presetBtn.Index < 0 || presetBtn.Index >= list.Count) return;
                 var keepOn = p.On;
-                p = AudioFx.Presets[presetBtn.Index].P.Clone(); p.On = keepOn;
+                p = list[presetBtn.Index].P.Clone(); p.On = keepOn;
                 if (dev != null) AudioFx.ByDevice[dev.Id] = p;
                 Show(p); Push();
             };
@@ -235,51 +371,170 @@ namespace RedTune
             {
                 var name = InputDialog.Ask(FindForm(), "Новый пресет", "Название", L.T("Мой пресет"));
                 if (name == null) return;
-                var old = AudioFx.Presets.FirstOrDefault(x => x.Name == name);
+                var old = AudioFx.Presets.FirstOrDefault(x => x.Name == name && x.Mic == mic);
                 if (old != null && old.BuiltIn) { Msg.Show(FindForm(), "Такое название уже есть", "Red Tune"); return; }
                 if (old != null) AudioFx.Presets.Remove(old);
-                AudioFx.Presets.Add(new SoundPreset { Name = name, P = p.Clone() });
+                AudioFx.Presets.Add(new SoundPreset { Name = name, P = p.Clone(), Mic = mic });
                 AudioFx.Save(); ShowPreset();
+            };
+            // 21.11 (the user): everything back as it comes, every effect off (Ctrl+Z brings the settings back)
+            resetAll.Click += (o, e) =>
+            {
+                if (loading || dev == null) return;
+                p = SoundParams.Defaults(p.On);
+                AudioFx.ByDevice[dev.Id] = p;
+                Show(p); Push();
             };
             dropPreset.Click += (o, e) =>
             {
-                int i = presetBtn.Index; if (i < 0 || i >= AudioFx.Presets.Count || AudioFx.Presets[i].BuiltIn) return;
-                AudioFx.Presets.RemoveAt(i); AudioFx.Save(); ShowPreset();
+                var list = Shown(); int i = presetBtn.Index; if (i < 0 || i >= list.Count || list[i].BuiltIn) return;
+                AudioFx.Presets.Remove(list[i]); AudioFx.Save(); ShowPreset();
             };
             remove.Click += (o, e) => RemoveFromDevice();
             saver.Tick += (o, e) => { saver.Stop(); AudioFx.Save(); };
             tick.Tick += (o, e) => Tick();
-            VisibleChanged += (o, e) => { if (Visible) { Reload(); tick.Start(); } else { tick.Stop(); EndListen(); } };
+            VisibleChanged += (o, e) => { if (Visible) { Reload(); tick.Start(); } else { tick.Stop(); EndListen(); MonitorOff(); MicListen.Stop(); } };
             // a run of changes ends half a second after the last one, but not while the mouse still holds something
             gestureEnd.Tick += (o, e) => { if (Control.MouseButtons != MouseButtons.None) return; gestureEnd.Stop(); gesture = false; };
-            Disposed += (o, e) => { try { EndListen(); } catch { } tick.Dispose(); saver.Dispose(); gestureEnd.Dispose(); };
+            Disposed += (o, e) => { try { EndListen(); MonitorOff(); MicListen.Stop(); } catch { } tick.Dispose(); saver.Dispose(); gestureEnd.Dispose(); };
+        }
+
+        // the microphone into the output: asked once each time, since through speakers the microphone hears itself and howls
+        void SwitchMonitor(bool on)
+        {
+            if (!on) { MonitorOff(); UpdateListen(); return; }
+            var outDev = AudioFx.Devices().FirstOrDefault(d => d.Default);
+            if (dev == null || outDev == null) { loading = true; monT.Set(false); loading = false; monRow.SetSub("Нет устройства вывода"); return; }
+            var text = L.T("Звук микрофона пойдёт в «") + outDev.Full + L.T("» с задержкой в несколько сотых секунды.") + "\n\n"
+                + L.T("Если это динамики, а не наушники, микрофон услышит их и засвистит: лучше слушать в наушниках.");
+            bool yes; monAsking = true; try { yes = ConfirmDialog.Ask(FindForm(), "Слушать себя", text, "Слушать", "Отмена"); } finally { monAsking = false; }
+            if (!yes) { loading = true; monT.Set(false); loading = false; return; }
+            if (!monT.Checked) { loading = true; monT.Set(true); loading = false; }
+            MicListen.MonitorError = null; MicListen.Monitor = true;
+            monRow.SetSub(L.T("Слушаю: звук идёт в «") + outDev.Full + "»");
+            UpdateListen();
+        }
+
+        // 21.11: the second compressor's character in words, and the sliders it does not listen to greyed (the optical's
+        // release, the tube's knee), as the first compressor's dials
+        void ShowComp2()
+        {
+            if (c2ChrRow == null || p == null) return;
+            string cs = ChrSubs[Math.Max(0, Math.Min(3, p.C2Char))]; if (c2ChrRow.Sub != cs) c2ChrRow.SetSub(cs);
+            /* the picture's settings: one part, the second compressor's six (the same object: the picture edits them) */
+            c2View.Parts = p.C2Parts; c2View.Split = p.C2Split; c2View.Split2 = p.C2Split2;
+            c2View.Comp = p.Comp2; c2View.Limit = false; c2View.CompChar = p.C2Char; c2View.Mix = p.C2Mix;
+            cgraph2.P = c2View; if (!c2View.ActiveParts.Contains(cgraph2.Band)) cgraph2.Band = c2View.ActiveParts[0]; cgraph2.Dim = !p.Comp2; cgraph2.Invalidate();
+        }
+
+        // 21.11: the character's and the colour's words follow the choice; «Авто» names the colour the character brings;
+        // the strength shows only while there is a colour
+        void ShowColor()
+        {
+            if (chrRow == null || p == null) return;
+            string cs = ChrSubs[Math.Max(0, Math.Min(3, p.CompChar))]; if (chrRow.Sub != cs) chrRow.SetSub(cs);
+            int now = p.ColorNow;
+            var items = new[] { L.T("Авто") + " · " + L.T(ColNames[SoundParams.ColorOfChar[Math.Max(0, Math.Min(3, p.CompChar))]]) }.Concat(ColNames.Select(n => L.T(n))).ToArray();
+            colBtn.Set(items, p.ColorAuto ? 0 : p.ColorType + 1);
+            string ss = (p.ColorAuto ? L.T("По характеру. ") : "") + L.T(ColSubs[now]); if (colRow.Sub != ss) colRow.SetSub(ss);
+            bool show = now > 0;
+            if (colAmtRow.Visible != show) { colAmtRow.Visible = show; Relayout(); }
+            colRow.PerformLayout();
+        }
+
+        // 21.11 (the user): where the de-esser works, shown on the equalizer's picture (not to be edited there)
+        void ShowDeEss()
+        {
+            if (p == null) return;
+            graph.DsOn = p.DeEss && mic; graph.DsLo = p.DeEssHz; graph.DsHi = p.DeEssHz2; if (!p.DeEss) graph.DsDb = 0;
+            graph.Invalidate();
+        }
+
+        // the denoiser's words follow its model (the strength means a mix for RNNoise, a depth for DeepFilterNet)
+        void ShowDenoise()
+        {
+            if (dnRow == null || p == null) return;
+            if (dnAmtRow.Sub != (p.DenoiseModel == 1 ? DnAmtDfn : DnAmtRnn)) dnAmtRow.SetSub(p.DenoiseModel == 1 ? DnAmtDfn : DnAmtRnn);
+            if (dnRow.Sub != DnSubNow) dnRow.SetSub(DnSubNow);
+        }
+
+        // off, and the switch shows it (another tab, the page left, another microphone)
+        void MonitorOff()
+        {
+            MicListen.Monitor = false;
+            if (monT.Checked) { loading = true; monT.Set(false); loading = false; }
+            if (monRow != null && monRow.Sub != MonSub) monRow.SetSub(MonSub);
+        }
+
+        // --page-png sound with RT_MIC=1: the «Микрофон» tab, as a click on it
+        internal void ShowMic() { if (mic) return; flowTabs.Selected = 1; mic = true; dev = null; Reload(); ShowFlow(); }
+        // the off-screen render (RT_C2=1): the second compressor shown switched on, nothing written
+        internal void ShowComp2Demo() { if (p == null) return; p.Comp2 = true; loading = true; c2T.Set(true); loading = false; ShowFlow(); ShowComp2(); }
+
+        // the rows that belong to the kind of device shown: the gate only on a microphone, its sliders only while it is on
+        void ShowFlow()
+        {
+            if (gateRow == null) return;
+            bool g = mic, sliders = mic && gateT.Checked, dn = mic && dnT.Checked, dr = mic && drT.Checked, ds = mic && dsT.Checked;
+            if (c2Row != null)
+            {
+                bool c2 = mic && c2T.Checked;
+                Row[] inner = { c2ChrRow, c2MixRow };
+                if (c2Row.Visible != mic || inner.Any(r => r.Visible != c2) || cgraph2.Visible != c2)
+                { c2Row.Visible = mic; foreach (var r in inner) r.Visible = c2; cgraph2.Visible = c2; Relayout(); }
+            }
+            if (dsHzRow != null && (dsLabel.Visible != mic || dsRow.Visible != mic || dsHzRow.Visible != ds || dsThrRow.Visible != ds || dsRangeRow.Visible != ds))
+            { dsLabel.Visible = dsRow.Visible = mic; dsHzRow.Visible = dsThrRow.Visible = dsRangeRow.Visible = ds; Relayout(); }
+            if (gateLabel.Visible != g || gateRow.Visible != g || gThrRow.Visible != sliders || gRangeRow.Visible != sliders || gRelRow.Visible != sliders || monRow.Visible != g
+                || dnRow.Visible != g || dnAmtRow.Visible != dn || dnModelRow.Visible != dn || drRow.Visible != g || drAmtRow.Visible != dr)
+            { gateLabel.Visible = gateRow.Visible = monRow.Visible = dnRow.Visible = drRow.Visible = g; gThrRow.Visible = gRangeRow.Visible = gRelRow.Visible = sliders; dnAmtRow.Visible = dnModelRow.Visible = dn; drAmtRow.Visible = dr; Relayout(); }
+            string title = mic ? "Микрофон" : "Устройство вывода";
+            if (devRow.Title != title) { devRow.Title = title; devRow.Invalidate(); }
+        }
+
+        // the page records from the microphone while it shows it with the effect on (MicListen: Windows runs an input's
+        // effects only while some program records from it)
+        void UpdateListen()
+        {
+            // (listening to oneself records too, with or without the effect: the raw sound can be heard as well)
+            bool want = mic && Visible && dev != null && ((state.Attached && p.On) || MicListen.Monitor);
+            if (want) MicListen.Start(dev.Id); else if (MicListen.Device != Guid.Empty) MicListen.Stop();
         }
 
         // the devices anew (one may have been plugged in), the same one kept when it is still there
         void Reload()
         {
             AudioFx.Refresh();
-            devices = AudioFx.Devices();
+            devices = AudioFx.Devices(mic);
             var keep = dev == null ? null : devices.FirstOrDefault(d => d.Id == dev.Id);
             dev = keep ?? devices.FirstOrDefault(d => d.Default) ?? devices.FirstOrDefault();
             loading = true;
-            devBtn.Set(devices.Select(d => d.Full).ToArray(), dev == null ? -1 : devices.IndexOf(dev));
+            // 21.11 (the user's wish): a device the effect cannot go onto (no effects section, or its end slot held by
+            // another effect with no list to join, as a Bluetooth headset's microphone) is marked in the list, not hidden:
+            // its volume and «Сделать основным» still work
+            devBtn.Set(devices.Select(d => d.Full + (CanFx(d.Id) ? "" : L.T(" · без обработки"))).ToArray(), dev == null ? -1 : devices.IndexOf(dev));
             loading = false;
             LoadDevice();
+        }
+
+        static bool CanFx(Guid id)
+        {
+            try { var st = AudioFx.State(id); return st.HasKey && !st.OtherEndEffect; } catch { return true; }
         }
 
         void LoadDevice()
         {
             if (dev == null)
             {
-                devRow.SetSub("Нет включённых устройств вывода"); state = new AudioFx.FxState(); p = SoundParams.Start();
-                Show(p); Status(null); return;
+                devRow.SetSub(mic ? "Нет включённых микрофонов" : "Нет включённых устройств вывода"); state = new AudioFx.FxState(); p = SoundParams.Start();
+                Show(p); Status(null); UpdateListen(); return;
             }
             p = AudioFx.For(dev.Id);
             state = AudioFx.State(dev.Id);
             if (!state.Attached && p.On) p.On = false; // the effect was taken off outside the program (a driver update): the switch says so
             makeDefault.Visible = !dev.Default;
-            devRow.SetSub(dev.Default ? "Основное: сюда играют все программы" : "Не основное: программы играют в другое устройство");
+            devRow.SetSub(mic ? (dev.Default ? "Основной: его слушают все программы" : "Не основной: программы слушают другой микрофон")
+                : dev.Default ? "Основное: сюда играют все программы" : "Не основное: программы играют в другое устройство");
             devRow.PerformLayout();
             loading = true;
             int v = AudioFx.GetVolume(dev.Id); vol.Enabled = v >= 0; if (v >= 0) vol.Value = v;
@@ -288,6 +543,7 @@ namespace RedTune
             lastBeat = 0; quiet = 100;
             Baseline();
             Show(p); Status(AudioFx.Meters(dev.Id));
+            UpdateListen();
         }
 
         // the settings onto the controls
@@ -295,12 +551,20 @@ namespace RedTune
         {
             loading = true;
             onT.Set(sp.On && state.Attached); eqT.Set(sp.Eq); compT.Set(sp.Comp); limT.Set(sp.Limit);
+            gateT.Set(sp.Gate); gThr.Value = (int)Math.Round(sp.GateThr); gRange.Value = (int)Math.Round(sp.GateRange); gRel.Value = (int)Math.Round(sp.GateRelease);
+            dnT.Set(sp.Denoise); dnAmt.Value = (int)Math.Round(sp.DenoiseAmount); dnModel.Selected = sp.DenoiseModel; ShowDenoise();
+            drT.Set(sp.Dereverb); drAmt.Value = (int)Math.Round(sp.DereverbAmount);
+            chrSeg.Selected = sp.CompChar; colAmt.Value = (int)Math.Round(sp.ColorAmt); ShowColor();
+            mixS.Value = (int)Math.Round(sp.Mix);
+            c2T.Set(sp.Comp2); c2Seg.Selected = sp.C2Char; c2Mix.Value = (int)Math.Round(sp.C2Mix); ShowComp2();
+            dsT.Set(sp.DeEss); dsBand.Set((int)Math.Round(sp.DeEssHz), (int)Math.Round(sp.DeEssHz2)); dsThr.Value = (int)Math.Round(sp.DeEssThr); dsRange.Value = (int)Math.Round(sp.DeEssRange);
             if (sp.Split > 0) split.Value = (int)Math.Round(sp.Split);
             if (sp.Split2 > 0) split2.Value = (int)Math.Round(sp.Split2);
             graph.P = sp; graph.Invalidate();
+            graph.DsOn = sp.DeEss && mic; graph.DsLo = sp.DeEssHz; graph.DsHi = sp.DeEssHz2; graph.DsDb = 0;
             cgraph.P = sp; cgraph.Ghost1 = split.Value; cgraph.Ghost2 = split2.Value; cgraph.Invalidate();
             loading = false;
-            ShowParts(); ShowPreset(); Dim();
+            ShowParts(); ShowPreset(); Dim(); ShowFlow();
         }
 
         // how many bands the compressor works in: the rows that belong to more than one band, and the choice of the band
@@ -388,12 +652,15 @@ namespace RedTune
 
         void ShowPreset()
         {
-            int at = AudioFx.Presets.FindIndex(x => Same(x.P, p));
+            var list = Shown();
+            int at = list.FindIndex(x => Same(x.P, p));
             bool was = loading; loading = true;
-            presetBtn.Set(AudioFx.Presets.Select(x => x.Name).ToArray(), at);
+            presetBtn.Set(list.Select(x => x.Name).ToArray(), at);
             if (at < 0) presetBtn.Text = "Свои настройки" + "  ▾";
             loading = was;
-            dropPreset.Visible = at >= 0 && !AudioFx.Presets[at].BuiltIn;
+            dropPreset.Visible = at >= 0 && !list[at].BuiltIn;
+            var ps = mic ? PresetSubMic : PresetSubOut;
+            if (presetRow.Sub != ps) presetRow.SetSub(ps);
             presetRow.PerformLayout();
         }
 
@@ -499,6 +766,16 @@ namespace RedTune
             if (onRow.Sub != sub) onRow.SetSub(sub);
             bool can = dev != null && AudioFx.Available && state.HasKey && !state.OtherEndEffect;
             if (onT.Enabled != can) onT.Enabled = can;
+            // the de-esser: an older effect has none; otherwise how much it takes off the top right now
+            string dssub = !alive || !p.DeEss || !p.On || !state.Attached ? DsSub
+                : m.Version < 6 ? "Обработчик старой сборки: де-эссер заработает после перезапуска звука Windows"
+                : m.DsDb < -0.5f ? L.T(DsSub) + L.T(" · сейчас: ") + Math.Round(m.DsDb).ToString(CultureInfo.InvariantCulture) + L.T(" дБ") : L.T(DsSub) + L.T(" · сейчас не работает");
+            if (dsRow.Sub != dssub) dsRow.SetSub(dssub);
+            // the second compressor: an older effect has none; otherwise how much it takes off now
+            string c2sub = !alive || !p.Comp2 || !p.On || !state.Attached ? C2Sub
+                : m.Version < 8 ? "Обработчик старой сборки: предкомпрессор заработает после перезапуска звука Windows"
+                : m.C2Db < -0.5f ? L.T(C2Sub) + L.T(" · сейчас: ") + Math.Round(m.C2Db).ToString(CultureInfo.InvariantCulture) + L.T(" дБ") : L.T(C2Sub) + L.T(" · сейчас не работает");
+            if (c2Row.Sub != c2sub) c2Row.SetSub(c2sub);
 
             // 19.11: Nahimic's effects on this device, on (as installed) or taken out of its chain by the switch (AudioFx.SetNahimic)
             string nh = state.Nahimic ? "Идут до Red Tune и складываются с ним. Выключите, чтобы слышать только Red Tune: вернуть можно здесь же"
@@ -508,6 +785,36 @@ namespace RedTune
             if (nahimicRow.Visible != showNh || removeRow.Visible != showRemove || sysLabel.Visible != showSys) { nahimicRow.Visible = showNh; removeRow.Visible = showRemove; sysLabel.Visible = showSys; Relayout(); }
             if (showNh && nahimicRow.Sub != nh) nahimicRow.SetSub(nh);
             if (showNh && nahimicT.Checked != state.Nahimic) { loading = true; nahimicT.Set(state.Nahimic); loading = false; }
+            // 21.11, the microphone: the level coming in, to set the gate's threshold against, and whether the gate is open
+            if (mic && gateRow != null)
+            {
+                string g;
+                if (dev == null || !state.Attached || !p.On) g = GateSub;
+                else if (!alive) g = "Микрофон сейчас не слушается: уровень появится, когда звук пойдёт";
+                else if (m.Version < 2) g = "Обработчик старой сборки: гейт заработает после перезапуска звука Windows";
+                else
+                {
+                    double lv = 20 * Math.Log10(Math.Max(m.InPeak, 1e-7));
+                    g = L.T("Сейчас на входе: ") + Math.Round(lv).ToString(CultureInfo.InvariantCulture) + L.T(" дБ") + (p.Gate ? (m.GateDb < -1 ? L.T(" · гейт закрыт") : L.T(" · гейт открыт")) : "");
+                }
+                if (gateRow.Sub != g) gateRow.SetSub(g);
+                // the denoiser: an older effect has none; otherwise whether it hears a voice right now
+                string dsub = !alive || !p.Denoise || !p.On || !state.Attached ? DnSubNow
+                    : m.Version < 3 ? "Обработчик старой сборки: шумодав заработает после перезапуска звука Windows"
+                    : p.DenoiseModel == 1 && m.Version < 5 ? "Обработчик старой сборки: DeepFilterNet заработает после перезапуска звука Windows"
+                    : m.Vad > 0.5f ? L.T(DnSubNow) + L.T(" · сейчас: голос") : L.T(DnSubNow) + L.T(" · сейчас: только шум");
+                if (dnRow.Sub != dsub) dnRow.SetSub(dsub);
+                // the reverb remover: an older effect has none; otherwise the room's time once it has heard a few words
+                string rsub = !alive || !p.Dereverb || !p.On || !state.Attached ? DrSub
+                    : m.Version < 4 ? "Обработчик старой сборки: реверб заработает после перезапуска звука Windows"
+                    : m.Room > 0 ? L.T(DrSub) + L.T(" · комната звучит ") + m.Room.ToString("0.0", CultureInfo.InvariantCulture) + L.T(" с")
+                    : L.T(DrSub) + L.T(" · слушает комнату…");
+                if (drRow.Sub != rsub) drRow.SetSub(rsub);
+                // the output went away or would not open: the switch goes off and says why
+                var err = MicListen.MonitorError;
+                if (monT.Checked && !MicListen.Monitor && !monAsking) { loading = true; monT.Set(false); loading = false; monRow.SetSub(err != null ? L.T("Не слышно: ") + err : MonSub); }
+            }
+            UpdateListen();
         }
 
         void SwitchNahimic(bool on)
@@ -558,8 +865,21 @@ namespace RedTune
             bool alive = m != null && quiet < 15;
             meter.Set(alive, alive ? m.InPeak : 0, alive ? m.OutPeak : 0, alive && p.On && p.Comp ? m.GrDb : 0, alive && p.On && p.Limit ? m.LimDb : 0);
             if (alive && p.On) { graph.Rate = m.Rate > 8000 ? m.Rate : 48000; graph.Feed(AudioFx.Spectrum(dev.Id)); } else graph.Feed(null);
+            // 21.11 (the user: the de-esser's band on the picture lagged): how deep it takes the band down, at the spectrum's pace
+            float dsNow = alive && p.DeEss && p.On && m.Version >= 6 ? Math.Min(0, m.DsDb) : 0;
+            if (graph.DsDb != dsNow) { graph.DsDb = dsNow; graph.InvalidateLive(); }
             cgraph.FeedBands(alive && p.On && p.Comp ? m.PartGr : null, alive && p.On ? m.PartLv : null);
             cgraph.Feed(alive && p.On, alive ? m.InPeak : 0, alive ? m.OutPeak : 0, alive && p.Comp ? m.PartGr[band] : 0, alive && p.Limit ? m.LimDb : 0, alive ? m.PartLv[band] : -140);
+            if (mic && cgraph2.Visible)
+            {
+                // the second compressor: what it reads and takes off (version 7); its in and out from its own level
+                int b2 = Math.Max(0, Math.Min(2, cgraph2.Band));
+                bool on2 = alive && p.On && p.Comp2 && m.Version >= 8;
+                float lv2 = on2 ? m.C2Lv[b2] : -140, gr2 = on2 ? m.C2Gr[b2] : 0;
+                float in2 = on2 && lv2 > -139 ? (float)Math.Pow(10, lv2 / 20) : 0, out2 = on2 && lv2 > -139 ? (float)Math.Pow(10, (lv2 + gr2 + p.C2Parts[b2].Makeup) / 20) : 0;
+                cgraph2.FeedBands(on2 ? m.C2Gr : null, on2 ? m.C2Lv : null);
+                cgraph2.Feed(on2 && lv2 > -139, in2, out2, gr2, 0, lv2);
+            }
             if (ticks % 8 == 0) Status(m);
             if (ticks % 30 == 0 && !vol.Capture)
             {
@@ -576,7 +896,7 @@ namespace RedTune
             // default): the list, «Основное / Не основное» and the button follow. Not while something is held by the mouse.
             if (ticks % 60 == 0 && !busy && Control.MouseButtons == MouseButtons.None)
             {
-                var now = AudioFx.Devices();
+                var now = AudioFx.Devices(mic);
                 bool moved = now.Count != devices.Count || now.Any(d => { var old = devices.FirstOrDefault(x => x.Id == d.Id); return old == null || old.Default != d.Default; });
                 if (moved) Reload();
             }

@@ -217,6 +217,89 @@ namespace RedTune
         }
     }
 
+    // 21.11 (the user: the de-esser's band from both sides): a slider with two knobs on one track, the low and the high
+    // end of a range, on a log scale (frequencies); the bar between them. A press takes the nearer knob and the drag moves
+    // it from there (the pointer onto the knob, as the equalizer's faders); the wheel, after a click, moves the one taken
+    // last. The two keep at least MinRatio apart.
+    class RangeSlider : Painted
+    {
+        readonly double min, max;
+        int lo, hi, taken = 1, pressX; double pressV; bool drag, armed; int wheelAcc;
+        public double MinRatio = 1.25;
+        public int Step = 100;
+        public Func<int, int, string> Caption;
+        public event EventHandler Changed;
+
+        public RangeSlider(int min, int max, int lo, int hi)
+        {
+            this.min = min; this.max = max; this.lo = lo; this.hi = hi;
+            Size = new Size(Theme.S(300), Theme.S(28)); BackColor = Theme.Card; Cursor = Cursors.Hand;
+        }
+        public int Lo { get { return lo; } }
+        public int Hi { get { return hi; } }
+        public void Set(int l, int h) { l = (int)Math.Max(min, Math.Min(max, l)); h = (int)Math.Max(min, Math.Min(max, h)); if (l == lo && h == hi) return; lo = l; hi = h; Invalidate(); }
+
+        int TrackW { get { return Width - Theme.S(110); } }
+        static int Pad { get { return Theme.S(13); } }
+        double Frac(double v) { return Math.Log(v / min) / Math.Log(max / min); }
+        double ValueAt(double f) { return min * Math.Pow(max / min, Math.Max(0, Math.Min(1, f))); }
+        float XOf(double v) { return (float)(Pad + (TrackW - 2 * Pad) * Frac(v)); }
+
+        void Move(int which, double v)
+        {
+            v = Math.Round(v / Step) * Step;
+            int l = lo, h = hi;
+            if (which == 0) l = (int)Math.Max(min, Math.Min(h / MinRatio, v));
+            else h = (int)Math.Min(max, Math.Max(l * MinRatio, v));
+            l = (int)(Math.Round(l / (double)Step) * Step); h = (int)(Math.Round(h / (double)Step) * Step);
+            if (l == lo && h == hi) return;
+            lo = l; hi = h; Invalidate(); Update();
+            var ev = Changed; if (ev != null) ev(this, EventArgs.Empty);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            armed = true;
+            if (e.Button == MouseButtons.Left && e.X < TrackW)
+            {
+                taken = Math.Abs(e.X - XOf(lo)) <= Math.Abs(e.X - XOf(hi)) ? 0 : 1;
+                drag = true; pressV = taken == 0 ? lo : hi;
+                int kx = (int)Math.Round(XOf(pressV)); pressX = Theme.Warp(this, kx, Height / 2f) ? kx : e.X;
+                Invalidate();
+            }
+            base.OnMouseDown(e);
+        }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (drag) Move(taken, ValueAt(Frac(pressV) + (e.X - pressX) / (double)Math.Max(1, TrackW - 2 * Pad)));
+            base.OnMouseMove(e);
+        }
+        protected override void OnMouseUp(MouseEventArgs e) { drag = false; base.OnMouseUp(e); }
+        protected override void OnMouseLeave(EventArgs e) { armed = false; base.OnMouseLeave(e); }
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (!armed) { base.OnMouseWheel(e); return; }
+            int n = Theme.WheelNotches(ref wheelAcc, e.Delta);
+            if (n != 0) Move(taken, (taken == 0 ? lo : hi) + n * Step);
+            var he = e as HandledMouseEventArgs; if (he != null) he.Handled = true;
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            var g = e.Graphics;
+            g.Clear(BackColor);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            float x0 = Pad, x1 = TrackW - Pad, cy = Height / 2f, th = Theme.S(5), a = XOf(lo), b = XOf(hi);
+            Theme.Tube(g, new RectangleF(x0, cy - th / 2f, x1 - x0, th));
+            var bar = new RectangleF(a, cy - th / 2f, Math.Max(1, b - a), th);
+            Theme.Fill(g, bar, th / 2f, Enabled ? Theme.Accent : Theme.Muted);
+            Theme.GlassKnob(g, a, cy, Theme.KnobSize, 1f, Enabled ? Theme.Accent : Theme.Muted, th, !Enabled);
+            Theme.GlassKnob(g, b, cy, Theme.KnobSize, 1f, Enabled ? Theme.Accent : Theme.Muted, th, !Enabled);
+            string text = Caption != null ? Caption(lo, hi) : lo + "–" + hi;
+            Theme.Text1(g, text, Theme.Bold, new Rectangle(TrackW, 0, Width - TrackW, Height), Enabled ? Theme.Text : Theme.Text2, TextFormatFlags.Right);
+        }
+    }
+
     // a button that opens a list of choices ("100 W ▾")
     class DropButton : FlatButton
     {

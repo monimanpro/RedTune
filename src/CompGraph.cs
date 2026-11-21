@@ -23,7 +23,7 @@ namespace RedTune
             float i = Db(inPeak), o = Db(outPeak);
             if (on == alive && Math.Abs(i - inDb) < 0.2f && Math.Abs(o - outDb) < 0.2f && Math.Abs(grDb - gr) < 0.1f && Math.Abs(limDb - lim) < 0.1f) return;
             alive = on; inDb = i; outDb = o; gr = grDb; lim = limDb;
-            Invalidate();
+            LiveInvalidate(ClientRectangle); // 21.11: not while scrolled out of sight
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -70,6 +70,10 @@ namespace RedTune
     {
         public SoundParams P = SoundParams.Start();
         public bool Dim;
+        // 21.11 (the user: the second compressor «exactly the same, with the pictures», in bands too): everything of the
+        // main one but the limiter's ceiling and the listening to parts apart (S/M). The page gives it a SoundParams
+        // whose parts and splits are the second compressor's (SoundPage.c2View).
+        public bool Second;
         // 19.11: the compressor in bands. Band: the one of SoundParams.Parts the points, the dials and the last seconds
         // show (the page's choice); the curves of the other bands at work are drawn thin behind it, each in its colour.
         public int Band;
@@ -170,6 +174,7 @@ namespace RedTune
         // a column too narrow for the two)
         internal Rectangle ListenRect(int part, bool mute)
         {
+            if (Second) return Rectangle.Empty;   // (the second compressor: no listening apart)
             var hh = History; if (!ByFreq || hh.Width <= 0 || P.PartCount < 2) return Rectangle.Empty;
             foreach (var z in Zones())
             {
@@ -254,7 +259,9 @@ namespace RedTune
             return new Rectangle(rightCol ? pn.Right - w : pn.X, pn.Y + rowH * row, w, rowH);
         }
         int DialCount { get { return DialCols == 2 ? 8 : 3; } }
-        bool DialOn(int k) { return k == 6 ? P.PartCount >= 2 : k == 7 ? P.PartCount >= 3 : true; }
+        // 21.11 (the user): a dial the character does not listen to is grey and not taken: the optical one lets go in its own
+        // two stages (no release), the tube one has its own wide knee
+        bool DialOn(int k) { return k == 6 ? P.PartCount >= 2 : k == 7 ? P.PartCount >= 3 : k == 1 ? P.CompChar != 2 : k == 2 ? P.CompChar != 3 : true; }
         internal Rectangle History
         {
             get
@@ -277,7 +284,7 @@ namespace RedTune
         {
             get
             {
-                var c = Curve; if (!HasPanel) return Rectangle.Empty;
+                var c = Curve; if (!HasPanel || Second) return Rectangle.Empty;
                 int x = Width - Theme.S(18) - Theme.S(CeilStripW);
                 return History.Width > 0 || x - Panel.Right >= Theme.S(CeilUnits - CeilStripW) ? new Rectangle(x, c.Y, Theme.S(CeilStripW), c.Height) : Rectangle.Empty;
             }
@@ -364,9 +371,18 @@ namespace RedTune
         // what the compressor takes off at a level, dB (<= 0): the same formula as the effect's (Want in rtdsp.h)
         internal double Gr(double x) { return GrOf(Q, x); }
         internal float GrAgo(int part, int k) { return hGrB[part][Hist - 1 - k]; } // the check: what part took off k moments ago
-        static double GrOf(CompPart q, double x)
+        // 21.11: as the character draws it (rtdsp.h WantC): FET a hard knee, optical a soft one, vari-mu a slope that eases in
+        double GrOf(CompPart q, double x) { return GrOf(q, x, P != null ? P.CompChar : 0); }
+        static double GrOf(CompPart q, double x, int chr)
         {
             double over = x - q.Thr, slope = 1.0 / Math.Max(1, q.Ratio) - 1, knee = q.Knee;
+            if (chr == 1) knee = Math.Min(knee, 1.5); else if (chr == 2) knee = Math.Max(knee, 10);
+            else if (chr == 3)
+            {
+                double o = over + 6; if (o <= 0) return 0;
+                double t = o / 24, S = t < 1 ? t * t * t - t * t * t * t / 2 : 0.5 + (t - 1);
+                return slope * 24 * S;
+            }
             if (2 * over < -knee) return 0;
             if (knee > 0 && 2 * over <= knee) { double t = over + knee * 0.5; return slope * t * t / (2 * knee); }
             return slope * over;
@@ -569,7 +585,7 @@ namespace RedTune
                 case Part.Split1: case Part.DialSplit1: P.Split = (float)Clamp(Math.Round(P.Split / 10) * 10 + d * 10, 80, 600); break;
                 case Part.Split2: case Part.DialSplit2: P.Split2 = (float)Clamp(Math.Round(P.Split2 / 100) * 100 + d * 100, 1200, 12000); break;
                 case Part.Ceil: case Part.CeilFader: P.Ceil = Tenth(Clamp(P.Ceil + d * 0.5, -12, 0)); break;
-                case Part.Thr: Q.Knee = (float)Clamp(Math.Round(Q.Knee) + d, 0, 24); break;
+                case Part.Thr: if (P.CompChar != 3) Q.Knee = (float)Clamp(Math.Round(Q.Knee) + d, 0, 24); break;   // (the tube character has its own knee)
                 case Part.Knee: Q.Knee = (float)Clamp(Math.Round(Q.Knee) + d, 0, 24); break;
                 case Part.DialThr: Q.Thr = (float)Clamp(Math.Round(Q.Thr) + d, -60, 0); break;
                 case Part.DialMakeup: Q.Makeup = (float)Clamp(Math.Round(Q.Makeup) + d, -12, 24); break;
@@ -615,7 +631,12 @@ namespace RedTune
             if (!on) { if (live) { live = false; hCount = 0; nowIn = -100; nowLv = -140; nowGr = nowLim = 0; Invalidate(); } return; }
             Push(Db(inPeak), Db(outPeak), grDb, limDb, bGr); nowLv = levelDb; // bGr: all the bands, from FeedBands just before
             live = true;
-            Invalidate(); // the whole picture every moment (20.11, the user: no caches, everything live)
+            // drawn live every moment (20.11, the user: no caches). 21.11: only what the sound moves — the dot on the
+            // curve and the monitor — not the dials, the words and the bands' buttons; the mouse still repaints it whole
+            var c = Curve; LiveInvalidate(Rectangle.FromLTRB(c.X - Theme.S(5), c.Y - Theme.S(5), c.Right + Theme.S(5), c.Bottom + Theme.S(4))); // the dot: 7 across
+            // the dials lie between the two: one paint of both would take their bounding box (WinForms paints the box of
+            // what is invalid), dials and all; so the curve is painted first, on its own
+            var hist = History; if (hist.Width > 0) { if (InView) Update(); LiveInvalidate(Rectangle.Inflate(hist, 2, 2)); }
         }
 
         // the same moment per band, for the monitor by frequencies (before Feed, which draws): the level each band reads
@@ -912,8 +933,9 @@ namespace RedTune
                     string t = db == 0 ? "0" : "−" + (-db);
                     g.DrawLine(db == 0 ? strong : pen, c.X, y, c.Right, y);
                     g.DrawLine(db == 0 ? strong : pen, x, c.Y, x, c.Bottom);
-                    Theme.Text1(g, t, Theme.Small, new Rectangle(0, (int)y - Theme.S(10), c.X - Theme.S(8), Theme.S(20)), Theme.Muted, TextFormatFlags.Right);
-                    Theme.Text1(g, t, Theme.Small, new Rectangle((int)x - Theme.S(30), c.Bottom + Theme.S(4), Theme.S(60), Theme.S(18)), Theme.Muted, TextFormatFlags.HorizontalCenter);
+                    // 21.11: the words only when the paint reaches them (a moment of the sound repaints the curve and the monitor)
+                    var wl = new Rectangle(0, (int)y - Theme.S(10), c.X - Theme.S(8), Theme.S(20)); if (want.IntersectsWith(wl)) Theme.Text1(g, t, Theme.Small, wl, Theme.Muted, TextFormatFlags.Right);
+                    var wb = new Rectangle((int)x - Theme.S(30), c.Bottom + Theme.S(4), Theme.S(60), Theme.S(18)); if (want.IntersectsWith(wb)) Theme.Text1(g, t, Theme.Small, wb, Theme.Muted, TextFormatFlags.HorizontalCenter);
                     if (hist.Width > 0) g.DrawLine(db == 0 ? strong : pen, hist.X, y, hist.Right, y);
                 }
                 if (hist.Width > 0) { g.DrawLine(pen, hist.X, hist.Y, hist.X, hist.Bottom); g.DrawLine(pen, hist.Right, hist.Y, hist.Right, hist.Bottom); }
@@ -973,6 +995,8 @@ namespace RedTune
                 float sp1 = P.Split > 0 ? P.Split : Ghost1, sp2 = P.Split2 > 0 ? P.Split2 : Ghost2;
                 string[] names = { "Атака", "Восстановление", "Колено", "Порог", "Степень сжатия", "Усиление после", "Граница низа", "Граница верха" };
                 string[] values = { (int)Math.Round(Q.Attack) + " мс", (int)Math.Round(Q.Release) + " мс", (int)Math.Round(Q.Knee) + " дБ", DbText(Q.Thr), RatioText, Plus(Q.Makeup), EqGraph.Hz(sp1), EqGraph.Hz(sp2) };
+                if (P.CompChar == 2) values[1] = L.T("своё");      // the optical character's own two-stage release
+                if (P.CompChar == 3) values[2] = L.T("широкое");   // the tube character's own wide knee
                 float[] fr = { (float)(Math.Log(Math.Max(1, Q.Attack)) / Math.Log(200)), (float)(Math.Log(Math.Max(10, Q.Release) / 10) / Math.Log(200)), Q.Knee / 24f,
                     (Q.Thr + 60) / 60f, (float)(Math.Log(Math.Max(1, Q.Ratio)) / Math.Log(20)), (Q.Makeup + 12) / 36f,
                     (float)(Math.Log(Math.Max(80, sp1) / 80) / Math.Log(600 / 80.0)), (float)(Math.Log(Math.Max(1200, sp2) / 1200) / Math.Log(10)) };
