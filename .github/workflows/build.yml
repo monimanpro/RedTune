@@ -18,11 +18,15 @@ jobs:
   build:
     runs-on: windows-latest
     timeout-minutes: 60
-    env:
-      TEMP: ${{ runner.temp }}   # the native builds keep their objects in %TEMP%; here it is the folder the cache keeps
-      TMP: ${{ runner.temp }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Temp folder
+        shell: pwsh
+        run: |
+          # the native builds keep their objects in %TEMP%; point it at the folder the cache keeps
+          "TEMP=${{ runner.temp }}" >> $env:GITHUB_ENV
+          "TMP=${{ runner.temp }}" >> $env:GITHUB_ENV
 
       - name: Cache the DeepFilterNet build
         uses: actions/cache@v4
