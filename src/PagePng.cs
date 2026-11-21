@@ -10,6 +10,10 @@ namespace RedTune
     // the power page asks the SMU what it accepts (AmdPower.Check).
     static class PagePng
     {
+        // 21.11: GitHub Actions runs these checks on a small virtual machine without a graphics card: paint times there say
+        // nothing about a real PC, so the time limits are reported but not judged
+        static readonly bool OnBuildMachine = Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true";
+
         // --plan-ui-check <file>: the plan block of the power page on a copy of the active plan made for the check: changes
         // wait, «Записать в схему» writes them, «Отменить» drops them. The copy is deleted; no plan of the user is written.
         public static void PlanUiCheck(string file, Settings s)
@@ -291,7 +295,7 @@ namespace RedTune
                         q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size));
                         var sw = System.Diagnostics.Stopwatch.StartNew(); for (int k = 0; k < 20; k++) q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size));
                         double ms = sw.Elapsed.TotalMilliseconds / 20;
-                        line(ms < 12, "one picture of the equalizer with the spectrum: " + ms.ToString("0.0") + " ms (30 a second: " + (ms * 3).ToString("0") + " % of a core)");
+                        line(ms < 12 || OnBuildMachine, "one picture of the equalizer with the spectrum: " + ms.ToString("0.0") + " ms (30 a second: " + (ms * 3).ToString("0") + " % of a core)" + (ms >= 12 && OnBuildMachine ? " — not judged on the build machine" : ""));
                     }
                     q.Feed(null);
                 }
@@ -352,7 +356,7 @@ namespace RedTune
                         q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size));
                         var sw = System.Diagnostics.Stopwatch.StartNew(); for (int kc = 0; kc < 20; kc++) { q.Feed(true, 0.4f, 0.3f, -5f, -1f, -18f); q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size)); }
                         double ms = sw.Elapsed.TotalMilliseconds / 20;
-                        line(ms < 12, "one picture of the compressor with its meters: " + ms.ToString("0.0") + " ms (30 a second: " + (ms * 3).ToString("0") + " % of a core)");
+                        line(ms < 12 || OnBuildMachine, "one picture of the compressor with its meters: " + ms.ToString("0.0") + " ms (30 a second: " + (ms * 3).ToString("0") + " % of a core)" + (ms >= 12 && OnBuildMachine ? " — not judged on the build machine" : ""));
                     }
                 }
 
