@@ -27,8 +27,12 @@ if (-not (Test-Path $cargo)) { $c = Get-Command cargo -ErrorAction SilentlyConti
 $dfTarget = Join-Path $obj "dfn"; $dfLib = Join-Path $dfTarget "release\rtdf.lib"
 if ($cargo) {
     Push-Location "$here\dfn"; $ErrorActionPreference = "Continue"
+    # 21.11 (release 0.4.5): the source paths Rust keeps for its panic messages named the folders of this PC (the
+    # profile with cargo's registry, this folder); they are written as "~" and "dfn" instead. The flags of
+    # .cargo\config.toml go along, since this variable replaces them; its parts are split by 0x1F (paths have spaces).
+    $env:CARGO_ENCODED_RUSTFLAGS = (@("-C", "target-cpu=x86-64-v3", "-C", "target-feature=+crt-static", "--remap-path-prefix=$env:USERPROFILE=~", "--remap-path-prefix=$here\dfn=dfn") -join [char]0x1F)
     & $cargo build --release --locked --target-dir $dfTarget 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match "error|warning: unused|Finished" }
-    $ok = $LASTEXITCODE -eq 0; $ErrorActionPreference = "Stop"; Pop-Location
+    $ok = $LASTEXITCODE -eq 0; $ErrorActionPreference = "Stop"; Pop-Location; Remove-Item Env:CARGO_ENCODED_RUSTFLAGS -ErrorAction SilentlyContinue
     if (-not $ok) { throw "DeepFilterNet (dfn): cargo build failed" }
 }
 $dfFlags = ""; $dfLink = ""

@@ -62,11 +62,12 @@ The card's voltage/clock curve as points you drag, a memory clock offset, preset
 <img src="docs/screenshots/graphics.png" alt="Graphics card: the voltage/clock curve">
 
 ### Sound
-A sound effect of Red Tune's own that Windows runs for every program on the output device you pick.
+A sound effect of Red Tune's own that Windows runs for every program on the output device or the microphone you pick.
 
-- **Equalizer** — up to 12 bands (bell, shelves, cuts, notch) drawn as a curve over the live spectrum; points are dragged, strips beside the plot give the same bands as faders and dials.
-- **Compressor** — in one, two or three frequency bands, each with its own threshold, ratio, knee, attack, release and make-up gain. A picture shows the transfer curve with draggable points, eight dials, and a monitor that is either the last ten seconds or the bands across the frequencies with their live levels. Bands can be soloed and muted for listening.
+- **Equalizer** — 12 bands (bell, shelves, cuts, notch) drawn as a curve over the live spectrum; points are dragged, strips beside the plot give the same bands as faders and dials, with a slope dial for each: cuts from 12 to 48 dB per octave, steeper shelves, a bell that flattens into a plateau.
+- **Compressor** — in one, two or three frequency bands, each with its own threshold, ratio, knee, attack, release and make-up gain. A picture shows the transfer curve with draggable points, eight dials, and a monitor that is either the last ten seconds or the bands across the frequencies with their live levels. Bands can be soloed and muted for listening. Four characters (clean, FET, optical, tube) change how it reacts; an optional colour (tube, transistor, tape, transformer) adds harmonics, oversampled four times; a mix control gives parallel compression.
 - **Limiter** — a look-ahead limiter that measures the true peak of the wave, so the output never passes the ceiling and does not rasp.
+- **Microphone** — a chain for the input: a pre-compressor, a gate, noise suppression (RNNoise or DeepFilterNet 3), a reverb remover, the equalizer, a de-esser, the compressor and the limiter. Every program that records from that microphone (calls, streaming, recording) gets the processed sound; a switch lets you hear yourself.
 - Presets, settings per device, step back and forward, a level meter, and a switch for a laptop maker's own sound effects that would otherwise add to Red Tune's.
 
 <img src="docs/screenshots/sound-eq.png" alt="Sound: the equalizer over the live spectrum">
@@ -122,7 +123,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 - **Laptop firmware.** Where a laptop's firmware offers a management interface in Windows (Lenovo's WMI classes, ASUS's system control driver), Red Tune uses it for power modes, limits, fans and device settings. Without one, those rows are hidden and the processor limits go the direct way.
 - **Windows power plans** are read and written through Windows' own power API. Changes in the plan block wait for a button; nothing is written while you are still choosing.
 - **The graphics card** is tuned through NVIDIA's own driver interfaces.
-- **Sound** is an audio processing object: the kind of plug-in Windows' audio engine loads for a device. Red Tune registers it, places it in the device's chain of effects, and talks to it through a small shared file (settings in, meters and a spectrum back). The processing takes about one percent of a single processor core. The page's live pictures redraw only what moves and slow to 15 frames a second while the window is not the active one.
+- **Sound** is an audio processing object: the kind of plug-in Windows' audio engine loads for a device. Red Tune registers it, places it in the device's chain of effects, and talks to it through a small shared file (settings in, meters and a spectrum back). The processing takes about one to two percent of a single processor core for the output and two to six percent for a full microphone chain (DeepFilterNet being the heavy part). The page's live pictures repaint only what the sound moves, and nothing that is scrolled out of view.
 - **Memory timings** are read from the processor's registers and written through AMD's overclocking interface in the BIOS, where it exists.
 - **No network.** Red Tune does not connect to the internet. The only links (PawnIO, Prime95) open in your browser when you click them.
 
