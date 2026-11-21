@@ -16,6 +16,11 @@ namespace RedTune
 
         static readonly Dictionary<string, string> More = new Dictionary<string, string>
         {
+            // 21.11: updates from GitHub (Update) and the report straight into the GitHub form
+            { "Обновления", "Updates" }, { "Проверить", "Check" }, { "Страница выпусков", "Releases page" }, { "Ещё не проверялось", "Not checked yet" }, { "Обновление", "Update" }, { "Скачиваю…", "Downloading…" },
+            { "Проверять обновления", "Check for updates" }, { "Раз в день Red Tune спрашивает GitHub, вышла ли новая версия. О компьютере ничего не отправляется; установить — в «О программе»", "Once a day Red Tune asks GitHub whether a new version is out. Nothing about the computer is sent; installing is in «About»" },
+            { "в выпуске нет установщика", "the release has no installer" }, { "GitHub не дал контрольную сумму установщика", "GitHub gave no checksum for the installer" }, { "контрольная сумма не совпала, файл удалён", "the checksum did not match, the file was deleted" },
+            { "Отправить на GitHub", "Send to GitHub" }, { "Форма открылась в браузере с отчётом внутри: отметь, что работает, и нажми «Create»", "The form opened in the browser with the report inside: tick what works and press «Create»" }, { "Форма открылась в браузере, отчёт скопирован: вставь его в поле «System report»", "The form opened in the browser and the report is copied: paste it into «System report»" },
             // 20.11: the black box's mode on «Сторож»
             { "Разгон", "Overclocking" },
             { "Кривая частоты и пресеты — в экспертных функциях: Настройки → Основное", "The clock curve and the presets are expert functions: Settings → General" },
@@ -701,6 +706,10 @@ namespace RedTune
 
         static readonly Dictionary<string, string> MoreFragments = new Dictionary<string, string>
         {
+            // 21.11: updates
+            { "Доступна версия ", "New version " }, { " — обновить можно в «О программе»", " — install it from «About»" }, { " · эта копия запущена не из установки: новую версию можно скачать со страницы выпусков", " · this copy was not installed by the setup: download the new version from the releases page" },
+            { "Последняя проверка: ", "Last checked: " }, { "Не удалось проверить: ", "Could not check: " }, { "Это последняя версия · проверено ", "This is the latest version · checked " }, { "Не удалось обновить: ", "Could not update: " }, { "Браузер не открылся: ", "The browser did not open: " }, { "Скачиваю… ", "Downloading… " },
+            { "Red Tune закроется, установщик обновит его до версии ", "Red Tune will close, and the setup will update it to version " }, { " и запустит снова. Настройки, пресеты и кривые останутся.", " and start it again. Settings, presets and curves stay." },
             { "в схеме ", "in the plan " }, { " % от ", " % of " }, { ", минимальная частота ", ", minimum clock " },
             { " · на обычных страницах", " · on ordinary pages" }, { "Сейчас на входе: ", "Coming in now: " }, { " · сейчас: голос", " · now: voice" }, { "По характеру. ", "By the character. " }, { " · сейчас: ", " · now: " }, { " · сейчас не работает", " · idle now" }, { "Крутизна ", "Slope " }, { "крутизна ", "slope " }, { " дБ/окт", " dB/oct" }, { " · сейчас: только шум", " · now: noise only" }, { " · комната звучит ", " · the room rings " }, { " с", " s" }, { " · слушает комнату…", " · listening to the room…" }, { " · без обработки", " · no processing" },
             { "Звук микрофона пойдёт в «", "The microphone's sound will go to «" }, { "» с задержкой в несколько сотых секунды.", "» a few hundredths of a second late." }, { "Если это динамики, а не наушники, микрофон услышит их и засвистит: лучше слушать в наушниках.", "If these are speakers, not headphones, the microphone will hear them and howl: better listen in headphones." }, { "Слушаю: звук идёт в «", "Listening: the sound goes to «" }, { "Не слышно: ", "Not heard: " }, { "формат устройства вывода не поддерживается", "the output device's format is not supported" }, { "формат микрофона не поддерживается", "the microphone's format is not supported" }, { "устройство вывода пропало", "the output device went away" }, { "вывод не открылся: ", "the output did not open: " }, { "нет устройства вывода", "no output device" }, { " · гейт закрыт", " · gate closed" }, { " · гейт открыт", " · gate open" }, { "Не установился: код ", "Not installed: code " }, { "Не установился: ", "Not installed: " },

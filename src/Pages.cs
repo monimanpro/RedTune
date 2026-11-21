@@ -75,7 +75,9 @@ namespace RedTune
             // 16.11: the full report into a file on the desktop (Diag): for a laptop the program was never tried on, to send
             // to whoever adds support for it. It only reads, and carries no names.
             var full = new FlatButton("Полный отчёт в файл");
-            var hwRow = Row(Hw.Short(), Hw.Details(), copy, full);
+            // 21.11: the report straight into the GitHub form (the browser opens it filled in; Red Tune itself sends nothing)
+            var send = new FlatButton("Отправить на GitHub", true);
+            var hwRow = Row(Hw.Short(), Hw.Details(), send, copy, full);
             full.Click += (o, e) =>
             {
                 full.Enabled = false;
@@ -99,21 +101,51 @@ namespace RedTune
                 });
             };
             // the report, with what the processor's SMU says (AMD limits: family, mailbox, limits now), read off the UI thread
+            Func<string> report = () =>
+            {
+                var text = Hw.Report();
+                if (Hw.Amd)
+                    try
+                    {
+                        var i = AmdPower.Check();
+                        text += Environment.NewLine + "SMU: " + (i.Error ?? (i.Codename + " · " + (i.Apu ? "MP1 (STAPM/fast/slow)" : "RSMU (PPT/TDC/EDC)") + " · " + i.Path
+                            + (i.Limits != null ? " · сейчас " + string.Join("/", i.Limits) + " W" : " · лимиты не прочитались"))) + Environment.NewLine;
+                    }
+                    catch { }
+                return text;
+            };
             copy.Click += (o, e) =>
             {
                 hwRow.SetSub("Собираю отчёт…");
                 System.Threading.Tasks.Task.Run(() =>
                 {
-                    var text = Hw.Report();
-                    if (Hw.Amd)
-                        try
-                        {
-                            var i = AmdPower.Check();
-                            text += Environment.NewLine + "SMU: " + (i.Error ?? (i.Codename + " · " + (i.Apu ? "MP1 (STAPM/fast/slow)" : "RSMU (PPT/TDC/EDC)") + " · " + i.Path
-                                + (i.Limits != null ? " · сейчас " + string.Join("/", i.Limits) + " W" : " · лимиты не прочитались"))) + Environment.NewLine;
-                        }
-                        catch { }
+                    var text = report();
                     try { BeginInvoke((Action)(() => { try { Clipboard.SetText(text); hwRow.SetSub("Отчёт о системе скопирован — его можно вставить в сообщение"); } catch { hwRow.SetSub("Не удалось скопировать отчёт"); } })); } catch { }
+                });
+            };
+            // the form «Hardware report» of the issue templates, its fields filled from the address (ids: report, version);
+            // a report too long for an address goes to the clipboard and the form opens without it
+            send.Click += (o, e) =>
+            {
+                hwRow.SetSub("Собираю отчёт…");
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    var text = report();
+                    var url = "https://github.com/" + Updater.Repo + "/issues/new?template=hardware-report.yml&title=" + Uri.EscapeDataString("[Hardware] " + Hw.Short())
+                        + "&version=" + Uri.EscapeDataString(Updater.Current.ToString());
+                    var withReport = url + "&report=" + Uri.EscapeDataString(text);
+                    bool fits = withReport.Length <= 7500;
+                    try
+                    {
+                        BeginInvoke((Action)(() =>
+                        {
+                            try { Clipboard.SetText(text); } catch { }
+                            try { Process.Start(fits ? withReport : url); }
+                            catch (Exception ex) { hwRow.SetSub(L.T("Браузер не открылся: ") + ex.Message); return; }
+                            hwRow.SetSub(fits ? "Форма открылась в браузере с отчётом внутри: отметь, что работает, и нажми «Create»" : "Форма открылась в браузере, отчёт скопирован: вставь его в поле «System report»");
+                        }));
+                    }
+                    catch { }
                 });
             };
             Row(Hw.VerifiedModel ? "Эта модель проверена" : "Эта модель ещё не проверена",
@@ -238,12 +270,70 @@ namespace RedTune
     }
     class AboutPage : Page
     {
-        public AboutPage()
+        public AboutPage(Settings s)
         {
             Add(new AboutCard());
             var data = new FlatButton("Открыть");
             data.Click += (o, e) => { Directory.CreateDirectory(Store.DataDir); Process.Start("explorer.exe", "\"" + Store.DataDir + "\""); };
             Row("Папка с настройками", Store.DataDir, data);
+
+            // 21.11: new versions from GitHub (Updater): look now, install (only a copy the setup installed), or the page
+            Section("Обновления");
+            var check = new FlatButton("Проверить");
+            var install = new FlatButton("Установить", true);
+            var web = new FlatButton("Страница выпусков");
+            var row = Row("Red Tune " + Updater.Current, null, install, web, check);
+            Action show = () =>
+            {
+                var f = Updater.Found;
+                install.Visible = f != null && Updater.Installed;
+                if (f != null) row.SetSub(L.T("Доступна версия ") + f.Version + (Updater.Installed ? "" : L.T(" · эта копия запущена не из установки: новую версию можно скачать со страницы выпусков")));
+                else row.SetSub(string.IsNullOrEmpty(s.UpdateLast) ? "Ещё не проверялось" : L.T("Последняя проверка: ") + s.UpdateLast);
+            };
+            show();
+            web.Click += (o, e) => { try { Process.Start(Updater.Found != null && Updater.Found.Page != null ? Updater.Found.Page : Updater.Releases); } catch { } };
+            check.Click += (o, e) =>
+            {
+                check.Enabled = false; row.SetSub("Проверяю…");
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    string err = null; Updater.Info i = null;
+                    try { i = Updater.Check(s); } catch (Exception ex) { err = ex.Message; }
+                    try
+                    {
+                        BeginInvoke((Action)(() =>
+                        {
+                            check.Enabled = true;
+                            if (err != null) { row.SetSub(L.T("Не удалось проверить: ") + err); return; }
+                            if (Updater.Newer(i)) show(); else row.SetSub(L.T("Это последняя версия · проверено ") + s.UpdateLast);
+                        }));
+                    }
+                    catch { }
+                });
+            };
+            install.Click += (o, e) =>
+            {
+                var f = Updater.Found; if (f == null) return;
+                if (!ConfirmDialog.Ask(FindForm(), "Обновление", L.T("Red Tune закроется, установщик обновит его до версии ") + f.Version + L.T(" и запустит снова. Настройки, пресеты и кривые останутся."), "Обновить", "Отмена")) return;
+                install.Enabled = check.Enabled = false; row.SetSub("Скачиваю…");
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    string path = null, err = null;
+                    try { path = Updater.Download(f, p => { try { BeginInvoke((Action)(() => row.SetSub(L.T("Скачиваю… ") + p + " %"))); } catch { } }); }
+                    catch (Exception ex) { err = ex.Message; }
+                    try
+                    {
+                        BeginInvoke((Action)(() =>
+                        {
+                            if (err != null) { install.Enabled = check.Enabled = true; row.SetSub(L.T("Не удалось обновить: ") + err); return; }
+                            try { Updater.Install(path); }
+                            catch (Exception ex) { install.Enabled = check.Enabled = true; row.SetSub(L.T("Не удалось обновить: ") + ex.Message); return; }
+                            var m = FindForm() as MainForm; if (m != null) m.ExitApp(); else Application.Exit();
+                        }));
+                    }
+                    catch { }
+                });
+            };
         }
 
         class AboutCard : Painted

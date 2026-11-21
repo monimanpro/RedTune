@@ -599,6 +599,7 @@ namespace RedTune
                 else if (what == "home") page = new HomePage(new PowerService(), () => { }, s, () => { });
                 else if (what == "settings") { Osd.Init(s); page = new SettingsPage(s, () => { }, v => { }); } // the language list and the rest, nothing is changed
                 else if (what == "comp") page = new ComponentsPage(s);
+                else if (what == "about") page = new AboutPage(s);
                 else if (what == "startup") page = new StartupPage(); // 20.11: reads the list when it shows, changes nothing
                 else if (what == "display")
                 {

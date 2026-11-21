@@ -8,8 +8,8 @@ using System.Windows.Forms;
 [assembly: AssemblyTitle("Red Tune")]
 [assembly: AssemblyDescription("Питание, кривая и настройки ноутбуков на AMD Ryzen")]
 [assembly: AssemblyProduct("Red Tune")]
-[assembly: AssemblyVersion("0.4.5.0")]
-[assembly: AssemblyFileVersion("0.4.5.0")]
+[assembly: AssemblyVersion("0.4.6.0")]
+[assembly: AssemblyFileVersion("0.4.6.0")]
 
 namespace RedTune
 {
@@ -52,6 +52,22 @@ namespace RedTune
             // --hw-report <file>: what Hw finds and which sections it would show (RT_HW_SIM simulates another machine), a check
             i = at("--hw-report");
             if (i >= 0 && i + 1 < args.Length) { Hw.Detect(); System.IO.File.WriteAllText(args[i + 1], Hw.Report() + "\r\nМеню: " + string.Join(", ", new[] { "home", "power", "curve", "dist", "ram", "device", "display", "startup", "clean", "comp", "settings", "about" }.Where(Hw.PageFits)) + "\r\nПитание: " + (Hw.LenovoPower ? "Lenovo" : Hw.Amd ? "лимиты AMD (SMU)" : "—") + "\r\nКоротко: " + Hw.Short() + "\r\n", new System.Text.UTF8Encoding(true)); return 0; }
+            // --update-check <file> [--download]: what GitHub's latest release says (Updater.Latest), and with --download the
+            // setup fetched and checked against GitHub's SHA-256 (into %TEMP%\RedTune-Update; nothing is installed)
+            i = at("--update-check");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                var o = new System.Text.StringBuilder();
+                try
+                {
+                    var u = Updater.Latest();
+                    o.AppendLine("current " + Updater.Current + " · latest " + u.Tag + " (" + u.Version + ") · newer " + Updater.Newer(u) + " · installed copy " + Updater.Installed);
+                    o.AppendLine("page " + u.Page); o.AppendLine("asset " + u.AssetName + " · " + u.Size + " bytes · sha256 " + (u.Sha256 ?? "—"));
+                    if (args.Contains("--download")) o.AppendLine("downloaded and checked: " + Updater.Download(u, null));
+                }
+                catch (Exception ex) { o.AppendLine("error: " + ex.Message); }
+                System.IO.File.WriteAllText(args[i + 1], o.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
             // --fps-probe <file> [seconds] [--krnl-all]: the frame counter (Fps) listens for some seconds and writes which
             // programs draw and at what rate, and how many events of each kind came (--krnl-all: every event of the
             // graphics kernel, to look for the right one). Reads only.

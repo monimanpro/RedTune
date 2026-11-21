@@ -81,6 +81,8 @@ Filename: "{app}\pawnio\PawnIO_setup.exe"; Parameters: "-install -silent"; Statu
 Filename: "{app}\RedTune.exe"; Parameters: "--autostart on"; Flags: runhidden waituntilterminated; Tasks: autostart
 Filename: "{app}\RedTune.exe"; Parameters: "--autostart off"; Flags: runhidden waituntilterminated; Tasks: not autostart
 Filename: "{app}\RedTune.exe"; Description: "{cm:RunNow}"; Flags: nowait postinstall skipifsilent
+; 21.11: an update started from «О программе» (/SILENT /rtupdate=1): the program closed itself for it and comes back
+Filename: "{app}\RedTune.exe"; Flags: nowait; Check: IsUpdate
 
 [UninstallRun]
 Filename: "{app}\RedTune.exe"; Parameters: "--autostart off"; RunOnceId: "RemoveTask"; Flags: runhidden waituntilterminated
@@ -99,6 +101,11 @@ const
 function PawnIOInstalled: Boolean;
 begin
   Result := RegKeyExists(HKLM64, PawnIOKey) or RegKeyExists(HKLM32, PawnIOKey);
+end;
+
+function IsUpdate: Boolean;
+begin
+  Result := ExpandConstant('{param:rtupdate|0}') = '1';
 end;
 
 // a running copy is asked to close, then waited for (up to 10 s) until its single-instance mutex is gone: --quit only

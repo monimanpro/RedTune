@@ -313,6 +313,20 @@ f	8a824827	khởi động
 f	64b0614f	bộ sạc
 f	d7b8a9de	pin
 f	c81460e9	sau khi ngủ
+w	e036f23f	Cập nhật
+w	87221b73	Kiểm tra
+w	03f5628d	Trang phát hành
+w	e881083f	Chưa kiểm tra
+w	1a374d8d	Cập nhật
+w	59bd7c8b	Đang tải xuống…
+w	0c4bb7e4	Kiểm tra cập nhật
+w	37ba3d5d	Mỗi ngày một lần Red Tune hỏi GitHub xem có phiên bản mới không. Không gửi gì về máy tính; cài đặt trong «Giới thiệu»
+w	d1db1d66	bản phát hành không có trình cài đặt
+w	f3a5c9be	GitHub không cung cấp mã kiểm tra của trình cài đặt
+w	8572c324	mã kiểm tra không khớp, tệp đã bị xóa
+w	7a7c9332	Gửi lên GitHub
+w	7da23cd5	Biểu mẫu đã mở trong trình duyệt kèm báo cáo: đánh dấu những gì hoạt động rồi nhấn «Create»
+w	bcba5bdb	Biểu mẫu đã mở trong trình duyệt và báo cáo đã được sao chép: dán vào «System report»
 w	c91b3e82	Ép xung
 w	ed77fcd8	Đường cong xung nhịp và các cấu hình sẵn là chức năng chuyên gia: Cài đặt → Chung
 w	1d31bbca	Fn+Q gồm cả Tùy chỉnh
@@ -1320,6 +1334,17 @@ w	5f11b887	danh sách hiệu ứng gốc không được giữ lại
 w	1a79d826	Âm trầm riêng
 w	7c83b011	Âm trầm dưới điểm chia và phần còn lại được nén riêng: tiếng trống kick không kéo giọng và âm cao xuống
 w	4fbcff2c	Hz
+f	c9e010ce	Phiên bản mới 
+f	263ce993	 — cài đặt trong «Giới thiệu»
+f	e6ff0450	 · bản này không được cài bằng trình cài đặt: tải phiên bản mới từ trang phát hành
+f	a05cb4e8	Lần kiểm tra cuối: 
+f	263aa6f8	Không kiểm tra được: 
+f	5fdf1545	Đây là phiên bản mới nhất · đã kiểm tra 
+f	9910ec5e	Không cập nhật được: 
+f	01cdc21b	Không mở được trình duyệt: 
+f	f04b4131	Đang tải xuống… 
+f	fc7da162	Red Tune sẽ đóng, trình cài đặt sẽ cập nhật lên phiên bản 
+f	4acab5cc	 và mở lại. Cài đặt, cấu hình sẵn và đường cong được giữ nguyên.
 f	f6acd0a1	trong sơ đồ 
 f	270a07ee	 % của 
 f	fc550669	, xung nhịp tối thiểu 

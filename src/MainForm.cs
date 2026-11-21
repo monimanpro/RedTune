@@ -101,6 +101,8 @@ namespace RedTune
             if (blackBox != null && memCut == null && !tuner.HasRun) watch.ResetSeen(BlackBox.LastCores, blackBox);
             BlackBox.Wanted = () => tuner.HasRun || CoreCurve.Measuring || settings.BlackBoxMode == 1 || (settings.BlackBoxMode == 0 && settings.WatchOn);
             BlackBox.Start();
+            // 21.11: a new version on GitHub (once a day, if Settings allow): a note from the tray; installed from «О программе»
+            Updater.StartDaily(settings, i => { try { BeginInvoke((Action)(() => { tray.BalloonTipTitle = "Red Tune"; tray.BalloonTipText = L.T("Доступна версия ") + i.Version + L.T(" — обновить можно в «О программе»"); tray.BalloonTipIcon = ToolTipIcon.Info; tray.ShowBalloonTip(8000); })); } catch { } });
             Ram.MemTest.Busy = () => tuner.Running;
             Ram.MemTest.CurveNow = () => curve.Active != null ? curve.Active.Values : null;
             Application.ApplicationExit += (s, e) => { Ram.MemTest.Abort(); BlackBox.Stop(); };
@@ -222,7 +224,7 @@ namespace RedTune
                     case "watch": p = new WatchPage(watch, curve, settings, i => ShowPage(i == 0 ? "curve" : "tune")); break;
                     case "settings": p = new SettingsPage(settings, Relang, SetScale); break;
                     case "comp": p = new ComponentsPage(settings); break;
-                    case "about": p = new AboutPage(); break;
+                    case "about": p = new AboutPage(settings); break;
                     case "power": p = Hw.LenovoPower ? (Page)new PowerPage(power, curve, fans, settings) : new AmdPowerPage(settings); break; // without Lenovo: the AMD limits
                     case "device": p = Hw.AsusFw ? (Page)new AsusDevicePage(settings) : new DevicePage(settings); break; // each firmware has its own page
                     case "sound": p = new SoundPage(settings); break;

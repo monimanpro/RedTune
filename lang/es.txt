@@ -313,6 +313,20 @@ f	8a824827	inicio
 f	64b0614f	cargador
 f	d7b8a9de	batería
 f	c81460e9	tras la suspensión
+w	e036f23f	Actualizaciones
+w	87221b73	Comprobar
+w	03f5628d	Página de versiones
+w	e881083f	Aún no comprobado
+w	1a374d8d	Actualización
+w	59bd7c8b	Descargando…
+w	0c4bb7e4	Buscar actualizaciones
+w	37ba3d5d	Una vez al día Red Tune pregunta a GitHub si hay una versión nueva. No se envía nada sobre el ordenador; se instala en «Acerca de»
+w	d1db1d66	la versión no tiene instalador
+w	f3a5c9be	GitHub no dio la suma de comprobación del instalador
+w	8572c324	la suma de comprobación no coincide, el archivo se eliminó
+w	7a7c9332	Enviar a GitHub
+w	7da23cd5	El formulario se abrió en el navegador con el informe dentro: marca lo que funciona y pulsa «Create»
+w	bcba5bdb	El formulario se abrió en el navegador y el informe está copiado: pégalo en «System report»
 w	c91b3e82	Overclocking
 w	ed77fcd8	La curva de frecuencia y los preajustes son funciones expertas: Ajustes → General
 w	1d31bbca	Fn+Q incluye Personalizado
@@ -1320,6 +1334,17 @@ w	5f11b887	no se conservaron las listas de efectos originales
 w	1a79d826	Graves aparte
 w	7c83b011	Los graves por debajo del corte y todo lo demás se comprimen por separado: un bombo no baja la voz ni los agudos
 w	4fbcff2c	Hz
+f	c9e010ce	Nueva versión 
+f	263ce993	 — se instala en «Acerca de»
+f	e6ff0450	 · esta copia no la instaló el instalador: descarga la versión nueva desde la página de versiones
+f	a05cb4e8	Última comprobación: 
+f	263aa6f8	No se pudo comprobar: 
+f	5fdf1545	Es la última versión · comprobado 
+f	9910ec5e	No se pudo actualizar: 
+f	01cdc21b	El navegador no se abrió: 
+f	f04b4131	Descargando… 
+f	fc7da162	Red Tune se cerrará y el instalador lo actualizará a la versión 
+f	4acab5cc	 y lo abrirá de nuevo. Los ajustes, preajustes y curvas se conservan.
 f	f6acd0a1	en el plan 
 f	270a07ee	 % de 
 f	fc550669	, frecuencia mínima 

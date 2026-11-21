@@ -125,7 +125,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 - **The graphics card** is tuned through NVIDIA's own driver interfaces.
 - **Sound** is an audio processing object: the kind of plug-in Windows' audio engine loads for a device. Red Tune registers it, places it in the device's chain of effects, and talks to it through a small shared file (settings in, meters and a spectrum back). The processing takes about one to two percent of a single processor core for the output and two to six percent for a full microphone chain (DeepFilterNet being the heavy part). The page's live pictures repaint only what the sound moves, and nothing that is scrolled out of view.
 - **Memory timings** are read from the processor's registers and written through AMD's overclocking interface in the BIOS, where it exists.
-- **No network.** Red Tune does not connect to the internet. The only links (PawnIO, Prime95) open in your browser when you click them.
+- **Network: only for updates.** Once a day Red Tune asks GitHub for this repository's latest release (`api.github.com`); nothing about the computer is sent, and Settings → «Check for updates» switches it off. A new version is downloaded only when you press «Install» in «About»: the installer is checked against the SHA-256 GitHub keeps for the release file, then updates Red Tune and starts it again, keeping the settings. «Send to GitHub» on «Components» opens the report form in your browser with the report filled in; Red Tune itself sends nothing. Other links (PawnIO, Prime95) open in your browser when you click them.
 
 ### Safety nets
 - **Safe start.** Hold **Shift** at start, or run with `--safe`: nothing is applied. If the previous start broke off within three minutes of applying (a freeze, a blue screen), the next one applies nothing either. Home then shows a banner with «Apply now».
@@ -167,7 +167,7 @@ Red Tune is in beta. A report from your machine is the most useful thing you can
 
 1. **Start with what changes nothing risky:** Home, power modes, fan curves, Sound, Display, Clean-up. Check that the readings match what you know (another monitoring tool, the laptop's own app).
 2. **Expert functions** (curve, auto-tune, memory, direct processor limits) are off until you switch them on in Settings. The auto-tune looks for the edge on purpose, so a freeze or a blue screen during a run is expected: Windows records the hardware error, and after the restart the run steps back and goes on. If anything else goes wrong, hold **Shift** while Red Tune starts: it then applies nothing.
-3. **Send a report:** [Hardware report](../../issues/new?template=hardware-report.yml) — paste the system report and tick what worked. For anything broken: [Bug](../../issues/new?template=bug.yml). Russian is fine as well as English.
+3. **Send a report:** Settings → Components → «Send to GitHub» opens the [Hardware report](../../issues/new?template=hardware-report.yml) form with the system report already in it; tick what worked. For anything broken: [Bug](../../issues/new?template=bug.yml). Russian is fine as well as English.
 
 ## Build from source
 

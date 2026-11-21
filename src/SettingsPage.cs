@@ -39,6 +39,11 @@ namespace RedTune
             tray.Set(s.CloseToTray);
             tray.CheckedChanged += (o, e) => { s.CloseToTray = tray.Checked; Store.SaveSettings(s); };
             Row("Закрытие окна сворачивает в трей", "Иначе крестик закрывает программу и автоприменение кривой перестаёт работать", tray);
+            // 21.11: the only network access (Updater): a daily look at GitHub's latest release
+            var upd = new Toggle();
+            upd.Set(s.UpdateCheck);
+            upd.CheckedChanged += (o, e) => { s.UpdateCheck = upd.Checked; Store.SaveSettings(s); };
+            Row("Проверять обновления", "Раз в день Red Tune спрашивает GitHub, вышла ли новая версия. О компьютере ничего не отправляется; установить — в «О программе»", upd);
             // the sections that can make a PC unstable appear in the menu only with this on (Hw.Risky)
             var expert = new Toggle();
             expert.Set(s.Expert);

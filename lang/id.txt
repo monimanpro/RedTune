@@ -313,6 +313,20 @@ f	8a824827	saat mulai
 f	64b0614f	pengisi daya
 f	d7b8a9de	baterai
 f	c81460e9	setelah tidur
+w	e036f23f	Pembaruan
+w	87221b73	Periksa
+w	03f5628d	Halaman rilis
+w	e881083f	Belum diperiksa
+w	1a374d8d	Pembaruan
+w	59bd7c8b	Mengunduh…
+w	0c4bb7e4	Periksa pembaruan
+w	37ba3d5d	Sekali sehari Red Tune bertanya ke GitHub apakah ada versi baru. Tidak ada data komputer yang dikirim; pemasangan ada di «Tentang»
+w	d1db1d66	rilis ini tidak punya penginstal
+w	f3a5c9be	GitHub tidak memberikan checksum penginstal
+w	8572c324	checksum tidak cocok, file dihapus
+w	7a7c9332	Kirim ke GitHub
+w	7da23cd5	Formulir terbuka di browser dengan laporan di dalamnya: centang yang berfungsi lalu tekan «Create»
+w	bcba5bdb	Formulir terbuka di browser dan laporan sudah disalin: tempelkan ke «System report»
 w	c91b3e82	Overclock
 w	ed77fcd8	Kurva frekuensi dan preset adalah fungsi ahli: Pengaturan → Umum
 w	1d31bbca	Fn+Q termasuk Kustom
@@ -1320,6 +1334,17 @@ w	5f11b887	daftar efek asli tidak tersimpan
 w	1a79d826	Bass terpisah
 w	7c83b011	Bass di bawah titik bagi dan sisanya dikompresi terpisah: kick drum tidak menurunkan vokal dan nada tinggi
 w	4fbcff2c	Hz
+f	c9e010ce	Versi baru 
+f	263ce993	 — pasang dari «Tentang»
+f	e6ff0450	 · salinan ini tidak dipasang lewat penginstal: unduh versi baru dari halaman rilis
+f	a05cb4e8	Terakhir diperiksa: 
+f	263aa6f8	Tidak dapat memeriksa: 
+f	5fdf1545	Ini versi terbaru · diperiksa 
+f	9910ec5e	Tidak dapat memperbarui: 
+f	01cdc21b	Browser tidak terbuka: 
+f	f04b4131	Mengunduh… 
+f	fc7da162	Red Tune akan ditutup, dan penginstal akan memperbaruinya ke versi 
+f	4acab5cc	 lalu membukanya lagi. Pengaturan, preset, dan kurva tetap ada.
 f	f6acd0a1	di skema 
 f	270a07ee	 % dari 
 f	fc550669	, frekuensi minimum 
