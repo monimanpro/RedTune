@@ -118,7 +118,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 ## How it works
 
 - **One program, no service.** A single executable for .NET Framework 4.8 (part of Windows 10 and 11) plus two small native libraries of its own: the load for the auto-tune and the sound effect. A scheduled task starts it in the tray when you sign in, if you ask for that.
-- **The processor** is reached through the [PawnIO](https://pawnio.eu/) driver: Red Tune talks to the processor's system management unit to read the power table and to write the voltage curve and the power limits. PawnIO is installed separately with its own signed installer; without it everything except those parts still works.
+- **The processor** is reached through the [PawnIO](https://pawnio.eu/) driver: Red Tune talks to the processor's system management unit to read the power table and to write the voltage curve and the power limits. PawnIO's own signed installer comes with Red Tune and is run when the driver is missing (by the setup, or by «Install» on the «Components» page); without the driver everything except those parts still works.
 - **Laptop firmware.** Where a laptop's firmware offers a management interface in Windows (Lenovo's WMI classes, ASUS's system control driver), Red Tune uses it for power modes, limits, fans and device settings. Without one, those rows are hidden and the processor limits go the direct way.
 - **Windows power plans** are read and written through Windows' own power API. Changes in the plan block wait for a button; nothing is written while you are still choosing.
 - **The graphics card** is tuned through NVIDIA's own driver interfaces.
@@ -136,7 +136,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 
 - Windows 10 or 11, 64-bit; administrator rights.
 - An AMD Ryzen processor. Intel is not supported.
-- [PawnIO](https://pawnio.eu/) for the curve, the direct processor limits and the processor temperature.
+- [PawnIO](https://pawnio.eu/) for the curve, the direct processor limits and the processor temperature (its installer comes with Red Tune).
 - An NVIDIA card for the «Graphics card» page.
 - Prime95 is optional: the auto-tune has a load of its own.
 
@@ -144,7 +144,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 
 1. Download `RedTune-Setup-x.y.z.exe` from [Releases](../../releases).
 2. The installer is not code-signed, so Windows shows «Windows protected your PC»: choose **More info → Run anyway**.
-3. If PawnIO is missing, the installer says so and offers to open its download page.
+3. If PawnIO is missing, the installer puts it in too (the task «Install the PawnIO driver», on by default), with PawnIO's own signed installer.
 
 **Uninstall** from Windows' «Installed apps». It removes the sign-in task, takes the sound effect off every device and unregisters it, and asks whether to keep your settings.
 

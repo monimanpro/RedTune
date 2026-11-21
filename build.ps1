@@ -18,6 +18,10 @@ $src = (Get-ChildItem "$root\src\*.cs", "$root\src\Dist\*.cs", "$root\src\Ram\*.
 foreach ($old in "$root\bin\ram", "$root\bin\tools") { if (Test-Path $old) { Remove-Item $old -Recurse -Force } }
 New-Item -ItemType Directory -Force "$root\bin\ram" | Out-Null
 Copy-Item "$root\ram\RyzenSMU.bin", "$root\ram\AMDFamily17.bin", "$root\ram\SmbusPIIX4.bin" "$root\bin\ram" -Force
+# 21.11: the PawnIO driver's own installer (namazso, signed, unchanged; installer\pawnio), run with -install -silent by
+# the setup and by «Компоненты» when the driver is missing
+New-Item -ItemType Directory -Force "$root\bin\pawnio" | Out-Null
+Copy-Item "$root\installer\pawnio\PawnIO_setup.exe" "$root\bin\pawnio" -Force
 # the program's own heavy load for the auto-tune (native\): built again when a source is newer than the dll; without a
 # C compiler the dll that is already there is used
 $dll = "$root\native\RedTuneStress.dll"

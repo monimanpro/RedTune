@@ -319,6 +319,13 @@ w	1d31bbca	Fn+Q gồm cả Tùy chỉnh
 w	de32aeba	Theo vòng: Yên tĩnh → Cân bằng → Hiệu năng → Tùy chỉnh → Yên tĩnh
 w	1b6b946f	Xung nhịp tối thiểu
 w	f244c01e	Bộ xử lý không xuống dưới xung nhịp này
+w	824265b0	Cài đặt
+w	25c6214e	Khởi động lại
+w	ea638838	Trình điều khiển truy cập bộ xử lý: đường cong, giới hạn AMD, nhiệt độ
+w	8e171f39	Red Tune sẽ cài trình điều khiển PawnIO bằng trình cài đặt riêng của nó (tác giả namazso, trình điều khiển được Microsoft ký). Chỉ mất vài giây.\n\nSau đó Red Tune khởi động lại để bắt đầu làm việc qua trình điều khiển.
+w	a9ec7901	Đang cài PawnIO…
+w	85f36ae3	Chưa cài được: trình cài đặt không phản hồi
+w	85c732b8	PawnIO đã được cài. Khởi động lại Red Tune ngay để đường cong, giới hạn và nhiệt độ bắt đầu hoạt động?
 w	8869f068	Hộp đen
 w	cfba6cde	Cùng bộ giám sát
 w	7a21f781	Chỉ khi kiểm tra
@@ -1227,6 +1234,8 @@ f	f6acd0a1	trong sơ đồ
 f	270a07ee	 % của 
 f	fc550669	, xung nhịp tối thiểu 
 f	c8c88e80	 · trên trang thường
+f	8d2a7695	Chưa cài được: mã 
+f	40d16675	Chưa cài được: 
 f	cbfecb2b	Hiện không ghi · 
 f	2153a745	Đang ghi · 
 f	ab6f4aa0	khi bật theo dõi và trong lúc kiểm tra

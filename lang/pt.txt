@@ -319,6 +319,13 @@ w	1d31bbca	Fn+Q inclui Personalizado
 w	de32aeba	Em ciclo: Silencioso → Equilibrado → Desempenho → Personalizado → Silencioso
 w	1b6b946f	Frequência mínima
 w	f244c01e	O processador não fica abaixo desta frequência
+w	824265b0	Instalar
+w	25c6214e	Reiniciar
+w	ea638838	Driver de acesso ao processador: a curva, os limites da AMD, a temperatura
+w	8e171f39	O Red Tune vai instalar o driver PawnIO com o instalador do próprio driver (autor namazso, o driver é assinado pela Microsoft). Leva alguns segundos.\n\nDepois o Red Tune reinicia para começar a funcionar pelo driver.
+w	a9ec7901	Instalando o PawnIO…
+w	85f36ae3	Não foi instalado: o instalador não respondeu
+w	85c732b8	O PawnIO está instalado. Reiniciar o Red Tune agora para que a curva, os limites e a temperatura comecem a funcionar?
 w	8869f068	Caixa-preta
 w	cfba6cde	Com o vigia
 w	7a21f781	Só testes
@@ -1227,6 +1234,8 @@ f	f6acd0a1	no plano
 f	270a07ee	 % de 
 f	fc550669	, frequência mínima 
 f	c8c88e80	 · em páginas comuns
+f	8d2a7695	Não foi instalado: código 
+f	40d16675	Não foi instalado: 
 f	cbfecb2b	Agora não está gravando · 
 f	2153a745	Gravando agora · 
 f	ab6f4aa0	enquanto a observação está ligada e durante os testes

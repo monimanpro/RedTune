@@ -319,6 +319,13 @@ w	1d31bbca	Fn+Q termasuk Kustom
 w	de32aeba	Bergilir: Senyap → Seimbang → Performa → Kustom → Senyap
 w	1b6b946f	Frekuensi minimum
 w	f244c01e	Prosesor tidak turun di bawah frekuensi ini
+w	824265b0	Pasang
+w	25c6214e	Mulai ulang
+w	ea638838	Driver akses prosesor: kurva, batas AMD, suhu
+w	8e171f39	Red Tune akan memasang driver PawnIO dengan pemasangnya sendiri (pembuat namazso, driver ditandatangani Microsoft). Hanya beberapa detik.\n\nLalu Red Tune dimulai ulang agar mulai bekerja melalui driver.
+w	a9ec7901	Memasang PawnIO…
+w	85f36ae3	Tidak terpasang: pemasang tidak merespons
+w	85c732b8	PawnIO sudah terpasang. Mulai ulang Red Tune sekarang agar kurva, batas, dan suhu mulai berfungsi?
 w	8869f068	Kotak hitam
 w	cfba6cde	Bersama pengawas
 w	7a21f781	Hanya pengujian
@@ -1227,6 +1234,8 @@ f	f6acd0a1	di skema
 f	270a07ee	 % dari 
 f	fc550669	, frekuensi minimum 
 f	c8c88e80	 · pada halaman biasa
+f	8d2a7695	Tidak terpasang: kode 
+f	40d16675	Tidak terpasang: 
 f	cbfecb2b	Sekarang tidak merekam · 
 f	2153a745	Sedang merekam · 
 f	ab6f4aa0	selama pengawasan aktif dan saat pengujian

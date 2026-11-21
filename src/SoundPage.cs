@@ -176,7 +176,7 @@ namespace RedTune
             mkRow = Row("Усиление после", "Возвращает громкость, которую забрало сжатие", mk);
 
 
-            Section("Система");
+            sysLabel = Section("Система"); // 21.11: hidden with its two rows (the user's wish)
             nahimicRow = Row("Эффекты производителя", null, nahimicT);
             nahimicT.CheckedChanged += (o, e) => { if (!loading) SwitchNahimic(nahimicT.Checked); };
             removeRow = Row("Убрать обработку с устройства", "Red Tune уберёт свой обработчик из цепочки эффектов этого устройства; настройки останутся", remove);
@@ -480,6 +480,8 @@ namespace RedTune
             });
         }
 
+        SectionLabel sysLabel;
+
         // the line under «Обработка звука» and the rows of «Система»
         void Status(SoundMeters m)
         {
@@ -502,7 +504,8 @@ namespace RedTune
             string nh = state.Nahimic ? "Идут до Red Tune и складываются с ним. Выключите, чтобы слышать только Red Tune: вернуть можно здесь же"
                 : state.NahimicOff ? "Убраны из цепочки этого устройства. Программа производителя установлена, как была; выключатель вернёт эффекты на место" : null;
             bool showNh = nh != null, showRemove = state.Attached;
-            if (nahimicRow.Visible != showNh || removeRow.Visible != showRemove) { nahimicRow.Visible = showNh; removeRow.Visible = showRemove; Relayout(); }
+            bool showSys = showNh || showRemove;
+            if (nahimicRow.Visible != showNh || removeRow.Visible != showRemove || sysLabel.Visible != showSys) { nahimicRow.Visible = showNh; removeRow.Visible = showRemove; sysLabel.Visible = showSys; Relayout(); }
             if (showNh && nahimicRow.Sub != nh) nahimicRow.SetSub(nh);
             if (showNh && nahimicT.Checked != state.Nahimic) { loading = true; nahimicT.Set(state.Nahimic); loading = false; }
         }

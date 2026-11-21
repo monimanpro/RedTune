@@ -130,8 +130,13 @@ namespace RedTune
             // 17.11: the driver the curve, the AMD limits and the processor temperature go through; it has its own installer
             {
                 var pill = new Pill();
-                var web = new FlatButton("Скачать");
-                var row = Row("PawnIO", "Драйвер доступа к процессору: кривая, лимиты AMD, температура. Ставится отдельно", pill, web);
+                // 21.11: its installer comes with Red Tune (pawnio\PawnIO_setup.exe, the author's, signed, unchanged): one
+                // press installs it silently; without that file (a copy without it) the button opens the author's page
+                var setup = Path.Combine(Application.StartupPath, "pawnio", "PawnIO_setup.exe");
+                bool bundled = File.Exists(setup);
+                var web = new FlatButton(bundled ? "Установить" : "Скачать", bundled);
+                const string sub = "Драйвер доступа к процессору: кривая, лимиты AMD, температура";
+                var row = Row("PawnIO", sub, pill, web);
                 row.SetExtra("Откуда: автор namazso, pawnio.eu — подписанный драйвер со своим установщиком");
                 var lib = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "PawnIO", "PawnIOLib.dll");
                 Action check = () =>
@@ -143,7 +148,36 @@ namespace RedTune
                 };
                 checks.Add(check);
                 check();
-                web.Click += (o, e) => { try { Process.Start("https://pawnio.eu/"); } catch { } };
+                web.Click += (o, e) =>
+                {
+                    if (!File.Exists(setup)) { try { Process.Start("https://pawnio.eu/"); } catch { } return; }
+                    if (!ConfirmDialog.Ask(FindForm(), "PawnIO", "Red Tune установит драйвер PawnIO его собственным установщиком (автор namazso, драйвер подписан Microsoft). Это займёт несколько секунд.\n\nПотом Red Tune перезапустится, чтобы начать работать через драйвер.", "Установить", "Отмена")) return;
+                    web.Enabled = false; row.SetSub("Устанавливаю PawnIO…");
+                    System.Threading.Tasks.Task.Run(() =>
+                    {
+                        int code = -1; string err = null;
+                        try
+                        {
+                            using (var p = Process.Start(new ProcessStartInfo(setup, "-install -silent") { UseShellExecute = false, CreateNoWindow = true }))
+                                code = p.WaitForExit(120000) ? p.ExitCode : -2;
+                        }
+                        catch (Exception ex) { err = ex.Message; }
+                        Store.Log("PawnIO: установка " + (err ?? "код " + code) + ", файл драйвера " + (File.Exists(lib) ? "есть" : "нет"));
+                        try
+                        {
+                            BeginInvoke((Action)(() =>
+                            {
+                                web.Enabled = true; check();
+                                if (!File.Exists(lib)) { row.SetSub(err != null ? "Не установился: " + err : code == -2 ? "Не установился: установщик не ответил" : "Не установился: код " + code); return; }
+                                row.SetSub(sub);
+                                var main = FindForm() as MainForm;
+                                if (main != null && ConfirmDialog.Ask(main, "PawnIO", "PawnIO установлен. Перезапустить Red Tune сейчас, чтобы кривая, лимиты и температура заработали?", "Перезапустить", "Позже"))
+                                    main.RestartApp();
+                            }));
+                        }
+                        catch { }
+                    });
+                };
             }
             Item("Prime95", "Нагрузка для автотюна. Подойдёт папка из CoreCycler\\test_programs\\p95 или с сайта",
                 () => Load.P95Dir(s),

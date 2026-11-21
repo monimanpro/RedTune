@@ -1982,5 +1982,14 @@
 "ffc550669":", frequência mínima ",
 "w1d31bbca":"Fn+Q inclui Personalizado",
 "wde32aeba":"Em ciclo: Silencioso → Equilibrado → Desempenho → Personalizado → Silencioso",
-"fc8c88e80":" · em páginas comuns"
+"fc8c88e80":" · em páginas comuns",
+"w824265b0":"Instalar",
+"w25c6214e":"Reiniciar",
+"wea638838":"Driver de acesso ao processador: a curva, os limites da AMD, a temperatura",
+"w8e171f39":"O Red Tune vai instalar o driver PawnIO com o instalador do próprio driver (autor namazso, o driver é assinado pela Microsoft). Leva alguns segundos.\n\nDepois o Red Tune reinicia para começar a funcionar pelo driver.",
+"wa9ec7901":"Instalando o PawnIO…",
+"w85f36ae3":"Não foi instalado: o instalador não respondeu",
+"w85c732b8":"O PawnIO está instalado. Reiniciar o Red Tune agora para que a curva, os limites e a temperatura comecem a funcionar?",
+"f8d2a7695":"Não foi instalado: código ",
+"f40d16675":"Não foi instalado: "
 }

@@ -1982,5 +1982,14 @@
 "ffc550669":", frekuensi minimum ",
 "w1d31bbca":"Fn+Q termasuk Kustom",
 "wde32aeba":"Bergilir: Senyap → Seimbang → Performa → Kustom → Senyap",
-"fc8c88e80":" · pada halaman biasa"
+"fc8c88e80":" · pada halaman biasa",
+"w824265b0":"Pasang",
+"w25c6214e":"Mulai ulang",
+"wea638838":"Driver akses prosesor: kurva, batas AMD, suhu",
+"w8e171f39":"Red Tune akan memasang driver PawnIO dengan pemasangnya sendiri (pembuat namazso, driver ditandatangani Microsoft). Hanya beberapa detik.\n\nLalu Red Tune dimulai ulang agar mulai bekerja melalui driver.",
+"wa9ec7901":"Memasang PawnIO…",
+"w85f36ae3":"Tidak terpasang: pemasang tidak merespons",
+"w85c732b8":"PawnIO sudah terpasang. Mulai ulang Red Tune sekarang agar kurva, batas, dan suhu mulai berfungsi?",
+"f8d2a7695":"Tidak terpasang: kode ",
+"f40d16675":"Tidak terpasang: "
 }

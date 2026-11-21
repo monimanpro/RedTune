@@ -21,6 +21,13 @@ namespace RedTune
             { "Кривая частоты и пресеты — в экспертных функциях: Настройки → Основное", "The clock curve and the presets are expert functions: Settings → General" },
             { "Fn+Q включает «Свой»", "Fn+Q includes Custom" }, { "По кругу: Тихий → Баланс → Макс → Свой → Тихий", "In a round: Quiet → Balance → Performance → Custom → Quiet" },
             { "Минимальная частота", "Minimum clock" }, { "Ниже этой частоты процессор не опускается", "The processor does not go below this clock" },
+            // 21.11: PawnIO installed from «Компоненты» with the installer that comes with Red Tune
+            { "Установить", "Install" }, { "Перезапустить", "Restart" },
+            { "Драйвер доступа к процессору: кривая, лимиты AMD, температура", "The processor access driver: the curve, the AMD limits, the temperature" },
+            { "Red Tune установит драйвер PawnIO его собственным установщиком (автор namazso, драйвер подписан Microsoft). Это займёт несколько секунд.\n\nПотом Red Tune перезапустится, чтобы начать работать через драйвер.", "Red Tune will install the PawnIO driver with its own installer (author namazso, the driver is signed by Microsoft). It takes a few seconds.\n\nThen Red Tune restarts to start working through the driver." },
+            { "Устанавливаю PawnIO…", "Installing PawnIO…" },
+            { "Не установился: установщик не ответил", "Not installed: the installer did not answer" },
+            { "PawnIO установлен. Перезапустить Red Tune сейчас, чтобы кривая, лимиты и температура заработали?", "PawnIO is installed. Restart Red Tune now so that the curve, the limits and the temperature start working?" },
             { "Чёрный ящик", "Black box" }, { "Со сторожем", "With the watchdog" }, { "Только тесты", "Tests only" },
             { "Режим питания Windows", "Windows power mode" },
             { "Тип схемы", "Plan kind" }, { "Сбалансированная", "Balanced" },
@@ -679,7 +686,7 @@ namespace RedTune
         static readonly Dictionary<string, string> MoreFragments = new Dictionary<string, string>
         {
             { "в схеме ", "in the plan " }, { " % от ", " % of " }, { ", минимальная частота ", ", minimum clock " },
-            { " · на обычных страницах", " · on ordinary pages" },
+            { " · на обычных страницах", " · on ordinary pages" }, { "Не установился: код ", "Not installed: code " }, { "Не установился: ", "Not installed: " },
             { "Сейчас не пишет · ", "Not recording now · " }, { "Сейчас пишет · ", "Recording now · " },
             { "пока включено слежение и во время тестов", "while watching is on and during the tests" },
             { "всегда, каждые 2 секунды", "always, every 2 seconds" },

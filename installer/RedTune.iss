@@ -1,7 +1,8 @@
 ﻿; Red Tune installer (Inno Setup 6). build.ps1 runs it after the program is built:
 ;   ISCC.exe /DAppVersion=0.4.0 installer\RedTune.iss   →   dist\RedTune-Setup-0.4.0.exe
 ; Installs bin\ into Program Files, a Start menu shortcut, the logon task (the same one Settings creates, through
-; RedTune.exe --autostart on), and says where to get PawnIO when it is missing (the curve and the AMD limits need it).
+; RedTune.exe --autostart on), and installs the PawnIO driver with its own signed installer when it is missing (a task,
+; on by default; 21.11): the curve, the AMD limits and the processor temperature need it.
 ; The uninstaller removes the task and the files and asks whether to keep the settings in %APPDATA%\RedTune.
 
 #ifndef AppVersion
@@ -43,14 +44,19 @@ ru.DesktopTask=Ярлык на рабочем столе
 en.DesktopTask=Desktop shortcut
 ru.RunNow=Запустить Red Tune
 en.RunNow=Start Red Tune
-ru.NoPawnIO=Не найден драйвер PawnIO.%n%nБез него не работают «Кривая» и лимиты процессора AMD; остальное работает. PawnIO бесплатный, ставится своим подписанным установщиком.%n%nОткрыть страницу загрузки PawnIO?
-en.NoPawnIO=The PawnIO driver was not found.%n%nWithout it «Curve» and the AMD processor limits do not work; everything else does. PawnIO is free and comes with its own signed installer.%n%nOpen the PawnIO download page?
+ru.NoPawnIO=Драйвер PawnIO не установился.%n%nБез него не работают «Кривая» и лимиты процессора AMD; остальное работает. PawnIO можно поставить позже: «Настройки → Компоненты».%n%nОткрыть страницу загрузки PawnIO?
+en.NoPawnIO=The PawnIO driver was not installed.%n%nWithout it «Curve» and the AMD processor limits do not work; everything else does. PawnIO can be installed later: «Settings → Components».%n%nOpen the PawnIO download page?
+ru.PawnIOTask=Установить драйвер PawnIO (кривая, лимиты и температура процессора AMD)
+en.PawnIOTask=Install the PawnIO driver (the AMD processor's curve, limits and temperature)
+ru.PawnIOInstalling=Устанавливаю драйвер PawnIO…
+en.PawnIOInstalling=Installing the PawnIO driver…
 ru.KeepData=Удалить и настройки Red Tune (пресеты, кривые, настройки звука, правила «Распределения», журнал) из %APPDATA%\RedTune?%n%n«Нет» — оставить их для следующей установки.
 en.KeepData=Also delete the Red Tune settings (presets, curves, sound settings, «Distribution» rules, log) in %APPDATA%\RedTune?%n%n«No» keeps them for a later install.
 
 [Tasks]
 Name: "autostart"; Description: "{cm:AutostartTask}"
 Name: "desktopicon"; Description: "{cm:DesktopTask}"; Flags: unchecked
+Name: "pawnio"; Description: "{cm:PawnIOTask}"; Check: not PawnIOInstalled
 
 [Files]
 ; the program's files by name: bin\ is a working folder and may hold other things (old builds, logs), none of which ships
@@ -60,6 +66,7 @@ Source: "..\bin\audio\RedTuneApo.dll"; DestDir: "{app}\audio"; Flags: ignorevers
 Source: "..\bin\ram\RyzenSMU.bin"; DestDir: "{app}\ram"; Flags: ignoreversion
 Source: "..\bin\ram\AMDFamily17.bin"; DestDir: "{app}\ram"; Flags: ignoreversion
 Source: "..\bin\ram\SmbusPIIX4.bin"; DestDir: "{app}\ram"; Flags: ignoreversion
+Source: "..\bin\pawnio\PawnIO_setup.exe"; DestDir: "{app}\pawnio"; Flags: ignoreversion
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\THIRD-PARTY.md"; DestDir: "{app}"; Flags: ignoreversion
@@ -69,6 +76,8 @@ Name: "{group}\Red Tune"; Filename: "{app}\RedTune.exe"
 Name: "{autodesktop}\Red Tune"; Filename: "{app}\RedTune.exe"; Tasks: desktopicon
 
 [Run]
+; the driver first, so the program started at the end finds it (its setup refuses to run over an installed PawnIO)
+Filename: "{app}\pawnio\PawnIO_setup.exe"; Parameters: "-install -silent"; StatusMsg: "{cm:PawnIOInstalling}"; Flags: runhidden waituntilterminated; Tasks: pawnio; Check: not PawnIOInstalled
 Filename: "{app}\RedTune.exe"; Parameters: "--autostart on"; Flags: runhidden waituntilterminated; Tasks: autostart
 Filename: "{app}\RedTune.exe"; Parameters: "--autostart off"; Flags: runhidden waituntilterminated; Tasks: not autostart
 Filename: "{app}\RedTune.exe"; Description: "{cm:RunNow}"; Flags: nowait postinstall skipifsilent
@@ -86,6 +95,11 @@ Type: filesandordirs; Name: "{app}"
 const
   PawnIOKey = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\PawnIO';
   PawnIOPage = 'https://pawnio.eu/';
+
+function PawnIOInstalled: Boolean;
+begin
+  Result := RegKeyExists(HKLM64, PawnIOKey) or RegKeyExists(HKLM32, PawnIOKey);
+end;
 
 // a running copy is asked to close, then waited for (up to 10 s) until its single-instance mutex is gone: --quit only
 // asks, and on 13.11 the uninstaller deleted files while the app was still exiting and left RedTune.exe behind
@@ -114,7 +128,8 @@ var
   Code: Integer;
 begin
   if (CurStep <> ssPostInstall) or WizardSilent then Exit;
-  if not RegKeyExists(HKLM64, PawnIOKey) and not RegKeyExists(HKLM32, PawnIOKey) then
+  // the driver's task was picked and it is still missing: its setup failed (an unpicked task is the user's choice)
+  if WizardIsTaskSelected('pawnio') and not PawnIOInstalled then
     if MsgBox(CustomMessage('NoPawnIO'), mbConfirmation, MB_YESNO) = IDYES then
       ShellExec('open', PawnIOPage, '', '', SW_SHOWNORMAL, ewNoWait, Code);
 end;

@@ -1982,5 +1982,14 @@
 "ffc550669":", xung nhịp tối thiểu ",
 "w1d31bbca":"Fn+Q gồm cả Tùy chỉnh",
 "wde32aeba":"Theo vòng: Yên tĩnh → Cân bằng → Hiệu năng → Tùy chỉnh → Yên tĩnh",
-"fc8c88e80":" · trên trang thường"
+"fc8c88e80":" · trên trang thường",
+"w824265b0":"Cài đặt",
+"w25c6214e":"Khởi động lại",
+"wea638838":"Trình điều khiển truy cập bộ xử lý: đường cong, giới hạn AMD, nhiệt độ",
+"w8e171f39":"Red Tune sẽ cài trình điều khiển PawnIO bằng trình cài đặt riêng của nó (tác giả namazso, trình điều khiển được Microsoft ký). Chỉ mất vài giây.\n\nSau đó Red Tune khởi động lại để bắt đầu làm việc qua trình điều khiển.",
+"wa9ec7901":"Đang cài PawnIO…",
+"w85f36ae3":"Chưa cài được: trình cài đặt không phản hồi",
+"w85c732b8":"PawnIO đã được cài. Khởi động lại Red Tune ngay để đường cong, giới hạn và nhiệt độ bắt đầu hoạt động?",
+"f8d2a7695":"Chưa cài được: mã ",
+"f40d16675":"Chưa cài được: "
 }

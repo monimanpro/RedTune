@@ -5,18 +5,19 @@ that is not Red Tune's own, and the projects Red Tune learned the hardware's int
 
 ## 1. What ships with Red Tune
 
-Three files, unchanged, next to the executable. All three are modules for the PawnIO driver: small programs the
-driver runs to reach the hardware. Their license applies to them. Everything else in the build is Red Tune's own code.
+Four files, unchanged, next to the executable: three modules for the PawnIO driver (small programs the driver runs to
+reach the hardware) and the driver's own installer. Their licenses apply to them. Everything else in the build is Red
+Tune's own code.
 
 | Component | Where in the build | What it is used for | Author | License | Source |
 |---|---|---|---|---|---|
 | PawnIO module RyzenSMU | `ram\RyzenSMU.bin` | Reaching the processor's system management unit through the PawnIO driver: the Curve Optimizer, the power limits, the power table, the processor temperature; taken from ryzen-smu-cli 0.1.5 (sp00n build from CoreCycler 0.11) | namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
 | PawnIO module AMDFamily17 | `ram\AMDFamily17.bin` | Reading the processor's registers through the PawnIO driver: the memory timings; taken from ZenStates-Core 1.79, which carries it | namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
 | PawnIO module SmbusPIIX4 | `ram\SmbusPIIX4.bin` | The SMBus of the AMD chipset through the PawnIO driver: the temperature of the memory modules; taken from ZenStates-Core 1.79, which carries it | Steve-Tech, namazso | LGPL-2.1 | https://github.com/namazso/PawnIO.Modules |
+| PawnIO 2.2.0 installer | `pawnio\PawnIO_setup.exe` | Installs the PawnIO driver (signed by Microsoft) when it is missing: by the Red Tune setup (a task, on by default) and by «Install» on the «Components» page, both with its own `-install -silent`. The official release file, unchanged: SHA-256 `1f519a22e47187f70a1379a48ca604981c4fcf694f4e65b734aaa74a9fba3032`, signed by namazso.eu | namazso | GPL-2.0 with an exception for programs using its IOCTL interface (the driver) | https://github.com/namazso/PawnIO (source), https://github.com/namazso/PawnIO.Setup/releases/tag/2.2.0 (this file) |
 
 Not shipped, installed by you if you want them:
 
-- **PawnIO** (the driver itself) — from https://pawnio.eu/, with its own signed installer.
 - **Prime95** — optional for the auto-tune, which has a load of its own; point Red Tune to it on the «Components» page.
 
 ## 2. Where the knowledge of the hardware came from

@@ -185,6 +185,12 @@ namespace RedTune
         {
             if (zoom == settings.UiScale) return;
             settings.UiScale = zoom; Store.SaveSettings(settings);
+            RestartApp();
+        }
+
+        // a new copy waits for this one to end (--after), then starts as usual
+        public void RestartApp()
+        {
             System.Diagnostics.Process.Start(Application.ExecutablePath, "--after " + System.Diagnostics.Process.GetCurrentProcess().Id);
             ExitApp();
         }
