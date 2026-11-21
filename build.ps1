@@ -3,11 +3,19 @@
 # The icon is drawn by the app itself (--make-icon), so the first pass builds without it.
 #   .\build.ps1              the program in bin\
 #   .\build.ps1 -Installer   and dist\RedTune-Setup-<version>.exe (needs Inno Setup 6)
-param([switch]$Installer)
+#   .\build.ps1 -FromSource  the two native libraries built again from their sources whatever their dates
+#                            (GitHub Actions builds this way: a fresh checkout gives every file the same date)
+param([switch]$Installer, [switch]$FromSource)
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
-$csc = Get-ChildItem "C:\Program Files\Microsoft Visual Studio", "C:\Program Files (x86)\Microsoft Visual Studio" -Filter csc.exe -Recurse -ErrorAction SilentlyContinue |
-    Where-Object { $_.FullName -match '\\Roslyn\\csc\.exe$' } | Select-Object -First 1
+# Visual Studio: vswhere first (quick, and what GitHub Actions has), then a search through its folders
+$vsw = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+$vsRoots = @(if (Test-Path $vsw) { & $vsw -latest -products * -property installationPath }) + @("C:\Program Files\Microsoft Visual Studio", "C:\Program Files (x86)\Microsoft Visual Studio") | Where-Object { $_ -and (Test-Path $_) }
+$csc = $vsRoots | ForEach-Object { Get-Item (Join-Path $_ "MSBuild\Current\Bin\Roslyn\csc.exe") -ErrorAction SilentlyContinue } | Select-Object -First 1
+if (-not $csc) {
+    $csc = Get-ChildItem $vsRoots -Filter csc.exe -Recurse -ErrorAction SilentlyContinue |
+        Where-Object { $_.FullName -match '\\Roslyn\\csc\.exe$' } | Select-Object -First 1
+}
 if (-not $csc) { throw "Roslyn csc.exe not found (install Visual Studio Build Tools)" }
 $fw = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319"
 New-Item -ItemType Directory -Force "$root\bin" | Out-Null
@@ -26,12 +34,14 @@ Copy-Item "$root\installer\pawnio\PawnIO_setup.exe" "$root\bin\pawnio" -Force
 # C compiler the dll that is already there is used
 $dll = "$root\native\RedTuneStress.dll"
 $newer = Get-ChildItem "$root\native\*.c", "$root\native\*.h", "$root\native\*.inl" | Where-Object { -not (Test-Path $dll) -or $_.LastWriteTime -gt (Get-Item $dll).LastWriteTime }
-if ($newer) { try { & "$root\native\build.ps1" | Out-Null } catch { if (Test-Path $dll) { Write-Warning "RedTuneStress.dll was not built again: $_" } else { throw } } }
+if ($FromSource) { & "$root\native\build.ps1" | Out-Null }
+elseif ($newer) { try { & "$root\native\build.ps1" | Out-Null } catch { if (Test-Path $dll) { Write-Warning "RedTuneStress.dll was not built again: $_" } else { throw } } }
 Copy-Item $dll "$root\bin" -Force
 # the sound effect Windows loads for the page «Звук» (native\apo\): built and tested again when a source is newer than the dll
 $apo = "$root\native\apo\RedTuneApo.dll"
 $newerApo = Get-ChildItem "$root\native\apo\*.cpp", "$root\native\apo\*.h", "$root\native\apo\*.def" | Where-Object { -not (Test-Path $apo) -or $_.LastWriteTime -gt (Get-Item $apo).LastWriteTime }
-if ($newerApo) { try { & "$root\native\apo\build.ps1" | Out-Null } catch { if (Test-Path $apo) { Write-Warning "RedTuneApo.dll was not built again: $_" } else { throw } } }
+if ($FromSource) { & "$root\native\apo\build.ps1" }
+elseif ($newerApo) { try { & "$root\native\apo\build.ps1" | Out-Null } catch { if (Test-Path $apo) { Write-Warning "RedTuneApo.dll was not built again: $_" } else { throw } } }
 New-Item -ItemType Directory -Force "$root\bin\audio" | Out-Null
 Copy-Item $apo "$root\bin\audio" -Force
 $ico = "$root\redtune.ico"

@@ -1,0 +1,98 @@
+# Builds Red Tune on GitHub's Windows machine from the sources in this repository: the program, both native libraries
+# (the auto-tune load and the sound effect with RNNoise and DeepFilterNet, its test bench included) and the installer.
+# - every push and pull request: the installer and bin\ as an artifact of the run (Actions → the run → Artifacts)
+# - a tag v<version>: also a DRAFT release with the installer; it becomes public only when published by hand
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write   # the draft release on a tag; nothing else is written
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      TEMP: ${{ runner.temp }}   # the native builds keep their objects in %TEMP%; here it is the folder the cache keeps
+      TMP: ${{ runner.temp }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache the DeepFilterNet build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\.cargo\registry
+            ~\.cargo\git
+            ${{ runner.temp }}\redtune-apo-obj\dfn
+          key: dfn-${{ runner.os }}-${{ hashFiles('native/apo/dfn/Cargo.lock', 'native/apo/dfn/src/**', 'native/apo/dfn/DeepFilterNet/libDF/src/**') }}
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y --no-progress
+
+      - name: Build
+        shell: powershell   # Windows PowerShell 5.1, as on a user's PC
+        run: .\build.ps1 -Installer -FromSource
+
+      - name: Check the version against the tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          $v = (Get-Item bin\RedTune.exe).VersionInfo
+          $version = "{0}.{1}.{2}" -f $v.FileMajorPart, $v.FileMinorPart, $v.FileBuildPart
+          if ("v$version" -ne "${{ github.ref_name }}") { throw "the tag is ${{ github.ref_name }}, the program says $version" }
+
+      - name: Check the shipped files for build machine paths
+        shell: pwsh
+        run: |
+          # paths of the machine that built them must not ship (the 0.4.5 lesson: 68 of them in the sound effect)
+          $marks = 'D:\a\', 'runneradmin', 'RUNNER~1', 'C:\Users\'
+          $bad = 0
+          foreach ($f in Get-ChildItem bin -Recurse -Include *.exe, *.dll | Where-Object { $_.FullName -notmatch '\\pawnio\\' }) {
+            $b = [IO.File]::ReadAllBytes($f.FullName)
+            $text = [Text.Encoding]::Latin1.GetString($b) + [Text.Encoding]::Unicode.GetString($b)
+            foreach ($m in $marks) {
+              $n = ([regex]::Matches($text, [regex]::Escape($m), 'IgnoreCase')).Count
+              if ($n) { Write-Host "::error file=$($f.Name)::$n x '$m'"; $bad++ }
+            }
+          }
+          if ($bad) { throw "build machine paths in the shipped files" }
+
+      - name: Hashes
+        id: hashes
+        shell: pwsh
+        run: |
+          $setup = Get-Item dist\RedTune-Setup-*.exe
+          "setup=$($setup.FullName)" >> $env:GITHUB_OUTPUT
+          $lines = foreach ($f in @($setup) + (Get-ChildItem bin -Recurse -Include *.exe, *.dll)) {
+            "| ``$($f.Name)`` | $([math]::Round($f.Length / 1MB, 2)) MB | ``$((Get-FileHash $f.FullName -Algorithm SHA256).Hash.ToLower())`` |"
+          }
+          @("### SHA-256", "", "| File | Size | SHA-256 |", "|---|---|---|") + $lines | Out-File $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          $lines
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RedTune-${{ github.sha }}
+          path: |
+            dist\RedTune-Setup-*.exe
+            bin\
+          if-no-files-found: error
+
+      - name: Draft release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $setup = "${{ steps.hashes.outputs.setup }}"
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -eq 0) { gh release upload $tag $setup --clobber }
+          else { gh release create $tag $setup --draft --title "Red Tune $($tag.TrimStart('v'))" --notes "Built by GitHub Actions from $env:GITHUB_SHA. Notes to be written." }

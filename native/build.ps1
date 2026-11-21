@@ -3,7 +3,11 @@
 # calls this script when a source is newer than the dll. Without a C compiler the dll that is already here is used.
 $ErrorActionPreference = "Stop"
 $here = $PSScriptRoot
-$vcvars = Get-ChildItem "C:\Program Files\Microsoft Visual Studio", "C:\Program Files (x86)\Microsoft Visual Studio" -Recurse -Filter vcvars64.bat -ErrorAction SilentlyContinue | Select-Object -First 1
+# Visual Studio: vswhere first (quick, and what GitHub Actions has), then a search through its folders
+$vsw = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+$vsRoots = @(if (Test-Path $vsw) { & $vsw -latest -products * -property installationPath }) + @("C:\Program Files\Microsoft Visual Studio", "C:\Program Files (x86)\Microsoft Visual Studio") | Where-Object { $_ -and (Test-Path $_) }
+$vcvars = $vsRoots | ForEach-Object { Get-Item (Join-Path $_ "VC\Auxiliary\Build\vcvars64.bat") -ErrorAction SilentlyContinue } | Select-Object -First 1
+if (-not $vcvars) { $vcvars = Get-ChildItem $vsRoots -Recurse -Filter vcvars64.bat -ErrorAction SilentlyContinue | Select-Object -First 1 }
 if (-not $vcvars) { throw "C compiler not found (Visual Studio with «Desktop development with C++», or Build Tools)" }
 $obj = Join-Path $env:TEMP "redtune-stress-obj"; New-Item -ItemType Directory -Force $obj | Out-Null
 # /MT: the C runtime inside the dll; /GS- /Oi: no stack cookies, intrinsics in line; one file per instruction set
