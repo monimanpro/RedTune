@@ -1,0 +1,37 @@
+name: Bug
+description: Something broke, crashed or does the wrong thing.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If Red Tune or Windows no longer starts properly, hold **Shift** while Red Tune starts: it then applies nothing.
+        Russian is fine too / можно писать по-русски.
+  - type: input
+    id: version
+    attributes:
+      label: Red Tune version
+      placeholder: "0.4.5"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: System report
+      description: Settings → Components → «Copy report».
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Journal (optional)
+      description: The end of `%APPDATA%\RedTune\redtune.log`, around the time it happened. It can show folder paths with your Windows user name; edit them out if you like.
+      render: text

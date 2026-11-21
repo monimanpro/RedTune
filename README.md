@@ -18,7 +18,7 @@
   <img src="docs/screenshots/home.png" alt="Red Tune: the home page">
 </p>
 
-Red Tune reads the hardware when it starts and shows only the pages that fit the machine. It is aimed at laptops with Ryzen 5000 to 9000 series processors of any brand; desktop PCs with a Ryzen processor run it in a generic mode.
+Red Tune reads the hardware when it starts and shows only the pages that fit the machine. It is aimed at laptops with Ryzen 5000 to 9000 series processors of any brand; desktop PCs with a Ryzen processor run it in a generic mode. It is in beta and has been checked on one laptop so far — [a report from yours](#help-test-it) helps.
 
 > **Warning.** Red Tune changes processor, graphics card, memory and firmware settings. Wrong values can crash the computer, corrupt data or keep it from starting. You use it at your own risk. If something went wrong, hold **Shift** while Red Tune starts: it then applies nothing.
 
@@ -147,6 +147,8 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 2. The installer is not code-signed, so Windows shows «Windows protected your PC»: choose **More info → Run anyway**.
 3. If PawnIO is missing, the installer puts it in too (the task «Install the PawnIO driver», on by default), with PawnIO's own signed installer.
 
+**If an antivirus complains.** Red Tune reaches the processor through a kernel driver, registers an effect in Windows' audio engine and can load every core to its limit: heuristic scanners sometimes flag tools that do such things. Each release lists the installer's SHA-256 and a VirusTotal link; compare the hash with `Get-FileHash .\RedTune-Setup-x.y.z.exe`. The whole source is in this repository, and `.\build.ps1 -Installer` builds the same installer from it.
+
 **Uninstall** from Windows' «Installed apps». It removes the sign-in task, takes the sound effect off every device and unregisters it, and asks whether to keep your settings.
 
 **Where things are kept:** settings, presets, curves and the journal in `%APPDATA%\RedTune`; the sound effect's registered copy in `%ProgramFiles%\RedTune\Audio` and its shared file in `%ProgramData%\RedTune`.
@@ -157,7 +159,15 @@ English, Spanish, Portuguese (Brazil), Russian, Simplified Chinese, Korean, Thai
 
 ## Status
 
-Red Tune is developed and tested on one laptop: a Lenovo Legion R7000P with a Ryzen 9 8945HX and an RTX 5070 Laptop. On other machines it works out what is available and hides the rest, but writing the curve and the limits on other Ryzen families, the generic mode for other brands and for desktop PCs, and the sound effect on other audio drivers have not been verified on real hardware. The system report (Settings → Components → «Copy the report») is what helps to add a model.
+Red Tune is developed and tested on one laptop: a Lenovo Legion R7000P with a Ryzen 9 8945HX and an RTX 5070 Laptop. On other machines it works out what is available and hides the rest, but writing the curve and the limits on other Ryzen families, the generic mode for other brands and for desktop PCs, and the sound effect on other audio drivers have not been verified on real hardware. The system report (Settings → Components → «Copy report») is what helps to add a model.
+
+### Help test it
+
+Red Tune is in beta. A report from your machine is the most useful thing you can give, even if everything works.
+
+1. **Start with what changes nothing risky:** Home, power modes, fan curves, Sound, Display, Clean-up. Check that the readings match what you know (another monitoring tool, the laptop's own app).
+2. **Expert functions** (curve, auto-tune, memory, direct processor limits) are off until you switch them on in Settings. The auto-tune looks for the edge on purpose, so a freeze or a blue screen during a run is expected: Windows records the hardware error, and after the restart the run steps back and goes on. If anything else goes wrong, hold **Shift** while Red Tune starts: it then applies nothing.
+3. **Send a report:** [Hardware report](../../issues/new?template=hardware-report.yml) — paste the system report and tick what worked. For anything broken: [Bug](../../issues/new?template=bug.yml). Russian is fine as well as English.
 
 ## Build from source
 

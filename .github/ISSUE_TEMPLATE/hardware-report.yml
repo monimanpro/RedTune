@@ -1,0 +1,57 @@
+name: Hardware report
+description: Tell us how Red Tune runs on your laptop or PC, even if everything works.
+title: "[Hardware] <laptop model> / <processor>"
+labels: ["hardware-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for testing. Red Tune is developed on one laptop, so every report from another machine helps.
+        Russian is fine too / можно писать по-русски.
+  - type: textarea
+    id: report
+    attributes:
+      label: System report
+      description: In Red Tune open **Settings → Components** and press **«Copy report»**, then paste it here. It holds the model, BIOS, processor, graphics card and what Red Tune found; no names or serial numbers.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Red Tune version
+      placeholder: "0.4.5"
+    validations:
+      required: true
+  - type: checkboxes
+    id: works
+    attributes:
+      label: What works as expected
+      description: Tick what you tried and found right. Leave out what you did not try.
+      options:
+        - label: Home — temperatures, clocks, fan speeds and power look right
+        - label: Power — modes switch, limits apply
+        - label: Fan curves
+        - label: Curve (expert) — values apply and hold
+        - label: Auto-tune (expert) — finished a run
+        - label: Graphics card (NVIDIA)
+        - label: Sound — the effect is heard on the speakers / headphones
+        - label: Microphone chain
+        - label: Display
+        - label: Memory (expert)
+        - label: Mini panel, notifications, overlay
+  - type: textarea
+    id: broken
+    attributes:
+      label: What did not work or looked wrong
+      description: Wrong readings, missing pages, settings that did not apply, freezes. Screenshots help.
+  - type: dropdown
+    id: crash
+    attributes:
+      label: Did Windows crash or freeze while Red Tune was running?
+      options:
+        - "No"
+        - "Yes, during the auto-tune or after changing the curve"
+        - "Yes, at another time"
+    validations:
+      required: true
