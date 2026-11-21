@@ -313,6 +313,21 @@ f	8a824827	khởi động
 f	64b0614f	bộ sạc
 f	d7b8a9de	pin
 f	c81460e9	sau khi ngủ
+w	208c390a	Lỗi
+w	53e792ae	Đã xóa
+w	43c9f16b	Biểu mẫu đã mở trong trình duyệt: ghi thêm bạn đang làm gì trước lỗi rồi nhấn «Create». Toàn bộ bản ghi cũng có trong khay nhớ tạm
+w	65d3f06d	Lần trước Red Tune kết thúc do lỗi. Có thể gửi báo cáo trong «Giới thiệu»
+w	15e7c1d7	Phiên bản trước
+w	77a4766b	Nếu phiên bản mới chạy kém hơn, sẽ đưa về bản trước khi cập nhật. Cài đặt, cấu hình sẵn và đường cong được giữ nguyên
+w	1f7d4972	Sao lưu
+w	a38e2974	Lưu…
+w	4eaaf89f	Lưu cài đặt vào tệp
+w	07be06ea	Cấu hình sẵn, đường cong, quạt, âm thanh, giao diện: tất cả trong một tệp zip, trước khi cài lại Windows hoặc cho máy khác
+w	70fd2c73	Tải…
+w	7448460c	Tải từ tệp
+w	702f3ec5	Cài đặt hiện tại được lưu vào thư mục backups trước, rồi Red Tune khởi động lại với cài đặt vừa tải
+w	d1a824b6	Đây không phải bản sao lưu của Red Tune
+w	8e2c5587	Tải
 w	e036f23f	Cập nhật
 w	87221b73	Kiểm tra
 w	03f5628d	Trang phát hành
@@ -1334,6 +1349,18 @@ w	5f11b887	danh sách hiệu ứng gốc không được giữ lại
 w	1a79d826	Âm trầm riêng
 w	7c83b011	Âm trầm dưới điểm chia và phần còn lại được nén riêng: tiếng trống kick không kéo giọng và âm cao xuống
 w	4fbcff2c	Hz
+f	9c75c9f5	Red Tune kết thúc do lỗi · 
+f	4731efce	Có lỗi, chương trình vẫn chạy tiếp · 
+f	f0ca5316	Quay lại 
+f	c3c9fcf7	Red Tune sẽ đóng, trình cài đặt sẽ đưa về phiên bản 
+f	6c409a72	 và mở nó. Cài đặt, cấu hình sẵn và đường cong được giữ nguyên.
+f	d2ca9663	 tệp
+f	3d2a3336	Không lưu được: 
+f	21df5fe7	Không tải được: 
+f	85801f7f	Cài đặt hiện tại sẽ được thay bằng bản sao từ 
+f	ff5afb17	. Trạng thái hiện tại được giữ trong thư mục backups. Red Tune sẽ khởi động lại.
+f	b2403971	Bản sao được tạo trên máy khác: 
+f	15532d7c	. Đường cong, thời gian bộ nhớ và tinh chỉnh card đồ họa được tìm cho phần cứng đó nên sẽ không được chuyển; phần còn lại sẽ được thay. Cài đặt hiện tại được giữ trong thư mục backups. Red Tune sẽ khởi động lại.
 f	c9e010ce	Phiên bản mới 
 f	263ce993	 — cài đặt trong «Giới thiệu»
 f	e6ff0450	 · bản này không được cài bằng trình cài đặt: tải phiên bản mới từ trang phát hành

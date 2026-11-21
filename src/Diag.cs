@@ -160,7 +160,7 @@ namespace RedTune
         }
 
         // no names in the report: the Windows user, the computer, the profile folder
-        static string Clean(string t)
+        internal static string Clean(string t)
         {
             var ic = System.Text.RegularExpressions.RegexOptions.IgnoreCase;
             Func<string, string> esc = System.Text.RegularExpressions.Regex.Escape;

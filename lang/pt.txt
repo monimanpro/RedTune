@@ -313,6 +313,21 @@ f	8a824827	inicialização
 f	64b0614f	carregador
 f	d7b8a9de	bateria
 f	c81460e9	após a suspensão
+w	208c390a	Erros
+w	53e792ae	Removido
+w	43c9f16b	O formulário abriu no navegador: diga o que você fazia antes do erro e clique em «Create». O registro completo também está na área de transferência
+w	65d3f06d	Da última vez o Red Tune terminou com um erro. Um relatório pode ser enviado em «Sobre»
+w	15e7c1d7	Versão anterior
+w	77a4766b	Se a versão nova funcionar pior, volta para a que estava antes da atualização. Configurações, predefinições e curvas permanecem
+w	1f7d4972	Backup
+w	a38e2974	Salvar…
+w	4eaaf89f	Salvar as configurações em um arquivo
+w	07be06ea	Predefinições, curvas, ventoinhas, som, aparência: tudo num zip, antes de reinstalar o Windows ou para outro computador
+w	70fd2c73	Carregar…
+w	7448460c	Carregar de um arquivo
+w	702f3ec5	Primeiro as configurações atuais são salvas na pasta backups, depois o Red Tune reinicia com as carregadas
+w	d1a824b6	Isto não é um backup do Red Tune
+w	8e2c5587	Carregar
 w	e036f23f	Atualizações
 w	87221b73	Verificar
 w	03f5628d	Página de versões
@@ -1334,6 +1349,18 @@ w	5f11b887	as listas de efeitos originais não foram guardadas
 w	1a79d826	Graves à parte
 w	7c83b011	Os graves abaixo do corte e todo o resto são comprimidos separadamente: um bumbo não abaixa a voz nem os agudos
 w	4fbcff2c	Hz
+f	9c75c9f5	O Red Tune terminou com um erro · 
+f	4731efce	Um erro, o programa continuou · 
+f	f0ca5316	Voltar para 
+f	c3c9fcf7	O Red Tune vai fechar e o instalador vai voltar para a versão 
+f	6c409a72	 e a abrirá. Configurações, predefinições e curvas permanecem.
+f	d2ca9663	 arquivos
+f	3d2a3336	Não foi salvo: 
+f	21df5fe7	Não foi carregado: 
+f	85801f7f	As configurações atuais serão substituídas pela cópia de 
+f	ff5afb17	. O estado atual fica guardado na pasta backups. O Red Tune vai reiniciar.
+f	b2403971	A cópia foi feita em outro computador: 
+f	15532d7c	. A curva, as latências da memória e o ajuste da placa de vídeo foram feitos para aquele hardware, por isso não são trazidos; o resto é substituído. As configurações atuais ficam na pasta backups. O Red Tune vai reiniciar.
 f	c9e010ce	Nova versão 
 f	263ce993	 — instale em «Sobre»
 f	e6ff0450	 · esta cópia não foi instalada pelo instalador: baixe a versão nova na página de versões

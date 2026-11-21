@@ -19,7 +19,7 @@ if (-not $csc) {
 if (-not $csc) { throw "Roslyn csc.exe not found (install Visual Studio Build Tools)" }
 $fw = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319"
 New-Item -ItemType Directory -Force "$root\bin" | Out-Null
-$refs = "System.dll", "System.Core.dll", "System.Drawing.dll", "System.Windows.Forms.dll", "System.Management.dll", "System.Web.Extensions.dll", "System.ServiceProcess.dll", "System.Xml.dll" | ForEach-Object { "/r:$fw\$_" }
+$refs = "System.dll", "System.Core.dll", "System.Drawing.dll", "System.Windows.Forms.dll", "System.Management.dll", "System.Web.Extensions.dll", "System.ServiceProcess.dll", "System.Xml.dll", "System.IO.Compression.dll", "System.IO.Compression.FileSystem.dll" | ForEach-Object { "/r:$fw\$_" }
 $src = (Get-ChildItem "$root\src\*.cs", "$root\src\Dist\*.cs", "$root\src\Ram\*.cs").FullName
 # the PawnIO modules (the SMU, SMN registers, the SMBus) go next to the exe
 # (only these: the folder is made anew, so files an older build put there, like ZenStates-Core or the scripts, do not ship)

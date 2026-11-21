@@ -103,6 +103,11 @@ namespace RedTune
             BlackBox.Start();
             // 21.11: a new version on GitHub (once a day, if Settings allow): a note from the tray; installed from «О программе»
             Updater.StartDaily(settings, i => { try { BeginInvoke((Action)(() => { tray.BalloonTipTitle = "Red Tune"; tray.BalloonTipText = L.T("Доступна версия ") + i.Version + L.T(" — обновить можно в «О программе»"); tray.BalloonTipIcon = ToolTipIcon.Info; tray.ShowBalloonTip(8000); })); } catch { } });
+            // 21.11: the previous run ended in a crash: say so once, the report is in «О программе»
+            {
+                var c = Crash.Last(); var stamp = c == null ? "" : c.Time.ToString("yyyy-MM-dd HH:mm:ss");
+                if (c != null && c.Fatal && stamp != settings.CrashSeen) { settings.CrashSeen = stamp; Store.SaveSettings(settings); Warn("В прошлый раз Red Tune завершился с ошибкой. Отчёт о ней можно отправить в «О программе»"); }
+            }
             Ram.MemTest.Busy = () => tuner.Running;
             Ram.MemTest.CurveNow = () => curve.Active != null ? curve.Active.Values : null;
             Application.ApplicationExit += (s, e) => { Ram.MemTest.Abort(); BlackBox.Stop(); };

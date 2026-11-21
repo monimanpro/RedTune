@@ -105,7 +105,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 - **Startup** — everything that starts with Windows in one list: Run keys, startup folders, scheduled tasks, packaged apps.
 
 ### Settings
-- **General** — language, interface scale, start with Windows, close to the tray, expert functions; what the mini panel shows; notifications; the overlay.
+- **General** — language, interface scale, start with Windows, close to the tray, update check, expert functions; a backup of all settings into one zip and back (from another computer the curve, memory timings and graphics card tuning stay out: they were found for that hardware); what the mini panel shows; notifications; the overlay.
 - **Device** (laptops with a supported firmware interface) — **Lenovo**: keyboard backlight, charging mode, USB power while asleep, the graphics card's working mode and the Fn keys. **ASUS**: the performance mode (quiet, balanced, performance), the battery's charge limit, the keyboard backlight, the Fn lock and the fan speeds, each only where the laptop's firmware has it. Written from the report of one model (Vivobook Pro 14 OLED M3401) and not yet tried on a real ASUS laptop.
 - **Components** — what Red Tune found on this machine, what each part needs, and a system report you can copy when asking for a model to be supported.
 
@@ -118,20 +118,21 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 
 ## How it works
 
-- **One program, no service.** A single executable for .NET Framework 4.8 (part of Windows 10 and 11) plus two small native libraries of its own: the load for the auto-tune and the sound effect. A scheduled task starts it in the tray when you sign in, if you ask for that.
+- **One program, no service.** A single executable for .NET Framework 4.8 (part of Windows 10 and 11) plus two small native libraries of its own: the load for the auto-tune and the sound effect. A scheduled task starts it in the tray when you sign in, if you ask for that. In the tray it takes under one percent of a single processor core and 70–80 MB of memory; with its own fan curve on, Windows' WMI service adds about as much again (the curve reads the temperatures and fan speeds twice a second).
 - **The processor** is reached through the [PawnIO](https://pawnio.eu/) driver: Red Tune talks to the processor's system management unit to read the power table and to write the voltage curve and the power limits. PawnIO's own signed installer comes with Red Tune and is run when the driver is missing (by the setup, or by «Install» on the «Components» page); without the driver everything except those parts still works.
 - **Laptop firmware.** Where a laptop's firmware offers a management interface in Windows (Lenovo's WMI classes, ASUS's system control driver), Red Tune uses it for power modes, limits, fans and device settings. Without one, those rows are hidden and the processor limits go the direct way.
 - **Windows power plans** are read and written through Windows' own power API. Changes in the plan block wait for a button; nothing is written while you are still choosing.
 - **The graphics card** is tuned through NVIDIA's own driver interfaces.
 - **Sound** is an audio processing object: the kind of plug-in Windows' audio engine loads for a device. Red Tune registers it, places it in the device's chain of effects, and talks to it through a small shared file (settings in, meters and a spectrum back). The processing takes about one to two percent of a single processor core for the output and two to six percent for a full microphone chain (DeepFilterNet being the heavy part). The page's live pictures repaint only what the sound moves, and nothing that is scrolled out of view.
 - **Memory timings** are read from the processor's registers and written through AMD's overclocking interface in the BIOS, where it exists.
-- **Network: only for updates.** Once a day Red Tune asks GitHub for this repository's latest release (`api.github.com`); nothing about the computer is sent, and Settings → «Check for updates» switches it off. A new version is downloaded only when you press «Install» in «About»: the installer is checked against the SHA-256 GitHub keeps for the release file, then updates Red Tune and starts it again, keeping the settings. «Send to GitHub» on «Components» opens the report form in your browser with the report filled in; Red Tune itself sends nothing. Other links (PawnIO, Prime95) open in your browser when you click them.
+- **Network: only for updates.** Once a day Red Tune asks GitHub for this repository's latest release (`api.github.com`); nothing about the computer is sent, and Settings → «Check for updates» switches it off. A new version is downloaded only when you press «Install» in «About»: the installer is checked against the SHA-256 GitHub keeps for the release file, then updates Red Tune and starts it again, keeping the settings; after an update «Bring back …» returns the version that was there before, the same way. «Send to GitHub» on «Components» opens the report form in your browser with the report filled in; Red Tune itself sends nothing. Other links (PawnIO, Prime95) open in your browser when you click them.
 
 ### Safety nets
 - **Safe start.** Hold **Shift** at start, or run with `--safe`: nothing is applied. If the previous start broke off within three minutes of applying (a freeze, a blue screen), the next one applies nothing either. Home then shows a banner with «Apply now».
 - **Expert functions.** The curve, memory timings and direct processor limits are hidden until you switch them on in Settings and confirm.
 - **Values the hardware did not report are never written** just because a slider stood somewhere: such sliders read «do not change».
 - **Other tuning programs.** Red Tune warns when a program that changes the same settings starts with Windows: two of them would fight.
+- **Errors are kept for a report.** An error nothing caught is written to `crash.txt` in the settings folder (the version, Windows, the exception and the end of the journal, with the user's and the computer's names taken out). «About» shows the last one with «Send to GitHub», which opens the bug form filled in; after a crash the next start says so.
 
 ## Requirements
 

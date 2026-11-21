@@ -8,8 +8,8 @@ using System.Windows.Forms;
 [assembly: AssemblyTitle("Red Tune")]
 [assembly: AssemblyDescription("Питание, кривая и настройки ноутбуков на AMD Ryzen")]
 [assembly: AssemblyProduct("Red Tune")]
-[assembly: AssemblyVersion("0.4.6.0")]
-[assembly: AssemblyFileVersion("0.4.6.0")]
+[assembly: AssemblyVersion("0.4.7.0")]
+[assembly: AssemblyFileVersion("0.4.7.0")]
 
 namespace RedTune
 {
@@ -60,13 +60,36 @@ namespace RedTune
                 var o = new System.Text.StringBuilder();
                 try
                 {
-                    var u = Updater.Latest();
+                    int fv = at("--for"); // --for <version>: that version's release, as «Вернуть …» takes it
+                    var u = fv >= 0 && fv + 1 < args.Length ? Updater.ForVersion(args[fv + 1]) : Updater.Latest();
                     o.AppendLine("current " + Updater.Current + " · latest " + u.Tag + " (" + u.Version + ") · newer " + Updater.Newer(u) + " · installed copy " + Updater.Installed);
                     o.AppendLine("page " + u.Page); o.AppendLine("asset " + u.AssetName + " · " + u.Size + " bytes · sha256 " + (u.Sha256 ?? "—"));
                     if (args.Contains("--download")) o.AppendLine("downloaded and checked: " + Updater.Download(u, null));
                 }
                 catch (Exception ex) { o.AppendLine("error: " + ex.Message); }
                 System.IO.File.WriteAllText(args[i + 1], o.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
+            // --backup-check <zip>: the backup of the data folder into that file, and what went in (nothing is loaded back)
+            i = at("--backup-check");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                Hw.Detect();
+                int n = Backup.Export(args[i + 1]);
+                var o = new System.Text.StringBuilder("files " + n + " · manifest: " + string.Join(" | ", Backup.ManifestOf(args[i + 1]) ?? new string[0]) + " · same machine " + Backup.SameMachine(Backup.ManifestOf(args[i + 1])) + "\r\n");
+                using (var z = System.IO.Compression.ZipFile.OpenRead(args[i + 1])) foreach (var e in z.Entries) o.AppendLine(e.FullName + "  " + e.Length);
+                System.IO.File.WriteAllText(args[i + 1] + ".txt", o.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
+            // --crash-check <file>: a made-up exception with a real stack through Crash.Build and Crash.BugUrl, nothing written
+            // to the data folder: the record (names taken out) and how long the filled-in Bug form's address gets
+            i = at("--crash-check");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                Hw.Detect();
+                Exception made = null;
+                try { var arr = new int[1]; arr[Environment.TickCount < 0 ? 0 : 3].ToString(); } catch (Exception ex) { made = new InvalidOperationException("crash check from " + Store.DataDir, ex); }
+                var text = Crash.Build(made, true, "crash check");
+                var url = Crash.BugUrl(new Crash.Info { Time = DateTime.Now, Fatal = true, Kind = "System.InvalidOperationException: crash check", Text = text }, Hw.Report());
+                System.IO.File.WriteAllText(args[i + 1], "url length " + url.Length + "\r\n" + url + "\r\n\r\n" + text, new System.Text.UTF8Encoding(true)); return 0;
             }
             // --fps-probe <file> [seconds] [--krnl-all]: the frame counter (Fps) listens for some seconds and writes which
             // programs draw and at what rate, and how many events of each kind came (--krnl-all: every event of the
@@ -573,12 +596,16 @@ namespace RedTune
             using (new Mutex(true, "Local\\RedTune.App", out created))
             {
                 if (!created) { show.Set(); return 0; }
+                // 21.11: a backup chosen in Settings goes in now, before anything reads the settings (Backup)
+                { var imported = Backup.ApplyPending(); if (imported != null) Store.Log(imported); }
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.ThreadException += (s, e) => Store.Log("ошибка: " + e.Exception);
+                // 21.11: every exception nothing caught is also kept for a report (Crash, «О программе»)
+                Application.ThreadException += (s, e) => { Store.Log("ошибка: " + e.Exception); Crash.Record(e.Exception, false, "UI thread"); };
+                System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) => { try { Store.Log("ошибка в задаче: " + e.Exception); Crash.Record(e.Exception, false, "task"); e.SetObserved(); } catch { } };
                 // a crash must not leave a fan on a low RPM: give the fans back to the firmware
-                AppDomain.CurrentDomain.UnhandledException += (s, e) => { try { Store.Log("сбой: " + e.ExceptionObject); FanControl.ReleaseAll(); } catch { } };
+                AppDomain.CurrentDomain.UnhandledException += (s, e) => { try { Store.Log("сбой: " + e.ExceptionObject); Crash.Record(e.ExceptionObject as Exception, e.IsTerminating, "unhandled"); FanControl.ReleaseAll(); } catch { } };
                 var settings = Store.LoadSettings();
                 Comp.S = settings;
                 Hw.Detect(); // which parts of the app this computer can run

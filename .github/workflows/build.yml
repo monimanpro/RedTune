@@ -19,7 +19,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Temp folder
         shell: pwsh
@@ -44,6 +44,40 @@ jobs:
       - name: Build
         shell: powershell   # Windows PowerShell 5.1, as on a user's PC
         run: .\build.ps1 -Installer -FromSource
+
+      - name: Checks
+        shell: pwsh
+        run: |
+          # the program's own checks (none of them writes to the hardware): the fan logic on made-up temperatures, the
+          # interface driven by mouse messages in windows of its own, the crash record, a few pages drawn off screen, and
+          # every language complete. A FAIL line, a missing result or a language with gaps fails the build.
+          New-Item -ItemType Directory -Force checks | Out-Null
+          $bad = 0
+          function Run-Check([string]$name, [string[]]$a) {
+            $out = "checks\$name.txt"
+            $p = Start-Process bin\RedTune.exe -ArgumentList ($a + $out) -PassThru
+            if (-not $p.WaitForExit(180000)) { $p.Kill(); Write-Host "::error::$name timed out"; return 1 }
+            if (-not (Test-Path $out)) { Write-Host "::error::$name wrote nothing (exit $($p.ExitCode))"; return 1 }
+            $fails = Select-String -Path $out -Pattern '^(FAIL|FAILED)' | ForEach-Object { $_.Line }
+            if ($fails) { $fails | ForEach-Object { Write-Host "::error::${name}: $_" }; return 1 }
+            Write-Host "$name ok ($((Select-String -Path $out -Pattern '^ok').Count) ok lines)"; return 0
+          }
+          foreach ($c in 'fan-check', 'comp-graph-check', 'sound-undo-check', 'motion-check', 'eq-strips-check', 'ui-edit-check', 'crash-check', 'lang-check') { $bad += Run-Check $c @("--$c") }
+          foreach ($pg in 'about', 'settings', 'comp') {
+            $p = Start-Process bin\RedTune.exe -ArgumentList '--page-png', $pg, "checks\page-$pg.png" -PassThru
+            if (-not $p.WaitForExit(120000) -or -not (Test-Path "checks\page-$pg.png")) { Write-Host "::error::page $pg was not drawn"; $bad++ } else { Write-Host "page $pg drawn" }
+          }
+          foreach ($l in Get-Content checks\lang-check.txt) {
+            if ($l -match '^(\w+): (\d+) of (\d+) whole, (\d+) of (\d+) fragments' -and ($Matches[2] -ne $Matches[3] -or $Matches[4] -ne $Matches[5])) { Write-Host "::error::language $($Matches[1]) has gaps: $l"; $bad++ }
+          }
+          if ($bad) { throw "$bad check(s) failed" }
+
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: checks-${{ github.sha }}
+          path: checks\
+          if-no-files-found: ignore
 
       - name: Check the version against the tag
         if: startsWith(github.ref, 'refs/tags/v')
@@ -81,7 +115,7 @@ jobs:
           @("### SHA-256", "", "| File | Size | SHA-256 |", "|---|---|---|") + $lines | Out-File $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
           $lines
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: RedTune-${{ github.sha }}
           path: |

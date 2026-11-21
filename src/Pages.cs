@@ -277,6 +277,38 @@ namespace RedTune
             data.Click += (o, e) => { Directory.CreateDirectory(Store.DataDir); Process.Start("explorer.exe", "\"" + Store.DataDir + "\""); };
             Row("Папка с настройками", Store.DataDir, data);
 
+            // 21.11: the last error nothing caught (Crash), with the Bug form filled in; shown only when there is one
+            var crash = Crash.Last();
+            if (crash != null)
+            {
+                Section("Ошибки");
+                var send = new FlatButton("Отправить на GitHub", true);
+                var open = new FlatButton("Открыть");
+                var clear = new FlatButton("Убрать");
+                var crow = Row((crash.Fatal ? L.T("Red Tune завершился с ошибкой · ") : L.T("Ошибка, программа продолжила работу · ")) + crash.Time.ToString("dd.MM HH:mm"), crash.Kind, send, open, clear);
+                open.Click += (o, e) => { try { Process.Start("notepad.exe", "\"" + Crash.FilePath + "\""); } catch { } };
+                clear.Click += (o, e) => { try { File.Delete(Crash.FilePath); } catch { } crow.SetSub("Убрано"); send.Enabled = open.Enabled = clear.Enabled = false; };
+                send.Click += (o, e) =>
+                {
+                    crow.SetSub("Собираю отчёт…");
+                    System.Threading.Tasks.Task.Run(() =>
+                    {
+                        string report = ""; try { report = Hw.Report(); } catch { }
+                        var url = Crash.BugUrl(crash, report);
+                        try
+                        {
+                            BeginInvoke((Action)(() =>
+                            {
+                                try { Clipboard.SetText(crash.Text); } catch { }
+                                try { Process.Start(url); } catch (Exception ex) { crow.SetSub(L.T("Браузер не открылся: ") + ex.Message); return; }
+                                crow.SetSub("Форма открылась в браузере: допиши, что ты делал перед ошибкой, и нажми «Create». Вся запись ещё и в буфере");
+                            }));
+                        }
+                        catch { }
+                    });
+                };
+            }
+
             // 21.11: new versions from GitHub (Updater): look now, install (only a copy the setup installed), or the page
             Section("Обновления");
             var check = new FlatButton("Проверить");
@@ -311,28 +343,43 @@ namespace RedTune
                     catch { }
                 });
             };
-            install.Click += (o, e) =>
+            // 21.11: the way back after an update: the version that was there before, from its own release (the same checks)
+            var prev = s.UpdatePrev;
+            var back = new FlatButton(L.T("Вернуть ") + prev);
+            back.Visible = Updater.Installed && !string.IsNullOrEmpty(prev) && prev != Updater.Current.ToString();
+            if (back.Visible) Row("Прошлая версия", "Если новая версия работает хуже — вернёт ту, что стояла до обновления. Настройки, пресеты и кривые останутся", back);
+            // download (the newest release, or the one of the version to go back to), check, run the setup, close
+            Action<Func<Updater.Info>> go = pick =>
             {
-                var f = Updater.Found; if (f == null) return;
-                if (!ConfirmDialog.Ask(FindForm(), "Обновление", L.T("Red Tune закроется, установщик обновит его до версии ") + f.Version + L.T(" и запустит снова. Настройки, пресеты и кривые останутся."), "Обновить", "Отмена")) return;
-                install.Enabled = check.Enabled = false; row.SetSub("Скачиваю…");
+                install.Enabled = check.Enabled = back.Enabled = false; row.SetSub("Скачиваю…");
                 System.Threading.Tasks.Task.Run(() =>
                 {
                     string path = null, err = null;
-                    try { path = Updater.Download(f, p => { try { BeginInvoke((Action)(() => row.SetSub(L.T("Скачиваю… ") + p + " %"))); } catch { } }); }
+                    try { path = Updater.Download(pick(), p => { try { BeginInvoke((Action)(() => row.SetSub(L.T("Скачиваю… ") + p + " %"))); } catch { } }); }
                     catch (Exception ex) { err = ex.Message; }
                     try
                     {
                         BeginInvoke((Action)(() =>
                         {
-                            if (err != null) { install.Enabled = check.Enabled = true; row.SetSub(L.T("Не удалось обновить: ") + err); return; }
-                            try { Updater.Install(path); }
-                            catch (Exception ex) { install.Enabled = check.Enabled = true; row.SetSub(L.T("Не удалось обновить: ") + ex.Message); return; }
+                            if (err != null) { install.Enabled = check.Enabled = back.Enabled = true; row.SetSub(L.T("Не удалось обновить: ") + err); return; }
+                            try { Updater.Install(path, s); }
+                            catch (Exception ex) { install.Enabled = check.Enabled = back.Enabled = true; row.SetSub(L.T("Не удалось обновить: ") + ex.Message); return; }
                             var m = FindForm() as MainForm; if (m != null) m.ExitApp(); else Application.Exit();
                         }));
                     }
                     catch { }
                 });
+            };
+            install.Click += (o, e) =>
+            {
+                var f = Updater.Found; if (f == null) return;
+                if (!ConfirmDialog.Ask(FindForm(), "Обновление", L.T("Red Tune закроется, установщик обновит его до версии ") + f.Version + L.T(" и запустит снова. Настройки, пресеты и кривые останутся."), "Обновить", "Отмена")) return;
+                go(() => f);
+            };
+            back.Click += (o, e) =>
+            {
+                if (!ConfirmDialog.Ask(FindForm(), "Прошлая версия", L.T("Red Tune закроется, установщик вернёт версию ") + prev + L.T(" и запустит её. Настройки, пресеты и кривые останутся."), "Вернуть", "Отмена")) return;
+                go(() => Updater.ForVersion(prev));
             };
         }
 

@@ -56,6 +56,38 @@ namespace RedTune
             };
             Row("Экспертные функции", "«Кривая» и «Память» в меню, разгон видеокарты, запись лимитов процессора AMD. Shift при запуске — безопасный запуск без них", expert);
 
+            // 21.11: the data folder in one file and back (Backup)
+            Section("Резервная копия");
+            var save = new FlatButton("Сохранить…");
+            var saveRow = Row("Сохранить настройки в файл", "Пресеты, кривые, вентиляторы, звук, оформление — всё в одном zip: перед переустановкой Windows или для другого компьютера", save);
+            save.Click += (o, e) =>
+            {
+                using (var d = new SaveFileDialog { Title = L.T("Сохранить настройки в файл"), Filter = "Zip (*.zip)|*.zip", FileName = Backup.DefaultName, InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) })
+                {
+                    if (d.ShowDialog(FindForm()) != DialogResult.OK) return;
+                    try { Store.SaveSettings(s); int n = Backup.Export(d.FileName); saveRow.SetSub(L.T("Сохранено: ") + System.IO.Path.GetFileName(d.FileName) + " · " + n + L.T(" файлов")); }
+                    catch (Exception ex) { saveRow.SetSub(L.T("Не сохранилось: ") + ex.Message); }
+                }
+            };
+            var load = new FlatButton("Загрузить…");
+            var loadRow = Row("Загрузить из файла", "Текущие настройки сначала сохранятся в папку backups, потом Red Tune перезапустится с загруженными", load);
+            load.Click += (o, e) =>
+            {
+                using (var d = new OpenFileDialog { Title = L.T("Загрузить из файла"), Filter = "Zip (*.zip)|*.zip", InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) })
+                {
+                    if (d.ShowDialog(FindForm()) != DialogResult.OK) return;
+                    var m = Backup.ManifestOf(d.FileName);
+                    if (m == null) { loadRow.SetSub("Это не резервная копия Red Tune"); return; }
+                    bool same = Backup.SameMachine(m);
+                    var text = same ? L.T("Текущие настройки заменятся копией от ") + (m.Length > 2 ? m[2] : "") + L.T(". Их прежний вид сохранится в папке backups. Red Tune перезапустится.")
+                        : L.T("Копия сделана на другом компьютере: ") + (m.Length > 1 ? m[1] : "") + L.T(". Кривая, тайминги памяти и разгон видеокарты подобраны под то железо — они перенесены не будут, остальное заменится. Прежние настройки сохранятся в папке backups. Red Tune перезапустится.");
+                    if (!ConfirmDialog.Ask(FindForm(), "Загрузить из файла", text, "Загрузить", "Отмена")) return;
+                    try { Backup.Stage(d.FileName, same); }
+                    catch (Exception ex) { loadRow.SetSub(L.T("Не загрузилось: ") + ex.Message); return; }
+                    var main = FindForm() as MainForm; if (main != null) main.RestartApp();
+                }
+            };
+
             // 17.11: the mini panel (a left click on the tray icon): which of its blocks are shown
             Section("Мини-панель");
             Row("Что показывать", "Панель открывается кликом по значку в трее. Выключенные блоки в ней не показываются; без блоков она не открывается");

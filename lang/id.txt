@@ -313,6 +313,21 @@ f	8a824827	saat mulai
 f	64b0614f	pengisi daya
 f	d7b8a9de	baterai
 f	c81460e9	setelah tidur
+w	208c390a	Kesalahan
+w	53e792ae	Dihapus
+w	43c9f16b	Formulir terbuka di browser: tambahkan apa yang kamu lakukan sebelum kesalahan lalu tekan «Create». Seluruh catatan juga ada di clipboard
+w	65d3f06d	Terakhir kali Red Tune berhenti karena kesalahan. Laporannya bisa dikirim dari «Tentang»
+w	15e7c1d7	Versi sebelumnya
+w	77a4766b	Jika versi baru bekerja lebih buruk, ini mengembalikan versi sebelum pembaruan. Pengaturan, preset, dan kurva tetap ada
+w	1f7d4972	Cadangan
+w	a38e2974	Simpan…
+w	4eaaf89f	Simpan pengaturan ke file
+w	07be06ea	Preset, kurva, kipas, suara, tampilan: semua dalam satu zip, sebelum memasang ulang Windows atau untuk komputer lain
+w	70fd2c73	Muat…
+w	7448460c	Muat dari file
+w	702f3ec5	Pengaturan saat ini disimpan dulu ke folder backups, lalu Red Tune dimulai ulang dengan yang dimuat
+w	d1a824b6	Ini bukan cadangan Red Tune
+w	8e2c5587	Muat
 w	e036f23f	Pembaruan
 w	87221b73	Periksa
 w	03f5628d	Halaman rilis
@@ -1334,6 +1349,18 @@ w	5f11b887	daftar efek asli tidak tersimpan
 w	1a79d826	Bass terpisah
 w	7c83b011	Bass di bawah titik bagi dan sisanya dikompresi terpisah: kick drum tidak menurunkan vokal dan nada tinggi
 w	4fbcff2c	Hz
+f	9c75c9f5	Red Tune berhenti karena kesalahan · 
+f	4731efce	Ada kesalahan, program tetap berjalan · 
+f	f0ca5316	Kembalikan 
+f	c3c9fcf7	Red Tune akan ditutup, dan penginstal akan mengembalikan versi 
+f	6c409a72	 lalu membukanya. Pengaturan, preset, dan kurva tetap ada.
+f	d2ca9663	 file
+f	3d2a3336	Tidak tersimpan: 
+f	21df5fe7	Tidak termuat: 
+f	85801f7f	Pengaturan saat ini akan diganti dengan salinan dari 
+f	ff5afb17	. Keadaan saat ini disimpan di folder backups. Red Tune akan dimulai ulang.
+f	b2403971	Salinan dibuat di komputer lain: 
+f	15532d7c	. Kurva, timing memori, dan penyetelan kartu grafis dibuat untuk perangkat keras itu, jadi tidak dibawa; sisanya diganti. Pengaturan saat ini disimpan di folder backups. Red Tune akan dimulai ulang.
 f	c9e010ce	Versi baru 
 f	263ce993	 — pasang dari «Tentang»
 f	e6ff0450	 · salinan ini tidak dipasang lewat penginstal: unduh versi baru dari halaman rilis

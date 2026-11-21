@@ -42,10 +42,14 @@ namespace RedTune
         }
 
         // the latest published release (drafts and pre-releases are not «latest»); throws on a network or format error
-        public static Info Latest()
+        public static Info Latest() { return Parse(Get("https://api.github.com/repos/" + Repo + "/releases/latest", "application/vnd.github+json")); }
+
+        // 21.11: the release of one version (the way back: «Вернуть …» installs the version that was there before an update)
+        public static Info ForVersion(string version) { return Parse(Get("https://api.github.com/repos/" + Repo + "/releases/tags/v" + version, "application/vnd.github+json")); }
+
+        static Info Parse(string json)
         {
-            var json = Get("https://api.github.com/repos/" + Repo + "/releases/latest", "application/vnd.github+json");
-            var d = (System.Collections.Generic.Dictionary<string, object>)new System.Web.Script.Serialization.JavaScriptSerializer { MaxJsonLength = 8 * 1024 * 1024 }.DeserializeObject(json);
+            var d =(System.Collections.Generic.Dictionary<string, object>)new System.Web.Script.Serialization.JavaScriptSerializer { MaxJsonLength = 8 * 1024 * 1024 }.DeserializeObject(json);
             var i = new Info { Tag = d["tag_name"] as string, Page = d["html_url"] as string };
             Version v; if (i.Tag != null && Version.TryParse(i.Tag.TrimStart('v', 'V'), out v)) i.Version = new Version(v.Major, v.Minor, Math.Max(0, v.Build));
             foreach (System.Collections.Generic.Dictionary<string, object> a in ((object[])d["assets"]).Cast<System.Collections.Generic.Dictionary<string, object>>())
@@ -134,8 +138,10 @@ namespace RedTune
 
         // the setup runs with its progress window only; the tasks chosen at the first install stay; /rtupdate=1 makes it
         // start Red Tune again at the end (RedTune.iss). The caller exits right after.
-        public static void Install(string setup)
+        public static void Install(string setup, Settings s)
         {
+            // the version being left, for «Вернуть …» after the update (the same for a step back: then the way back is forward)
+            if (s != null) { s.UpdatePrev = Current.ToString(); Store.SaveSettings(s); }
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(setup, "/SILENT /SUPPRESSMSGBOXES /NORESTART /rtupdate=1") { UseShellExecute = true });
         }
     }

@@ -77,6 +77,8 @@ namespace RedTune
         public bool UnverifiedSeen; // «Эта модель ещё не проверена» on Home was hidden
         // 21.11: a look at GitHub for a new version once a day (Updater); the time of the last look
         public bool UpdateCheck = true; public string UpdateLast = "";
+        public string CrashSeen = "";
+        public string UpdatePrev = ""; // 21.11: the version an update from «О программе» left, for «Вернуть …» // 21.11: the crash record the tray note was already shown for (its time)
         // 16.11: «Сторож» (Watchdog): reads the processor's corrected errors in ordinary use; the offer to go a step deeper
         // after WatchDays quiet days is a switch of its own
         public bool WatchOn, WatchDeepen; public int WatchDays = 5;
@@ -199,6 +201,8 @@ namespace RedTune
                     case "UnverifiedSeen": s.UnverifiedSeen = v == "1"; break;
                     case "UpdateCheck": s.UpdateCheck = v == "1"; break;
                     case "UpdateLast": s.UpdateLast = v; break;
+                    case "CrashSeen": s.CrashSeen = v; break;
+                    case "UpdatePrev": s.UpdatePrev = v; break;
                     case "WatchOn": s.WatchOn = v == "1"; break;
                     case "FnQCustom": s.FnQCustom = v == "1"; break;
                     case "WatchDeepen": s.WatchDeepen = v == "1"; break;
@@ -231,7 +235,7 @@ namespace RedTune
                 "FanSafety=" + b(s.FanSafety), "FanCritical=" + b(s.FanCritical), "FanHyst=" + b(s.FanHyst), "FanEma=" + b(s.FanEma),
                 "FanGlide=" + b(s.FanGlide), "FanBoost=" + b(s.FanBoost), "FanSync=" + b(s.FanSync), "FanPredict=" + b(s.FanPredict), "SyncBrightness=" + b(s.SyncBrightness), "HzAuto=" + b(s.HzAuto), "AcmOff=" + s.AcmOff, "HzAc=" + s.HzAc, "HzDc=" + s.HzDc,
                 "OsdOn=" + b(s.OsdOn), "OsdTopmost=" + b(s.OsdTopmost), "OsdAllMonitors=" + b(s.OsdAllMonitors), "OsdFollow=" + b(s.OsdFollow), "CompByFreq=" + b(s.CompByFreq), "AsusMode=" + s.AsusMode, "AsusCharge=" + s.AsusCharge, "AsusLight=" + s.AsusLight, "OverlayOn=" + b(s.OverlayOn), "OverlayAlways=" + b(s.OverlayAlways), "OverlayCorner=" + s.OverlayCorner, "OverlaySize=" + s.OverlaySize, "OsdPosition=" + s.OsdPosition, "OsdMs=" + s.OsdMs, "OsdOff=" + s.OsdOff, "MiniOff=" + s.MiniOff,
-                "OsdGlass=" + b(s.OsdGlass), "OsdShine=" + b(s.OsdShine), "OsdLive=" + b(s.OsdLive), "CleanKeep=" + s.CleanKeep, "CleanClose=" + s.CleanClose, "CleanVer=" + s.CleanVer, "OsdBlur=" + s.OsdBlur, "OsdTint=" + s.OsdTint, "OsdLook=" + s.OsdLook, "AmdPowerOn=" + b(s.AmdPowerOn), "AmdPowerAsked=" + b(s.AmdPowerAsked), "Expert=" + b(s.Expert), "UnverifiedSeen=" + b(s.UnverifiedSeen), "UpdateCheck=" + b(s.UpdateCheck), "UpdateLast=" + s.UpdateLast,"WatchOn=" + b(s.WatchOn), "FnQCustom=" + b(s.FnQCustom), "WatchDeepen=" + b(s.WatchDeepen), "WatchDays=" + s.WatchDays, "BlackBoxMode=" + s.BlackBoxMode, "GpuAsked=" + b(s.GpuAsked), "NavCompact=" + b(s.NavCompact), "AmdPpt=" + s.AmdPpt, "AmdTdc=" + s.AmdTdc, "AmdEdc=" + s.AmdEdc, "AmdStapm=" + s.AmdStapm, "AmdFast=" + s.AmdFast, "AmdSlow=" + s.AmdSlow,
+                "OsdGlass=" + b(s.OsdGlass), "OsdShine=" + b(s.OsdShine), "OsdLive=" + b(s.OsdLive), "CleanKeep=" + s.CleanKeep, "CleanClose=" + s.CleanClose, "CleanVer=" + s.CleanVer, "OsdBlur=" + s.OsdBlur, "OsdTint=" + s.OsdTint, "OsdLook=" + s.OsdLook, "AmdPowerOn=" + b(s.AmdPowerOn), "AmdPowerAsked=" + b(s.AmdPowerAsked), "Expert=" + b(s.Expert), "UnverifiedSeen=" + b(s.UnverifiedSeen), "UpdateCheck=" + b(s.UpdateCheck), "UpdateLast=" + s.UpdateLast, "CrashSeen=" + s.CrashSeen, "UpdatePrev=" + s.UpdatePrev,"WatchOn=" + b(s.WatchOn), "FnQCustom=" + b(s.FnQCustom), "WatchDeepen=" + b(s.WatchDeepen), "WatchDays=" + s.WatchDays, "BlackBoxMode=" + s.BlackBoxMode, "GpuAsked=" + b(s.GpuAsked), "NavCompact=" + b(s.NavCompact), "AmdPpt=" + s.AmdPpt, "AmdTdc=" + s.AmdTdc, "AmdEdc=" + s.AmdEdc, "AmdStapm=" + s.AmdStapm, "AmdFast=" + s.AmdFast, "AmdSlow=" + s.AmdSlow,
             }, Utf8Bom);
         }
 
