@@ -267,14 +267,14 @@ namespace RedTune
         const string ZoneHint = "Протяните с Ctrl или правой кнопкой мыши";
         // 16.11: the steps of editing, for Ctrl+Z / Ctrl+Y and the two buttons: the points, the curve shift and the memory
         // slider as they were before each change. A drag, or a slider moved in one go, is one step.
-        class Snap { public int[] Target; public int Shift, Mem; }
+        class Snap { public int[] Target, Dom; public int Shift, Mem; }
         readonly List<Snap> back = new List<Snap>(), forward = new List<Snap>();
         readonly FlatButton backBtn = new FlatButton("Шаг назад"), fwdBtn = new FlatButton("Шаг вперёд");
-        Row histRow;
+        Row histRow, shiftRow;
         string lastKind; DateTime lastStep;
         int memShown;
 
-        Snap Take() { return new Snap { Target = (int[])graph.Target.Clone(), Shift = shiftShown, Mem = memShown }; }
+        Snap Take() { return new Snap { Target = (int[])graph.Target.Clone(), Shift = shiftShown, Mem = memShown, Dom = (int[])domShown.Clone() }; }
 
         // called before a change; the same kind of change again within a second (a slider being dragged) is the same step
         void Remember(string kind)
@@ -292,12 +292,13 @@ namespace RedTune
         {
             loading = true;
             graph.Target = (int[])p.Target.Clone();
-            shift.Value = p.Shift; shiftShown = p.Shift;
             if (memory.Enabled) memory.Value = p.Mem;
             memShown = p.Mem;
+            if (p.Dom != null) for (int k = 0; k < 3; k++) domS[k].Value = p.Dom[k];
+            domShown = DomValues();
             loading = false;
             lastKind = null;
-            graph.Invalidate(); ShowMemory(); Edited();
+            graph.Invalidate(); ShowMemory(); ShowShift(); Edited();
             // back at the first step: the editor shows what the steps started from, an opened preset (16.11: opening one
             // starts the steps anew) or what is on the card
             if (back.Count == 0)
@@ -317,6 +318,7 @@ namespace RedTune
         {
             if (curve == null || p.Delta.Length != curve.Count) return false;
             for (int k = 0; k < curve.Count; k++) if (graph.Target[k] - graph.Base[k] != p.Delta[k]) return false;
+            if (domOnCard != null && !DomValues().SequenceEqual(p.Domain)) return false;
             return !memory.Enabled || memory.Value == p.Memory;
         }
 
@@ -359,8 +361,8 @@ namespace RedTune
             return false;
         }
         int memFactoryTop; // the card's own top memory clock, without the offset
-        readonly Slider shift = new Slider(-500, 500, 0, "МГц") { Width = Theme.S(330) };
-        readonly Slider memory = new Slider(-1000, 3000, 0, "МГц") { Width = Theme.S(330) };
+        readonly Slider shift = new Slider(-1000, 1000, 0, "МГц") { Width = Theme.S(330), WarpToKnob = true };
+        readonly Slider memory = new Slider(-1000, 3000, 0, "МГц") { Width = Theme.S(330), WarpToKnob = true };
         readonly FlatButton cut = new FlatButton("Срезать выше"), minus = new FlatButton("−15"), plus = new FlatButton("+15");
         readonly DropButton presetBtn = new DropButton();
         readonly FlatButton saveBtn = new FlatButton("Сохранить как…"), delBtn = new FlatButton("Удалить");
@@ -384,6 +386,19 @@ namespace RedTune
         // an expert function, without it a line says where they are
         readonly System.Collections.Generic.List<Control> oc = new System.Collections.Generic.List<Control>();
         Row expertHint;
+        // 22.11: the XBAR / SYS / Video curves (GpuDomains), read only
+        readonly DomainGraph domGraph = new DomainGraph();
+        Row domHead, domNow;
+        // 22.11: the offsets of the XBAR / SYS / Video curves (GpuDomains.Tunable order); domOnCard = what the card has
+        // (null: no domain curves on this card)
+        readonly Slider[] domS = { new Slider(GpuDomains.MinOffsetMhz, GpuDomains.MaxOffsetMhz, 0, "МГц") { Width = Theme.S(330), Step = 5, WarpToKnob = true }, new Slider(GpuDomains.MinOffsetMhz, GpuDomains.MaxOffsetMhz, 0, "МГц") { Width = Theme.S(330), Step = 5, WarpToKnob = true }, new Slider(GpuDomains.MinOffsetMhz, GpuDomains.MaxOffsetMhz, 0, "МГц") { Width = Theme.S(330), Step = 5, WarpToKnob = true } };
+        readonly Row[] domRows = new Row[3];
+        int[] domOnCard;
+        int[] DomValues() { return domS.Select(x => x.Value).ToArray(); }
+        // what the sliders showed before the change in hand (Changed comes after the value moved): the step Ctrl+Z goes back to
+        int[] domShown = new int[3];
+        readonly Timer domTimer = new Timer { Interval = 1000 };
+        bool domBusy;
 
         public GpuPage(Settings s)
         {
@@ -402,11 +417,27 @@ namespace RedTune
             histRow = Row("История правок", "Ctrl+Z, Ctrl+Y", backBtn, fwdBtn); // a sub from the start, so the row has the height for it
             backBtn.Click += (o, e) => StepBack(); fwdBtn.Click += (o, e) => StepForward();
             graph.Changing += (o, e) => Remember(null);
-            Row("Сдвиг всей кривой", "Двигает все точки вместе, форма кривой остаётся", shift);
+            shiftRow = Row("Сдвиг всей кривой", "Двигает все точки вместе, форма кривой остаётся", shift);
             memRow = Row("Частота памяти", "Сдвиг частоты видеопамяти", memory);
             Section("Пресеты");
             presetRow = Row("Пресет", "", presetBtn, saveBtn, delBtn);
             Row("Применять при запуске", "Драйвер забывает кривую после перезагрузки: Red Tune вернёт выбранный пресет", onStart);
+            Section("Домены частоты");
+            domHead = Row("Кривые XBAR, SYS и Video", "Читаю…");
+            Add(domGraph);
+            domNow = Row("Частоты сейчас", "Читаю…");
+            var domTitles = new[] { "Сдвиг XBAR", "Сдвиг SYS", "Сдвиг Video" };
+            var domSubs = new[] { "Шина между блоками чипа: вся кривая XBAR вверх или вниз", "Системный домен: вся кривая SYS вверх или вниз", "Видеоблок (кодирование и декодирование видео): вся кривая Video" };
+            for (int k = 0; k < 3; k++)
+            {
+                int kk = k;
+                domRows[k] = Row(domTitles[k], domSubs[k], domS[k]);
+                domS[k].Changed += (o, e) => { if (loading || curve == null) { domShown[kk] = domS[kk].Value; return; } Remember("dom" + kk); domShown[kk] = domS[kk].Value; Edited(); };
+            }
+            domTimer.Tick += (o, e) => PollClocks();
+            VisibleChanged += (o, e) => domTimer.Enabled = Visible && s.Expert;
+            Disposed += (o, e) => domTimer.Dispose();
+            Row("Что это", "Кривые без сдвигов, ядро — заводская. Сдвиги пишутся по «Применить» вместе с кривой ядра и сохраняются в пресет");
             foreach (Control c in Controls) if (Controls.GetChildIndex(c) >= ocFrom) oc.Add(c);
 
             graph.Changed += (o, e) => { Edited(); };
@@ -423,7 +454,7 @@ namespace RedTune
                 Remember("shift");
                 int d = shift.Value - shiftShown; shiftShown = shift.Value;
                 for (int k = 0; k < graph.Target.Length; k++) graph.Target[k] = graph.Clamp(k, graph.Target[k] + d);
-                graph.Invalidate(); Edited();
+                graph.Invalidate(); Edited(); ShowShift();
             };
             memory.Changed += (o, e) => { if (!loading) { Remember("memory"); memShown = memory.Value; } ShowMemory(); if (!loading) Edited(); };
             presetBtn.Changed += (o, e) => LoadPreset(presetBtn.Index);
@@ -447,8 +478,10 @@ namespace RedTune
         void ApplyExpert()
         {
             bool ex = s.Expert;
+            domTimer.Enabled = ex && Visible;
             foreach (var c in oc) if (c != warnRow) c.Visible = ex;
             if (!ex) warnRow.Visible = false;
+            ShowDomRows();
             expertHint.Visible = !ex;
             Footer = ex ? bar : null;
             Relayout();
@@ -458,6 +491,11 @@ namespace RedTune
         {
             if (!s.Expert) return; // 20.11: the curve is not shown: nothing to read
             warnRow.Visible = Process.GetProcessesByName("MSIAfterburner").Length > 0;
+            Task.Run(() =>
+            {
+                var dc = GpuDomains.Read();
+                try { BeginInvoke((Action)(() => ShowDomains(dc))); } catch { }
+            });
             if (keepEdits && undo.Enabled) return; // something is changed and not applied: keep it on screen
             Task.Run(() =>
             {
@@ -490,7 +528,10 @@ namespace RedTune
             // the offset counts double, like Afterburner's: +1000 moved the top 12 001 → 12 501 MHz (13.11, RTX 5070 Laptop)
             memFactoryTop = c.MemTop > 0 && mem != null ? c.MemTop - mem[0] / 2 : 0;
             memShown = memory.Enabled ? memory.Value : 0;
-            ShowMemory();
+            // 22.11: «Отменить всё» (and every re-read) puts the domain sliders back to what the card has too
+            if (domOnCard != null) for (int k = 0; k < 3; k++) domS[k].Value = domOnCard[k];
+            domShown = DomValues();
+            ShowMemory(); ShowShift();
             head.SetSub(Hw.Gpus.FirstOrDefault(n => n.IndexOf("NVIDIA", StringComparison.OrdinalIgnoreCase) >= 0) + " · " + c.Count + " " + L.T("точек") + ", "
                 + c.Mv[0] + "–" + c.Mv[c.Count - 1] + " " + L.T("мВ") + " · " + L.T("сейчас") + ": " + Gpu.Describe(c.Delta)
                 + (mem != null && mem[0] != 0 ? ", " + L.T("память") + " " + (mem[0] > 0 ? "+" : "") + mem[0] + " " + L.T("МГц") : "")
@@ -504,6 +545,58 @@ namespace RedTune
             afterReload = null;
             loading = false;
             Relayout();
+        }
+
+        // 22.11: the clocks the domains run at now (GpuDomains.Measured), once a second while the page is shown
+        void PollClocks()
+        {
+            if (domBusy || !s.Expert) return;
+            domBusy = true;
+            Task.Run(() =>
+            {
+                var keys = new[] { 0, 1, 2, 21, 4 };
+                var v = keys.Select(k => GpuDomains.Measured(k)).ToArray();
+                try
+                {
+                    BeginInvoke((Action)(() =>
+                    {
+                        domBusy = false;
+                        var parts = new System.Collections.Generic.List<string>();
+                        for (int k = 0; k < keys.Length; k++)
+                            if (v[k] > 0) parts.Add((keys[k] == 0 ? L.T("Ядро") : keys[k] == 4 ? L.T("Память") : GpuDomains.NameOf(keys[k])) + " " + (v[k] / 1000) + " " + L.T("МГц"));
+                        domNow.SetSub(parts.Count > 0 ? string.Join(" · ", parts) : L.T("драйвер не ответил"));
+                    }));
+                }
+                catch { domBusy = false; }
+            });
+        }
+
+        void ShowDomains(System.Collections.Generic.List<GpuDomains.Curve> dc)
+        {
+            domGraph.Set(dc);
+            domGraph.Visible = dc != null && s.Expert;
+            if (dc == null) { domOnCard = null; ShowDomRows(); domHead.SetSub(L.T("Нет доступа") + ": " + (GpuDomains.Error ?? L.T("драйвер не ответил"))); Relayout(); return; }
+            var top = dc.Where(c => c.Key != 0).Select(c => c.Name + " " + L.T("до") + " " + c.Mhz.Max() + " " + L.T("МГц")).ToArray();
+            domHead.SetSub(string.Join(" · ", top));
+            domOnCard = dc == null ? null : GpuDomains.Offsets(dc);
+            ShowDomRows();
+            Relayout();
+        }
+
+        // the sliders show the card's offsets unless the editor holds changes not applied; hidden without domain curves
+        void ShowDomRows()
+        {
+            bool has = domOnCard != null && s.Expert;
+            for (int k = 0; k < 3; k++) domRows[k].Visible = has;
+            if (domOnCard == null) return;
+            if (!undo.Enabled)
+            {
+                loading = true;
+                for (int k = 0; k < 3; k++) domS[k].Value = domOnCard[k];
+                domShown = DomValues();
+                loading = false;
+            }
+            if (curve != null && !loading && !SameAsCard()) Edited(); // when it matches, the status line (e.g. «Применено») stays
         }
 
         // the saved preset that is on the card now (offsets within 15 MHz, the driver's step), or null
@@ -523,6 +616,16 @@ namespace RedTune
             int top = memFactoryTop + memory.Value / 2;
             memRow.SetSub(L.T("В играх до") + " " + top + " " + L.T("МГц") + " (≈" + (top * 2 / 1000.0).ToString("0.0", System.Globalization.CultureInfo.GetCultureInfo(L.En ? "en-US" : "ru-RU")) + " " + L.T("Гбит/с") + ")"
                 + (memory.Value != 0 ? " · " + L.T("заводская") + " " + memFactoryTop : ""));
+        }
+
+        // 22.11 (the user: the slider said 0 while the card ran +408): the slider stands at the offset of the curve from the
+        // factory one (its first point), and moving it moves every point by the difference, as before
+        void ShowShift()
+        {
+            if (curve == null || graph.Target.Length == 0 || graph.Base.Length != graph.Target.Length) return;
+            bool was = loading; loading = true;
+            shift.Value = Math.Max(-1000, Math.Min(1000, graph.Target[0] - graph.Base[0])); shiftShown = shift.Value;
+            loading = was;
         }
 
         void ShowPoint()
@@ -566,6 +669,7 @@ namespace RedTune
 
         void Edited()
         {
+            ShowShift(); // the points moved some other way (drag, ±15, a zone): the slider follows the curve
             ShowPoint(); ShowZone(); ShowHistory();
             pickedClean = false; // LoadPreset sets it again after this
             // 16.11: back at exactly what the card has (a point moved and moved back, the card's own preset opened again):
@@ -581,6 +685,7 @@ namespace RedTune
         {
             if (curve == null || graph.Target == null || graph.Target.Length != curve.Count) return false;
             for (int k = 0; k < curve.Count; k++) if (graph.Target[k] - graph.Base[k] != curve.Delta[k]) return false;
+            if (domOnCard != null && !DomValues().SequenceEqual(domOnCard)) return false;
             return !memory.Enabled || lastMem == null || memory.Value == lastMem[0];
         }
 
@@ -589,6 +694,7 @@ namespace RedTune
         {
             if (curve == null || p.Delta.Length != curve.Count) return false;
             for (int k = 0; k < curve.Count; k++) if (Math.Abs(p.Delta[k] - curve.Delta[k]) > 15) return false;
+            if (domOnCard != null && !p.Domain.SequenceEqual(domOnCard)) return false;
             return lastMem == null || p.Memory == lastMem[0];
         }
 
@@ -614,12 +720,14 @@ namespace RedTune
         {
             if (!s.Expert || curve == null || !Confirmed()) return;
             var d = Deltas(); int mem = memory.Enabled ? memory.Value : 0;
+            var dom = domOnCard != null ? DomValues() : null;
             // an opened preset, unchanged: this is the preset going to the card
             string name = pickedClean ? picked : null;
             apply.Enabled = false; bar.SetStatus("Применяю…");
             Task.Run(() =>
             {
                 var e = Gpu.WriteAll(d, memory.Enabled ? mem : (int?)null);
+                if (e == null && dom != null) e = GpuDomains.Apply(dom);
                 try
                 {
                     BeginInvoke((Action)(() =>
@@ -644,6 +752,7 @@ namespace RedTune
             Task.Run(() =>
             {
                 var e = Gpu.WriteAll(zero, memory.Enabled ? 0 : (int?)null);
+                if (e == null && domOnCard != null) e = GpuDomains.Apply(new int[3]);
                 try { BeginInvoke((Action)(() => { afterReload = e != null ? "Не удалось: " + e : "Заводская кривая и частота памяти"; Reload(); })); } catch { }
             });
         }
@@ -668,9 +777,11 @@ namespace RedTune
             loading = true;
             for (int k = 0; k < curve.Count; k++) graph.Target[k] = graph.Base[k] + p.Delta[k];
             if (memory.Enabled) memory.Value = p.Memory;
+            if (domOnCard != null) for (int k = 0; k < 3; k++) domS[k].Value = p.Domain[k];
+            domShown = DomValues();
             shift.Value = 0; shiftShown = 0; memShown = memory.Enabled ? memory.Value : 0;
             loading = false;
-            graph.Invalidate(); Edited();
+            graph.Invalidate(); Edited(); ShowShift();
             AtPreset(p);
         }
 
@@ -678,7 +789,7 @@ namespace RedTune
         {
             if (curve == null) return;
             // a preset of the factory curve is almost always a mistake (13.11: one came out empty): say what is about to be saved
-            if (Deltas().All(x => x == 0) && (!memory.Enabled || memory.Value == 0)
+            if (Deltas().All(x => x == 0) && (!memory.Enabled || memory.Value == 0) && DomValues().All(x => x == 0)
                 && !ConfirmDialog.Ask(FindForm(), "Пресет видеокарты", "В редакторе сейчас заводская кривая без сдвигов. Сохранить её как пресет?", "Сохранить", "Отмена")) return;
             var name = InputDialog.Ask(FindForm(), "Пресет видеокарты", "Название", picked ?? (GpuStore.Active.Length > 0 ? GpuStore.Active : "Мой андервольт"));
             if (string.IsNullOrWhiteSpace(name)) return;
@@ -686,6 +797,7 @@ namespace RedTune
             var p = GpuStore.Presets.FirstOrDefault(x => x.Name == name);
             if (p == null) GpuStore.Presets.Add(p = new GpuPreset { Name = name });
             p.Delta = Deltas(); p.Memory = memory.Enabled ? memory.Value : 0;
+            p.Domain = domOnCard != null ? DomValues() : new int[3];
             GpuStore.Active = name; GpuStore.Save();
             picked = name; pickedClean = true; // the editor holds exactly this preset now
             FillPresets();

@@ -1402,6 +1402,24 @@ w	5f11b887	as listas de efeitos originais não foram guardadas
 w	1a79d826	Graves à parte
 w	7c83b011	Os graves abaixo do corte e todo o resto são comprimidos separadamente: um bumbo não abaixa a voz nem os agudos
 w	4fbcff2c	Hz
+w	2afa0f29	Domínios de clock
+w	14ebe4e8	Curvas XBAR, SYS e Video
+w	d745f4e9	O que é isto
+w	07915e0c	Curvas sem deslocamentos; a do núcleo é a de fábrica. Os deslocamentos são gravados com «Aplicar» junto com a curva do núcleo e salvos na predefinição
+w	314d6bfc	Deslocamento XBAR
+w	0f441c22	Deslocamento SYS
+w	7d9df4a8	Deslocamento Video
+w	0b42802d	O barramento entre os blocos do chip: toda a curva XBAR para cima ou para baixo
+w	efba84aa	O domínio do sistema: toda a curva SYS para cima ou para baixo
+w	35bb4d1b	O motor de vídeo (codificação e decodificação): toda a curva Video
+w	f56b95e3	Núcleo, de fábrica
+w	89f3a867	até
+w	fc823f34	somente leitura
+w	16888bae	Sem acesso
+w	e9e50a14	o driver não fornece as curvas dos domínios
+w	38b959fb	esta placa não tem curvas XBAR, SYS e Video
+w	e0aaf867	Clocks agora
+w	11e0cacc	Núcleo
 f	991440ae	 · procurando aplicativos da Store…
 f	05ab98a0	»?\n\nEste é um aplicativo da Microsoft Store: o Windows o remove sozinho, junto com os dados dele na pasta do aplicativo. 
 f	1bc45e5f	Depois o Red Tune encontra o que sobrou (pastas de configurações, pacotes que ele trouxe junto) e mostra uma lista; só o que estiver marcado é removido.

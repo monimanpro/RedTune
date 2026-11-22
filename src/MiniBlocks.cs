@@ -33,7 +33,7 @@ namespace RedTune
     {
         [StructLayout(LayoutKind.Sequential)] struct ACCENT { public int State, Flags, Color, Anim; }
         [StructLayout(LayoutKind.Sequential)] struct WCA { public int Attr; public IntPtr Data; public int Size; }
-        [DllImport("user32.dll")] static extern int SetWindowCompositionAttribute(IntPtr h, ref WCA d);
+        [DllImport("user32.dll", SetLastError = true)] static extern int SetWindowCompositionAttribute(IntPtr h, ref WCA d);
         [DllImport("dwmapi.dll")] static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
         [StructLayout(LayoutKind.Sequential)]
         struct BITMAPINFOHEADER { public int biSize, biWidth, biHeight; public short biPlanes, biBitCount; public int biCompression, biSizeImage, biXPelsPerMeter, biYPelsPerMeter, biClrUsed, biClrImportant; }
@@ -104,6 +104,7 @@ namespace RedTune
         // too). 19.11: asked for per opening, by the display the panel opens on (ColorMode.Advanced): on a display in
         // Windows' advanced colour mode the blur comes out wrong on the screen itself.
         bool wantGlass = true, accentSet;
+        static bool loggedFail;
         public void SetGlass(bool on)
         {
             if (accentSet && on == wantGlass) return;
@@ -120,6 +121,7 @@ namespace RedTune
                     Marshal.StructureToPtr(a, p, false);
                     var d = new WCA { Attr = 19, Data = p, Size = Marshal.SizeOf(typeof(ACCENT)) };
                     bool ok = SetWindowCompositionAttribute(Handle, ref d) != 0;
+                    if (on && !ok && !loggedFail) { loggedFail = true; Store.Log("мини-панель: Windows не дала размытие (ошибка " + Marshal.GetLastWin32Error() + ")"); }
                     Glass = on && ok;
                 }
                 finally { Marshal.FreeHGlobal(p); }
@@ -583,7 +585,8 @@ namespace RedTune
             // a window with its colours turned inside out (on the screen only: screenshots are right). There the blocks
             // are plain cards. Asked for at every opening: the mode is per display and can be switched at any time.
             bool plain = false;
-            try { plain = ColorMode.Advanced(Screen.FromPoint(p).DeviceName); } catch { }
+            try { plain = ColorMode.Advanced(Screen.FromPoint(p).DeviceName); } catch (Exception ex) { Store.Log("мини-панель: режим цвета не прочитался: " + ex.Message); }
+            if (plain) Store.Log("мини-панель: " + Screen.FromPoint(p).DeviceName + " в расширенном режиме цвета, блоки без размытия");
             foreach (var b in blocks) b.SetGlass(!plain);
             up = true; shade = 0; slide = 0;
             Fill(); // shows the blocks, unseen yet, and stands them in their places

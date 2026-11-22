@@ -1402,6 +1402,24 @@ w	5f11b887	未保留原始效果列表
 w	1a79d826	低音单独处理
 w	7c83b011	分界以下的低音与其余部分分别压缩：底鼓不会把人声和高音压下去
 w	4fbcff2c	Hz
+w	2afa0f29	时钟域
+w	14ebe4e8	XBAR、SYS 和 Video 曲线
+w	d745f4e9	这是什么
+w	07915e0c	曲线不含偏移，核心为出厂曲线。偏移在点击「应用」时与核心曲线一起写入，并保存到预设
+w	314d6bfc	XBAR 偏移
+w	0f441c22	SYS 偏移
+w	7d9df4a8	Video 偏移
+w	0b42802d	芯片各模块之间的交叉总线：整条 XBAR 曲线上移或下移
+w	efba84aa	系统域：整条 SYS 曲线上移或下移
+w	35bb4d1b	视频引擎（视频编码与解码）：整条 Video 曲线
+w	f56b95e3	核心，出厂
+w	89f3a867	最高
+w	fc823f34	仅查看
+w	16888bae	无法访问
+w	e9e50a14	驱动未提供各时钟域的曲线
+w	38b959fb	此显卡没有 XBAR、SYS 和 Video 曲线
+w	e0aaf867	当前频率
+w	11e0cacc	核心
 f	991440ae	 · 正在查找 Store 应用…
 f	05ab98a0	»？\n\n这是 Microsoft Store 应用：Windows 会自行卸载它，连同应用文件夹中的数据。 
 f	1bc45e5f	然后 Red Tune 会找出剩下的东西（设置文件夹、它一起带来的软件包）并显示列表；只删除勾选的项目。

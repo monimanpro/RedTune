@@ -235,7 +235,7 @@ namespace RedTune
     }
 
     // GPU presets in %APPDATA%\RedTune\gpu.txt: «name|memory MHz|d0,d1,…» per line, the active one in «active=name»
-    class GpuPreset { public string Name; public int Memory; public int[] Delta = new int[0]; }
+    class GpuPreset { public string Name; public int Memory; public int[] Delta = new int[0]; public int[] Domain = new int[3]; } // Domain (22.11): XBAR, SYS, Video offsets, MHz
 
     static class GpuStore
     {
@@ -258,7 +258,10 @@ namespace RedTune
                     if (line.StartsWith("start=")) { ApplyOnStart = line.Substring(6) == "1"; continue; }
                     var p = line.Split('|'); if (p.Length < 3) continue;
                     int mem; int.TryParse(p[1], out mem);
-                    Presets.Add(new GpuPreset { Name = p[0], Memory = mem, Delta = p[2].Split(',').Select(x => { int v; int.TryParse(x, out v); return v; }).ToArray() });
+                    var gp = new GpuPreset { Name = p[0], Memory = mem, Delta = p[2].Split(',').Select(x => { int v; int.TryParse(x, out v); return v; }).ToArray() };
+                    // a fourth field (22.11): the XBAR / SYS / Video offsets; older files have none
+                    if (p.Length > 3) { var dm = p[3].Split(',').Select(x => { int v; int.TryParse(x, out v); return v; }).ToArray(); if (dm.Length == 3) gp.Domain = dm; }
+                    Presets.Add(gp);
                 }
             }
             catch (Exception ex) { Store.Log("видеокарта: пресеты не прочитались: " + ex.Message); }
@@ -270,7 +273,7 @@ namespace RedTune
             {
                 Directory.CreateDirectory(Store.DataDir);
                 var lines = new List<string> { "active=" + Active, "start=" + (ApplyOnStart ? "1" : "0") };
-                lines.AddRange(Presets.Select(p => p.Name.Replace("|", "/") + "|" + p.Memory + "|" + string.Join(",", p.Delta)));
+                lines.AddRange(Presets.Select(p => p.Name.Replace("|", "/") + "|" + p.Memory + "|" + string.Join(",", p.Delta) + "|" + string.Join(",", p.Domain)));
                 File.WriteAllLines(FilePath, lines, new UTF8Encoding(true));
             }
             catch (Exception ex) { Store.Log("видеокарта: пресеты не сохранились: " + ex.Message); }
@@ -324,6 +327,7 @@ namespace RedTune
                 KeepStock(c); // right after a reboot the curve is the factory one: the moment to keep it
                 if (c == null || p.Delta.Length != c.Count) { Store.Log("видеокарта (" + why + "): кривая не подходит к этой карте"); return; }
                 var e = Gpu.WriteAll(p.Delta, p.Memory);
+                if (e == null && p.Domain.Any(x => x != 0)) e = GpuDomains.Apply(p.Domain); // XBAR / SYS / Video (22.11)
                 Store.Log("видеокарта (" + why + "): «" + p.Name + "» " + (e ?? "применён"));
             });
         }

@@ -1,0 +1,12 @@
+{
+"w2afa0f29": {"es":"Dominios de reloj","pt":"Domínios de clock","zh":"时钟域","ko":"클럭 도메인","th":"โดเมนสัญญาณนาฬิกา","vi":"Miền xung nhịp","id":"Domain clock"},
+"w14ebe4e8": {"es":"Curvas XBAR, SYS y Video","pt":"Curvas XBAR, SYS e Video","zh":"XBAR、SYS 和 Video 曲线","ko":"XBAR, SYS, Video 커브","th":"เคิร์ฟ XBAR, SYS และ Video","vi":"Đường cong XBAR, SYS và Video","id":"Kurva XBAR, SYS, dan Video"},
+"wd745f4e9": {"es":"Qué es esto","pt":"O que é isto","zh":"这是什么","ko":"이것은 무엇인가요","th":"นี่คืออะไร","vi":"Đây là gì","id":"Apa ini"},
+"w57a64d23": {"es":"XBAR es el bus entre los bloques del chip, SYS el dominio del sistema, Video el motor de vídeo. Núcleo es la curva de fábrica","pt":"XBAR é o barramento entre os blocos do chip, SYS o domínio do sistema, Video o motor de vídeo. Núcleo é a curva de fábrica","zh":"XBAR 是芯片各模块之间的交叉总线，SYS 是系统域，Video 是视频引擎。核心为出厂曲线","ko":"XBAR는 칩 블록 사이의 크로스바, SYS는 시스템 도메인, Video는 비디오 엔진입니다. 코어는 공장 출하 커브입니다","th":"XBAR คือบัสเชื่อมระหว่างบล็อกของชิป, SYS คือโดเมนระบบ, Video คือเอนจินวิดีโอ ส่วนคอร์คือเคิร์ฟจากโรงงาน","vi":"XBAR là bus nối các khối của chip, SYS là miền hệ thống, Video là bộ xử lý video. Lõi là đường cong gốc của nhà sản xuất","id":"XBAR adalah jalur antar blok chip, SYS domain sistem, Video mesin video. Core adalah kurva pabrik"},
+"wf56b95e3": {"es":"Núcleo, de fábrica","pt":"Núcleo, de fábrica","zh":"核心，出厂","ko":"코어, 공장 출하","th":"คอร์ จากโรงงาน","vi":"Lõi, gốc","id":"Core, pabrik"},
+"w89f3a867": {"es":"hasta","pt":"até","zh":"最高","ko":"최대","th":"สูงสุด","vi":"tới","id":"hingga"},
+"wfc823f34": {"es":"solo lectura","pt":"somente leitura","zh":"仅查看","ko":"보기 전용","th":"ดูอย่างเดียว","vi":"chỉ xem","id":"hanya lihat"},
+"w16888bae": {"es":"Sin acceso","pt":"Sem acesso","zh":"无法访问","ko":"접근 불가","th":"เข้าถึงไม่ได้","vi":"Không truy cập được","id":"Tidak ada akses"},
+"we9e50a14": {"es":"el controlador no entrega las curvas de los dominios","pt":"o driver não fornece as curvas dos domínios","zh":"驱动未提供各时钟域的曲线","ko":"드라이버가 도메인 커브를 제공하지 않습니다","th":"ไดรเวอร์ไม่ส่งเคิร์ฟของโดเมน","vi":"trình điều khiển không trả về đường cong của các miền","id":"driver tidak memberikan kurva domain"},
+"w38b959fb": {"es":"esta tarjeta no tiene curvas XBAR, SYS ni Video","pt":"esta placa não tem curvas XBAR, SYS e Video","zh":"此显卡没有 XBAR、SYS 和 Video 曲线","ko":"이 그래픽카드에는 XBAR, SYS, Video 커브가 없습니다","th":"การ์ดนี้ไม่มีเคิร์ฟ XBAR, SYS และ Video","vi":"card này không có đường cong XBAR, SYS và Video","id":"kartu ini tidak punya kurva XBAR, SYS, dan Video"}
+}

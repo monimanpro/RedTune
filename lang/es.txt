@@ -1402,6 +1402,24 @@ w	5f11b887	no se conservaron las listas de efectos originales
 w	1a79d826	Graves aparte
 w	7c83b011	Los graves por debajo del corte y todo lo demás se comprimen por separado: un bombo no baja la voz ni los agudos
 w	4fbcff2c	Hz
+w	2afa0f29	Dominios de reloj
+w	14ebe4e8	Curvas XBAR, SYS y Video
+w	d745f4e9	Qué es esto
+w	07915e0c	Curvas sin desplazamientos; la del núcleo es la de fábrica. Los desplazamientos se escriben con «Aplicar» junto con la curva del núcleo y se guardan en el preajuste
+w	314d6bfc	Desplazamiento XBAR
+w	0f441c22	Desplazamiento SYS
+w	7d9df4a8	Desplazamiento Video
+w	0b42802d	El bus entre los bloques del chip: toda la curva XBAR hacia arriba o abajo
+w	efba84aa	El dominio del sistema: toda la curva SYS hacia arriba o abajo
+w	35bb4d1b	El motor de vídeo (codificación y decodificación): toda la curva Video
+w	f56b95e3	Núcleo, de fábrica
+w	89f3a867	hasta
+w	fc823f34	solo lectura
+w	16888bae	Sin acceso
+w	e9e50a14	el controlador no entrega las curvas de los dominios
+w	38b959fb	esta tarjeta no tiene curvas XBAR, SYS ni Video
+w	e0aaf867	Frecuencias ahora
+w	11e0cacc	Núcleo
 f	991440ae	 · buscando aplicaciones de Store…
 f	05ab98a0	»?\n\nEs una aplicación de Microsoft Store: Windows la elimina por sí mismo, junto con sus datos en la carpeta de la aplicación. 
 f	1bc45e5f	Después Red Tune encontrará lo que quedó (carpetas de ajustes, paquetes que trajo consigo) y mostrará una lista; solo se elimina lo marcado.

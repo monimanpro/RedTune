@@ -1402,6 +1402,24 @@ w	5f11b887	danh sách hiệu ứng gốc không được giữ lại
 w	1a79d826	Âm trầm riêng
 w	7c83b011	Âm trầm dưới điểm chia và phần còn lại được nén riêng: tiếng trống kick không kéo giọng và âm cao xuống
 w	4fbcff2c	Hz
+w	2afa0f29	Miền xung nhịp
+w	14ebe4e8	Đường cong XBAR, SYS và Video
+w	d745f4e9	Đây là gì
+w	07915e0c	Đường cong chưa gồm độ lệch, lõi là đường cong gốc. Độ lệch được ghi khi bấm «Áp dụng» cùng đường cong lõi và lưu vào cấu hình sẵn
+w	314d6bfc	Độ lệch XBAR
+w	0f441c22	Độ lệch SYS
+w	7d9df4a8	Độ lệch Video
+w	0b42802d	Bus nối các khối của chip: cả đường cong XBAR lên hoặc xuống
+w	efba84aa	Miền hệ thống: cả đường cong SYS lên hoặc xuống
+w	35bb4d1b	Bộ xử lý video (mã hóa và giải mã video): cả đường cong Video
+w	f56b95e3	Lõi, gốc
+w	89f3a867	tới
+w	fc823f34	chỉ xem
+w	16888bae	Không truy cập được
+w	e9e50a14	trình điều khiển không trả về đường cong của các miền
+w	38b959fb	card này không có đường cong XBAR, SYS và Video
+w	e0aaf867	Xung nhịp hiện tại
+w	11e0cacc	Lõi
 f	991440ae	 · đang tìm ứng dụng Store…
 f	05ab98a0	»?\n\nĐây là ứng dụng Microsoft Store: Windows tự gỡ nó, cùng dữ liệu trong thư mục của ứng dụng. 
 f	1bc45e5f	Sau đó Red Tune tìm những gì còn lại (thư mục cài đặt, các gói nó mang theo) và hiện danh sách; chỉ những mục được đánh dấu mới bị xóa.

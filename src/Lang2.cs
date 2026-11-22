@@ -740,6 +740,23 @@ namespace RedTune
             { "Бас отдельно", "Bass apart" },
             { "Бас ниже границы и всё остальное сжимаются порознь: удар бочки не приглушает голос и верх", "The bass under the split and everything above it are compressed apart: a kick drum does not turn the voice and the highs down" },
             { "Гц", "Hz" },
+            // 22.11: XBAR / SYS / Video curves on «Видеокарта»
+            { "Домены частоты", "Clock domains" },
+            { "Кривые XBAR, SYS и Video", "XBAR, SYS and Video curves" },
+            { "Что это", "What this is" },
+            { "Кривые без сдвигов, ядро — заводская. Сдвиги пишутся по «Применить» вместе с кривой ядра и сохраняются в пресет", "Curves without offsets, the core one factory. Offsets are written on «Apply» with the core curve and saved in the preset" },
+            { "Сдвиг XBAR", "XBAR offset" }, { "Сдвиг SYS", "SYS offset" }, { "Сдвиг Video", "Video offset" },
+            { "Шина между блоками чипа: вся кривая XBAR вверх или вниз", "The crossbar between the chip's blocks: the whole XBAR curve up or down" },
+            { "Системный домен: вся кривая SYS вверх или вниз", "The system domain: the whole SYS curve up or down" },
+            { "Видеоблок (кодирование и декодирование видео): вся кривая Video", "The video engine (video encoding and decoding): the whole Video curve" },
+            { "Ядро, заводская", "Core, factory" },
+            { "до", "up to" },
+            { "только просмотр", "view only" },
+            { "Нет доступа", "No access" },
+            { "драйвер не отдаёт кривые доменов", "the driver does not give the domain curves" },
+            { "на этой видеокарте нет кривых XBAR, SYS и Video", "this card has no XBAR, SYS and Video curves" },
+            { "Частоты сейчас", "Clocks now" },
+            { "Ядро", "Core" },
         };
 
         static readonly Dictionary<string, string> MoreFragments = new Dictionary<string, string>

@@ -446,6 +446,38 @@ namespace RedTune
             // left untranslated by it (shown in English); a check of lang\*.txt
             // --stress-check <file>: the own heavy load: its dll, the kernels, their arithmetic, and that a planted error is caught; a check
             // --plan-dry <file>: what the «Создать «Тюнинг»» button of the power page would write into its plan (nothing is written), a check
+            // --gpu-probe <file>: what the NVIDIA driver answers to its Get functions (read only, GpuProbe.cs), a check
+            // --gpu-domain-probe <file>: the "Domain V/F" read functions (XBAR/SYS/Video), read only; raw answers beside the file
+            i = at("--gpu-domain-probe");
+            if (i >= 0 && i + 1 < args.Length) { string r; try { r = GpuProbe.RunDomain(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(args[i + 1]))); } catch (Exception ex) { r = "FAILED: " + ex; } System.IO.File.WriteAllText(args[i + 1], r, new System.Text.UTF8Encoding(true)); return 0; }
+            // --gpu-domain-set <key 1|2|21> <MHz> <file>: one offset on every point of XBAR / SYS / Video (GpuDomains.SetOffset,
+            // with its checks and its own rollback), the curves before and after in the file. 0 MHz takes the offset off.
+            // --gpu-clocks <file>: the measured clock of every domain key 0..31 (GpuDomains.Measured), read only
+            i = at("--gpu-clocks");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                var sb = new System.Text.StringBuilder();
+                for (int k = 0; k < 32; k++) { int v = GpuDomains.Measured(k); sb.AppendLine("key " + k + ": " + v + " (status " + GpuDomains.LastStatus + ")"); }
+                if (sb.Length == 0) sb.AppendLine("no answer");
+                System.IO.File.WriteAllText(args[i + 1], sb.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
+            i = at("--gpu-domain-set");
+            if (i >= 0 && i + 3 < args.Length)
+            {
+                var sb = new System.Text.StringBuilder();
+                Func<string> tops = () => { var c = GpuDomains.Read(); return c == null ? "read failed: " + GpuDomains.Error : string.Join(" · ", c.Select(x => x.Name + " " + x.Mhz.Min() + "–" + x.Mhz.Max() + " MHz, offset " + string.Join("/", x.OffsetKhz.Distinct()) + " kHz")); };
+                try
+                {
+                    sb.AppendLine("before: " + tops());
+                    var r = GpuDomains.SetOffset(int.Parse(args[i + 1]), int.Parse(args[i + 2]));
+                    sb.AppendLine("set: " + (r ?? "OK"));
+                    sb.AppendLine("after:  " + tops());
+                }
+                catch (Exception ex) { sb.AppendLine("FAILED: " + ex); }
+                System.IO.File.WriteAllText(args[i + 3], sb.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
+            i = at("--gpu-probe");
+            if (i >= 0 && i + 1 < args.Length) { string r; try { r = GpuProbe.Run(); } catch (Exception ex) { r = "FAILED: " + ex; } System.IO.File.WriteAllText(args[i + 1], r, new System.Text.UTF8Encoding(true)); return 0; }
             // --uninst-list <file> [name]: what «Удаление программ» lists (Store apps marked), and for [name] the leftovers it
             // would offer after removing it (nothing is removed); a check
             i = at("--uninst-list");

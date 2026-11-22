@@ -301,6 +301,13 @@ namespace RedTune
                 string e = c == null ? (Gpu.Error ?? "кривая не прочиталась") : p.Delta.Length != c.Count ? "пресет снят с другой кривой"
                     : c.Delta.SequenceEqual(p.Delta) && (Gpu.ReadMemory() ?? new[] { p.Memory })[0] == p.Memory ? "" // already on the card
                     : Gpu.WriteAll(p.Delta, p.Memory);
+                // 22.11: the preset's XBAR / SYS / Video offsets too (they were left out here: the user's preset «03» with
+                // XBAR +100, SYS +50 came up at 0); only the domains that differ are written
+                if (e == null || e == "")
+                {
+                    var now = GpuDomains.Offsets(GpuDomains.Read());
+                    if (now != null && !now.SequenceEqual(p.Domain)) { var de = GpuDomains.Apply(p.Domain); e = de ?? (e == "" ? null : e); }
+                }
                 Store.Log("режим питания: пресет видеокарты «" + name + "» " + (e == null ? "применён" : e == "" ? "уже стоит" : e));
                 try
                 {

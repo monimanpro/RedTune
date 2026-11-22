@@ -1402,6 +1402,24 @@ w	5f11b887	daftar efek asli tidak tersimpan
 w	1a79d826	Bass terpisah
 w	7c83b011	Bass di bawah titik bagi dan sisanya dikompresi terpisah: kick drum tidak menurunkan vokal dan nada tinggi
 w	4fbcff2c	Hz
+w	2afa0f29	Domain clock
+w	14ebe4e8	Kurva XBAR, SYS, dan Video
+w	d745f4e9	Apa ini
+w	07915e0c	Kurva tanpa offset, kurva core adalah bawaan pabrik. Offset ditulis saat «Terapkan» bersama kurva core dan disimpan ke preset
+w	314d6bfc	Offset XBAR
+w	0f441c22	Offset SYS
+w	7d9df4a8	Offset Video
+w	0b42802d	Jalur antar blok chip: seluruh kurva XBAR naik atau turun
+w	efba84aa	Domain sistem: seluruh kurva SYS naik atau turun
+w	35bb4d1b	Mesin video (encode dan decode video): seluruh kurva Video
+w	f56b95e3	Core, pabrik
+w	89f3a867	hingga
+w	fc823f34	hanya lihat
+w	16888bae	Tidak ada akses
+w	e9e50a14	driver tidak memberikan kurva domain
+w	38b959fb	kartu ini tidak punya kurva XBAR, SYS, dan Video
+w	e0aaf867	Clock saat ini
+w	11e0cacc	Core
 f	991440ae	 · mencari aplikasi Store…
 f	05ab98a0	»?\n\nIni aplikasi Microsoft Store: Windows menghapusnya sendiri, bersama datanya di folder aplikasi. 
 f	1bc45e5f	Lalu Red Tune menemukan yang tersisa (folder pengaturan, paket yang ikut terpasang) dan menampilkan daftar; hanya yang dicentang yang dihapus.
