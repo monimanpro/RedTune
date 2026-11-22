@@ -313,6 +313,59 @@ f	8a824827	saat mulai
 f	64b0614f	pengisi daya
 f	d7b8a9de	baterai
 f	c81460e9	setelah tidur
+w	ec5167a7	Aturan
+w	5c3e9cd1	Windows sedang menghapus aplikasi…
+w	260b9dc5	Folder
+w	5c4291c2	Registry
+w	b5ce8c8a	Pintasan
+w	f0a236b5	Startup dan tugas
+w	e57fd109	Aturan firewall
+w	8bb2408a	Akun dan grup Windows
+w	9d78ae29	Paket Microsoft Store
+w	45b4387f	Layanan dan driver
+w	2b3b8e00	Menu konteks
+w	931ad789	Variabel PATH
+w	540cabf9	Folder bernama sama di Program Files, AppData, ProgramData, folder instalasinya, ~\\.nama
+w	b503ca07	Kunci SOFTWARE\\Nama dan SOFTWARE\\Penerbit\\Nama, entri yang tertinggal di daftar program
+w	3734f523	Pintasan di Start dan desktop yang mengarah ke foldernya atau ke file yang sudah tidak ada
+w	0c8675b6	Entri startup dan tugas terjadwal yang menjalankan sesuatu dari foldernya
+w	1ace4cee	Aturan bernama sama atau berjalur ke foldernya; untuk program yang dihapus, aturan yang programnya sudah tidak ada
+w	aa9a48a2	Akun dan grup bernama sama atau dibuat untuk aturan firewall-nya
+w	d6f4f866	Paket yang terpasang bersamanya dan paketnya yang tertinggal di akun lain
+w	74d2dbe8	Layanan dan driver yang filenya ada di foldernya atau sudah terhapus
+w	ae8a5a69	Item menu klik kanan yang mengarah ke foldernya atau ke file yang sudah tidak ada
+w	94e6c3f2	Entri yang mengarah ke foldernya atau ke folder yang sudah tidak ada
+w	6a4cb891	Folder Windows dan semua isinya milik Windows (termasuk driver yang ditaruh program di sana)
+w	f51f92f0	Program Files, Program Files (x86), ProgramData, AppData secara utuh dan folder penggunamu: hanya folder program tertentu di dalamnya
+w	07f739be	Layanan Windows yang berjalan lewat svchost
+w	0ecb69eb	Driver dalam rantai suatu perangkat (tanpanya perangkat berhenti bekerja)
+w	7c3d0148	Akunmu dan akun bawaan Windows
+w	eccf50a6	Sertifikat: tidak pernah ditawarkan, menghapus yang salah merusak HTTPS
+w	89214f1b	Apa pun yang ditemukan hanya lewat folder penerbit: di sana bisa ada program lain miliknya
+w	60673abd	Red Tune dan Claude, folder dan datanya
+w	fbdd635d	Aturan pencarian sisa
+w	2b697736	Kembali ke bawaan
+w	ba43e44b	Apa yang dicari setelah program dihapus
+w	b0eb14c6	Cari
+w	e119b292	Dicentang
+w	e52410e6	Centang
+w	f3455502	«Dicentang»: yang ditemukan setelah penghapusan langsung dicentang; «Cari»: tanpa centang. Program yang dihapus lama tidak pernah dicentang
+w	0770177a	Sisa program yang sudah lama dihapus
+w	8af3a9fa	hari
+w	eec4b53e	MB
+w	492747ee	Folder tidak berubah selama
+w	27620046	Folder tanpa programnya (AppData, ProgramData, Program Files) ditampilkan jika tidak disentuh selama sekian hari; yang kosong selalu
+w	8a12d474	Minimal
+w	ed8ee0b7	Folder yang lebih kecil tidak ditampilkan
+w	a84fa991	Daftarmu
+w	8da387d2	Ubah…
+w	87d48368	Jangan pernah disentuh
+w	5dac5874	Cari juga di sini
+w	53bf6464	Satu per baris. Jalur (C:\\Games\\…): tidak ada yang disentuh di folder itu. Nama (Steam): tidak ada yang disentuh jika menyebutnya.
+w	c9b3e02a	Folder tempat kamu juga memasang program (D:\\Games, D:\\Programs), satu per baris. Folder program yang dihapus dicari di sana sama seperti di Program Files.
+w	63bcaa99	Selalu dilindungi (tidak bisa diubah)
+w	89a49aa5	Kosong: Red Tune menawarkan semua yang ditemukan menurut aturan di atas
+w	22239295	Kosong: hanya Program Files, AppData, dan ProgramData
 w	208c390a	Kesalahan
 w	53e792ae	Dihapus
 w	43c9f16b	Formulir terbuka di browser: tambahkan apa yang kamu lakukan sebelum kesalahan lalu tekan «Create». Seluruh catatan juga ada di clipboard
@@ -1349,6 +1402,47 @@ w	5f11b887	daftar efek asli tidak tersimpan
 w	1a79d826	Bass terpisah
 w	7c83b011	Bass di bawah titik bagi dan sisanya dikompresi terpisah: kick drum tidak menurunkan vokal dan nada tinggi
 w	4fbcff2c	Hz
+f	991440ae	 · mencari aplikasi Store…
+f	05ab98a0	»?\n\nIni aplikasi Microsoft Store: Windows menghapusnya sendiri, bersama datanya di folder aplikasi. 
+f	1bc45e5f	Lalu Red Tune menemukan yang tersisa (folder pengaturan, paket yang ikut terpasang) dan menampilkan daftar; hanya yang dicentang yang dihapus.
+f	9f8d5f52	Windows tidak menghapus aplikasi: 
+f	abd8fda9	Yang tersisa setelah penghapusan. File dan folder masuk ke Keranjang Sampah, sisanya langsung dihapus. Di sini hanya yang pasti milik program: 
+f	874c3956	milik Windows sendiri dan yang mungkin dibutuhkan program lain tidak ditawarkan. Hapus centang yang harus tetap ada.
+f	31ab8c32	Yang ditinggalkan program yang dihapus: aturan firewall untuk program yang sudah tidak ada, akun dan paket yang dibuat program untuk dirinya, 
+f	fe1a0b66	dan folder di AppData, ProgramData, dan Program Files tanpa programnya (tidak berubah selama yang diatur di «Aturan», atau bernama seperti yang ditemukan di atas). 
+f	cca473cd	Ini petunjuk, bukan jawaban pasti: tidak ada yang dicentang, centang yang kamu kenali. Folder masuk ke Keranjang Sampah, sisanya langsung dihapus; akun dihapus bersama profilnya.
+f	177aa641	Paket aplikasi Windows
+f	cf3fd74e	Paket Store  
+f	f0265bb9	 (runtime untuk aplikasi)
+f	45a8681a	Paket di akun lain  
+f	19a3f145	Paket hanya di akun lain  
+f	23b90f79	» mengizinkan masuk
+f	8c188f3d	» memblokir masuk
+f	4ea8976c	» mengizinkan keluar
+f	fef80d78	» memblokir keluar
+f	452c8f50	Firewall  «
+f	65e0c8fa	Grup Windows  
+f	8df9fa8a	Akun Windows  
+f	51440fce	 (dengan profilnya di C:\\Users
+f	5d204d9a	, terakhir masuk 
+f	44f6ec89	 (programnya sudah tidak ada)
+f	2ee117b6	 · aturan: 
+f	c4e0d9a9	Driver  
+f	9522f5ad	Layanan  
+f	d3fc4092	 (filenya sudah tidak ada)
+f	1076fffd	 · sedang berjalan: akan dihentikan
+f	7255db67	, hilang setelah mulai ulang
+f	274cdd97	 (pada file dan folder)
+f	7591d85e	 (pada file)
+f	37624e2c	 (pada folder)
+f	58a4d415	 (pada latar folder)
+f	b8a671d3	 (pada drive)
+f	e9ab45fb	PATH untuk semua  
+f	fc02980b	PATH-mu  
+f	9bb625e4	 (foldernya sudah tidak ada)
+f	aa433071	Menu konteks  «
+f	4552f8b1	  · kosong  · 
+f	e822e6cb	 · dan 
 f	9c75c9f5	Red Tune berhenti karena kesalahan · 
 f	4731efce	Ada kesalahan, program tetap berjalan · 
 f	f0ca5316	Kembalikan 

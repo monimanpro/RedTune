@@ -313,6 +313,59 @@ f	8a824827	inicio
 f	64b0614f	cargador
 f	d7b8a9de	batería
 f	c81460e9	tras la suspensión
+w	ec5167a7	Reglas
+w	5c3e9cd1	Windows está eliminando la aplicación…
+w	260b9dc5	Carpetas
+w	5c4291c2	Registro
+w	b5ce8c8a	Accesos directos
+w	f0a236b5	Inicio automático y tareas
+w	e57fd109	Reglas del firewall
+w	8bb2408a	Cuentas y grupos de Windows
+w	9d78ae29	Paquetes de Microsoft Store
+w	45b4387f	Servicios y controladores
+w	2b3b8e00	Menú contextual
+w	931ad789	Variable PATH
+w	540cabf9	Carpetas con su nombre en Program Files, AppData, ProgramData, su carpeta de instalación, ~\\.nombre
+w	b503ca07	Claves SOFTWARE\\Nombre y SOFTWARE\\Editor\\Nombre, una entrada olvidada en la lista de programas
+w	3734f523	Accesos directos en Inicio y en el escritorio que llevan a su carpeta o a un archivo que ya no existe
+w	0c8675b6	Entradas de inicio y tareas programadas que inician algo desde su carpeta
+w	1ace4cee	Reglas con su nombre o una ruta a su carpeta; de programas eliminados, reglas cuyo programa ya no existe
+w	aa9a48a2	Cuentas y grupos con su nombre o creados para sus reglas del firewall
+w	d6f4f866	Paquetes instalados junto con él y su paquete que quedó en otras cuentas
+w	74d2dbe8	Servicios y controladores cuyo archivo está en su carpeta o ya fue eliminado
+w	ae8a5a69	Elementos del menú del clic derecho que llevan a su carpeta o a un archivo que ya no existe
+w	94e6c3f2	Entradas que llevan a su carpeta o a una carpeta que ya no existe
+w	6a4cb891	La carpeta de Windows y todo lo que en ella pertenece a Windows (también los controladores que los programas ponen allí)
+w	f51f92f0	Program Files, Program Files (x86), ProgramData, AppData completos y tu carpeta de usuario: solo carpetas de programas concretos dentro de ellos
+w	07f739be	Servicios de Windows que se ejecutan mediante svchost
+w	0ecb69eb	Controladores en la cadena de un dispositivo (sin ellos el dispositivo deja de funcionar)
+w	7c3d0148	Tu cuenta y las cuentas integradas de Windows
+w	eccf50a6	Certificados: nunca se ofrecen, eliminar uno equivocado rompe HTTPS
+w	89214f1b	Todo lo encontrado solo por la carpeta del editor: allí pueden estar también otros programas suyos
+w	60673abd	Red Tune y Claude, sus carpetas y datos
+w	fbdd635d	Reglas de búsqueda de restos
+w	2b697736	Volver a lo predeterminado
+w	ba43e44b	Qué buscar después de eliminar un programa
+w	b0eb14c6	Buscar
+w	e119b292	Marcado
+w	e52410e6	Marcas
+w	f3455502	«Marcado»: lo encontrado tras eliminar viene marcado; «Buscar»: sin marca. Los programas eliminados hace tiempo nunca se marcan
+w	0770177a	Restos de programas eliminados hace tiempo
+w	8af3a9fa	días
+w	eec4b53e	MB
+w	492747ee	Carpeta sin cambios durante
+w	27620046	Una carpeta sin su programa (AppData, ProgramData, Program Files) se muestra si no se tocó durante tantos días; las vacías, siempre
+w	8a12d474	Al menos
+w	ed8ee0b7	Las carpetas más pequeñas no se muestran
+w	a84fa991	Tus listas
+w	8da387d2	Editar…
+w	87d48368	No tocar nunca
+w	5dac5874	Buscar también aquí
+w	53bf6464	Uno por línea. Una ruta (C:\\Games\\…): no se toca nada en esa carpeta. Un nombre (Steam): no se toca nada que lo mencione.
+w	c9b3e02a	Carpetas donde también instalas programas (D:\\Games, D:\\Programs), una por línea. Allí se buscan carpetas de programas eliminados igual que en Program Files.
+w	63bcaa99	Siempre protegido (no se puede cambiar)
+w	89a49aa5	Vacía: Red Tune ofrece todo lo que encontró según las reglas de arriba
+w	22239295	Vacía: solo Program Files, AppData y ProgramData
 w	208c390a	Errores
 w	53e792ae	Quitado
 w	43c9f16b	El formulario se abrió en el navegador: añade qué hacías antes del error y pulsa «Create». El registro completo también está en el portapapeles
@@ -1349,6 +1402,47 @@ w	5f11b887	no se conservaron las listas de efectos originales
 w	1a79d826	Graves aparte
 w	7c83b011	Los graves por debajo del corte y todo lo demás se comprimen por separado: un bombo no baja la voz ni los agudos
 w	4fbcff2c	Hz
+f	991440ae	 · buscando aplicaciones de Store…
+f	05ab98a0	»?\n\nEs una aplicación de Microsoft Store: Windows la elimina por sí mismo, junto con sus datos en la carpeta de la aplicación. 
+f	1bc45e5f	Después Red Tune encontrará lo que quedó (carpetas de ajustes, paquetes que trajo consigo) y mostrará una lista; solo se elimina lo marcado.
+f	9f8d5f52	Windows no eliminó la aplicación: 
+f	abd8fda9	Lo que quedó tras la eliminación. Los archivos y carpetas van a la Papelera de reciclaje, lo demás se elimina enseguida. Aquí solo está lo que seguro pertenecía al programa: 
+f	874c3956	no se ofrece lo propio de Windows ni aquello de lo que otros programas pueden depender. Desmarca lo que deba quedarse.
+f	31ab8c32	Lo que dejaron los programas eliminados: reglas del firewall de programas que ya no existen, cuentas y paquetes que los programas crearon para sí, 
+f	fe1a0b66	y carpetas en AppData, ProgramData y Program Files sin su programa (sin cambios el tiempo fijado en «Reglas», o con el nombre de lo encontrado arriba). 
+f	cca473cd	Es una pista, no una respuesta exacta: no hay nada marcado, marca lo que reconozcas. Las carpetas van a la Papelera de reciclaje, lo demás se elimina enseguida; una cuenta, junto con su perfil.
+f	177aa641	Paquete de aplicación de Windows
+f	cf3fd74e	Paquete de Store  
+f	f0265bb9	 (entorno para la aplicación)
+f	45a8681a	Paquete en otras cuentas  
+f	19a3f145	Paquete solo en otras cuentas  
+f	23b90f79	» permite entrantes
+f	8c188f3d	» bloquea entrantes
+f	4ea8976c	» permite salientes
+f	fef80d78	» bloquea salientes
+f	452c8f50	Firewall  «
+f	65e0c8fa	Grupo de Windows  
+f	8df9fa8a	Cuenta de Windows  
+f	51440fce	 (con su perfil en C:\\Users
+f	5d204d9a	, último inicio de sesión 
+f	44f6ec89	 (el programa ya no existe)
+f	2ee117b6	 · reglas: 
+f	c4e0d9a9	Controlador  
+f	9522f5ad	Servicio  
+f	d3fc4092	 (el archivo ya no existe)
+f	1076fffd	 · en marcha ahora: se detendrá
+f	7255db67	, desaparece tras reiniciar
+f	274cdd97	 (en archivos y carpetas)
+f	7591d85e	 (en archivos)
+f	37624e2c	 (en carpetas)
+f	58a4d415	 (en el fondo de una carpeta)
+f	b8a671d3	 (en unidades)
+f	e9ab45fb	PATH para todos  
+f	fc02980b	Tu PATH  
+f	9bb625e4	 (la carpeta ya no existe)
+f	aa433071	Menú contextual  «
+f	4552f8b1	  · vacía  · 
+f	e822e6cb	 · y 
 f	9c75c9f5	Red Tune terminó con un error · 
 f	4731efce	Un error, el programa siguió · 
 f	f0ca5316	Volver a 

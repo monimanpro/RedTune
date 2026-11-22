@@ -209,7 +209,7 @@ namespace RedTune
             var h = History; if (h.Width <= 0) return Rectangle.Empty;
             string a = L.T("Во времени"), b = L.T("По частотам");
             if (viewKey != a + "|" + b) { viewKey = a + "|" + b; viewW0 = TextRenderer.MeasureText(a, Theme.Small).Width + Theme.S(12); viewW1 = TextRenderer.MeasureText(b, Theme.Small).Width + Theme.S(12); }
-            int y = Curve.Bottom + Theme.S(3), hh = Theme.S(20);
+            int y = h.Bottom + Theme.S(3), hh = Theme.S(20);
             return freq ? new Rectangle(h.Right - viewW1, y, viewW1, hh) : new Rectangle(h.Right - viewW1 - Theme.S(4) - viewW0, y, viewW0, hh);
         }
         public void SetView(bool freq) { if (ByFreq == freq) return; ByFreq = freq; hot = Part.None; Invalidate(); }
@@ -224,7 +224,43 @@ namespace RedTune
 
         // 19.11 (the user's order: first how many bands and which one, then its settings): the bands' column stands first,
         // the curve after it, with the room for the numbers of its scale between them
-        int Side { get { return Math.Max(Theme.S(60), Height - Theme.S(72)); } }
+        // 22.11 (the user: at 150 % in a narrower window the dials and the monitor vanished): nothing is dropped any more,
+        // what does not fit beside the curve goes down a row — first the eight dials (always together, as one block), then
+        // the monitor with the ceiling's fader. The picture is as tall as its rows (SetBoundsCore: the height follows the
+        // width), the curve keeps its size.
+        int Side { get { return Theme.S(328); } }
+        const int RowGap = 40, TopPad = 14, BottomPad = 58, HistMin = 240;
+        int layW = -1, layRows = 1; Rectangle layPanel, layHist; bool layHistAlone;
+        void Lay()
+        {
+            if (layW == Width) return;
+            layW = Width;
+            int top = Theme.S(TopPad), step = Side + Theme.S(RowGap), n = DialCols, pw = n == 2 ? Theme.S(2 * DialUnits + DialGap) : n == 1 ? Theme.S(PanelUnits) : 0;
+            int tail = Theme.S(18) + Theme.S(CeilUnits); // the ceiling's fader at the right end
+            int row = 0, x = Curve.Right + Theme.S(Gap);
+            layPanel = Rectangle.Empty;
+            if (n > 0)
+            {
+                if (x + pw > Width - Theme.S(12)) { row = 1; x = Theme.S(BandsLeft); }
+                layPanel = new Rectangle(x, top + step * row, pw, Side);
+                x = layPanel.Right + Theme.S(Gap);
+            }
+            layHistAlone = false;
+            if (Width - tail - x < Theme.S(HistMin)) { row++; x = Theme.S(46); layHistAlone = true; } // a row of its own, with the dB words left of it
+            int w = Width - tail - x;
+            layHist = w >= Theme.S(150) ? new Rectangle(x, top + step * row, w, Side) : Rectangle.Empty;
+            layRows = row + 1;
+        }
+        int Rows { get { Lay(); return layRows; } }
+        internal int HistDy { get { Lay(); return layHist.Width > 0 ? layHist.Y - Theme.S(TopPad) : 0; } }
+        internal float HY(double db) { return Y(db) + HistDy; } // a level on the monitor's scale (the same dB as the curve's, on its own row)
+        int WantHeight { get { return Theme.S(TopPad) + Rows * Side + (Rows - 1) * Theme.S(RowGap) + Theme.S(BottomPad); } }
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            layW = -1;
+            base.OnSizeChanged(e);
+            int want = WantHeight; if (Height != want) Height = want; // the page reads the height after it set the width
+        }
         const int BandsLeft = 24, CurveAfterBands = 54; // as far from the card's edge as from the numbers of the curve's scale
         internal Rectangle Curve { get { int side = Side; return new Rectangle(HasBands ? Theme.S(BandsLeft + BandUnits + CurveAfterBands) : Theme.S(46), Theme.S(14), side, side); } }
         // 19.11 (the user's order): the curve, then the dials one under another, then the last seconds to the right edge.
@@ -237,13 +273,15 @@ namespace RedTune
         {
             get
             {
-                int free = Width - Curve.Right - Theme.S(Gap) - Theme.S(12);
+                // 22.11: the eight go down a row when they do not fit beside the curve, so only a picture too narrow for
+                // them even there has the three (or none)
+                int free = Width - Theme.S(BandsLeft) - Theme.S(12);
                 return free >= Theme.S(2 * DialUnits + DialGap) ? 2 : free >= Theme.S(PanelUnits) ? 1 : 0;
             }
         }
         bool HasPanel { get { return DialCols > 0; } }
         public bool HasSixDials { get { return DialCols == 2; } }
-        internal Rectangle Panel { get { var c = Curve; int n = DialCols; return n > 0 ? new Rectangle(c.Right + Theme.S(Gap), c.Y, n == 2 ? Theme.S(2 * DialUnits + DialGap) : Theme.S(PanelUnits), c.Height) : Rectangle.Empty; } }
+        internal Rectangle Panel { get { Lay(); return layPanel; } }
         // the cell of a dial: 0 the attack, 1 the release, 2 the knee (the right column, or the only one), 3 the threshold,
         // 4 the ratio, 5 the gain after (the left column, only with two)
         // 19.11, later (the user's wish): under the six, two more — the splits between the bands, 6 the lower (the left
@@ -266,9 +304,7 @@ namespace RedTune
         {
             get
             {
-                var c = Curve; if (!HasPanel) return Rectangle.Empty;
-                int x = Panel.Right + Theme.S(Gap), w = Width - Theme.S(18) - Theme.S(CeilUnits) - x; // the ceiling's fader at the right end
-                return w >= Theme.S(150) ? new Rectangle(x, c.Y, w, c.Height) : Rectangle.Empty;
+                Lay(); return layHist;
             }
         }
         // 19.11 (the user's order: the bands, the curve, the dials, the monitor). The bands: how many (1, 2, 3) and under
@@ -284,16 +320,15 @@ namespace RedTune
         {
             get
             {
-                var c = Curve; if (!HasPanel || Second) return Rectangle.Empty;
-                int x = Width - Theme.S(18) - Theme.S(CeilStripW);
-                return History.Width > 0 || x - Panel.Right >= Theme.S(CeilUnits - CeilStripW) ? new Rectangle(x, c.Y, Theme.S(CeilStripW), c.Height) : Rectangle.Empty;
+                var h = History; if (h.Width <= 0 || Second) return Rectangle.Empty;
+                return new Rectangle(Width - Theme.S(18) - Theme.S(CeilStripW), h.Y, Theme.S(CeilStripW), h.Height); // on the monitor's row
             }
         }
         internal int CeilTop { get { return CeilStrip.Y + Theme.S(26); } }
         internal int CeilBottom { get { return CeilStrip.Bottom - Theme.S(6); } }
         internal float CeilY(double db) { return (float)(CeilTop + (CeilBottom - CeilTop) * Clamp(-db / 12.0, 0, 1)); }
         public bool HasMonitor { get { return History.Width > 0; } } // room for the monitor, where the splits are dragged
-        public bool HasBands { get { return Width >= Theme.S(BandsLeft + BandUnits + CurveAfterBands) + Side + Theme.S(Gap) + Theme.S(PanelUnits) + Theme.S(12); } }
+        public bool HasBands { get { return Width >= Theme.S(BandsLeft + BandUnits + CurveAfterBands) + Side + Theme.S(12); } } // 22.11: the dials no longer have to fit beside
         internal Rectangle BandsCol { get { return HasBands ? new Rectangle(Theme.S(BandsLeft), Theme.S(14), Theme.S(BandUnits), Side) : Rectangle.Empty; } }
         // 19.11 (the user: it stood high, put it in order). One block in the middle of the plot's height: a title, 6 to its
         // numbers, 22 to the next title, 6 to its plates, the plates 8 apart.
@@ -432,7 +467,7 @@ namespace RedTune
                 if (ListenRect(zoneHot, true).Contains(m)) return Part.Mute;
             }
             // by frequencies each column has its own threshold line: the one of the column under the mouse
-            float dc = Math.Abs(m.Y - Y(P.Ceil)), dt = Math.Abs(m.Y - Y(bands ? P.Parts[zoneHot].Thr : Q.Thr));
+            float hdy = inH ? HistDy : 0, dc = Math.Abs(m.Y - Y(P.Ceil) - hdy), dt = Math.Abs(m.Y - Y(bands ? P.Parts[zoneHot].Thr : Q.Thr) - hdy);
             bool onCeil = P.Limit && dc <= near && (inH || c.Contains(m));
             bool onLine = !Dim && dt <= near && inH;
             if (onCeil && (!onLine || dc <= dt)) return Part.Ceil;
@@ -692,7 +727,7 @@ namespace RedTune
                 for (int k = 0; k < n; k++)
                 {
                     int at = Hist - n + k; float x = hist.Right - (n - 1 - k) * dx;
-                    pin.Add(new PointF(x, Y(hIn[at]))); pout[k] = new PointF(x, Y(hOut[at]));
+                    pin.Add(new PointF(x, HY(hIn[at]))); pout[k] = new PointF(x, HY(hOut[at]));
                     pgr.Add(new PointF(x, hist.Y + hist.Height * (float)(Clamp(-hGr[at], 0, Hi - Lo) / (Hi - Lo))));
                     pall.Add(new PointF(x, hist.Y + hist.Height * (float)(Clamp(-hGr[at] - hLim[at], 0, Hi - Lo) / (Hi - Lo))));
                 }
@@ -713,7 +748,7 @@ namespace RedTune
                 }
             }
             bool lh = hot == Part.Line || drag == Part.Line;
-            cv.Line(Dim ? Theme.Muted : lh ? lit : line, Theme.S(lh ? 1.8f : 1.2f), hist.X, Y(Q.Thr), hist.Right, Y(Q.Thr), true);
+            cv.Line(Dim ? Theme.Muted : lh ? lit : line, Theme.S(lh ? 1.8f : 1.2f), hist.X, HY(Q.Thr), hist.Right, HY(Q.Thr), true);
         }
 
         // the monitor by frequencies; stage: 1 what stands under the levels (the bands' ground, the decade lines), 2 the
@@ -735,7 +770,7 @@ namespace RedTune
                 // from the bottom: the level the band reads now
                 if (moving && live && bLv[z.Part] > Lo)
                 {
-                    float y = Y(bLv[z.Part]);
+                    float y = HY(bLv[z.Part]);
                     cv.FillRect(Color.FromArgb(Dim ? 20 : sel ? 60 : 38, Theme.Text), bx, y, bw, hist.Bottom - y);
                     cv.Line(Color.FromArgb(Dim ? 90 : sel ? 220 : 140, Theme.Text), Theme.S(1.4f), bx, y, bx + bw, y);
                 }
@@ -760,7 +795,7 @@ namespace RedTune
                 {
                     bool lh = sel && (hot == Part.Line || drag == Part.Line) && (drag == Part.Line || zoneHot == z.Part);
                     // (lighter than the band's colour: the colour itself was lost over the grey of the level)
-                    cv.Line(Dim ? Theme.Muted : lh ? Color.White : Lighter(Lighter(col)), Theme.S(lh ? 2f : sel ? 1.6f : 1.3f), x0, Y(q.Thr), x1, Y(q.Thr), true);
+                    cv.Line(Dim ? Theme.Muted : lh ? Color.White : Lighter(Lighter(col)), Theme.S(lh ? 2f : sel ? 1.6f : 1.3f), x0, HY(q.Thr), x1, HY(q.Thr), true);
                 }
                 if (!top) continue;
                 // a band that does not go out now (its M, or another band's S): its column under a veil
@@ -837,7 +872,7 @@ namespace RedTune
             if (y - top > 1f) Theme.Fill(g, new RectangleF(cx - th / 2f, top, th, y - top), th / 2f, lim ? limC : Theme.Muted);
             Theme.GlassKnob(g, cx, y, Theme.S(ch && lim ? 16 : 14), lim ? 1f : 0f, lim ? limC : Theme.Muted, th, !lim, 270f, null, lim ? y - top : 0f); // lit towards the top: what is cut off
             string v = P.Ceil > -0.05f ? "0" : "−" + (-P.Ceil).ToString("0.#", CultureInfo.InvariantCulture);
-            Theme.Text1(g, v, Theme.Small, new Rectangle((int)cx - Theme.S(24), Curve.Bottom + Theme.S(3), Theme.S(48), Theme.S(20)), lim ? (ch ? Theme.Text : Theme.Text2) : Theme.Muted, TextFormatFlags.HorizontalCenter);
+            Theme.Text1(g, v, Theme.Small, new Rectangle((int)cx - Theme.S(24), cs.Bottom + Theme.S(3), Theme.S(48), Theme.S(20)), lim ? (ch ? Theme.Text : Theme.Text2) : Theme.Muted, TextFormatFlags.HorizontalCenter);
         }
 
         string CeilText { get { return (P.Ceil > -0.05f ? "0" : "−" + (-P.Ceil).ToString("0.0", CultureInfo.InvariantCulture)) + " дБ"; } }
@@ -936,7 +971,9 @@ namespace RedTune
                     // 21.11: the words only when the paint reaches them (a moment of the sound repaints the curve and the monitor)
                     var wl = new Rectangle(0, (int)y - Theme.S(10), c.X - Theme.S(8), Theme.S(20)); if (want.IntersectsWith(wl)) Theme.Text1(g, t, Theme.Small, wl, Theme.Muted, TextFormatFlags.Right);
                     var wb = new Rectangle((int)x - Theme.S(30), c.Bottom + Theme.S(4), Theme.S(60), Theme.S(18)); if (want.IntersectsWith(wb)) Theme.Text1(g, t, Theme.Small, wb, Theme.Muted, TextFormatFlags.HorizontalCenter);
-                    if (hist.Width > 0) g.DrawLine(db == 0 ? strong : pen, hist.X, y, hist.Right, y);
+                    if (hist.Width > 0) g.DrawLine(db == 0 ? strong : pen, hist.X, y + HistDy, hist.Right, y + HistDy);
+                    // 22.11: the monitor on a row of its own has the dB words left of it, as the curve has
+                    if (hist.Width > 0 && layHistAlone) { var wh = new Rectangle(0, (int)(y + HistDy) - Theme.S(10), hist.X - Theme.S(8), Theme.S(20)); if (want.IntersectsWith(wh)) Theme.Text1(g, t, Theme.Small, wh, Theme.Muted, TextFormatFlags.Right); }
                 }
                 if (hist.Width > 0) { g.DrawLine(pen, hist.X, hist.Y, hist.X, hist.Bottom); g.DrawLine(pen, hist.Right, hist.Y, hist.Right, hist.Bottom); }
                 // out = in: where the curve would run with no compressor
@@ -957,11 +994,11 @@ namespace RedTune
                 if (ByFreq) PaintBands(g, hist, limC, lim, 7, gl);
                 else HistTime(gl, hist, line, lit, limC, lim);
                 g.Clip = clip;
-                if (lim) using (var pen = new Pen(ch ? Color.FromArgb(0xf6, 0xd0, 0x7a) : limC, Theme.S(ch ? 2.2f : 1.5f))) g.DrawLine(pen, hist.X, cy, hist.Right, cy);
+                if (lim) using (var pen = new Pen(ch ? Color.FromArgb(0xf6, 0xd0, 0x7a) : limC, Theme.S(ch ? 2.2f : 1.5f))) g.DrawLine(pen, hist.X, cy + HistDy, hist.Right, cy + HistDy);
                 }
                 // which monitor: the two words at the right end of the line under it
                 var vt = ViewRect(false);
-                if (want.IntersectsWith(new Rectangle(hist.X - Theme.S(4), c.Bottom + 2, Width - hist.X + Theme.S(4), Theme.S(28))))
+                if (want.IntersectsWith(new Rectangle(hist.X - Theme.S(4), hist.Bottom + 2, Width - hist.X + Theme.S(4), Theme.S(28))))
                 {
                 foreach (bool fr in new[] { false, true })
                 {
@@ -970,7 +1007,7 @@ namespace RedTune
                     Theme.Text1(g, fr ? "По частотам" : "Во времени", Theme.Small, vr, on ? Theme.Text : vh ? Theme.Text2 : Theme.Muted, Mid);
                 }
                 // what is what, under the plot
-                int lx = hist.X, ly = c.Bottom + Theme.S(4), sw = Theme.S(10);
+                int lx = hist.X, ly = hist.Bottom + Theme.S(4), sw = Theme.S(10);
                 var legend = new List<KeyValuePair<string, Color>> { new KeyValuePair<string, Color>("На входе", Color.FromArgb(110, Theme.Text)), new KeyValuePair<string, Color>("На выходе", Theme.Text), new KeyValuePair<string, Color>("Сжатие", line), new KeyValuePair<string, Color>("Порог", line) };
                 if (ByFreq) legend.RemoveAt(1); // the columns show what comes into each band, not what leaves
                 if (lim) legend.Add(new KeyValuePair<string, Color>("Лимитер", limC));
@@ -1085,7 +1122,7 @@ namespace RedTune
             else if (Silent != 0) hint = "Сейчас слышны не все полосы: включено прослушивание (S или M на мониторе «По частотам»)";
             else hint = "Точки тянутся мышью: порог — влево-вправо, степень сжатия (справа) и усиление после (слева) — вверх-вниз. Колесо на точке порога меняет колено";
             int hintX = bc.Width > 0 ? bc.X : c.X;
-            var hintR = new Rectangle(hintX, c.Bottom + Theme.S(28), Width - hintX - Theme.S(14), Theme.S(22));
+            var hintR = new Rectangle(hintX, Height - Theme.S(BottomPad) + Theme.S(28), Width - hintX - Theme.S(14), Theme.S(22));
             if (want.IntersectsWith(hintR)) Theme.Text1(g, hint, Theme.Small, hintR, Theme.Text2, TextFormatFlags.EndEllipsis);
         }
     }

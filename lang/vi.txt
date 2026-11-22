@@ -313,6 +313,59 @@ f	8a824827	khởi động
 f	64b0614f	bộ sạc
 f	d7b8a9de	pin
 f	c81460e9	sau khi ngủ
+w	ec5167a7	Quy tắc
+w	5c3e9cd1	Windows đang gỡ ứng dụng…
+w	260b9dc5	Thư mục
+w	5c4291c2	Registry
+w	b5ce8c8a	Lối tắt
+w	f0a236b5	Khởi động cùng Windows và tác vụ
+w	e57fd109	Quy tắc tường lửa
+w	8bb2408a	Tài khoản và nhóm Windows
+w	9d78ae29	Gói Microsoft Store
+w	45b4387f	Dịch vụ và driver
+w	2b3b8e00	Menu chuột phải
+w	931ad789	Biến PATH
+w	540cabf9	Thư mục mang tên nó trong Program Files, AppData, ProgramData, thư mục cài đặt của nó, ~\\.tên
+w	b503ca07	Khóa SOFTWARE\\Tên và SOFTWARE\\Nhà phát hành\\Tên, mục còn sót trong danh sách chương trình
+w	3734f523	Lối tắt trong Start và trên màn hình dẫn vào thư mục của nó hoặc tới tệp không còn nữa
+w	0c8675b6	Mục khởi động và tác vụ theo lịch chạy thứ gì đó từ thư mục của nó
+w	1ace4cee	Quy tắc mang tên nó hoặc có đường dẫn vào thư mục của nó; với chương trình đã gỡ là quy tắc mà chương trình không còn
+w	aa9a48a2	Tài khoản và nhóm mang tên nó hoặc được tạo cho các quy tắc tường lửa của nó
+w	d6f4f866	Các gói được cài cùng nó và gói của nó còn lại ở tài khoản khác
+w	74d2dbe8	Dịch vụ và driver có tệp nằm trong thư mục của nó hoặc đã bị xóa
+w	ae8a5a69	Mục menu chuột phải dẫn vào thư mục của nó hoặc tới tệp không còn nữa
+w	94e6c3f2	Mục dẫn vào thư mục của nó hoặc vào thư mục không còn nữa
+w	6a4cb891	Thư mục Windows và mọi thứ trong đó thuộc về Windows (kể cả driver mà chương trình đặt vào đó)
+w	f51f92f0	Toàn bộ Program Files, Program Files (x86), ProgramData, AppData và thư mục người dùng của bạn: chỉ xét thư mục của từng chương trình bên trong
+w	07f739be	Dịch vụ Windows chạy qua svchost
+w	0ecb69eb	Driver nằm trong chuỗi của một thiết bị (thiếu chúng thiết bị ngừng hoạt động)
+w	7c3d0148	Tài khoản của bạn và các tài khoản có sẵn của Windows
+w	eccf50a6	Chứng chỉ: không bao giờ đề xuất, xóa nhầm một cái sẽ làm hỏng HTTPS
+w	89214f1b	Mọi thứ chỉ tìm thấy qua thư mục của nhà phát hành: ở đó có thể còn chương trình khác của họ
+w	60673abd	Red Tune và Claude, thư mục và dữ liệu của chúng
+w	fbdd635d	Quy tắc tìm phần còn sót
+w	2b697736	Về mặc định
+w	ba43e44b	Tìm gì sau khi gỡ một chương trình
+w	b0eb14c6	Tìm
+w	e119b292	Đánh dấu
+w	e52410e6	Dấu chọn
+w	f3455502	«Đánh dấu»: những gì tìm thấy sau khi gỡ được đánh dấu sẵn; «Tìm»: không đánh dấu. Chương trình gỡ từ lâu không bao giờ được đánh dấu
+w	0770177a	Phần còn sót của chương trình gỡ từ lâu
+w	8af3a9fa	ngày
+w	eec4b53e	MB
+w	492747ee	Thư mục không đổi trong
+w	27620046	Thư mục không còn chương trình của nó (AppData, ProgramData, Program Files) được hiện nếu không bị đụng tới trong số ngày này; thư mục trống thì luôn hiện
+w	8a12d474	Ít nhất
+w	ed8ee0b7	Thư mục nhỏ hơn mức này không được hiện
+w	a84fa991	Danh sách của bạn
+w	8da387d2	Sửa…
+w	87d48368	Không bao giờ đụng tới
+w	5dac5874	Tìm cả ở đây
+w	53bf6464	Mỗi dòng một mục. Đường dẫn (C:\\Games\\…): không đụng gì trong thư mục đó. Tên (Steam): không đụng gì có nhắc tới nó.
+w	c9b3e02a	Các thư mục bạn cũng cài chương trình vào (D:\\Games, D:\\Programs), mỗi dòng một thư mục. Thư mục của chương trình đã gỡ được tìm ở đó giống như trong Program Files.
+w	63bcaa99	Luôn được bảo vệ (không thể đổi)
+w	89a49aa5	Trống: Red Tune đề xuất mọi thứ tìm được theo các quy tắc trên
+w	22239295	Trống: chỉ Program Files, AppData và ProgramData
 w	208c390a	Lỗi
 w	53e792ae	Đã xóa
 w	43c9f16b	Biểu mẫu đã mở trong trình duyệt: ghi thêm bạn đang làm gì trước lỗi rồi nhấn «Create». Toàn bộ bản ghi cũng có trong khay nhớ tạm
@@ -1349,6 +1402,47 @@ w	5f11b887	danh sách hiệu ứng gốc không được giữ lại
 w	1a79d826	Âm trầm riêng
 w	7c83b011	Âm trầm dưới điểm chia và phần còn lại được nén riêng: tiếng trống kick không kéo giọng và âm cao xuống
 w	4fbcff2c	Hz
+f	991440ae	 · đang tìm ứng dụng Store…
+f	05ab98a0	»?\n\nĐây là ứng dụng Microsoft Store: Windows tự gỡ nó, cùng dữ liệu trong thư mục của ứng dụng. 
+f	1bc45e5f	Sau đó Red Tune tìm những gì còn lại (thư mục cài đặt, các gói nó mang theo) và hiện danh sách; chỉ những mục được đánh dấu mới bị xóa.
+f	9f8d5f52	Windows không gỡ được ứng dụng: 
+f	abd8fda9	Những gì còn lại sau khi gỡ. Tệp và thư mục vào Thùng rác, phần còn lại bị xóa ngay. Ở đây chỉ có những thứ chắc chắn thuộc về chương trình: 
+f	874c3956	không đề xuất những thứ của Windows và những gì chương trình khác có thể cần. Bỏ dấu ở những mục cần giữ lại.
+f	31ab8c32	Những gì chương trình đã gỡ để lại: quy tắc tường lửa của chương trình không còn nữa, tài khoản và gói mà chương trình tự tạo, 
+f	fe1a0b66	và thư mục trong AppData, ProgramData và Program Files không còn chương trình (không đổi trong khoảng đặt ở «Quy tắc», hoặc trùng tên với thứ tìm thấy ở trên). 
+f	cca473cd	Đây là gợi ý, không phải câu trả lời chính xác: không có mục nào được đánh dấu, hãy đánh dấu những gì bạn nhận ra. Thư mục vào Thùng rác, phần còn lại bị xóa ngay; tài khoản bị xóa cùng hồ sơ của nó.
+f	177aa641	Gói ứng dụng Windows
+f	cf3fd74e	Gói Store  
+f	f0265bb9	 (môi trường chạy cho ứng dụng)
+f	45a8681a	Gói ở tài khoản khác  
+f	19a3f145	Gói chỉ có ở tài khoản khác  
+f	23b90f79	» cho phép kết nối đến
+f	8c188f3d	» chặn kết nối đến
+f	4ea8976c	» cho phép kết nối đi
+f	fef80d78	» chặn kết nối đi
+f	452c8f50	Tường lửa  «
+f	65e0c8fa	Nhóm Windows  
+f	8df9fa8a	Tài khoản Windows  
+f	51440fce	 (cùng hồ sơ trong C:\\Users
+f	5d204d9a	, đăng nhập lần cuối 
+f	44f6ec89	 (chương trình không còn)
+f	2ee117b6	 · số quy tắc: 
+f	c4e0d9a9	Driver  
+f	9522f5ad	Dịch vụ  
+f	d3fc4092	 (tệp không còn)
+f	1076fffd	 · đang chạy: sẽ bị dừng
+f	7255db67	, mất đi sau khi khởi động lại
+f	274cdd97	 (trên tệp và thư mục)
+f	7591d85e	 (trên tệp)
+f	37624e2c	 (trên thư mục)
+f	58a4d415	 (trên nền thư mục)
+f	b8a671d3	 (trên ổ đĩa)
+f	e9ab45fb	PATH cho mọi người  
+f	fc02980b	PATH của bạn  
+f	9bb625e4	 (thư mục không còn)
+f	aa433071	Menu chuột phải  «
+f	4552f8b1	  · trống  · 
+f	e822e6cb	 · và 
 f	9c75c9f5	Red Tune kết thúc do lỗi · 
 f	4731efce	Có lỗi, chương trình vẫn chạy tiếp · 
 f	f0ca5316	Quay lại 

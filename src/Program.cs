@@ -446,6 +446,29 @@ namespace RedTune
             // left untranslated by it (shown in English); a check of lang\*.txt
             // --stress-check <file>: the own heavy load: its dll, the kernels, their arithmetic, and that a planted error is caught; a check
             // --plan-dry <file>: what the «Создать «Тюнинг»» button of the power page would write into its plan (nothing is written), a check
+            // --uninst-list <file> [name]: what «Удаление программ» lists (Store apps marked), and for [name] the leftovers it
+            // would offer after removing it (nothing is removed); a check
+            i = at("--uninst-list");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                L.Set("ru"); var sb = new System.Text.StringBuilder(); var all = Uninst.List();
+                foreach (var a in all) sb.AppendLine((a.IsStore ? "[Store] " : "        ") + a.Name + " · " + a.Publisher + " · " + a.Version + (a.IsStore ? " · " + a.Package : ""));
+                if (i + 2 < args.Length) { var one = all.FirstOrDefault(a => a.Name.Equals(args[i + 2], StringComparison.OrdinalIgnoreCase)); sb.AppendLine(); sb.AppendLine("leftovers of " + args[i + 2] + ":"); if (one != null) foreach (var l in Uninst.Leftovers(one, false)) sb.AppendLine("  " + l.Kind + " · " + l.What); else sb.AppendLine("  (not in the list)"); }
+                System.IO.File.WriteAllText(args[i + 1], sb.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
+            // --uninst-rules-png <file> [scale]: the dialog of the search rules drawn off screen (RT_SCROLL: scrolled), a check
+            i = at("--uninst-rules-png");
+            if (i >= 0 && i + 1 < args.Length) { int z = 100; if (i + 2 < args.Length) int.TryParse(args[i + 2], out z); Theme.Init(z >= 75 && z <= 300 ? z : 100); int lg = at("--lang"); L.Set(lg >= 0 && lg + 1 < args.Length ? args[lg + 1] : "ru"); UninstRulesDialog.Render(args[i + 1]); return 0; }
+            // --uninst-orphans <file>: what «Найти хвосты удалённых программ» would offer (nothing is removed); a check
+            i = at("--uninst-orphans");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                L.Set("ru"); var sw = System.Diagnostics.Stopwatch.StartNew(); var sb = new System.Text.StringBuilder();
+                var left = Uninst.Orphans(Uninst.List());
+                foreach (var l in left) sb.AppendLine(l.Kind + " · " + l.What + " · " + l.Path);
+                sb.AppendLine(left.Count + " found in " + sw.ElapsedMilliseconds + " ms");
+                System.IO.File.WriteAllText(args[i + 1], sb.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
             i = at("--plan-dry");
             if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], WinPower.TuningPlanText(), new System.Text.UTF8Encoding(true)); return 0; }
             // --plan-values <file>: the five processor settings of every Windows plan as the power page reads them (nothing is written), a check

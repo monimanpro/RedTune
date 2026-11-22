@@ -505,8 +505,21 @@ namespace RedTune
                 SendMessage(q.Handle, 0x2A3, IntPtr.Zero, IntPtr.Zero); q.Settle();
                 line(q.BandRect(1).Height == 0 && q.BandRect(2).Height == 0 && Math.Abs((q.CountRect(0).Y - Theme.S(26) - bcol.Y) - (bcol.Bottom - q.BandRect(0).Bottom)) <= 1, "one band: one plate, the block again in the middle (top " + (q.CountRect(0).Y - Theme.S(26) - bcol.Y) + ", bottom " + (bcol.Bottom - q.BandRect(0).Bottom) + ")");
                 q.Dim = true; cnt3 = mid(q.CountRect(2)); down(cnt3.X, cnt3.Y); up(cnt3.X, cnt3.Y); line(p.PartCount == 1, "compressor switched off: the numbers do not work"); q.Dim = false;
-                int wide = q.Width; q.Width = Theme.S(600); bool gone = !q.HasBands && q.BandsCol.Width == 0 && q.Panel.Width > 0; q.Width = wide;
-                line(gone && q.HasBands, "in a narrow picture (600) the column is gone, the curve is back at the left edge (" + q.Curve.X + " in the wide one) and the dials stay; the page then shows its two rows");
+                // 22.11 (the user: nothing may vanish in a narrow window): what does not fit beside the curve goes down a
+                // row — the eight dials as one block, then the monitor with the ceiling's fader; the picture grows taller
+                int wide = q.Width, hWide = q.Height, cr = q.Curve.Right; bool oneRow = q.Panel.Y == q.Curve.Y && q.History.Y == q.Curve.Y;
+                Func<int, int> units = px => (int)Math.Round(px / (Theme.S(100) / 100.0));
+                q.Width = cr + Theme.S(26 + 216 + 12 + 100); var pB = q.Panel; var hB = q.History; int htB = q.Height, wB = units(q.Width);
+                bool histDown = pB.Y == q.Curve.Y && hB.Y > q.Curve.Bottom && q.CeilStrip.Y == hB.Y && hB.X < q.Curve.X;
+                q.Width = Theme.S(700); var pC = q.Panel; var hC = q.History; int htC = q.Height;
+                bool bothDown = q.HasBands && q.HasSixDials && pC.Y > q.Curve.Bottom && hC.Y == pC.Y && hC.X > pC.Right && hC.Width >= Theme.S(240);
+                // a dial in the lower row works as in the upper one
+                var dC = q.DialAt(0); float atC0 = p.Attack; down(dC.X, dC.Y); move(dC.X, dC.Y - Theme.S(110)); up(0, 0); float atC = p.Attack; p.Attack = atC0;
+                q.Width = Theme.S(550); var pD = q.Panel; var hD = q.History; int htD = q.Height;
+                bool threeRows = q.HasBands && pD.Y > q.Curve.Bottom && hD.Y > pD.Bottom && hD.Right <= q.Width;
+                q.Width = wide;
+                line(oneRow && histDown && bothDown && threeRows && htD > htC && htC == htB && htB > hWide && q.Height == hWide && atC > atC0,
+                    "nothing vanishes: one row at " + units(wide) + " (" + hWide + " px tall); at " + wB + " the monitor goes down (" + htB + "), at 700 the eight dials too, the monitor beside them (" + hC.X + ".." + hC.Right + "), and the attack dial there turns (" + atC0 + " -> " + atC + " ms); at 550 three rows (" + htD + ")");
                 // the plates come and go with a movement: drawn (which starts it), the middle's plate is still whole, a moment
                 // later it is partly there, half a second later it is gone; and back the same way
                 Action paint = () => { using (var bmp = new Bitmap(q.Width, q.Height)) q.DrawToBitmap(bmp, new Rectangle(Point.Empty, q.Size)); };
@@ -543,8 +556,6 @@ namespace RedTune
                 p.Split = 0; down(gS1.X, gS1.Y); move(gS1.X, gS1.Y - Theme.S(110)); up(0, 0);
                 line(off2 == 0 && on1 > 250 && p.Split == 0 && p.Split2 == 0, "two bands: the upper split's dial is still, the lower one works (" + on1 + " Hz); one band: both are still");
                 p.Split = 0; p.Split2 = 0; q.SetView(false);
-                int wide6 = q.Width; q.Width = Theme.S(700); bool one = q.HasBands && !q.HasSixDials && q.Panel.Width > 0 && q.DialCell(3).Width == 0; q.Width = wide6;
-                line(one && q.HasSixDials, "in a picture of 700 the bands' column stays and the dials are the three of before; the page then shows the three rows");
                 p.Split = 250; p.Split2 = 4000; q.SetView(false);
                 // 20.11: the compression over time is kept per band: a band picked shows its own last seconds at once
                 using (var hq = new CompGraph { Width = Theme.S(1100) })

@@ -313,6 +313,59 @@ f	8a824827	inicialização
 f	64b0614f	carregador
 f	d7b8a9de	bateria
 f	c81460e9	após a suspensão
+w	ec5167a7	Regras
+w	5c3e9cd1	O Windows está removendo o aplicativo…
+w	260b9dc5	Pastas
+w	5c4291c2	Registro
+w	b5ce8c8a	Atalhos
+w	f0a236b5	Inicialização e tarefas
+w	e57fd109	Regras do firewall
+w	8bb2408a	Contas e grupos do Windows
+w	9d78ae29	Pacotes da Microsoft Store
+w	45b4387f	Serviços e drivers
+w	2b3b8e00	Menu de contexto
+w	931ad789	Variável PATH
+w	540cabf9	Pastas com o nome dele em Program Files, AppData, ProgramData, a pasta de instalação, ~\\.nome
+w	b503ca07	Chaves SOFTWARE\\Nome e SOFTWARE\\Editor\\Nome, uma entrada esquecida na lista de programas
+w	3734f523	Atalhos no Iniciar e na área de trabalho que levam à pasta dele ou a um arquivo que não existe mais
+w	0c8675b6	Itens de inicialização e tarefas agendadas que iniciam algo da pasta dele
+w	1ace4cee	Regras com o nome dele ou um caminho para a pasta dele; de programas removidos, regras cujo programa não existe mais
+w	aa9a48a2	Contas e grupos com o nome dele ou criados para as regras de firewall dele
+w	d6f4f866	Pacotes instalados junto com ele e o pacote dele que ficou em outras contas
+w	74d2dbe8	Serviços e drivers cujo arquivo está na pasta dele ou já foi removido
+w	ae8a5a69	Itens do menu do botão direito que levam à pasta dele ou a um arquivo que não existe mais
+w	94e6c3f2	Entradas que levam à pasta dele ou a uma pasta que não existe mais
+w	6a4cb891	A pasta do Windows e tudo nela que pertence ao Windows (inclusive drivers que programas colocam lá)
+w	f51f92f0	Program Files, Program Files (x86), ProgramData, AppData inteiros e sua pasta de usuário: só pastas de programas específicos dentro deles
+w	07f739be	Serviços do Windows que rodam pelo svchost
+w	0ecb69eb	Drivers na cadeia de um dispositivo (sem eles o dispositivo para de funcionar)
+w	7c3d0148	Sua conta e as contas internas do Windows
+w	eccf50a6	Certificados: nunca são oferecidos, remover um errado quebra o HTTPS
+w	89214f1b	Tudo o que foi achado só pela pasta do editor: lá podem estar também outros programas dele
+w	60673abd	Red Tune e Claude, suas pastas e dados
+w	fbdd635d	Regras de busca de restos
+w	2b697736	Voltar ao padrão
+w	ba43e44b	O que procurar depois de remover um programa
+w	b0eb14c6	Procurar
+w	e119b292	Marcado
+w	e52410e6	Marcações
+w	f3455502	«Marcado»: o que é achado depois da remoção já vem marcado; «Procurar»: sem marcação. Programas removidos há muito tempo nunca vêm marcados
+w	0770177a	Restos de programas removidos há muito tempo
+w	8af3a9fa	dias
+w	eec4b53e	MB
+w	492747ee	Pasta sem alterações há
+w	27620046	Uma pasta sem o seu programa (AppData, ProgramData, Program Files) aparece se não foi mexida por tantos dias; as vazias, sempre
+w	8a12d474	Pelo menos
+w	ed8ee0b7	Pastas menores que isso não aparecem
+w	a84fa991	Suas listas
+w	8da387d2	Editar…
+w	87d48368	Nunca mexer
+w	5dac5874	Procurar também aqui
+w	53bf6464	Um por linha. Um caminho (C:\\Games\\…): nada nessa pasta é tocado. Um nome (Steam): nada que o mencione é tocado.
+w	c9b3e02a	Pastas onde você também instala programas (D:\\Games, D:\\Programs), uma por linha. Nelas as pastas de programas removidos são procuradas como em Program Files.
+w	63bcaa99	Sempre protegido (não pode ser alterado)
+w	89a49aa5	Vazia: o Red Tune oferece tudo o que achou pelas regras acima
+w	22239295	Vazia: só Program Files, AppData e ProgramData
 w	208c390a	Erros
 w	53e792ae	Removido
 w	43c9f16b	O formulário abriu no navegador: diga o que você fazia antes do erro e clique em «Create». O registro completo também está na área de transferência
@@ -1349,6 +1402,47 @@ w	5f11b887	as listas de efeitos originais não foram guardadas
 w	1a79d826	Graves à parte
 w	7c83b011	Os graves abaixo do corte e todo o resto são comprimidos separadamente: um bumbo não abaixa a voz nem os agudos
 w	4fbcff2c	Hz
+f	991440ae	 · procurando aplicativos da Store…
+f	05ab98a0	»?\n\nEste é um aplicativo da Microsoft Store: o Windows o remove sozinho, junto com os dados dele na pasta do aplicativo. 
+f	1bc45e5f	Depois o Red Tune encontra o que sobrou (pastas de configurações, pacotes que ele trouxe junto) e mostra uma lista; só o que estiver marcado é removido.
+f	9f8d5f52	O Windows não removeu o aplicativo: 
+f	abd8fda9	O que sobrou depois da remoção. Arquivos e pastas vão para a Lixeira, o resto é removido na hora. Aqui só está o que com certeza pertencia ao programa: 
+f	874c3956	o que é do próprio Windows e o que outros programas podem precisar não é oferecido. Desmarque o que deve ficar.
+f	31ab8c32	O que os programas removidos deixaram: regras de firewall de programas que não existem mais, contas e pacotes que os programas criaram para si, 
+f	fe1a0b66	e pastas em AppData, ProgramData e Program Files sem o seu programa (sem alterações pelo tempo definido em «Regras», ou com o nome do que foi achado acima). 
+f	cca473cd	É uma dica, não uma resposta exata: nada vem marcado, marque o que reconhecer. Pastas vão para a Lixeira, o resto é removido na hora; uma conta vai junto com o perfil dela.
+f	177aa641	Pacote de aplicativo do Windows
+f	cf3fd74e	Pacote da Store  
+f	f0265bb9	 (ambiente para o aplicativo)
+f	45a8681a	Pacote em outras contas  
+f	19a3f145	Pacote só em outras contas  
+f	23b90f79	» permite entrada
+f	8c188f3d	» bloqueia entrada
+f	4ea8976c	» permite saída
+f	fef80d78	» bloqueia saída
+f	452c8f50	Firewall  «
+f	65e0c8fa	Grupo do Windows  
+f	8df9fa8a	Conta do Windows  
+f	51440fce	 (com o perfil em C:\\Users
+f	5d204d9a	, último acesso 
+f	44f6ec89	 (o programa não existe mais)
+f	2ee117b6	 · regras: 
+f	c4e0d9a9	Driver  
+f	9522f5ad	Serviço  
+f	d3fc4092	 (o arquivo não existe mais)
+f	1076fffd	 · em execução agora: será parado
+f	7255db67	, sai depois de reiniciar
+f	274cdd97	 (em arquivos e pastas)
+f	7591d85e	 (em arquivos)
+f	37624e2c	 (em pastas)
+f	58a4d415	 (no fundo de uma pasta)
+f	b8a671d3	 (em unidades)
+f	e9ab45fb	PATH para todos  
+f	fc02980b	Seu PATH  
+f	9bb625e4	 (a pasta não existe mais)
+f	aa433071	Menu de contexto  «
+f	4552f8b1	  · vazia  · 
+f	e822e6cb	 · e mais 
 f	9c75c9f5	O Red Tune terminou com um erro · 
 f	4731efce	Um erro, o programa continuou · 
 f	f0ca5316	Voltar para 

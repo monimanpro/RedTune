@@ -17,18 +17,23 @@ namespace RedTune
     {
         public string Name, Publisher, Version, Location, Uninstall, Icon, KeyPath; // KeyPath: "HKLM64|SOFTWARE\...\Uninstall\X"
         public long SizeKb; public string Date;
+        // 22.11 (the user could not find Codex): an app from Microsoft Store — its package's full name and short name;
+        // removed by Windows (Remove-AppxPackage), there is no uninstaller of its own
+        public string Package, PackageName;
+        public bool IsStore { get { return Package != null; } }
     }
 
     class Leftover
     {
-        public string Kind, Path, What;  // Kind: folder, file, reg, link, startup
+        public string Kind, Path, What;  // Kind: folder, file, reg, link, startup, appx (Path = a package's full name)
         public long Bytes;
         public bool Checked = true;
         public StartupItem Item;         // for startup entries
+        public string Group;             // fw: the rule's name, direction and action — rules alike go as one line (Path: their ids, one per line)
         public override string ToString() { return L.T(What); }
     }
 
-    static class Uninst
+    static partial class Uninst
     {
         const string Key = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
 
@@ -43,7 +48,8 @@ namespace RedTune
         }
 
         // what «Программы и компоненты» shows: entries with a name and an uninstaller, without system parts and updates
-        public static List<InstalledApp> List()
+        // store: with the apps from Microsoft Store (PowerShell, about a second); the page asks without them first
+        public static List<InstalledApp> List(bool store = true)
         {
             var list = new List<InstalledApp>();
             foreach (var hive in new[] { "HKLM64", "HKLM32", "HKCU" })
@@ -70,13 +76,20 @@ namespace RedTune
                             });
                         }
                 }
-            // the same program registered twice (32+64 bit keys): one row
+            if (store) try { list.AddRange(StoreApps()); } catch (Exception ex) { Store.Log("удаление программ: приложения Store: " + ex.Message); }
+            return Tidy(list);
+        }
+
+        // the same program registered twice (32+64 bit keys, or a package beside its own entry): one row
+        public static List<InstalledApp> Tidy(List<InstalledApp> list)
+        {
             return list.GroupBy(a => a.Name + "|" + a.Version, StringComparer.OrdinalIgnoreCase).Select(g => g.First())
                 .OrderBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
         }
 
         public static bool StillInstalled(InstalledApp a)
         {
+            if (a.IsStore) return Packages(false).Any(p => p.Full == a.Package);
             var p = a.KeyPath.Split('|');
             using (var root = Open(p[0])) using (var k = root.OpenSubKey(p[1])) return k != null;
         }
@@ -86,6 +99,7 @@ namespace RedTune
         // starts it and waits until it and everything it started have exited (NSIS copies itself to Temp and exits at once)
         public static void RunUninstaller(InstalledApp a, Func<bool> cancelled)
         {
+            if (a.IsStore) { RemovePackage(a.Package, a.Name); return; }
             string exe, args;
             var u = a.Uninstall;
             var msi = Regex.Match(u, @"msiexec(\.exe)?\s+/[IX]\s*(\{[0-9A-Fa-f\-]+\})", RegexOptions.IgnoreCase);
@@ -138,6 +152,7 @@ namespace RedTune
             var n = Regex.Replace(a.Name, @"\(.*?\)|\b[vV]?\d+(\.\d+)+\b|\b(x64|x86|64-bit|32-bit)\b", "").Trim(' ', '-', '_', '.');
             if (n.Length > 0) { r.Add(n); r.Add(n.Replace(" ", "")); }
             if (a.Location.Length > 3) { var leaf = Path.GetFileName(a.Location.TrimEnd('\\')); if (!string.IsNullOrEmpty(leaf)) r.Add(leaf); }
+            if (a.IsStore) { r.Add(a.PackageName); var dot = a.PackageName.LastIndexOf('.'); if (dot > 0) r.Add(a.PackageName.Substring(dot + 1)); } // OpenAI.Codex -> Codex
             return r.Where(x => x.Length >= 3 && !Generic.Contains(x)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         }
 
@@ -188,6 +203,7 @@ namespace RedTune
             var found = new List<Leftover>();
             var folders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var names = Names(a); var pubs = Publishers(a);
+            if (a.IsStore && a.PackageName.IndexOf('.') > 0) pubs.Add(a.PackageName.Substring(0, a.PackageName.IndexOf('.'))); // OpenAI.Codex -> LocalAppDataOpenAICodex
             Action<string> folder = d =>
             {
                 try
@@ -207,12 +223,15 @@ namespace RedTune
                     folder(Path.GetDirectoryName(exe));
             }
             // name folders in the usual places, also under the publisher's folder
-            foreach (var root in new[] { Pf, Pf86, ProgramData, Roaming, Local, LocalLow, Path.Combine(Local, "Programs") })
+            var rules = UninstRules.Current; // 22.11: «искать ещё здесь» — the user's own folders for programs
+            foreach (var root in new[] { Pf, Pf86, ProgramData, Roaming, Local, LocalLow, Path.Combine(Local, "Programs") }.Concat(rules.Extra))
                 foreach (var n in names)
                 {
                     folder(Path.Combine(root, n));
                     foreach (var pub in pubs) folder(Path.Combine(root, pub, n));
                 }
+            // 22.11: its settings folder in the user's profile (~\.codex and the like)
+            foreach (var n in names) if (n.IndexOf(' ') < 0) folder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "." + n.ToLowerInvariant()));
             // a publisher folder that only held this program and is empty now goes too (checked again before deleting)
             foreach (var d in folders.ToList())
             {
@@ -229,7 +248,7 @@ namespace RedTune
                     keys.Add(hive + "|SOFTWARE\\" + n);
                     foreach (var pub in pubs) keys.Add(hive + "|SOFTWARE\\" + pub + "\\" + n);
                 }
-            if (forgottenEntry && StillInstalled(a)) keys.Add(a.KeyPath); // the uninstall entry the uninstaller forgot
+            if (forgottenEntry && !a.IsStore && StillInstalled(a)) keys.Add(a.KeyPath); // the uninstall entry the uninstaller forgot
             foreach (var k in keys.Distinct(StringComparer.OrdinalIgnoreCase))
             {
                 var p = k.Split('|');
@@ -266,10 +285,24 @@ namespace RedTune
                 }
             }
             catch { }
+            // an app from Store: the packages it brought along (a runtime named after it: OpenAI.Codex -> OpenAI.CodexPrimaryRuntime…)
+            if (a.IsStore)
+                try
+                {
+                    foreach (var p in Packages(true))
+                        if (p.Full != a.Package && p.Name.StartsWith(a.PackageName, StringComparison.OrdinalIgnoreCase))
+                            found.Add(new Leftover { Kind = "appx", Path = p.Full, What = "Пакет Store  " + p.Name + " " + p.Version + (p.Framework ? " (среда для приложения)" : "") });
+                }
+                catch (Exception ex) { Store.Log("удаление программ: пакеты Store: " + ex.Message); }
+            // 22.11: firewall rules, accounts and groups, the package staged for other accounts (UninstExtra.cs)
+            SystemLeftovers(a, names, folders, found);
+            MoreLeftovers(a, names, pubs, folders, found); // services, drivers, context menu, PATH, certificates (UninstMore.cs)
+            found = MergeFw(found);
             // a shortcut or folder inside another listed folder goes with it: one line, and no "failed" after the parent is gone
             var dirs = found.Where(f => f.Kind == "folder").Select(f => f.Path).ToList();
-            return found.Where(f => (f.Kind != "folder" && f.Kind != "file") || !dirs.Any(d => f.Path.StartsWith(d + "\\", StringComparison.OrdinalIgnoreCase)))
+            var res = found.Where(f => (f.Kind != "folder" && f.Kind != "file") || !dirs.Any(d => f.Path.StartsWith(d + "\\", StringComparison.OrdinalIgnoreCase)))
                         .GroupBy(f => f.Kind + "|" + f.Path, StringComparer.OrdinalIgnoreCase).Select(g => g.First()).ToList();
+            return rules.Apply(res, true); // the user's rules: kinds switched off, «никогда не трогать», ticks
         }
 
         static string RegName(string k)
@@ -328,10 +361,18 @@ namespace RedTune
             words.ExceptWith(new[] { "games", "game", "software", "systems", "corporation", "technologies", "technology", "audio", "driver", "drivers", "runtime", "tools", "studio", "client", "services", "service", "version", "microsoft", "update" });
             var running = new List<string>();
             try { using (var q = new ManagementObjectSearcher("SELECT ExecutablePath FROM Win32_Process")) foreach (ManagementObject o in q.Get()) { var p = o["ExecutablePath"] as string; if (p != null) running.Add(p); } } catch { }
+            // 22.11: what Windows loads as COM (Explorer's thumbnails, property handlers, menus) counts as in use, like a
+            // running program — a folder in AppData or Program Files holding one is never offered (Icaros in «WinClean»)
+            try { running.AddRange(ComServers()); } catch (Exception ex) { Store.Log("удаление программ: COM: " + ex.Message); }
 
-            var found = new List<Leftover>();
-            var old = DateTime.Now.AddDays(-60);
-            foreach (var root in new[] { Roaming, Local, LocalLow, ProgramData })
+            // 22.11: what removed programs left in Windows itself; the names found there also take AppData folders of any age
+            HashSet<string> sysTokens;
+            var found = SystemOrphans(tokens, out sysTokens);
+            found.AddRange(MoreOrphans());
+            var sysNorm = new HashSet<string>(sysTokens.Select(Norm));
+            var rules = UninstRules.Current;
+            var old = DateTime.Now.AddDays(-rules.OrphanDays); long minBytes = rules.OrphanMinMb * 1048576L;
+            foreach (var root in new[] { Roaming, Local, LocalLow, ProgramData }.Concat(rules.Extra))
             {
                 string[] dirs; try { dirs = Directory.GetDirectories(root); } catch { continue; }
                 foreach (var d in dirs)
@@ -344,21 +385,24 @@ namespace RedTune
                     try { if ((new DirectoryInfo(d).Attributes & FileAttributes.ReparsePoint) != 0) continue; } catch { continue; }
                     long bytes; DateTime newest;
                     Measure(d, out bytes, out newest);
-                    if (bytes < 1048576 || newest > old) continue; // small or still in use
+                    if (!sysNorm.Contains(n) && (bytes < minBytes || newest > old)) continue; // small or still in use (the user's numbers)
                     found.Add(new Leftover { Kind = "folder", Path = d, Bytes = bytes, Checked = false,
                         What = name + "  · " + Junk.Size(bytes) + " · не менялась с " + newest.ToString("dd.MM.yyyy") + "  · " + d });
                 }
             }
-            return found.OrderByDescending(f => f.Bytes).ToList();
+            // 22.11 (the user: «в Program Files вообще не может быть мусора?»): it can, among Windows' and the SDKs' folders —
+            // looked for there with stricter rules (UninstMore.cs)
+            try { ProgramFilesOrphans(tokens, words, running, sysNorm, old, minBytes, found); } catch (Exception ex) { Store.Log("удаление программ: Program Files: " + ex.Message); }
+            return rules.Apply(MergeFw(found), false).OrderBy(f => f.Kind == "appxall" ? 0 : f.Kind == "svc" ? 1 : f.Kind == "user" ? 2 : f.Kind == "group" ? 3 : f.Kind == "fw" ? 4 : f.Kind == "reg" || f.Kind == "menu" ? 5 : f.Kind == "path" ? 6 : f.Kind == "cert" ? 7 : 8).ThenByDescending(f => f.Bytes).ToList();
         }
 
         // ---------- deleting the ticked ones ----------
 
         public static string Remove(IEnumerable<Leftover> items, string label)
         {
+            // 22.11 (the user): no copies, no restore point — what carries a risk is simply not offered (UninstMore.cs)
             int ok = 0, failed = 0; long bytes = 0;
-            var backupDir = Path.Combine(Store.DataDir, "removed-registry");
-            foreach (var it in items)
+            foreach (var it in items.OrderBy(RemoveRank))
             {
                 try
                 {
@@ -369,17 +413,20 @@ namespace RedTune
                             if (Protected(it.Path)) { failed++; continue; }
                             if (!File.Exists(it.Path) && !Directory.Exists(it.Path)) { ok++; continue; } // already gone
                             Startup.Recycle(it.Path); bytes += it.Bytes; break;
-                        case "reg":
-                            Directory.CreateDirectory(backupDir);
-                            var file = Path.Combine(backupDir, string.Concat((label + " " + DateTime.Now.ToString("yyyy-MM-dd HHmmss") + " " + ok).Select(c => Path.GetInvalidFileNameChars().Contains(c) ? '_' : c)) + ".reg");
+                        case "reg": case "menu":
+                        {
                             var p = it.Path.Split('|');
-                            var exp = Process.Start(new ProcessStartInfo("reg.exe", "export \"" + RegExport(it.Path) + "\" \"" + file + "\" /y" + (p[0] == "HKLM32" ? " /reg:32" : "")) { UseShellExecute = false, CreateNoWindow = true });
-                            exp.WaitForExit(15000);
-                            if (exp.ExitCode != 0) { failed++; continue; } // no backup — no delete
                             using (var root = Open(p[0], true)) root.DeleteSubKeyTree(p[1], false);
                             break;
+                        }
                         case "startup":
                             Startup.Remove(it.Item); break;
+                        case "appx":
+                            RemovePackage(it.Path, label); break;
+                        case "appxall": case "user": case "group": case "fw":
+                            RemoveSystem(it); break;
+                        case "svc": RemoveSvc(it.Path); break;
+                        case "path": RemovePathEntry(it.Path); break;
                     }
                     ok++;
                     Store.Log("удаление программ: " + label + " — убрано " + it.What);
@@ -387,6 +434,68 @@ namespace RedTune
                 catch (Exception ex) { failed++; Store.Log("удаление программ: " + label + " — не убрано " + it.What + ": " + ex.Message); }
             }
             return "Убрано " + ok + (bytes > 0 ? " · в корзине " + Junk.Size(bytes) : "") + (failed > 0 ? " · не получилось: " + failed : "");
+        }
+
+        // ---------- apps from Microsoft Store ----------
+
+        internal class Pkg { public string Full, Name, Family, Version, Root, StartName; public bool Framework, FromStore; public DateTime Date; }
+
+        // PowerShell (the Appx module) is the plain way to the packages from .NET Framework; the script goes encoded, the
+        // answer comes back in UTF-8, one tab-separated line per package
+        static string Ps(string script, int timeoutMs, out int exit, out string err)
+        {
+            var psi = new ProcessStartInfo("powershell.exe", "-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand " +
+                Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes("[Console]::OutputEncoding = [Text.Encoding]::UTF8; $ProgressPreference = 'SilentlyContinue'; " + script)))
+            { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true, StandardOutputEncoding = System.Text.Encoding.UTF8 };
+            using (var p = Process.Start(psi))
+            {
+                var errTask = p.StandardError.ReadToEndAsync();
+                var outText = p.StandardOutput.ReadToEnd();
+                if (!p.WaitForExit(timeoutMs)) { try { p.Kill(); } catch { } exit = -1; err = "timeout"; return outText; }
+                exit = p.ExitCode; err = errTask.Result; return outText;
+            }
+        }
+
+        // the user's packages that can be removed (no system ones); frameworks only when asked; with the name Start shows
+        internal static List<Pkg> Packages(bool frameworks)
+        {
+            int exit; string err;
+            var text = Ps("$st = @{}; try { foreach ($s in Get-StartApps) { $i = $s.AppID.IndexOf('!'); if ($i -gt 0) { $f = $s.AppID.Substring(0, $i); if (-not $st.ContainsKey($f)) { $st[$f] = $s.Name } } } } catch { }; " +
+                "foreach ($p in Get-AppxPackage) { if ($p.IsResourcePackage -or $p.NonRemovable -or $p.SignatureKind -eq 'System') { continue }; " +
+                "$d = ''; try { $d = (Get-Item -LiteralPath $p.InstallLocation -ErrorAction Stop).CreationTime.ToString('yyyyMMdd') } catch { }; " +
+                "[Console]::WriteLine(($p.PackageFullName, $p.Name, $p.PackageFamilyName, $p.Version, $p.InstallLocation, $st[$p.PackageFamilyName], [int]$p.IsFramework, $d, $p.SignatureKind) -join [char]9) }", 60000, out exit, out err);
+            var list = new List<Pkg>();
+            foreach (var line in text.Split('\n'))
+            {
+                var c = line.TrimEnd('\r').Split('\t'); if (c.Length < 9 || c[0].Length == 0) continue;
+                DateTime dt; DateTime.TryParseExact(c[7], "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out dt);
+                var p = new Pkg { Full = c[0], Name = c[1], Family = c[2], Version = c[3], Root = c[4], StartName = c[5], Framework = c[6] == "1", Date = dt, FromStore = c[8] == "Store" };
+                if (frameworks || !p.Framework) list.Add(p);
+            }
+            if (list.Count == 0 && (err ?? "").Trim().Length > 0) throw new Exception(err.Trim().Split('\n')[0]);
+            return list;
+        }
+
+        // what a person installed: apps that have a place in Start (not the parts of Windows and the runtimes without one)
+        public static IEnumerable<InstalledApp> StoreApps()
+        {
+            foreach (var p in Packages(false))
+            {
+                if (string.IsNullOrEmpty(p.StartName)) continue;
+                yield return new InstalledApp
+                {
+                    Name = p.StartName.Trim(), Publisher = p.FromStore ? "Microsoft Store" : "Пакет приложения Windows", Version = p.Version, Location = "", Uninstall = "", Icon = "", KeyPath = "",
+                    Date = p.Date == DateTime.MinValue ? "" : p.Date.ToString("yyyyMMdd"), Package = p.Full, PackageName = p.Name,
+                };
+            }
+        }
+
+        static void RemovePackage(string full, string label)
+        {
+            int exit; string err;
+            Store.Log("удаление программ: «" + label + "» — пакет Store " + full);
+            Ps("Remove-AppxPackage -Package '" + full.Replace("'", "''") + "' -ErrorAction Stop", 300000, out exit, out err);
+            if (exit != 0) { var m = (err ?? "").Trim().Split('\n')[0].Trim(); throw new Exception(m.Length > 0 ? m : "Remove-AppxPackage: " + exit); }
         }
     }
 }

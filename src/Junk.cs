@@ -111,7 +111,9 @@ namespace RedTune
 
         // ---------- scan and clean ----------
 
-        [StructLayout(LayoutKind.Sequential, Pack = 4)] struct RecycleInfo { public int Size; public long Bytes, Items; }
+        // 22.11 (the user: «Корзина» said «пусто» with 2.5 GB in it): the 64-bit SHQUERYRBINFO is 24 bytes (natural packing);
+        // Pack = 4 made it 20 and Windows answered E_INVALIDARG every time, so the row was always empty
+        [StructLayout(LayoutKind.Sequential)] struct RecycleInfo { public int Size; public long Bytes, Items; }
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)] static extern int SHQueryRecycleBin(string root, ref RecycleInfo info);
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)] static extern int SHEmptyRecycleBin(IntPtr hwnd, string root, uint flags);
 
@@ -121,7 +123,9 @@ namespace RedTune
             if (c.Recycle)
             {
                 var info = new RecycleInfo { Size = Marshal.SizeOf(typeof(RecycleInfo)) };
-                if (SHQueryRecycleBin(null, ref info) == 0) { c.Bytes = info.Bytes; c.Count = (int)Math.Min(int.MaxValue, info.Items); }
+                int hr = SHQueryRecycleBin(null, ref info);
+                if (hr == 0) { c.Bytes = info.Bytes; c.Count = (int)Math.Min(int.MaxValue, info.Items); }
+                else Store.Log("корзина: Windows не ответила (0x" + hr.ToString("X8") + ")");
                 return;
             }
             foreach (var f in Items(c)) { try { c.Bytes += f.Length; c.Count++; } catch { } }

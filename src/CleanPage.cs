@@ -51,9 +51,11 @@ namespace RedTune
             // removing programs: the uninstaller, then what it left; leftovers of programs removed earlier
             search.Width = Theme.S(260);
             var orphansBtn = new FlatButton("Хвосты удалённых");
-            appsRow = Row("Установленные программы", "Загружаю список…", search, orphansBtn);
+            var rulesBtn = new FlatButton("Правила"); // 22.11: what the search looks for and what it never touches (UninstRules.cs)
+            appsRow = Row("Установленные программы", "Загружаю список…", search, orphansBtn, rulesBtn);
             search.Box.TextChanged += (o, e) => Filter();
             orphansBtn.Click += (o, e) => FindOrphans(orphansBtn);
+            rulesBtn.Click += (o, e) => UninstRulesDialog.Edit(FindForm());
             Group(2, first); // the program rows join it as they load (Filter shows them only on this tab)
 
             ShowTab(tab);
@@ -99,9 +101,16 @@ namespace RedTune
         {
             Task.Run(() =>
             {
+                // 22.11 (the user: the list took long): the programs from the registry at once, the apps from Microsoft Store
+                // (PowerShell, about a second) added when they are read
                 List<InstalledApp> list = null;
-                try { list = Uninst.List(); } catch (Exception ex) { Store.Log("удаление программ: список: " + ex.Message); list = new List<InstalledApp>(); }
-                try { BeginInvoke((Action)(() => ShowApps(list))); } catch { }
+                try { list = Uninst.List(false); } catch (Exception ex) { Store.Log("удаление программ: список: " + ex.Message); list = new List<InstalledApp>(); }
+                try { BeginInvoke((Action)(() => { ShowApps(list); appsRow.SetSub(appsRow.Sub + " · ищу приложения Store…"); })); } catch { }
+                List<InstalledApp> store;
+                try { store = Uninst.StoreApps().ToList(); } catch (Exception ex) { Store.Log("удаление программ: приложения Store: " + ex.Message); store = new List<InstalledApp>(); }
+                var both = Uninst.Tidy(list.Concat(store).ToList());
+                // (rows made anew under a removal going on would lose the one it reports to; its end loads the list again)
+                try { BeginInvoke((Action)(() => { if (!busyApps) ShowApps(both); else appsRow.SetSub(appsRow.Sub.Replace(" · ищу приложения Store…", "")); })); } catch { }
             });
         }
 
@@ -154,9 +163,14 @@ namespace RedTune
         void UninstallApp(InstalledApp a, Row row, FlatButton btn)
         {
             if (busyApps) return;
-            if (!ConfirmDialog.Ask(FindForm(), "Удаление программы", "Удалить «" + a.Name + "»?\n\nСначала откроется её собственный деинсталлятор — пройдите его как обычно. " +
-                "Потом Red Tune найдёт, что осталось (папки, записи реестра, ярлыки, автозапуск), и покажет список — удалится только отмеченное.", "Удалить", "Отмена")) return;
-            busyApps = true; btn.Enabled = false; row.SetSub("Идёт удаление — пройдите окно деинсталлятора…");
+            // 22.11: an app from Microsoft Store is removed by Windows itself, without a window of its own
+            string ask = a.IsStore
+                ? "Удалить «" + a.Name + "»?\n\nЭто приложение из Microsoft Store: Windows удалит его сама, вместе с его данными в папке приложения. " +
+                  "Потом Red Tune найдёт, что осталось (папки настроек, пакеты, которые оно поставило с собой), и покажет список — удалится только отмеченное."
+                : "Удалить «" + a.Name + "»?\n\nСначала откроется её собственный деинсталлятор — пройдите его как обычно. " +
+                  "Потом Red Tune найдёт, что осталось (папки, записи реестра, ярлыки, автозапуск), и покажет список — удалится только отмеченное.";
+            if (!ConfirmDialog.Ask(FindForm(), "Удаление программы", ask, "Удалить", "Отмена")) return;
+            busyApps = true; btn.Enabled = false; row.SetSub(a.IsStore ? "Windows удаляет приложение…" : "Идёт удаление — пройдите окно деинсталлятора…");
             Task.Run(() =>
             {
                 string err = null;
@@ -166,7 +180,7 @@ namespace RedTune
                 {
                     BeginInvoke((Action)(() =>
                     {
-                        if (err != null) { busyApps = false; btn.Enabled = true; row.SetSub("Не удалось запустить деинсталлятор: " + err); return; }
+                        if (err != null) { busyApps = false; btn.Enabled = true; row.SetSub((a.IsStore ? "Windows не удалила приложение: " : "Не удалось запустить деинсталлятор: ") + err); return; }
                         bool forgotten = false;
                         if (still)
                         {
@@ -191,8 +205,8 @@ namespace RedTune
         void OfferLeftovers(InstalledApp a, Row row, List<Leftover> left, Action done)
         {
             if (left.Count == 0) { row.SetSub("Удалена, хвостов не найдено"); done(); return; }
-            var picked = PickDialog.Pick(FindForm(), "Хвосты «" + a.Name + "»", "Что осталось после удаления. Файлы и папки уйдут в корзину, записи реестра перед удалением сохраняются в .reg-файл " +
-                "(папка Red Tune → removed-registry). Снимите галочку с того, что нужно оставить.", left, "Удалить отмеченное");
+            var picked = PickDialog.Pick(FindForm(), "Хвосты «" + a.Name + "»", "Что осталось после удаления. Файлы и папки уйдут в корзину, остальное удаляется сразу. Здесь только то, что точно принадлежало программе: " +
+                "системное Windows и то, от чего могут зависеть другие программы, не предлагается. Снимите галочку с того, что нужно оставить.", left, "Удалить отмеченное");
             if (picked == null || picked.Count == 0) { row.SetSub("Удалена · хвосты оставлены"); done(); return; }
             row.SetSub("Убираю хвосты…");
             Task.Run(() =>
@@ -216,8 +230,9 @@ namespace RedTune
                     {
                         busyApps = false; btn.Enabled = true;
                         if (found.Count == 0) { appsRow.SetSub("Хвостов удалённых программ не найдено"); return; }
-                        var picked = PickDialog.Pick(FindForm(), "Хвосты удалённых программ", "Папки в AppData и ProgramData, которым не нашлась ни одна установленная программа и которые не менялись 2 месяца. " +
-                            "Это подсказка, а не точный ответ: ничего не отмечено — отметьте то, что узнаёте. Удаляется в корзину.", found, "Удалить отмеченное");
+                        var picked = PickDialog.Pick(FindForm(), "Хвосты удалённых программ", "Что осталось от удалённых программ: правила брандмауэра для программ, которых уже нет, учётные записи и пакеты, которые программы создали для себя, " +
+                            "и папки в AppData, ProgramData и Program Files без своей программы (не менялись столько, сколько задано в «Правилах» или названы как найденное выше). " +
+                            "Это подсказка, а не точный ответ: ничего не отмечено — отметьте то, что узнаёте. Папки уходят в корзину, остальное удаляется сразу; учётная запись — вместе с её профилем.", found, "Удалить отмеченное");
                         if (picked == null || picked.Count == 0) { appsRow.SetSub("Найдено " + found.Count + " · ничего не удалено"); return; }
                         appsRow.SetSub("Удаляю…");
                         Task.Run(() =>
@@ -424,8 +439,12 @@ namespace RedTune
         // an installed program: its folder, else the folder of its uninstaller (not msiexec in Windows); null = unknown
         static string AppFolder(InstalledApp a)
         {
+            // 22.11: an app from Store has neither (its folder in WindowsApps is not for opening); an empty path made
+            // GetDirectoryName throw and the list never got its Store apps
+            if (a.IsStore) return null;
             var win = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
-            foreach (var d in new[] { a.Location, System.IO.Path.GetDirectoryName(Startup.ExePath(a.Uninstall) ?? "") })
+            var exe = Startup.ExePath(a.Uninstall);
+            foreach (var d in new[] { a.Location, string.IsNullOrWhiteSpace(exe) ? null : SafeDir(exe) })
             {
                 if (string.IsNullOrEmpty(d)) continue;
                 var dir = d.Trim().Trim('"').TrimEnd('\\');
@@ -433,6 +452,8 @@ namespace RedTune
             }
             return null;
         }
+
+        static string SafeDir(string path) { try { return System.IO.Path.GetDirectoryName(path); } catch { return null; } }
 
         static string Plural(int n, string one, string few, string many)
         {
