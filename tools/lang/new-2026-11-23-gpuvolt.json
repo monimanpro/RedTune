@@ -1,0 +1,56 @@
+{
+  "w4beafc18": {
+    "es": "Desplazamiento de voltaje del núcleo",
+    "pt": "Deslocamento de tensão do núcleo",
+    "zh": "核心电压偏移",
+    "ko": "코어 전압 오프셋",
+    "th": "ชดเชยแรงดันคอร์",
+    "vi": "Bù điện áp nhân",
+    "id": "Offset tegangan inti"
+  },
+  "w5982a72f": {
+    "es": "voltaje",
+    "pt": "tensão",
+    "zh": "电压",
+    "ko": "전압",
+    "th": "แรงดัน",
+    "vi": "điện áp",
+    "id": "tegangan"
+  },
+  "wf96f8e64": {
+    "es": "el controlador no expone el desplazamiento de voltaje",
+    "pt": "o driver não expõe o deslocamento de tensão",
+    "zh": "驱动未提供电压偏移",
+    "ko": "드라이버가 전압 오프셋을 제공하지 않습니다",
+    "th": "ไดรเวอร์ไม่เปิดให้ใช้การชดเชยแรงดัน",
+    "vi": "driver không cung cấp bù điện áp",
+    "id": "driver tidak menyediakan offset tegangan"
+  },
+  "w8a507571": {
+    "es": "el controlador no mantuvo el desplazamiento de voltaje",
+    "pt": "o driver não manteve o deslocamento de tensão",
+    "zh": "驱动未保留电压偏移",
+    "ko": "드라이버가 전압 오프셋을 유지하지 않았습니다",
+    "th": "ไดรเวอร์ไม่คงค่าชดเชยแรงดันไว้",
+    "vi": "driver không giữ bù điện áp",
+    "id": "driver tidak mempertahankan offset tegangan"
+  },
+  "ff9935997": {
+    "es": "el controlador no aceptó el desplazamiento de voltaje (código ",
+    "pt": "o driver não aceitou o deslocamento de tensão (código ",
+    "zh": "驱动未接受电压偏移（代码 ",
+    "ko": "드라이버가 전압 오프셋을 받아들이지 않음 (코드 ",
+    "th": "ไดรเวอร์ไม่รับค่าชดเชยแรงดัน (รหัส ",
+    "vi": "driver không nhận bù điện áp (mã ",
+    "id": "driver tidak menerima offset tegangan (kode "
+  },
+  "w39bfa4e8": {
+    "es": "Menos: menos voltaje con las mismas frecuencias (undervolt); más: más voltaje",
+    "pt": "Menos: menos tensão nas mesmas frequências (undervolt); mais: mais tensão",
+    "zh": "减：相同频率下更低电压（降压）；加：更高电压",
+    "ko": "마이너스: 같은 클럭에서 전압을 낮춤(언더볼트), 플러스: 높임",
+    "th": "ลบ: แรงดันต่ำลงที่ความถี่เดิม (อันเดอร์โวลต์) บวก: แรงดันสูงขึ้น",
+    "vi": "Âm: điện áp thấp hơn ở cùng xung nhịp (undervolt), dương: cao hơn",
+    "id": "Minus: tegangan lebih rendah pada frekuensi yang sama (undervolt), plus: lebih tinggi"
+  }
+}

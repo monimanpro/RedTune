@@ -288,6 +288,10 @@ namespace RedTune
         // a power mode or preset with its own «Видеокарта» preset: it goes to the graphics card (13.11). Like the page itself it
         // writes only with «Экспертные функции» on, and nothing on a safe start.
         string gpuApplying;
+        // 23.11: one preset at a time, and only the newest wanted one. Two power modes picked 3 s apart (02 High Low → 01 Balance)
+        // wrote «03» and «Default» at the same time: memory of one, curve and hold of the other, interleaved
+        readonly object gpuGate = new object();
+        int gpuSeq;
         void OnGpuWanted(string name)
         {
             if (!Hw.Nvidia || !settings.Expert || Safety.SafeStart || gpuApplying == name) return;
@@ -295,10 +299,17 @@ namespace RedTune
             var p = GpuStore.Presets.FirstOrDefault(x => x.Name == name);
             if (p == null) { Store.Log("режим питания: нет пресета видеокарты «" + name + "»"); return; }
             gpuApplying = name;
+            int my = System.Threading.Interlocked.Increment(ref gpuSeq);
             System.Threading.Tasks.Task.Run(() =>
             {
+              string e;
+              lock (gpuGate)
+              {
+                if (my != System.Threading.Volatile.Read(ref gpuSeq)) { Store.Log("режим питания: пресет видеокарты «" + name + "» пропущен, выбран другой"); e = "skip"; }
+                else
+                {
                 var c = Gpu.Read();
-                string e = c == null ? (Gpu.Error ?? "кривая не прочиталась") : p.Delta.Length != c.Count ? "пресет снят с другой кривой"
+                e = c == null ? (Gpu.Error ?? "кривая не прочиталась") : p.Delta.Length != c.Count ? "пресет снят с другой кривой"
                     : c.Delta.SequenceEqual(p.Delta) && (Gpu.ReadMemory() ?? new[] { p.Memory })[0] == p.Memory ? "" // already on the card
                     : Gpu.WriteAll(p.Delta, p.Memory);
                 // 22.11: the preset's XBAR / SYS / Video offsets too (they were left out here: the user's preset «03» with
@@ -307,19 +318,31 @@ namespace RedTune
                 {
                     var now = GpuDomains.Offsets(GpuDomains.Read());
                     if (now != null && !now.SequenceEqual(p.Domain)) { var de = GpuDomains.Apply(p.Domain); e = de ?? (e == "" ? null : e); }
+                    // 23.11: «Держать частоты под нагрузкой» of the preset (the driver's global setting, GpuDrs)
+                    var hold = GpuDrs.TryIsOn();
+                    if (hold != null && hold.Value != p.Hold) { var he = GpuDrs.Set(p.Hold); e = he ?? (e == "" ? null : e); }
+                    // 23.11: the XBAR / SYS / Video voltage offsets of the preset (GpuVolt)
+                    var vdom = GpuVolt.ReadDomains();
+                    if (vdom != null ? !vdom.SequenceEqual(p.VoltDom) : p.VoltDom.Any(x => x != 0)) { var de2 = GpuVolt.EnsureDomains(p.VoltDom); e = de2 ?? (e == "" ? null : e); }
+                    // 23.11: the core voltage offset of the preset (GpuVolt), last
+                    var volt = GpuVolt.Read();
+                    if (volt != null ? volt.Value != p.Volt : p.Volt != 0) { var ve = GpuVolt.Ensure(p.Volt); e = ve ?? (e == "" ? null : e); }
                 }
                 Store.Log("режим питания: пресет видеокарты «" + name + "» " + (e == null ? "применён" : e == "" ? "уже стоит" : e));
+                }
+              }
                 try
                 {
                     BeginInvoke((Action)(() =>
                     {
-                        gpuApplying = null;
+                        if (gpuApplying == name) gpuApplying = null;
+                        if (e == "skip") return;
                         // written, or found on the card already: either way it is the preset the card runs now
                         if ((e == null || e == "") && GpuStore.Active != name) { GpuStore.Active = name; GpuStore.Save(); }
                         else if (e != "") Warn("Пресет видеокарты «" + name + "» не применился: " + e);
                     }));
                 }
-                catch { gpuApplying = null; } // no window to post to: the next request for this preset must still go through
+                catch { if (gpuApplying == name) gpuApplying = null; } // no window to post to: the next request for this preset must still go through
             });
         }
 

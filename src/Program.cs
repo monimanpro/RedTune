@@ -37,6 +37,12 @@ namespace RedTune
                 try { var what = AudioFx.Uninstall(); try { Store.Log("удаление: " + what.Replace("\r\n", "; ")); } catch { } return 0; }
                 catch (Exception ex) { try { Store.Log("удаление, звук: " + ex.Message); } catch { } return 1; }
             }
+            // --gpu-uninstall: the NVIDIA driver setting of «Держать частоты под нагрузкой» back to the default (GpuDrs; the uninstaller)
+            if (at("--gpu-uninstall") >= 0)
+            {
+                try { var e = GpuDrs.Set(false); try { Store.Log("удаление, видеокарта: " + (e ?? "настройка драйвера сброшена")); } catch { } return e == null ? 0 : 1; }
+                catch (Exception ex) { try { Store.Log("удаление, видеокарта: " + ex.Message); } catch { } return 1; }
+            }
             int a0 = at("--autostart");
             if (a0 >= 0 && a0 + 1 < args.Length)
             {
@@ -460,6 +466,23 @@ namespace RedTune
                 for (int k = 0; k < 32; k++) { int v = GpuDomains.Measured(k); sb.AppendLine("key " + k + ": " + v + " (status " + GpuDomains.LastStatus + ")"); }
                 if (sb.Length == 0) sb.AppendLine("no answer");
                 System.IO.File.WriteAllText(args[i + 1], sb.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
+            // --gpu-volt <file> | --gpu-volt-set <mV> <file> [key] (23.11): the core voltage-demand offset (GpuVolt), read / set with its read-back
+            i = at("--gpu-volt");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                var v = GpuVolt.Read();
+                var dv = GpuVolt.ReadDomains();
+                System.IO.File.WriteAllText(args[i + 1], (v == null ? "read failed: " + GpuVolt.Error : "core voltage offset " + v + " mV") + "; XBAR/SYS/Video " + (dv == null ? "read failed" : string.Join("/", dv)) + " mV");
+                return 0;
+            }
+            i = at("--gpu-volt-set");
+            if (i >= 0 && i + 2 < args.Length)
+            {
+                int key = i + 3 < args.Length ? int.Parse(args[i + 3]) : 0; // an optional clock key after the file: 1 XBAR, 2 SYS, 21 Video
+                var before = GpuVolt.Read(key); var e = GpuVolt.Set(int.Parse(args[i + 1]), key); var after = GpuVolt.Read(key);
+                System.IO.File.WriteAllText(args[i + 2], "before " + before + " mV, set: " + (e ?? "ok") + ", after " + after + " mV");
+                return e == null ? 0 : 1;
             }
             i = at("--gpu-domain-set");
             if (i >= 0 && i + 3 < args.Length)

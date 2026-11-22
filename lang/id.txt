@@ -788,6 +788,21 @@ w	15593e58	Rendah
 w	97455af0	Tinggi
 w	299392ed	Lampu latar: rendah
 w	57c6215f	Lampu latar: tinggi
+w	c00180f3	Tahan frekuensi saat beban
+w	42befa66	Driver tidak menurunkan kartu satu tingkat di tengah game: memori menahan frekuensi tertingginya. Saat diam frekuensi tetap turun
+w	adda3498	Simulasi: tidak ada yang ditulis ke driver
+w	e7cfd383	menahan frekuensi
+w	4beafc18	Offset tegangan inti
+w	39bfa4e8	Minus: tegangan lebih rendah pada frekuensi yang sama (undervolt), plus: lebih tinggi
+w	5982a72f	tegangan
+w	b7dbbca0	Tegangan XBAR
+w	ad1a95ae	Tegangan SYS
+w	c910f414	Tegangan Video
+w	b61864dd	Offset permintaan tegangan bus XBAR
+w	c2f30b91	Offset permintaan tegangan domain SYS
+w	4b00aafb	Offset permintaan tegangan blok video
+w	f96f8e64	driver tidak menyediakan offset tegangan
+w	8a507571	driver tidak mempertahankan offset tegangan
 w	61afc5b6	Mode grafis
 w	d959bb19	Hibrida menghemat baterai, diskret menjalankan semuanya di RTX
 w	0b911c29	Hibrida
@@ -1420,6 +1435,15 @@ w	e9e50a14	driver tidak memberikan kurva domain
 w	38b959fb	kartu ini tidak punya kurva XBAR, SYS, dan Video
 w	e0aaf867	Clock saat ini
 w	11e0cacc	Core
+f	4f398e09	NVAPI: tidak ada fungsi 
+f	9179d8a6	NVAPI tidak berjalan (kode 
+f	1443d8ec	profil driver tidak tersedia (kode 
+f	2cee0b67	profil driver tidak terbaca (kode 
+f	cbdde8fa	tidak ada profil global (kode 
+f	bad382ad	tidak terbaca (kode 
+f	b079a76d	driver tidak menerima pengaturan (kode 
+f	f9935997	driver tidak menerima offset tegangan (kode 
+f	94e0b3ab	driver tidak menyimpan pengaturan (kode 
 f	991440ae	 · mencari aplikasi Store…
 f	05ab98a0	»?\n\nIni aplikasi Microsoft Store: Windows menghapusnya sendiri, bersama datanya di folder aplikasi. 
 f	1bc45e5f	Lalu Red Tune menemukan yang tersisa (folder pengaturan, paket yang ikut terpasang) dan menampilkan daftar; hanya yang dicentang yang dihapus.

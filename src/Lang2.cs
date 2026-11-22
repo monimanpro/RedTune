@@ -347,6 +347,21 @@ namespace RedTune
             { "Список пуст", "The list is empty" }, { "всегда", "always" }, { "RedTune.exe · сама программа", "RedTune.exe · this app" }, { "claude.exe · и всё, что он запускает", "claude.exe · and everything it starts" }, { "Добавить…", "Add…" }, { "Добавить программу", "Add a program" }, { "Из запущенных сейчас или exe-файлом", "From the running ones or by its exe" }, { "Убрать", "Remove" },
             // device
             { "Низкая", "Low" }, { "Высокая", "High" }, { "Подсветка: низкая", "Backlight: low" }, { "Подсветка: высокая", "Backlight: high" },
+            // 23.11: «Держать частоты под нагрузкой» (GpuDrs)
+            { "Держать частоты под нагрузкой", "Hold clocks under load" },
+            { "Драйвер не опускает карту на ступень ниже посреди игры: память держит верхнюю частоту. В простое частоты всё равно падают", "The driver does not drop the card a step lower in the middle of a game: the memory keeps its top clock. At idle the clocks still go down" },
+            { "Симуляция: в драйвер ничего не пишется", "Simulation: nothing is written to the driver" },
+            { "держит частоты", "holds clocks" },
+            // 23.11: «Сдвиг напряжения ядра» (GpuVolt)
+            { "Сдвиг напряжения ядра", "Core voltage offset" },
+            { "Минус — меньше напряжения на тех же частотах (андервольт), плюс — больше", "Minus: less voltage at the same clocks (undervolt), plus: more" },
+            { "напряжение", "voltage" },
+            { "Напряжение XBAR", "XBAR voltage" }, { "Напряжение SYS", "SYS voltage" }, { "Напряжение Video", "Video voltage" },
+            { "Сдвиг запроса напряжения шины XBAR", "Voltage-demand offset of the XBAR fabric" },
+            { "Сдвиг запроса напряжения домена SYS", "Voltage-demand offset of the SYS domain" },
+            { "Сдвиг запроса напряжения видеоблока", "Voltage-demand offset of the video engine" },
+            { "драйвер не отдаёт сдвиг напряжения", "the driver does not expose the voltage offset" },
+            { "драйвер не сохранил сдвиг напряжения", "the driver did not keep the voltage offset" },
             { "Режим работы видеокарты", "Graphics mode" }, { "Гибридный бережёт батарею, дискретный — всё через RTX", "Hybrid saves battery, discrete runs everything on the RTX" },
             { "Гибридный режим", "Hybrid" }, { "Гибридный iGPU", "Hybrid iGPU only" }, { "Дискретная видеокарта", "Discrete GPU" },
             { "Режим видеокарты", "Graphics mode" }, { "Переключить", "Switch" }, { "Перезагрузка", "Restart" },
@@ -761,6 +776,11 @@ namespace RedTune
 
         static readonly Dictionary<string, string> MoreFragments = new Dictionary<string, string>
         {
+            // 23.11: GpuDrs errors (the code number follows)
+            { "NVAPI: нет функции ", "NVAPI: no function " }, { "NVAPI не запустился (код ", "NVAPI did not start (code " },
+            { "профили драйвера недоступны (код ", "driver profiles unavailable (code " }, { "профили драйвера не прочитались (код ", "driver profiles could not be read (code " },
+            { "нет глобального профиля (код ", "no global profile (code " }, { "не прочиталось (код ", "could not be read (code " },
+            { "драйвер не принял настройку (код ", "the driver did not accept the setting (code " }, { "драйвер не принял сдвиг напряжения (код ", "the driver did not accept the voltage offset (code " }, { "драйвер не сохранил настройку (код ", "the driver did not save the setting (code " },
             // 22.11: removing programs — pieces of composed lines (Store apps, leftovers in Windows itself)
             { " · ищу приложения Store…", " · looking for Store apps…" },
             { "»?\n\nЭто приложение из Microsoft Store: Windows удалит его сама, вместе с его данными в папке приложения. ", "»?\n\nThis is a Microsoft Store app: Windows removes it by itself, together with its data in the app's folder. " },

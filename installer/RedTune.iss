@@ -88,6 +88,8 @@ Filename: "{app}\RedTune.exe"; Flags: nowait; Check: IsUpdate
 Filename: "{app}\RedTune.exe"; Parameters: "--autostart off"; RunOnceId: "RemoveTask"; Flags: runhidden waituntilterminated
 ; the sound effect off every device, its registration and its files (Windows Audio restarts if it was in use)
 Filename: "{app}\RedTune.exe"; Parameters: "--audio-uninstall"; RunOnceId: "RemoveAudio"; Flags: runhidden waituntilterminated
+; the NVIDIA driver setting «prefer maximum performance» back to the default, if Red Tune turned it on
+Filename: "{app}\RedTune.exe"; Parameters: "--gpu-uninstall"; RunOnceId: "RemoveGpuDrs"; Flags: runhidden waituntilterminated
 
 [UninstallDelete]
 ; anything still left in the program folder (the settings in %APPDATA% are asked about separately)

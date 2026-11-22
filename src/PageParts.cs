@@ -40,7 +40,7 @@ namespace RedTune
         // with it once it reaches their height; dragged down, it takes the points to its left. They are measured from
         // where they stood when the drag began (held), so going back lets them return to their places.
         int[] held;
-        protected override void OnMouseDown(MouseEventArgs e) { drag = Hit(e.Location); held = (int[])Points.Clone(); base.OnMouseDown(e); }
+        protected override void OnMouseDown(MouseEventArgs e) { if (e.Button == MouseButtons.Left) { drag = Hit(e.Location); held = (int[])Points.Clone(); } base.OnMouseDown(e); } // 23.11: the left button only, like the sliders
         protected override void OnMouseUp(MouseEventArgs e) { drag = -1; base.OnMouseUp(e); }
 
         protected override void OnMouseMove(MouseEventArgs e)

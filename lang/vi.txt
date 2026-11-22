@@ -788,6 +788,21 @@ w	15593e58	Thấp
 w	97455af0	Cao
 w	299392ed	Đèn bàn phím: thấp
 w	57c6215f	Đèn bàn phím: cao
+w	c00180f3	Giữ xung nhịp khi tải nặng
+w	42befa66	Driver không hạ card xuống một nấc giữa lúc chơi game: bộ nhớ giữ xung nhịp cao nhất. Khi rảnh, xung nhịp vẫn giảm xuống
+w	adda3498	Mô phỏng: không ghi gì vào driver
+w	e7cfd383	giữ xung nhịp
+w	4beafc18	Bù điện áp nhân
+w	39bfa4e8	Âm: điện áp thấp hơn ở cùng xung nhịp (undervolt), dương: cao hơn
+w	5982a72f	điện áp
+w	b7dbbca0	Điện áp XBAR
+w	ad1a95ae	Điện áp SYS
+w	c910f414	Điện áp Video
+w	b61864dd	Bù yêu cầu điện áp của bus XBAR
+w	c2f30b91	Bù yêu cầu điện áp của miền SYS
+w	4b00aafb	Bù yêu cầu điện áp của khối video
+w	f96f8e64	driver không cung cấp bù điện áp
+w	8a507571	driver không giữ bù điện áp
 w	61afc5b6	Chế độ đồ họa
 w	d959bb19	Lai tiết kiệm pin, rời chạy mọi thứ trên RTX
 w	0b911c29	Lai
@@ -1420,6 +1435,15 @@ w	e9e50a14	trình điều khiển không trả về đường cong của các mi
 w	38b959fb	card này không có đường cong XBAR, SYS và Video
 w	e0aaf867	Xung nhịp hiện tại
 w	11e0cacc	Lõi
+f	4f398e09	NVAPI: không có hàm 
+f	9179d8a6	NVAPI không khởi động (mã 
+f	1443d8ec	không dùng được hồ sơ driver (mã 
+f	2cee0b67	không đọc được hồ sơ driver (mã 
+f	cbdde8fa	không có hồ sơ chung (mã 
+f	bad382ad	không đọc được (mã 
+f	b079a76d	driver không nhận thiết lập (mã 
+f	f9935997	driver không nhận bù điện áp (mã 
+f	94e0b3ab	driver không lưu thiết lập (mã 
 f	991440ae	 · đang tìm ứng dụng Store…
 f	05ab98a0	»?\n\nĐây là ứng dụng Microsoft Store: Windows tự gỡ nó, cùng dữ liệu trong thư mục của ứng dụng. 
 f	1bc45e5f	Sau đó Red Tune tìm những gì còn lại (thư mục cài đặt, các gói nó mang theo) và hiện danh sách; chỉ những mục được đánh dấu mới bị xóa.

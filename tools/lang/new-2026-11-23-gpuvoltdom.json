@@ -1,0 +1,8 @@
+{
+  "wb7dbbca0": { "es": "Voltaje XBAR", "pt": "Tensão XBAR", "zh": "XBAR 电压", "ko": "XBAR 전압", "th": "แรงดัน XBAR", "vi": "Điện áp XBAR", "id": "Tegangan XBAR" },
+  "wad1a95ae": { "es": "Voltaje SYS", "pt": "Tensão SYS", "zh": "SYS 电压", "ko": "SYS 전압", "th": "แรงดัน SYS", "vi": "Điện áp SYS", "id": "Tegangan SYS" },
+  "wc910f414": { "es": "Voltaje Video", "pt": "Tensão Video", "zh": "Video 电压", "ko": "Video 전압", "th": "แรงดัน Video", "vi": "Điện áp Video", "id": "Tegangan Video" },
+  "wb61864dd": { "es": "Desplazamiento de la demanda de voltaje del bus XBAR", "pt": "Deslocamento da demanda de tensão do barramento XBAR", "zh": "XBAR 总线电压需求偏移", "ko": "XBAR 버스 전압 요구 오프셋", "th": "ชดเชยความต้องการแรงดันของบัส XBAR", "vi": "Bù yêu cầu điện áp của bus XBAR", "id": "Offset permintaan tegangan bus XBAR" },
+  "wc2f30b91": { "es": "Desplazamiento de la demanda de voltaje del dominio SYS", "pt": "Deslocamento da demanda de tensão do domínio SYS", "zh": "SYS 域电压需求偏移", "ko": "SYS 도메인 전압 요구 오프셋", "th": "ชดเชยความต้องการแรงดันของโดเมน SYS", "vi": "Bù yêu cầu điện áp của miền SYS", "id": "Offset permintaan tegangan domain SYS" },
+  "w4b00aafb": { "es": "Desplazamiento de la demanda de voltaje del bloque de vídeo", "pt": "Deslocamento da demanda de tensão do bloco de vídeo", "zh": "视频单元电压需求偏移", "ko": "비디오 엔진 전압 요구 오프셋", "th": "ชดเชยความต้องการแรงดันของหน่วยวิดีโอ", "vi": "Bù yêu cầu điện áp của khối video", "id": "Offset permintaan tegangan blok video" }
+}

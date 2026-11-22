@@ -32,7 +32,16 @@ namespace RedTune
 
         public IEnumerable<Control> RightControls { get { return right; } }
 
-        public void SetSub(string sub) { Sub = sub; Invalidate(); }
+        // 23.11: a row made with an empty sub is one line tall (48); a sub set later has to make it two lines tall (60) and
+        // move the rows under it, or the sub is drawn over the bottom edge (the GPU page's «Пресет» row did that)
+        public void SetSub(string sub)
+        {
+            bool grow = string.IsNullOrEmpty(Sub) != string.IsNullOrEmpty(sub);
+            Sub = sub; Invalidate();
+            if (!grow) return;
+            PerformLayout();
+            for (Control c = Parent; c != null; c = c.Parent) { var pg = c as Page; if (pg != null) { pg.Relayout(); break; } }
+        }
 
         protected override void OnEnabledChanged(EventArgs e) { base.OnEnabledChanged(e); Invalidate(); }
 

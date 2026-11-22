@@ -788,6 +788,21 @@ w	15593e58	Baja
 w	97455af0	Alta
 w	299392ed	Retroiluminación: baja
 w	57c6215f	Retroiluminación: alta
+w	c00180f3	Mantener frecuencias bajo carga
+w	42befa66	El controlador no baja la tarjeta un escalón en medio de un juego: la memoria mantiene su frecuencia máxima. En reposo las frecuencias siguen bajando
+w	adda3498	Simulación: no se escribe nada en el controlador
+w	e7cfd383	mantiene frecuencias
+w	4beafc18	Desplazamiento de voltaje del núcleo
+w	39bfa4e8	Menos: menos voltaje con las mismas frecuencias (undervolt); más: más voltaje
+w	5982a72f	voltaje
+w	b7dbbca0	Voltaje XBAR
+w	ad1a95ae	Voltaje SYS
+w	c910f414	Voltaje Video
+w	b61864dd	Desplazamiento de la demanda de voltaje del bus XBAR
+w	c2f30b91	Desplazamiento de la demanda de voltaje del dominio SYS
+w	4b00aafb	Desplazamiento de la demanda de voltaje del bloque de vídeo
+w	f96f8e64	el controlador no expone el desplazamiento de voltaje
+w	8a507571	el controlador no mantuvo el desplazamiento de voltaje
 w	61afc5b6	Modo gráfico
 w	d959bb19	Híbrido ahorra batería; discreto ejecuta todo en la RTX
 w	0b911c29	Híbrido
@@ -1420,6 +1435,15 @@ w	e9e50a14	el controlador no entrega las curvas de los dominios
 w	38b959fb	esta tarjeta no tiene curvas XBAR, SYS ni Video
 w	e0aaf867	Frecuencias ahora
 w	11e0cacc	Núcleo
+f	4f398e09	NVAPI: no existe la función 
+f	9179d8a6	NVAPI no se inició (código 
+f	1443d8ec	perfiles del controlador no disponibles (código 
+f	2cee0b67	no se pudieron leer los perfiles del controlador (código 
+f	cbdde8fa	no hay perfil global (código 
+f	bad382ad	no se pudo leer (código 
+f	b079a76d	el controlador no aceptó el ajuste (código 
+f	f9935997	el controlador no aceptó el desplazamiento de voltaje (código 
+f	94e0b3ab	el controlador no guardó el ajuste (código 
 f	991440ae	 · buscando aplicaciones de Store…
 f	05ab98a0	»?\n\nEs una aplicación de Microsoft Store: Windows la elimina por sí mismo, junto con sus datos en la carpeta de la aplicación. 
 f	1bc45e5f	Después Red Tune encontrará lo que quedó (carpetas de ajustes, paquetes que trajo consigo) y mostrará una lista; solo se elimina lo marcado.

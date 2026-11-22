@@ -18,6 +18,10 @@ namespace RedTune
         public int[] Mv = new int[0], Base = new int[0], Target = new int[0];
         public bool[] Known = new bool[0]; // the factory frequency of the point is known (not hidden under a flat top)
         public int Selected = -1;
+        // 23.11: the core voltage-demand offset in the editor, mV: the card runs every point at its voltage + this, so the curve
+        // being made is drawn moved by it (left for a minus) against the factory one, which stays where it is
+        public int VoltShift;
+        public int VoltAt(int k) { return Mv[k] + VoltShift; }
         public event EventHandler Changed, SelectionChanged, ZoneChanged;
         public event EventHandler Changing; // just before the points change: the page keeps the step for Ctrl+Z (16.11)
         bool dragChanged;
@@ -33,11 +37,12 @@ namespace RedTune
         public VfGraph() { Height = Theme.S(330); BackColor = Theme.Card; Cursor = Cursors.Cross; }
 
         RectangleF Plot { get { return new RectangleF(Theme.S(58), Theme.S(14), Width - Theme.S(76), Height - Theme.S(48)); } }
-        int MinMv { get { return Mv.Length > 0 ? Mv[0] - 10 : 400; } }
-        int MaxMv { get { return Mv.Length > 0 ? Mv[Mv.Length - 1] + 10 : 1250; } }
+        int MinMv { get { return Mv.Length > 0 ? Mv[0] + Math.Min(0, VoltShift) - 10 : 400; } }
+        int MaxMv { get { return Mv.Length > 0 ? Mv[Mv.Length - 1] + Math.Max(0, VoltShift) + 10 : 1250; } }
         int MaxMhz { get { return (int)(Math.Ceiling(Math.Max(Base.DefaultIfEmpty(3000).Max(), Shown().DefaultIfEmpty(3000).Max()) / 250.0) * 250 + 250); } }
 
         float X(int mv) { var p = Plot; return p.X + p.Width * (mv - MinMv) / (float)(MaxMv - MinMv); }
+        float PX(int k) { return X(VoltAt(k)); } // where point k of the curve being made is drawn
         float Y(int mhz) { var p = Plot; return p.Bottom - p.Height * mhz / (float)MaxMhz; }
         int MhzAt(float y) { var p = Plot; return (int)Math.Round((p.Bottom - y) / p.Height * MaxMhz); }
 
@@ -55,7 +60,7 @@ namespace RedTune
             var s = Shown(); int best = -1; float bd = float.MaxValue;
             for (int k = 0; k < Mv.Length; k++)
             {
-                float dx = X(Mv[k]) - e.X, dy = Y(s[k]) - e.Y, d = dx * dx + dy * dy * 0.25f;
+                float dx = PX(k) - e.X, dy = Y(s[k]) - e.Y, d = dx * dx + dy * dy * 0.25f;
                 if (d < bd) { bd = d; best = k; }
             }
             return best;
@@ -64,7 +69,7 @@ namespace RedTune
         int IndexAtX(int x)
         {
             int best = -1; float bd = float.MaxValue;
-            for (int k = 0; k < Mv.Length; k++) { float d = Math.Abs(X(Mv[k]) - x); if (d < bd) { bd = d; best = k; } }
+            for (int k = 0; k < Mv.Length; k++) { float d = Math.Abs(PX(k) - x); if (d < bd) { bd = d; best = k; } }
             return best;
         }
 
@@ -131,7 +136,7 @@ namespace RedTune
         bool OnPoint(int k, Point e)
         {
             if (k < 0 || k >= Mv.Length) return false;
-            float dx = X(Mv[k]) - e.X, dy = Y(Shown()[k]) - e.Y, r = Theme.S(13);
+            float dx = PX(k) - e.X, dy = Y(Shown()[k]) - e.Y, r = Theme.S(13);
             return dx * dx + dy * dy <= r * r;
         }
 
@@ -213,13 +218,13 @@ namespace RedTune
             // the zone: a band the height of the graph under the curves, its voltages on top
             if (ZoneA >= 0 && ZoneB >= ZoneA && ZoneB < Mv.Length)
             {
-                float zx0 = X(Mv[ZoneA]), zx1 = X(Mv[ZoneB]);
+                float zx0 = PX(ZoneA), zx1 = PX(ZoneB);
                 var zc = Enabled ? Theme.Accent : Theme.Muted;
                 using (var zb = new SolidBrush(Color.FromArgb(34, zc))) g.FillRectangle(zb, zx0, p.Y, Math.Max(1f, zx1 - zx0), p.Height);
                 using (var zp = new Pen(Color.FromArgb(170, zc), 1.2f)) { g.DrawLine(zp, zx0, p.Y, zx0, p.Bottom); g.DrawLine(zp, zx1, p.Y, zx1, p.Bottom); }
                 if (ZoneB > ZoneA)
                 {
-                    var zt = Mv[ZoneA] + "–" + Mv[ZoneB] + " " + L.T("мВ");
+                    var zt = VoltAt(ZoneA) + "–" + VoltAt(ZoneB) + " " + L.T("мВ");
                     var zs = TextRenderer.MeasureText(zt, Theme.Small);
                     int tx = (int)Math.Max(p.X + Theme.S(50), Math.Min(p.Right - zs.Width - Theme.S(4), (zx0 + zx1) / 2f - zs.Width / 2f));
                     TextRenderer.DrawText(g, zt, Theme.Small, new Rectangle(tx, (int)p.Y + Theme.S(2), zs.Width + Theme.S(4), Theme.S(16)), Theme.AccentFg, TextFormatFlags.Left);
@@ -233,20 +238,20 @@ namespace RedTune
             var s = Shown();
             var line = Enabled ? Theme.Accent : Theme.Muted;
             using (var pen = new Pen(line, Math.Max(1.5f, Theme.S(2))))
-                g.DrawLines(pen, Enumerable.Range(0, Mv.Length).Select(k => new PointF(X(Mv[k]), Y(s[k]))).ToArray());
+                g.DrawLines(pen, Enumerable.Range(0, Mv.Length).Select(k => new PointF(PX(k), Y(s[k]))).ToArray());
             using (var b = new SolidBrush(line))
                 for (int k = 0; k < Mv.Length; k++)
                 {
                     // 14.11: the point in hand or under the mouse is a glass knob like the sliders'; the rest stay small dots
-                    if (k == Selected || k == hot) Theme.GlassKnob(g, X(Mv[k]), Y(s[k]), Theme.S(k == Selected ? 17 : 14), 1f, line, Theme.S(4.5f), !Enabled, 180f,
-                        new PointF?[] { k > 0 ? new PointF(X(Mv[k - 1]), Y(s[k - 1])) : (PointF?)null, k < Mv.Length - 1 ? new PointF(X(Mv[k + 1]), Y(s[k + 1])) : (PointF?)null });
-                    else { float r = Theme.S(2); g.FillEllipse(b, X(Mv[k]) - r, Y(s[k]) - r, 2 * r, 2 * r); }
+                    if (k == Selected || k == hot) Theme.GlassKnob(g, PX(k), Y(s[k]), Theme.S(k == Selected ? 17 : 14), 1f, line, Theme.S(4.5f), !Enabled, 180f,
+                        new PointF?[] { k > 0 ? new PointF(PX(k - 1), Y(s[k - 1])) : (PointF?)null, k < Mv.Length - 1 ? new PointF(PX(k + 1), Y(s[k + 1])) : (PointF?)null });
+                    else { float r = Theme.S(2); g.FillEllipse(b, PX(k) - r, Y(s[k]) - r, 2 * r, 2 * r); }
                 }
             int show = Selected >= 0 ? Selected : hot;
             if (show >= 0)
             {
-                var t = Mv[show] + " " + L.T("мВ") + " · " + s[show] + " " + L.T("МГц");
-                float x = X(Mv[show]), y = Y(s[show]);
+                var t = VoltAt(show) + " " + L.T("мВ") + " · " + s[show] + " " + L.T("МГц");
+                float x = PX(show), y = Y(s[show]);
                 using (var pen = new Pen(Color.FromArgb(90, 255, 255, 255)) { DashStyle = DashStyle.Dash }) { g.DrawLine(pen, x, p.Y, x, p.Bottom); g.DrawLine(pen, p.X, y, p.Right, y); }
                 var sz = TextRenderer.MeasureText(t, Theme.Body);
                 var box = new Rectangle((int)Math.Min(x + Theme.S(8), p.Right - sz.Width - Theme.S(8)), (int)Math.Max(p.Y, y - sz.Height - Theme.S(10)), sz.Width + Theme.S(8), sz.Height + Theme.S(4));
@@ -267,14 +272,13 @@ namespace RedTune
         const string ZoneHint = "Протяните с Ctrl или правой кнопкой мыши";
         // 16.11: the steps of editing, for Ctrl+Z / Ctrl+Y and the two buttons: the points, the curve shift and the memory
         // slider as they were before each change. A drag, or a slider moved in one go, is one step.
-        class Snap { public int[] Target, Dom; public int Shift, Mem; }
+        class Snap { public int[] Target, Dom; public int Shift, Mem, Volt; public bool Hold; public int[] DomV; }
         readonly List<Snap> back = new List<Snap>(), forward = new List<Snap>();
-        readonly FlatButton backBtn = new FlatButton("Шаг назад"), fwdBtn = new FlatButton("Шаг вперёд");
         Row histRow, shiftRow;
         string lastKind; DateTime lastStep;
         int memShown;
 
-        Snap Take() { return new Snap { Target = (int[])graph.Target.Clone(), Shift = shiftShown, Mem = memShown, Dom = (int[])domShown.Clone() }; }
+        Snap Take() { return new Snap { Target = (int[])graph.Target.Clone(), Shift = shiftShown, Mem = memShown, Dom = (int[])domShown.Clone(), Hold = holdShown, Volt = voltShown, DomV = (int[])dvShown.Clone() }; }
 
         // called before a change; the same kind of change again within a second (a slider being dragged) is the same step
         void Remember(string kind)
@@ -296,6 +300,13 @@ namespace RedTune
             memShown = p.Mem;
             if (p.Dom != null) for (int k = 0; k < 3; k++) domS[k].Value = p.Dom[k];
             domShown = DomValues();
+            if (holdOnCard != null) hold.Set(p.Hold);
+            holdShown = p.Hold;
+            if (voltOnCard != null) volt.Value = p.Volt;
+            voltShown = p.Volt;
+            if (p.DomV != null && dvOnCard != null) for (int k = 0; k < 3; k++) dvS[k].Value = p.DomV[k];
+            dvShown = DvValues();
+            graph.VoltShift = volt.Value;
             loading = false;
             lastKind = null;
             graph.Invalidate(); ShowMemory(); ShowShift(); Edited();
@@ -319,6 +330,9 @@ namespace RedTune
             if (curve == null || p.Delta.Length != curve.Count) return false;
             for (int k = 0; k < curve.Count; k++) if (graph.Target[k] - graph.Base[k] != p.Delta[k]) return false;
             if (domOnCard != null && !DomValues().SequenceEqual(p.Domain)) return false;
+            if (holdOnCard != null && hold.Checked != p.Hold) return false;
+            if (voltOnCard != null && volt.Value != p.Volt) return false;
+            if (dvOnCard != null && !DvValues().SequenceEqual(p.VoltDom)) return false;
             return !memory.Enabled || memory.Value == p.Memory;
         }
 
@@ -348,7 +362,6 @@ namespace RedTune
         void ShowHistory()
         {
             if (histRow == null) return;
-            backBtn.Enabled = back.Count > 0 && graph.Enabled; fwdBtn.Enabled = forward.Count > 0 && graph.Enabled;
             histRow.SetSub("Ctrl+Z — " + L.T("шаг назад") + ", Ctrl+Y — " + L.T("шаг вперёд") + (back.Count > 0 ? " · " + L.T("шагов") + ": " + back.Count : ""));
         }
 
@@ -361,12 +374,24 @@ namespace RedTune
             return false;
         }
         int memFactoryTop; // the card's own top memory clock, without the offset
-        readonly Slider shift = new Slider(-1000, 1000, 0, "МГц") { Width = Theme.S(330), WarpToKnob = true };
-        readonly Slider memory = new Slider(-1000, 3000, 0, "МГц") { Width = Theme.S(330), WarpToKnob = true };
+        readonly Slider shift = new Slider(-1000, 1000, 0, "МГц") { ResetTo = 0, Width = Theme.S(330), WarpToKnob = true };
+        readonly Slider memory = new Slider(-1000, 3000, 0, "МГц") { ResetTo = 0, Width = Theme.S(330), WarpToKnob = true };
         readonly FlatButton cut = new FlatButton("Срезать выше"), minus = new FlatButton("−15"), plus = new FlatButton("+15");
         readonly DropButton presetBtn = new DropButton();
         readonly FlatButton saveBtn = new FlatButton("Сохранить как…"), delBtn = new FlatButton("Удалить");
         readonly Toggle onStart = new Toggle();
+        // 23.11: «Держать частоты под нагрузкой» (GpuDrs), a part of the preset like the memory clock; holdOnCard = what the
+        // driver has (null: its profiles cannot be read, the row is hidden), holdShown = the value before the change in hand
+        readonly Toggle hold = new Toggle();
+        Row holdRow;
+        bool? holdOnCard;
+        bool holdShown;
+        // 23.11: the core voltage-demand offset (GpuVolt), mV, a part of the preset; voltOnCard = what the driver has (null: no
+        // such control, the row is hidden), voltShown = the value before the change in hand
+        readonly Slider volt = new Slider(GpuVolt.MinMv, GpuVolt.MaxMv, 0, L.T("мВ")) { ResetTo = 0, Width = Theme.S(330), WarpToKnob = true };
+        Row voltRow;
+        int? voltOnCard;
+        int voltShown;
         // footer: «Сбросить» = the factory curve on the card now; «Отменить» = the editor back to what is on the card
         readonly FlatButton apply = new FlatButton("Применить", true), reset = new FlatButton("Сбросить"), undo = new FlatButton("Отменить всё");
         readonly FooterBar bar;
@@ -391,10 +416,17 @@ namespace RedTune
         Row domHead, domNow;
         // 22.11: the offsets of the XBAR / SYS / Video curves (GpuDomains.Tunable order); domOnCard = what the card has
         // (null: no domain curves on this card)
-        readonly Slider[] domS = { new Slider(GpuDomains.MinOffsetMhz, GpuDomains.MaxOffsetMhz, 0, "МГц") { Width = Theme.S(330), Step = 5, WarpToKnob = true }, new Slider(GpuDomains.MinOffsetMhz, GpuDomains.MaxOffsetMhz, 0, "МГц") { Width = Theme.S(330), Step = 5, WarpToKnob = true }, new Slider(GpuDomains.MinOffsetMhz, GpuDomains.MaxOffsetMhz, 0, "МГц") { Width = Theme.S(330), Step = 5, WarpToKnob = true } };
+        readonly Slider[] domS = { new Slider(GpuDomains.MinOffsetMhz, GpuDomains.MaxOffsetMhz, 0, "МГц") { ResetTo = 0, Width = Theme.S(330), Step = 5, WarpToKnob = true }, new Slider(GpuDomains.MinOffsetMhz, GpuDomains.MaxOffsetMhz, 0, "МГц") { ResetTo = 0, Width = Theme.S(330), Step = 5, WarpToKnob = true }, new Slider(GpuDomains.MinOffsetMhz, GpuDomains.MaxOffsetMhz, 0, "МГц") { ResetTo = 0, Width = Theme.S(330), Step = 5, WarpToKnob = true } };
         readonly Row[] domRows = new Row[3];
         int[] domOnCard;
         int[] DomValues() { return domS.Select(x => x.Value).ToArray(); }
+        // 23.11: the XBAR / SYS / Video voltage-demand offsets (GpuVolt.Tunable order), mV; dvOnCard = what the driver has (null: not
+        // readable, the rows are hidden), dvShown = the values before the change in hand
+        readonly Slider[] dvS = { new Slider(GpuVolt.MinMv, GpuVolt.MaxMv, 0, L.T("мВ")) { ResetTo = 0, Width = Theme.S(330), WarpToKnob = true }, new Slider(GpuVolt.MinMv, GpuVolt.MaxMv, 0, L.T("мВ")) { ResetTo = 0, Width = Theme.S(330), WarpToKnob = true }, new Slider(GpuVolt.MinMv, GpuVolt.MaxMv, 0, L.T("мВ")) { ResetTo = 0, Width = Theme.S(330), WarpToKnob = true } };
+        readonly Row[] dvRows = new Row[3];
+        int[] dvOnCard;
+        int[] dvShown = new int[3];
+        int[] DvValues() { return dvS.Select(x => x.Value).ToArray(); }
         // what the sliders showed before the change in hand (Changed comes after the value moved): the step Ctrl+Z goes back to
         int[] domShown = new int[3];
         readonly Timer domTimer = new Timer { Interval = 1000 };
@@ -404,7 +436,11 @@ namespace RedTune
         {
             this.s = s;
             GpuStore.Load();
-            if (GpuModeRow.Available) { GpuModeRow.Add(this); Section("Разгон"); }
+            if (GpuModeRow.Available) GpuModeRow.Add(this);
+            // 23.11 (the user): the presets right after the graphics mode, above the overclocking; still an expert part (added to oc below)
+            var presetBlock = new Control[] { Section("Пресеты"), presetRow = Row("Пресет", "", presetBtn, saveBtn, delBtn),
+                Row("Применять при запуске", "Драйвер забывает кривую после перезагрузки: Red Tune вернёт выбранный пресет", onStart) };
+            Section("Разгон");
             expertHint = Row("Разгон видеокарты", "Кривая частоты и пресеты — в экспертных функциях: Настройки → Основное");
             int ocFrom = Controls.Count;
             head = Row("Кривая частоты видеокарты", "Читаю…");
@@ -414,14 +450,17 @@ namespace RedTune
             pointRow = Row("Точка", "Нажмите на точку на графике. Перетаскивание — одна точка, с Shift — вся кривая", minus, plus, cut);
             // 16.11: a zone of the curve and what can be done with it
             zoneRow = Row("Зона", ZoneHint, zoneOffBtn, lineBtn, smoothBtn);
-            histRow = Row("История правок", "Ctrl+Z, Ctrl+Y", backBtn, fwdBtn); // a sub from the start, so the row has the height for it
-            backBtn.Click += (o, e) => StepBack(); fwdBtn.Click += (o, e) => StepForward();
+            // 23.11 (the user): no «История правок» row any more; the steps stay on Ctrl+Z / Ctrl+Y (HandleKey), ShowHistory
+            // does nothing without the row
             graph.Changing += (o, e) => Remember(null);
             shiftRow = Row("Сдвиг всей кривой", "Двигает все точки вместе, форма кривой остаётся", shift);
+            voltRow = Row("Сдвиг напряжения ядра", "Минус — меньше напряжения на тех же частотах (андервольт), плюс — больше", volt);
+            voltRow.Visible = false;
+            volt.Changed += (o, e) => { graph.VoltShift = volt.Value; graph.Invalidate(); ShowPoint(); ShowZone(); if (loading || curve == null) { voltShown = volt.Value; return; } Remember("volt"); voltShown = volt.Value; Edited(); };
             memRow = Row("Частота памяти", "Сдвиг частоты видеопамяти", memory);
-            Section("Пресеты");
-            presetRow = Row("Пресет", "", presetBtn, saveBtn, delBtn);
-            Row("Применять при запуске", "Драйвер забывает кривую после перезагрузки: Red Tune вернёт выбранный пресет", onStart);
+            holdRow = Row("Держать частоты под нагрузкой", "Драйвер не опускает карту на ступень ниже посреди игры: память держит верхнюю частоту. В простое частоты всё равно падают", hold);
+            holdRow.Visible = false;
+            hold.CheckedChanged += (o, e) => { if (loading || curve == null) { holdShown = hold.Checked; return; } Remember("hold"); holdShown = hold.Checked; Edited(); };
             Section("Домены частоты");
             domHead = Row("Кривые XBAR, SYS и Video", "Читаю…");
             Add(domGraph);
@@ -437,8 +476,17 @@ namespace RedTune
             domTimer.Tick += (o, e) => PollClocks();
             VisibleChanged += (o, e) => domTimer.Enabled = Visible && s.Expert;
             Disposed += (o, e) => domTimer.Dispose();
+            var dvTitles = new[] { "Напряжение XBAR", "Напряжение SYS", "Напряжение Video" };
+            var dvSubs = new[] { "Сдвиг запроса напряжения шины XBAR", "Сдвиг запроса напряжения домена SYS", "Сдвиг запроса напряжения видеоблока" };
+            for (int k = 0; k < 3; k++)
+            {
+                int kk = k;
+                dvRows[k] = Row(dvTitles[k], dvSubs[k], dvS[k]); dvRows[k].Visible = false;
+                dvS[k].Changed += (o, e) => { if (loading || curve == null) { dvShown[kk] = dvS[kk].Value; return; } Remember("dv" + kk); dvShown[kk] = dvS[kk].Value; Edited(); };
+            }
             Row("Что это", "Кривые без сдвигов, ядро — заводская. Сдвиги пишутся по «Применить» вместе с кривой ядра и сохраняются в пресет");
             foreach (Control c in Controls) if (Controls.GetChildIndex(c) >= ocFrom) oc.Add(c);
+            oc.AddRange(presetBlock);
 
             graph.Changed += (o, e) => { Edited(); };
             graph.SelectionChanged += (o, e) => ShowPoint();
@@ -479,7 +527,10 @@ namespace RedTune
         {
             bool ex = s.Expert;
             domTimer.Enabled = ex && Visible;
-            foreach (var c in oc) if (c != warnRow) c.Visible = ex;
+            foreach (var c in oc) if (c != warnRow && c != holdRow && c != voltRow && Array.IndexOf(dvRows, c) < 0) c.Visible = ex;
+            foreach (var r in dvRows) r.Visible = ex && dvOnCard != null;
+            holdRow.Visible = ex && holdOnCard != null;
+            voltRow.Visible = ex && voltOnCard != null;
             if (!ex) warnRow.Visible = false;
             ShowDomRows();
             expertHint.Visible = !ex;
@@ -499,8 +550,8 @@ namespace RedTune
             if (keepEdits && undo.Enabled) return; // something is changed and not applied: keep it on screen
             Task.Run(() =>
             {
-                var c = Gpu.Read(); var mem = Gpu.ReadMemory();
-                try { BeginInvoke((Action)(() => Show(c, mem))); } catch { }
+                var c = Gpu.Read(); var mem = Gpu.ReadMemory(); var hd = GpuDrs.TryIsOn(); var vd = GpuVolt.Read(); var dvd = GpuVolt.ReadDomains();
+                try { BeginInvoke((Action)(() => { holdOnCard = hd; voltOnCard = vd; dvOnCard = dvd; Show(c, mem); })); } catch { }
             });
         }
 
@@ -517,7 +568,11 @@ namespace RedTune
             }
             GpuStore.KeepStock(c);
             bool[] known;
-            graph.Mv = c.Mv; graph.Base = GpuStore.Base(c, out known); graph.Known = known; graph.Target = (int[])c.Mhz.Clone();
+            // 23.11: the driver reports each point at its voltage with the voltage-demand offset already in it (−50 mV read
+            // 400–1190 instead of 450–1240): the factory voltages are those minus the offset on the card, and the graph adds the
+            // offset in the editor (VoltShift) when it draws the curve being made
+            int vOff = voltOnCard ?? 0;
+            graph.Mv = vOff == 0 ? c.Mv : c.Mv.Select(x => x - vOff).ToArray(); graph.Base = GpuStore.Base(c, out known); graph.Known = known; graph.Target = (int[])c.Mhz.Clone();
             // a point pinned under a flat top keeps its own target (factory + its offset), so the flat part stays as set
             for (int k = 0; k < c.Count; k++) graph.Target[k] = graph.Base[k] + c.Delta[k];
             graph.Selected = -1; graph.ZoneA = graph.ZoneB = -1;
@@ -531,10 +586,22 @@ namespace RedTune
             // 22.11: «Отменить всё» (and every re-read) puts the domain sliders back to what the card has too
             if (domOnCard != null) for (int k = 0; k < 3; k++) domS[k].Value = domOnCard[k];
             domShown = DomValues();
+            holdRow.Visible = s.Expert && holdOnCard != null;
+            if (holdOnCard != null) hold.Set(holdOnCard.Value);
+            holdShown = hold.Checked;
+            foreach (var r in dvRows) r.Visible = s.Expert && dvOnCard != null;
+            if (dvOnCard != null) for (int k = 0; k < 3; k++) dvS[k].Value = dvOnCard[k];
+            dvShown = DvValues();
+            voltRow.Visible = s.Expert && voltOnCard != null;
+            if (voltOnCard != null) volt.Value = voltOnCard.Value;
+            voltShown = volt.Value;
+            graph.VoltShift = volt.Value; // the curve drawn at the voltages the card will use
             ShowMemory(); ShowShift();
             head.SetSub(Hw.Gpus.FirstOrDefault(n => n.IndexOf("NVIDIA", StringComparison.OrdinalIgnoreCase) >= 0) + " · " + c.Count + " " + L.T("точек") + ", "
-                + c.Mv[0] + "–" + c.Mv[c.Count - 1] + " " + L.T("мВ") + " · " + L.T("сейчас") + ": " + Gpu.Describe(c.Delta)
+                + graph.Mv[0] + "–" + graph.Mv[c.Count - 1] + " " + L.T("мВ") + " · " + L.T("сейчас") + ": " + Gpu.Describe(c.Delta)
                 + (mem != null && mem[0] != 0 ? ", " + L.T("память") + " " + (mem[0] > 0 ? "+" : "") + mem[0] + " " + L.T("МГц") : "")
+                + (voltOnCard != null && voltOnCard != 0 ? ", " + L.T("напряжение") + " " + (voltOnCard > 0 ? "+" : "") + voltOnCard + " " + L.T("мВ") : "")
+                + (holdOnCard == true ? ", " + L.T("держит частоты") : "")
                 + (OnCard(c, mem) != null ? " · " + L.T("пресет") + " «" + OnCard(c, mem).Name + "»" : ""));
             graph.Enabled = s.Expert; apply.Enabled = false; reset.Enabled = s.Expert;
             var now = OnCard(c, mem);
@@ -605,7 +672,7 @@ namespace RedTune
             if (c == null) return null;
             return GpuStore.Presets.FirstOrDefault(p => p.Delta.Length == c.Count
                 && Enumerable.Range(0, c.Count).All(k => Math.Abs(p.Delta[k] - c.Delta[k]) <= 15)
-                && (mem == null || p.Memory == mem[0]) && p.Delta.Any(x => x != 0));
+                && (mem == null || p.Memory == mem[0]) && (holdOnCard == null || p.Hold == holdOnCard.Value) && (voltOnCard == null || p.Volt == voltOnCard.Value) && (dvOnCard == null || p.VoltDom.SequenceEqual(dvOnCard)) && p.Delta.Any(x => x != 0));
         }
 
         // what the slider means: the top memory clock in games, as the driver and Home show it, and the data rate
@@ -635,7 +702,7 @@ namespace RedTune
             if (k < 0) { pointRow.SetSub(L.T("Нажмите на точку на графике. Перетаскивание — одна точка, с Shift — вся кривая")); return; }
             var shown = graph.Shown();
             int d = graph.Target[k] - graph.Base[k];
-            pointRow.SetSub(graph.Mv[k] + " " + L.T("мВ") + ": " + shown[k] + " " + L.T("МГц") + (graph.Known[k] ? " (" + L.T("заводская") + " " + graph.Base[k] + ", " + (d >= 0 ? "+" : "") + d + ")" : " (" + L.T("под срезом") + ")"));
+            pointRow.SetSub(graph.VoltAt(k) + " " + L.T("мВ") + ": " + shown[k] + " " + L.T("МГц") + (graph.Known[k] ? " (" + L.T("заводская") + " " + graph.Base[k] + ", " + (d >= 0 ? "+" : "") + d + ")" : " (" + L.T("под срезом") + ")"));
         }
 
         void ShowZone()
@@ -645,7 +712,7 @@ namespace RedTune
             smoothBtn.Enabled = lineBtn.Enabled = has; zoneOffBtn.Enabled = graph.ZoneA >= 0;
             if (!graph.HasZone) { zoneRow.SetSub(ZoneHint); return; }
             var shown = graph.Shown();
-            zoneRow.SetSub(graph.Mv[graph.ZoneA] + "–" + graph.Mv[graph.ZoneB] + " " + L.T("мВ") + " · " + (graph.ZoneB - graph.ZoneA + 1) + " " + L.T("точек") + " · "
+            zoneRow.SetSub(graph.VoltAt(graph.ZoneA) + "–" + graph.VoltAt(graph.ZoneB) + " " + L.T("мВ") + " · " + (graph.ZoneB - graph.ZoneA + 1) + " " + L.T("точек") + " · "
                 + shown[graph.ZoneA] + "–" + shown[graph.ZoneB] + " " + L.T("МГц"));
         }
 
@@ -686,6 +753,9 @@ namespace RedTune
             if (curve == null || graph.Target == null || graph.Target.Length != curve.Count) return false;
             for (int k = 0; k < curve.Count; k++) if (graph.Target[k] - graph.Base[k] != curve.Delta[k]) return false;
             if (domOnCard != null && !DomValues().SequenceEqual(domOnCard)) return false;
+            if (holdOnCard != null && hold.Checked != holdOnCard.Value) return false;
+            if (voltOnCard != null && volt.Value != voltOnCard.Value) return false;
+            if (dvOnCard != null && !DvValues().SequenceEqual(dvOnCard)) return false;
             return !memory.Enabled || lastMem == null || memory.Value == lastMem[0];
         }
 
@@ -695,6 +765,9 @@ namespace RedTune
             if (curve == null || p.Delta.Length != curve.Count) return false;
             for (int k = 0; k < curve.Count; k++) if (Math.Abs(p.Delta[k] - curve.Delta[k]) > 15) return false;
             if (domOnCard != null && !p.Domain.SequenceEqual(domOnCard)) return false;
+            if (holdOnCard != null && p.Hold != holdOnCard.Value) return false;
+            if (voltOnCard != null && p.Volt != voltOnCard.Value) return false;
+            if (dvOnCard != null && !p.VoltDom.SequenceEqual(dvOnCard)) return false;
             return lastMem == null || p.Memory == lastMem[0];
         }
 
@@ -721,6 +794,9 @@ namespace RedTune
             if (!s.Expert || curve == null || !Confirmed()) return;
             var d = Deltas(); int mem = memory.Enabled ? memory.Value : 0;
             var dom = domOnCard != null ? DomValues() : null;
+            bool? holdWant = holdOnCard != null ? hold.Checked : (bool?)null;
+            int? voltWant = voltOnCard != null ? volt.Value : (int?)null;
+            int[] dvWant = dvOnCard != null ? DvValues() : null;
             // an opened preset, unchanged: this is the preset going to the card
             string name = pickedClean ? picked : null;
             apply.Enabled = false; bar.SetStatus("Применяю…");
@@ -728,6 +804,9 @@ namespace RedTune
             {
                 var e = Gpu.WriteAll(d, memory.Enabled ? mem : (int?)null);
                 if (e == null && dom != null) e = GpuDomains.Apply(dom);
+                if (e == null && holdWant != null) e = GpuDrs.Ensure(holdWant.Value);
+                if (e == null && dvWant != null) e = GpuVolt.EnsureDomains(dvWant);
+                if (e == null && voltWant != null) e = GpuVolt.Ensure(voltWant.Value); // last
                 try
                 {
                     BeginInvoke((Action)(() =>
@@ -753,6 +832,9 @@ namespace RedTune
             {
                 var e = Gpu.WriteAll(zero, memory.Enabled ? 0 : (int?)null);
                 if (e == null && domOnCard != null) e = GpuDomains.Apply(new int[3]);
+                if (e == null && holdOnCard == true) e = GpuDrs.Set(false); // 23.11: the driver's own power mode again
+                if (e == null && dvOnCard != null && dvOnCard.Any(x => x != 0)) e = GpuVolt.EnsureDomains(new int[3]);
+                if (e == null && voltOnCard != null && voltOnCard != 0) e = GpuVolt.Set(0); // 23.11: no voltage offset
                 try { BeginInvoke((Action)(() => { afterReload = e != null ? "Не удалось: " + e : "Заводская кривая и частота памяти"; Reload(); })); } catch { }
             });
         }
@@ -779,6 +861,13 @@ namespace RedTune
             if (memory.Enabled) memory.Value = p.Memory;
             if (domOnCard != null) for (int k = 0; k < 3; k++) domS[k].Value = p.Domain[k];
             domShown = DomValues();
+            if (holdOnCard != null) hold.Set(p.Hold);
+            holdShown = hold.Checked;
+            if (voltOnCard != null) volt.Value = p.Volt;
+            voltShown = volt.Value;
+            graph.VoltShift = volt.Value; // the curve drawn at the voltages the card will use
+            if (dvOnCard != null) for (int k = 0; k < 3; k++) dvS[k].Value = p.VoltDom[k];
+            dvShown = DvValues();
             shift.Value = 0; shiftShown = 0; memShown = memory.Enabled ? memory.Value : 0;
             loading = false;
             graph.Invalidate(); Edited(); ShowShift();
@@ -789,7 +878,7 @@ namespace RedTune
         {
             if (curve == null) return;
             // a preset of the factory curve is almost always a mistake (13.11: one came out empty): say what is about to be saved
-            if (Deltas().All(x => x == 0) && (!memory.Enabled || memory.Value == 0) && DomValues().All(x => x == 0)
+            if (Deltas().All(x => x == 0) && (!memory.Enabled || memory.Value == 0) && DomValues().All(x => x == 0) && !(holdOnCard != null && hold.Checked) && !(voltOnCard != null && volt.Value != 0) && !(dvOnCard != null && DvValues().Any(x => x != 0))
                 && !ConfirmDialog.Ask(FindForm(), "Пресет видеокарты", "В редакторе сейчас заводская кривая без сдвигов. Сохранить её как пресет?", "Сохранить", "Отмена")) return;
             var name = InputDialog.Ask(FindForm(), "Пресет видеокарты", "Название", picked ?? (GpuStore.Active.Length > 0 ? GpuStore.Active : "Мой андервольт"));
             if (string.IsNullOrWhiteSpace(name)) return;
@@ -798,6 +887,9 @@ namespace RedTune
             if (p == null) GpuStore.Presets.Add(p = new GpuPreset { Name = name });
             p.Delta = Deltas(); p.Memory = memory.Enabled ? memory.Value : 0;
             p.Domain = domOnCard != null ? DomValues() : new int[3];
+            p.Hold = holdOnCard != null && hold.Checked;
+            p.Volt = voltOnCard != null ? volt.Value : 0;
+            p.VoltDom = dvOnCard != null ? DvValues() : new int[3];
             GpuStore.Active = name; GpuStore.Save();
             picked = name; pickedClean = true; // the editor holds exactly this preset now
             FillPresets();

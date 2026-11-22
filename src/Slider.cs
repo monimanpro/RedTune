@@ -33,6 +33,9 @@ namespace RedTune
         // pointer onto it; the drag then moves the value by as much as the mouse moves from there (not to the pixel under
         // it: on a long range such as the clock cap a pixel is tens of MHz, and the knob would jump at the first move)
         public bool WarpToKnob;
+        // 23.11 (the user): a press of the middle (wheel) button puts the slider back to this value, as a user move (Grabbed and
+        // Changed fire); null = the middle button does nothing (most sliders have no plain default)
+        public int? ResetTo;
         int pressX, pressValue; bool relative;
 
         public Slider(int min, int max, int value, string unit)
@@ -151,11 +154,19 @@ namespace RedTune
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            // 23.11 (the user): only the left button moves a slider; a right or middle (wheel) press used to jump the knob
+            // to where it was pressed
+            if (e.Button == MouseButtons.Middle && ResetTo.HasValue && Enabled && box == null)
+            {
+                int v = Math.Max(min, Math.Min(max, ResetTo.Value));
+                if (v != value || unset) { Grab(); value = v; unset = false; Invalidate(); var h = Changed; if (h != null) h(this, EventArgs.Empty); }
+            }
+            if (e.Button != MouseButtons.Left) { base.OnMouseDown(e); return; }
             armed = true;
             if (e.X < TrackW)
             {
                 drag = true; Grab();
-                relative = WarpToKnob && !unset && e.Button == MouseButtons.Left;
+                relative = WarpToKnob && !unset;
                 if (relative) { int kx = KnobX; pressValue = value; pressX = Theme.Warp(this, kx, Height / 2f) ? kx : e.X; }
                 else SetFrom(e.X);
             }

@@ -235,7 +235,7 @@ namespace RedTune
     }
 
     // GPU presets in %APPDATA%\RedTune\gpu.txt: «name|memory MHz|d0,d1,…» per line, the active one in «active=name»
-    class GpuPreset { public string Name; public int Memory; public int[] Delta = new int[0]; public int[] Domain = new int[3]; } // Domain (22.11): XBAR, SYS, Video offsets, MHz
+    class GpuPreset { public string Name; public int Memory; public int[] Delta = new int[0]; public int[] Domain = new int[3]; public bool Hold; public int Volt; public int[] VoltDom = new int[3]; } // VoltDom (23.11): XBAR, SYS, Video voltage offsets, mV; // Volt (23.11): the core voltage-demand offset, mV (GpuVolt); Domain (22.11): XBAR, SYS, Video offsets, MHz; Hold (23.11): «Держать частоты под нагрузкой» (GpuDrs)
 
     static class GpuStore
     {
@@ -261,6 +261,9 @@ namespace RedTune
                     var gp = new GpuPreset { Name = p[0], Memory = mem, Delta = p[2].Split(',').Select(x => { int v; int.TryParse(x, out v); return v; }).ToArray() };
                     // a fourth field (22.11): the XBAR / SYS / Video offsets; older files have none
                     if (p.Length > 3) { var dm = p[3].Split(',').Select(x => { int v; int.TryParse(x, out v); return v; }).ToArray(); if (dm.Length == 3) gp.Domain = dm; }
+                    if (p.Length > 4) gp.Hold = p[4] == "1"; // a fifth (23.11): hold the clocks under load
+                    if (p.Length > 5) int.TryParse(p[5], out gp.Volt); // a sixth (23.11): the core voltage offset, mV
+                    if (p.Length > 6) { var vd = p[6].Split(',').Select(x => { int v; int.TryParse(x, out v); return v; }).ToArray(); if (vd.Length == 3) gp.VoltDom = vd; } // a seventh: XBAR / SYS / Video voltage
                     Presets.Add(gp);
                 }
             }
@@ -273,7 +276,7 @@ namespace RedTune
             {
                 Directory.CreateDirectory(Store.DataDir);
                 var lines = new List<string> { "active=" + Active, "start=" + (ApplyOnStart ? "1" : "0") };
-                lines.AddRange(Presets.Select(p => p.Name.Replace("|", "/") + "|" + p.Memory + "|" + string.Join(",", p.Delta) + "|" + string.Join(",", p.Domain)));
+                lines.AddRange(Presets.Select(p => p.Name.Replace("|", "/") + "|" + p.Memory + "|" + string.Join(",", p.Delta) + "|" + string.Join(",", p.Domain) + "|" + (p.Hold ? "1" : "0") + "|" + p.Volt + "|" + string.Join(",", p.VoltDom)));
                 File.WriteAllLines(FilePath, lines, new UTF8Encoding(true));
             }
             catch (Exception ex) { Store.Log("видеокарта: пресеты не сохранились: " + ex.Message); }
@@ -328,6 +331,9 @@ namespace RedTune
                 if (c == null || p.Delta.Length != c.Count) { Store.Log("видеокарта (" + why + "): кривая не подходит к этой карте"); return; }
                 var e = Gpu.WriteAll(p.Delta, p.Memory);
                 if (e == null && p.Domain.Any(x => x != 0)) e = GpuDomains.Apply(p.Domain); // XBAR / SYS / Video (22.11)
+                if (e == null) e = GpuDrs.Ensure(p.Hold); // 23.11: hold the clocks under load, as the preset says
+                if (e == null) e = GpuVolt.EnsureDomains(p.VoltDom); // 23.11: XBAR / SYS / Video voltage
+                if (e == null) e = GpuVolt.Ensure(p.Volt); // 23.11: the core voltage offset, last
                 Store.Log("видеокарта (" + why + "): «" + p.Name + "» " + (e ?? "применён"));
             });
         }

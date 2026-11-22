@@ -788,6 +788,21 @@ w	15593e58	Baixa
 w	97455af0	Alta
 w	299392ed	Iluminação: baixa
 w	57c6215f	Iluminação: alta
+w	c00180f3	Manter frequências sob carga
+w	42befa66	O driver não baixa a placa um degrau no meio de um jogo: a memória mantém a frequência máxima. Em repouso as frequências continuam caindo
+w	adda3498	Simulação: nada é gravado no driver
+w	e7cfd383	mantém frequências
+w	4beafc18	Deslocamento de tensão do núcleo
+w	39bfa4e8	Menos: menos tensão nas mesmas frequências (undervolt); mais: mais tensão
+w	5982a72f	tensão
+w	b7dbbca0	Tensão XBAR
+w	ad1a95ae	Tensão SYS
+w	c910f414	Tensão Video
+w	b61864dd	Deslocamento da demanda de tensão do barramento XBAR
+w	c2f30b91	Deslocamento da demanda de tensão do domínio SYS
+w	4b00aafb	Deslocamento da demanda de tensão do bloco de vídeo
+w	f96f8e64	o driver não expõe o deslocamento de tensão
+w	8a507571	o driver não manteve o deslocamento de tensão
 w	61afc5b6	Modo gráfico
 w	d959bb19	Híbrido economiza bateria; dedicado roda tudo na RTX
 w	0b911c29	Híbrido
@@ -1420,6 +1435,15 @@ w	e9e50a14	o driver não fornece as curvas dos domínios
 w	38b959fb	esta placa não tem curvas XBAR, SYS e Video
 w	e0aaf867	Clocks agora
 w	11e0cacc	Núcleo
+f	4f398e09	NVAPI: função inexistente 
+f	9179d8a6	NVAPI não iniciou (código 
+f	1443d8ec	perfis do driver indisponíveis (código 
+f	2cee0b67	não foi possível ler os perfis do driver (código 
+f	cbdde8fa	não há perfil global (código 
+f	bad382ad	não foi possível ler (código 
+f	b079a76d	o driver não aceitou a configuração (código 
+f	f9935997	o driver não aceitou o deslocamento de tensão (código 
+f	94e0b3ab	o driver não salvou a configuração (código 
 f	991440ae	 · procurando aplicativos da Store…
 f	05ab98a0	»?\n\nEste é um aplicativo da Microsoft Store: o Windows o remove sozinho, junto com os dados dele na pasta do aplicativo. 
 f	1bc45e5f	Depois o Red Tune encontra o que sobrou (pastas de configurações, pacotes que ele trouxe junto) e mostra uma lista; só o que estiver marcado é removido.

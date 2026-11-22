@@ -1,0 +1,119 @@
+{
+  "wc00180f3": {
+    "es": "Mantener frecuencias bajo carga",
+    "pt": "Manter frequências sob carga",
+    "zh": "负载下保持频率",
+    "ko": "부하 시 클럭 유지",
+    "th": "คงความถี่ไว้ขณะมีโหลด",
+    "vi": "Giữ xung nhịp khi tải nặng",
+    "id": "Tahan frekuensi saat beban"
+  },
+  "w42befa66": {
+    "es": "El controlador no baja la tarjeta un escalón en medio de un juego: la memoria mantiene su frecuencia máxima. En reposo las frecuencias siguen bajando",
+    "pt": "O driver não baixa a placa um degrau no meio de um jogo: a memória mantém a frequência máxima. Em repouso as frequências continuam caindo",
+    "zh": "驱动不会在游戏中途把显卡降一档：显存保持最高频率。空闲时频率仍会下降",
+    "ko": "드라이버가 게임 도중 그래픽카드를 한 단계 낮추지 않습니다. 메모리는 최고 클럭을 유지합니다. 유휴 상태에서는 클럭이 그대로 내려갑니다",
+    "th": "ไดรเวอร์จะไม่ลดการ์ดลงหนึ่งขั้นระหว่างเล่นเกม: หน่วยความจำคงความถี่สูงสุดไว้ ขณะว่างความถี่ยังคงลดลงตามปกติ",
+    "vi": "Driver không hạ card xuống một nấc giữa lúc chơi game: bộ nhớ giữ xung nhịp cao nhất. Khi rảnh, xung nhịp vẫn giảm xuống",
+    "id": "Driver tidak menurunkan kartu satu tingkat di tengah game: memori menahan frekuensi tertingginya. Saat diam frekuensi tetap turun"
+  },
+  "we35bb9e9": {
+    "es": "Activado. Un juego que ya está abierto puede aplicarlo solo tras reiniciarlo",
+    "pt": "Ativado. Um jogo que já está aberto pode aplicar isso só depois de reiniciado",
+    "zh": "已开启。已在运行的游戏可能需要重启后才会生效",
+    "ko": "켜짐. 이미 실행 중인 게임은 다시 시작해야 적용될 수 있습니다",
+    "th": "เปิดแล้ว เกมที่เปิดอยู่แล้วอาจต้องเริ่มใหม่จึงจะได้ผล",
+    "vi": "Đã bật. Game đang chạy có thể chỉ nhận sau khi khởi động lại",
+    "id": "Aktif. Game yang sudah berjalan mungkin baru menerapkannya setelah dimulai ulang"
+  },
+  "wadda3498": {
+    "es": "Simulación: no se escribe nada en el controlador",
+    "pt": "Simulação: nada é gravado no driver",
+    "zh": "模拟：不会向驱动写入任何内容",
+    "ko": "시뮬레이션: 드라이버에 아무것도 쓰지 않습니다",
+    "th": "การจำลอง: ไม่มีการเขียนอะไรลงไดรเวอร์",
+    "vi": "Mô phỏng: không ghi gì vào driver",
+    "id": "Simulasi: tidak ada yang ditulis ke driver"
+  },
+  "f4f398e09": {
+    "es": "NVAPI: no existe la función ",
+    "pt": "NVAPI: função inexistente ",
+    "zh": "NVAPI：没有函数 ",
+    "ko": "NVAPI: 함수 없음 ",
+    "th": "NVAPI: ไม่มีฟังก์ชัน ",
+    "vi": "NVAPI: không có hàm ",
+    "id": "NVAPI: tidak ada fungsi "
+  },
+  "f9179d8a6": {
+    "es": "NVAPI no se inició (código ",
+    "pt": "NVAPI não iniciou (código ",
+    "zh": "NVAPI 未能启动（代码 ",
+    "ko": "NVAPI가 시작되지 않음 (코드 ",
+    "th": "NVAPI ไม่เริ่มทำงาน (รหัส ",
+    "vi": "NVAPI không khởi động (mã ",
+    "id": "NVAPI tidak berjalan (kode "
+  },
+  "f1443d8ec": {
+    "es": "perfiles del controlador no disponibles (código ",
+    "pt": "perfis do driver indisponíveis (código ",
+    "zh": "驱动配置文件不可用（代码 ",
+    "ko": "드라이버 프로필을 사용할 수 없음 (코드 ",
+    "th": "ใช้โปรไฟล์ไดรเวอร์ไม่ได้ (รหัส ",
+    "vi": "không dùng được hồ sơ driver (mã ",
+    "id": "profil driver tidak tersedia (kode "
+  },
+  "f2cee0b67": {
+    "es": "no se pudieron leer los perfiles del controlador (código ",
+    "pt": "não foi possível ler os perfis do driver (código ",
+    "zh": "无法读取驱动配置文件（代码 ",
+    "ko": "드라이버 프로필을 읽지 못함 (코드 ",
+    "th": "อ่านโปรไฟล์ไดรเวอร์ไม่ได้ (รหัส ",
+    "vi": "không đọc được hồ sơ driver (mã ",
+    "id": "profil driver tidak terbaca (kode "
+  },
+  "fcbdde8fa": {
+    "es": "no hay perfil global (código ",
+    "pt": "não há perfil global (código ",
+    "zh": "没有全局配置文件（代码 ",
+    "ko": "전역 프로필 없음 (코드 ",
+    "th": "ไม่มีโปรไฟล์ส่วนกลาง (รหัส ",
+    "vi": "không có hồ sơ chung (mã ",
+    "id": "tidak ada profil global (kode "
+  },
+  "fbad382ad": {
+    "es": "no se pudo leer (código ",
+    "pt": "não foi possível ler (código ",
+    "zh": "无法读取（代码 ",
+    "ko": "읽지 못함 (코드 ",
+    "th": "อ่านไม่ได้ (รหัส ",
+    "vi": "không đọc được (mã ",
+    "id": "tidak terbaca (kode "
+  },
+  "fb079a76d": {
+    "es": "el controlador no aceptó el ajuste (código ",
+    "pt": "o driver não aceitou a configuração (código ",
+    "zh": "驱动未接受该设置（代码 ",
+    "ko": "드라이버가 설정을 받아들이지 않음 (코드 ",
+    "th": "ไดรเวอร์ไม่รับการตั้งค่า (รหัส ",
+    "vi": "driver không nhận thiết lập (mã ",
+    "id": "driver tidak menerima pengaturan (kode "
+  },
+  "f94e0b3ab": {
+    "es": "el controlador no guardó el ajuste (código ",
+    "pt": "o driver não salvou a configuração (código ",
+    "zh": "驱动未保存该设置（代码 ",
+    "ko": "드라이버가 설정을 저장하지 않음 (코드 ",
+    "th": "ไดรเวอร์ไม่บันทึกการตั้งค่า (รหัส ",
+    "vi": "driver không lưu thiết lập (mã ",
+    "id": "driver tidak menyimpan pengaturan (kode "
+  },
+  "we7cfd383": {
+    "es": "mantiene frecuencias",
+    "pt": "mantém frequências",
+    "zh": "保持频率",
+    "ko": "클럭 유지",
+    "th": "คงความถี่",
+    "vi": "giữ xung nhịp",
+    "id": "menahan frekuensi"
+  }
+}
