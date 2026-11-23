@@ -187,8 +187,8 @@ w	ce91dc4b	Si no, el botón de cierre sale del programa y la curva automática d
 w	18a014bb	Carpeta de ajustes
 w	8dc7408c	Iniciador
 w	4f5a185f	Ejecutor
-w	0240eda2	El humano: ideas, pruebas, reinicios y paciencia
-w	a86c7417	Claude: código, curvas y más de 40 rondas de Prime95
+w	3d906c82	El humano: ideas, pruebas, cientos de reinicios y paciencia
+w	71756099	Claude: código, curvas y más de 400 rondas de Prime95
 w	dfc4f89b	Ningún núcleo resultó dañado. Bueno, casi.
 w	aa134bc7	Salir
 w	bc6797f7	Aplicar curva
@@ -803,6 +803,36 @@ w	c2f30b91	Desplazamiento de la demanda de voltaje del dominio SYS
 w	4b00aafb	Desplazamiento de la demanda de voltaje del bloque de vídeo
 w	f96f8e64	el controlador no expone el desplazamiento de voltaje
 w	8a507571	el controlador no mantuvo el desplazamiento de voltaje
+w	c57f8b89	un día
+w	c205a7a6	h
+w	c08a89c2	no es la ruta de una carpeta
+w	95d1bc68	una unidad entera
+w	df4e9864	una carpeta protegida
+w	7d681608	Las carpetas personales (Escritorio, Documentos, Descargas, Imágenes, Música, Vídeos, OneDrive) no se examinan
+w	22652644	Se omiten los archivos que los programas tienen abiertos ahora
+w	4e9256c0	Las carpetas se quedan: solo se borra su contenido y las carpetas vacías de dentro
+w	3dfaad26	No se siguen los enlaces a otras carpetas (junction, symlink)
+w	14260092	Los datos de Red Tune y los archivos de trabajo de Claude
+w	47ef6b15	No se puede elegir como carpeta propia una unidad entera, la carpeta del usuario, una carpeta personal, Windows, Program Files, ProgramData ni AppData
+w	6d59100d	Reglas de limpieza de archivos
+w	740accb7	Antigüedad de los archivos
+w	a679f398	Las carpetas Temp y tus carpetas de abajo: se borran los archivos que no han cambiado durante más tiempo que esto
+w	17720117	Informes de errores de Windows y registros de instalación más antiguos que esto
+w	55f7fc4c	Carpetas propias para limpiar
+w	19db9167	Uno por línea. Una ruta (C:\\Work\\cache, %TEMP%\\build): nada de esa carpeta. Una máscara (*.iso, *.blend): archivos y carpetas con ese nombre en cualquier sitio. Una palabra (Steam): todo lo que la tenga en la ruta.
+w	aaccc14d	Carpetas que también se pueden limpiar, una por línea (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). Se borran los archivos más antiguos que la edad de los temporales; la carpeta se queda. Cada carpeta es una fila propia con su interruptor.
+w	a2762f1a	No añadidas:
+w	01243880	Vacío: se limpia todo lo que tenga la antigüedad suficiente
+w	62700b89	Vacío: solo las carpetas de la lista de la página
+w	e822e6cb	 · y 
+w	3711d962	Secciones en este dispositivo
+w	fbeab745	Al iniciar y tras la suspensión: si el controlador olvidó el preajuste, Red Tune lo vuelve a poner
+w	6240665f	Restaurar la curva elegida
+w	2290cd9c	Al iniciar Windows, tras la suspensión y al cambiar la energía: si la curva se perdió, Red Tune la restaura. Requiere inicio automático
+w	300a55da	Rango de voltaje del núcleo (NVVDD)
+w	76a711f9	Funciona entre
+w	61b69d46	límite de sobrevoltaje
+w	26851e1a	XBAR, SYS y Video están en la misma línea
 w	61afc5b6	Modo gráfico
 w	d959bb19	Híbrido ahorra batería; discreto ejecuta todo en la RTX
 w	0b911c29	Híbrido
@@ -1370,7 +1400,7 @@ w	03c9d5bd	Ahora no se oyen todas las bandas: la escucha está activada (S o M e
 w	fad83bfd	05 Nuevo
 w	d9f878b3	01 Mío
 w	96ea2048	Las funciones de ASUS aún no se han probado en un portátil real
-w	ade0bed6	Están escritas a partir del informe de un solo modelo. Si un interruptor no funcionó, envía el informe desde “Componentes”: la respuesta del firmware está en el registro
+w	9a32f417	Están escritas a partir del informe de un solo modelo. Si un interruptor no funcionó, envía el informe desde “Acerca de”: la respuesta del firmware está en el registro
 w	cd7189bc	Modo de rendimiento
 w	b4bbef0e	Rendimiento
 w	b90efa8e	Silencioso: menos ruido; rendimiento: más potencia
@@ -1435,6 +1465,8 @@ w	e9e50a14	el controlador no entrega las curvas de los dominios
 w	38b959fb	esta tarjeta no tiene curvas XBAR, SYS ni Video
 w	e0aaf867	Frecuencias ahora
 w	11e0cacc	Núcleo
+f	7cb355d8	Tu carpeta Temp: archivos de más de 
+f	c911db3c	 : archivos de más de 
 f	4f398e09	NVAPI: no existe la función 
 f	9179d8a6	NVAPI no se inició (código 
 f	1443d8ec	perfiles del controlador no disponibles (código 
@@ -1771,7 +1803,7 @@ f	76e93c22	» abierto, no aplicado
 f	9ac8e248	» ya está en la tarjeta
 f	296223f3	preajuste
 f	2e21f1d9	el controlador respondió «aceptado», pero la curva no cambió
-f	e61cad62	\n\n«Aplicar al iniciar» está activado: tras un reinicio, el preajuste «
+f	be766e05	\n\n«Aplicar automáticamente» está activado: tras un reinicio, el preajuste «
 f	58bcba36	el controlador NVIDIA no respondió
 f	322ae317	no se encontró ninguna tarjeta NVIDIA
 f	45e82377	el controlador no ofrece la curva V/F (la función de Afterburner)

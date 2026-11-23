@@ -77,7 +77,7 @@ namespace RedTune
             if (Hw.Curve) // the curve goes to the SMU of a Ryzen only
                 curve.EnsureFirstPreset(() =>
                 {
-                    if (!Safety.SafeStart && settings.ApplyOnStart && !tuner.HasRun && curve.Presets.Any(p => !p.BuiltIn)) curve.ApplyActive("запуск", ok => { if (!ok) Warn("Кривая не применилась при запуске: " + curve.LastError); });
+                    if (!Safety.SafeStart && settings.ApplyOnStart && !tuner.HasRun && curve.Presets.Any(p => !p.BuiltIn)) curve.EnsureActive("запуск", ok => { if (!ok) Warn("Кривая не применилась при запуске: " + curve.LastError); });
                 });
             SystemEvents.PowerModeChanged += OnPowerMode;
             if (Hw.LenovoPower) power.Start(); // modes and presets come from Lenovo's GameZone
@@ -85,7 +85,7 @@ namespace RedTune
             if (Hw.Fans) fans.Start(); // the app's own fan curves need the firmware to take RPM
             AmdPower.ApplySaved(settings, "запуск"); // AMD laptops without Lenovo: the saved limits
             if (Hw.AsusFw && !Safety.SafeStart) Asus.ApplySaved(settings); // ASUS: the charge limit and the mode picked here (the firmware does not keep them)
-            if (Hw.PageFits("gpu")) { GpuStore.Load(); GpuStore.ApplySaved(settings, "запуск"); } // the NVIDIA curve (the driver forgets it on reboot)
+            if (Hw.PageFits("gpu")) { GpuStore.Load(); GpuAuto("запуск"); } // the NVIDIA curve (the driver forgets it on reboot)
             ColorKeep.Start(settings); // 20.11: automatic colour management stays off where the user turned it off
             if (!Safety.SafeStart) DisplayAuto.ApplyLater(settings, "запуск"); // 20.11: the built-in screen's rate for the power source
             AudioFx.Init(); // 18.11: the sound settings into the file the effect reads, for the devices it is attached to
@@ -117,8 +117,10 @@ namespace RedTune
             SystemEvents.SessionEnding += (s, e) => { Safety.Stable(); Ram.MemTest.Abort(); BlackBox.Stop(); }; // a sign-out or shutdown in the first minutes is not a crash; and it is a clean end for the recorder
             CheckRamAfterReboot();
             System.Threading.Tasks.Task.Run(() => Lenovo.ApplyPendingIgpu());
-            power.CurveWanted += OnCurveWanted;
-            power.GpuWanted += OnGpuWanted;
+            // 23.11: the mode found at the start follows the pages' «Применять автоматически» like the rest of the start;
+            // a mode or preset picked later always brings its curve and graphics preset
+            power.CurveWanted += (n, atStart) => { if (atStart && !settings.ApplyOnStart) { Store.Log("запуск: кривая режима «" + n + "» не применяется сама (выключено «Применять автоматически»)"); return; } OnCurveWanted(n); };
+            power.GpuWanted += (n, atStart) => { if (atStart && !GpuStore.ApplyOnStart) { Store.Log("запуск: пресет видеокарты режима «" + n + "» не применяется сам (выключено «Применять автоматически»)"); return; } OnGpuWanted(n, atStart ? "запуск" : "режим питания"); };
             PowerService.FnQCustom = () => settings.FnQCustom;
             power.ModeChanged += m =>
             {
@@ -258,9 +260,9 @@ namespace RedTune
         void OnPowerMode(object sender, PowerModeChangedEventArgs e)
         {
             if (e.Mode == PowerModes.Resume) AmdPower.ApplySaved(settings, "после сна"); // AMD laptops without Lenovo: the limits again
-            if (e.Mode == PowerModes.Resume && Hw.PageFits("gpu")) GpuStore.ApplySaved(settings, "после сна");
+            if (e.Mode == PowerModes.Resume && Hw.PageFits("gpu")) GpuAuto("после сна");
             if (e.Mode == PowerModes.Resume) { DisplayAuto.ApplyLater(settings, "после сна"); ColorKeep.Later("после сна"); } // 20.11: the screen's rate for the power source
-            if (e.Mode == PowerModes.Resume && settings.ApplyOnResume) Later(8000, "после сна");
+            if (e.Mode == PowerModes.Resume && settings.ApplyOnStart) Later(8000, "после сна");
             else if (e.Mode == PowerModes.StatusChange)
             {
                 var line = SystemInformation.PowerStatus.PowerLineStatus;
@@ -268,8 +270,7 @@ namespace RedTune
                 lastLine = line;
                 if (!PowerService.LltRunning) Osd.Show("ac", line == PowerLineStatus.Online ? "Зарядка подключена" : "Зарядка отключена");
                 DisplayAuto.ApplyLater(settings, line == PowerLineStatus.Online ? "зарядка" : "батарея");
-                if (line == PowerLineStatus.Online && settings.ApplyOnAc) Later(3000, "зарядка");
-                else if (line == PowerLineStatus.Offline && settings.ApplyOnBattery) Later(3000, "батарея");
+                if (settings.ApplyOnStart) Later(3000, line == PowerLineStatus.Online ? "зарядка" : "батарея");
             }
         }
 
@@ -280,7 +281,7 @@ namespace RedTune
             {
                 t.Dispose();
                 if (!curve.Presets.Any(p => !p.BuiltIn) || tuner.Running || Safety.SafeStart || !Hw.Curve) return; // the auto-tune sets its own values; safe start applies nothing
-                curve.ApplyActive(source, ok => { if (!ok) Warn("Кривая не применилась (" + source + "): " + curve.LastError); else Osd.Show("curve", "Кривая «" + curve.Active.Name + "» применена"); });
+                curve.EnsureActive(source, ok => { if (!ok) Warn("Кривая не применилась (" + source + "): " + curve.LastError); else Osd.Show("curve", "Кривая «" + curve.Active.Name + "» применена"); });
             };
             t.Start();
         }
@@ -292,7 +293,17 @@ namespace RedTune
         // wrote «03» and «Default» at the same time: memory of one, curve and hold of the other, interleaved
         readonly object gpuGate = new object();
         int gpuSeq;
-        void OnGpuWanted(string name)
+        // 23.11: start, after sleep, after a safe start: the active «Видеокарта» preset when «Применять автоматически» is on, through
+        // the same one-at-a-time path as the power modes (it used to be a write of its own and could cross a mode's preset)
+        void GpuAuto(string why)
+        {
+            if (!GpuStore.ApplyOnStart || Hw.Simulated || string.IsNullOrEmpty(GpuStore.Active)) return;
+            OnGpuWanted(GpuStore.Active, why);
+        }
+
+        void OnGpuWanted(string name) { OnGpuWanted(name, "режим питания"); }
+
+        void OnGpuWanted(string name, string why)
         {
             if (!Hw.Nvidia || !settings.Expert || Safety.SafeStart || gpuApplying == name) return;
             GpuStore.Load();
@@ -305,10 +316,11 @@ namespace RedTune
               string e;
               lock (gpuGate)
               {
-                if (my != System.Threading.Volatile.Read(ref gpuSeq)) { Store.Log("режим питания: пресет видеокарты «" + name + "» пропущен, выбран другой"); e = "skip"; }
+                if (my != System.Threading.Volatile.Read(ref gpuSeq)) { Store.Log(why + ": пресет видеокарты «" + name + "» пропущен, выбран другой"); e = "skip"; }
                 else
                 {
                 var c = Gpu.Read();
+                GpuStore.KeepStock(c); // right after a reboot the curve is the factory one: the moment to keep it
                 e = c == null ? (Gpu.Error ?? "кривая не прочиталась") : p.Delta.Length != c.Count ? "пресет снят с другой кривой"
                     : c.Delta.SequenceEqual(p.Delta) && (Gpu.ReadMemory() ?? new[] { p.Memory })[0] == p.Memory ? "" // already on the card
                     : Gpu.WriteAll(p.Delta, p.Memory);
@@ -328,7 +340,7 @@ namespace RedTune
                     var volt = GpuVolt.Read();
                     if (volt != null ? volt.Value != p.Volt : p.Volt != 0) { var ve = GpuVolt.Ensure(p.Volt); e = ve ?? (e == "" ? null : e); }
                 }
-                Store.Log("режим питания: пресет видеокарты «" + name + "» " + (e == null ? "применён" : e == "" ? "уже стоит" : e));
+                Store.Log(why + ": пресет видеокарты «" + name + "» " + (e == null ? "применён" : e == "" ? "уже стоит" : e));
                 }
               }
                 try
@@ -371,9 +383,9 @@ namespace RedTune
         void ApplyAfterSafeStart()
         {
             if (Hw.Curve && settings.ApplyOnStart && !tuner.Running && curve.Presets.Any(p => !p.BuiltIn))
-                curve.ApplyActive("после безопасного запуска", ok => { if (!ok) Warn("Кривая не применилась: " + curve.LastError); else Osd.Show("curve", "Кривая «" + curve.Active.Name + "» применена"); });
+                curve.EnsureActive("после безопасного запуска", ok => { if (!ok) Warn("Кривая не применилась: " + curve.LastError); else Osd.Show("curve", "Кривая «" + curve.Active.Name + "» применена"); });
             AmdPower.ApplySaved(settings, "после безопасного запуска");
-            if (Hw.PageFits("gpu")) GpuStore.ApplySaved(settings, "после безопасного запуска");
+            if (Hw.PageFits("gpu")) GpuAuto("после безопасного запуска");
             if (Hw.LenovoPower && power.Mode == Lenovo.Custom && power.Active != null) power.Apply(power.Active);
         }
 

@@ -220,7 +220,12 @@ namespace RedTune
             {
                 var exe = Startup.ExePath(p);
                 if (!string.IsNullOrEmpty(exe) && (exe.StartsWith(Pf, StringComparison.OrdinalIgnoreCase) || exe.StartsWith(Pf86, StringComparison.OrdinalIgnoreCase)))
-                    folder(Path.GetDirectoryName(exe));
+                {
+                    // 23.11: a path from the registry with a character Path does not take threw here, outside folder's own try
+                    // (the same as CleanPage.AppFolder's crash of 22.11) and ended the whole search
+                    string dir = null; try { dir = Path.GetDirectoryName(exe); } catch { }
+                    folder(dir);
+                }
             }
             // name folders in the usual places, also under the publisher's folder
             var rules = UninstRules.Current; // 22.11: «искать ещё здесь» — the user's own folders for programs

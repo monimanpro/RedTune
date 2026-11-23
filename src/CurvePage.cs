@@ -15,7 +15,7 @@ namespace RedTune
         readonly FlatButton readBtn = new FlatButton("Прочитать"), historyBtn = new FlatButton("Открыть"), allCurvesBtn = new FlatButton("Все ядра");
         readonly Pill livePill = new Pill();
         readonly GridCard card;
-        readonly Toggle onStart = new Toggle(), onAc = new Toggle(), onBattery = new Toggle(), onResume = new Toggle();
+        readonly Toggle onStart = new Toggle();
         CurvePreset selected;
         readonly PageTabs tabs = new PageTabs(0, "Кривая", "Автотюн", "Сторож");
         readonly Tuner tuner;
@@ -42,24 +42,16 @@ namespace RedTune
                     f.ShowDialog(FindForm());
             };
             Section("Применять автоматически");
-            Row("При запуске Windows", "Нужен автозапуск программы (вкладка «Настройки»)", onStart);
-            // a desktop has neither a charger nor a battery
-            var acRow = Row("При подключении зарядки", null, onAc);
-            var batRow = Row("При работе от батареи", null, onBattery);
-            if (Hw.Desktop) acRow.Visible = batRow.Visible = false;
-            Row("После выхода из сна", null, onResume);
+            // 23.11 (the user): one switch instead of start / charger / battery / sleep; the curve is checked and written only
+            // when the CPU lost it (CurveService.EnsureActive)
+            Row("Возвращать выбранную кривую", "При запуске Windows, после сна и смене питания: если кривая слетела, Red Tune вернёт её. Нужен автозапуск", onStart);
             historyRow = Row("История изменений", "Каждое применение записывается, любой прошлый набор можно вернуть", historyBtn);
             tuner.Changed += () => { if (IsHandleCreated) BeginInvoke((Action)ShowTune); };
             ShowTune();
 
             var s = curve.Settings;
-            onStart.Set(s.ApplyOnStart); onAc.Set(s.ApplyOnAc); onBattery.Set(s.ApplyOnBattery); onResume.Set(s.ApplyOnResume);
-            EventHandler save = (o, e) =>
-            {
-                s.ApplyOnStart = onStart.Checked; s.ApplyOnAc = onAc.Checked; s.ApplyOnBattery = onBattery.Checked; s.ApplyOnResume = onResume.Checked;
-                Store.SaveSettings(s);
-            };
-            foreach (var t in new[] { onStart, onAc, onBattery, onResume }) t.CheckedChanged += save;
+            onStart.Set(s.ApplyOnStart);
+            onStart.CheckedChanged += (o, e) => { s.ApplyOnStart = onStart.Checked; Store.SaveSettings(s); };
 
             presetBtn.Click += (o, e) => ShowPresetMenu();
             saveBtn.Click += (o, e) => SavePreset();
@@ -291,7 +283,14 @@ namespace RedTune
             }
             if (!dirty || !selected.BuiltIn) { curve.Settings.ActivePreset = selected.Name; Store.SaveSettings(curve.Settings); }
             applyBtn.Enabled = false; livePill.Set("применяю…", PillKind.Muted);
-            curve.Apply(v, selected.Name + (dirty && selected.BuiltIn ? " (изменён)" : ""), "вручную", ok => { Select(selected); card.Grid.Load(v, selected.Values); seen = State(); UpdateButtons(); });
+            var shown = selected.Name;
+            curve.Apply(v, selected.Name + (dirty && selected.BuiltIn ? " (изменён)" : ""), "вручную", ok =>
+            {
+                Select(selected); card.Grid.Load(v, selected.Values); seen = State(); UpdateButtons();
+                // 23.11 (the user): «Применение кривой» in the notifications covers this button too, as it does the mini panel and
+                // the power modes; a failure is on the page itself (the pill)
+                if (ok) Osd.Show("curve", "Кривая «" + shown + "» применена");
+            });
         }
 
         void SavePreset()

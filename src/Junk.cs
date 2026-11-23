@@ -42,11 +42,14 @@ namespace RedTune
         public static List<JunkCategory> Categories()
         {
             var temp = Path.GetTempPath().TrimEnd('\\');
-            return new List<JunkCategory>
+            // 23.11: the ages, the «never touch» list and the user's own folders come from «Правила» (JunkRules.cs)
+            var rules = JunkRules.Current;
+            int h = rules.TempHours; var age = JunkRules.Age(h);
+            var list = new List<JunkCategory>
             {
-                new JunkCategory { Key = "temp", Name = "Временные файлы", Sub = "Ваша папка Temp — файлы старше суток", MinAgeHours = 24,
-                    Folders = () => new[] { temp }, Skip = p => p.StartsWith(Path.Combine(temp, "claude") + "\\", StringComparison.OrdinalIgnoreCase) }, // Claude's working files
-                new JunkCategory { Key = "wintemp", Name = "Временные файлы Windows", Sub = "C:\\Windows\\Temp — файлы старше суток", MinAgeHours = 24,
+                new JunkCategory { Key = "temp", Name = "Временные файлы", Sub = "Ваша папка Temp — файлы старше " + age, MinAgeHours = h,
+                    Folders = () => new[] { temp } },
+                new JunkCategory { Key = "wintemp", Name = "Временные файлы Windows", Sub = Path.Combine(Win, "Temp") + " — файлы старше " + age, MinAgeHours = h,
                     Folders = () => new[] { Path.Combine(Win, "Temp") } },
                 new JunkCategory { Key = "recycle", Name = "Корзина", Sub = "Всё, что в корзине на всех дисках", Recycle = true },
                 new JunkCategory { Key = "update", Name = "Кэш обновлений Windows", Sub = "Скачанные установщики уже установленных обновлений",
@@ -55,7 +58,7 @@ namespace RedTune
                     Folders = () => BrowserCaches(Path.Combine(Local, @"Google\Chrome\User Data")).Concat(BrowserCaches(Path.Combine(Local, @"Microsoft\Edge\User Data"))) },
                 new JunkCategory { Key = "wer", Name = "Отчёты об ошибках и логи", Sub = "Отчёты Windows об ошибках программ и старые журналы установки",
                     Folders = () => new[] { Path.Combine(ProgramData, @"Microsoft\Windows\WER\ReportArchive"), Path.Combine(ProgramData, @"Microsoft\Windows\WER\ReportQueue"), Path.Combine(Local, @"Microsoft\Windows\WER"), Path.Combine(Win, @"Logs\CBS") },
-                    MinAgeHours = 24 * 7 },
+                    MinAgeHours = 24 * rules.LogDays },
                 new JunkCategory { Key = "thumbs", Name = "Кэш миниатюр", Sub = "Картинки-превью в проводнике, пересоздаются сами",
                     Files = () => SafeFiles(Path.Combine(Local, @"Microsoft\Windows\Explorer")).Where(f => Path.GetFileName(f).StartsWith("thumbcache_", StringComparison.OrdinalIgnoreCase) || Path.GetFileName(f).StartsWith("iconcache_", StringComparison.OrdinalIgnoreCase)) },
                 new JunkCategory { Key = "shaders", Name = "Кэш шейдеров", Sub = "NVIDIA, AMD, DirectX. После удаления игры первый раз чуть подлагивают, пока соберут заново", DefaultOn = false,
@@ -66,6 +69,21 @@ namespace RedTune
                 new JunkCategory { Key = "winold", Name = "Прошлая версия Windows", Sub = "Папка Windows.old после большого обновления. Удаляется штатной «Очисткой диска»", InfoOnly = true, DefaultOn = false,
                     Folders = () => new[] { Path.Combine(Path.GetPathRoot(Win), "Windows.old") } },
             };
+            // the user's own folders, right after the temp folders, each a row of its own
+            int at = 2;
+            foreach (var dir in rules.ExtraFolders())
+            {
+                var d = dir;
+                list.Insert(at++, new JunkCategory { Key = "extra:" + d, Name = Path.GetFileName(d), Sub = d + " — файлы старше " + age, MinAgeHours = h, Folders = () => new[] { d } });
+            }
+            // never touched in any category: Claude's working files, Red Tune's own data, the «never touch» list
+            var claude = Path.Combine(temp, "claude") + "\\"; var own = Store.DataDir.TrimEnd('\\') + "\\";
+            foreach (var c in list)
+            {
+                var skip = c.Skip;
+                c.Skip = p => p.StartsWith(claude, StringComparison.OrdinalIgnoreCase) || p.StartsWith(own, StringComparison.OrdinalIgnoreCase) || rules.Blocked(p) || skip(p);
+            }
+            return list;
         }
 
         // ---------- walking the folders ----------

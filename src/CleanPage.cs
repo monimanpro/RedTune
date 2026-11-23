@@ -33,19 +33,15 @@ namespace RedTune
             FillClean(0); FillClean(1);
             Group(0, first); first = Controls.Count;
 
-            filesRow = Row("Ненужные файлы", FilesSub, scanBtn, deleteBtn);
+            // 23.11: «Правила» — the ages, «never touch», the user's own folders (JunkRules.cs); after a change the rows are made
+            // again and the disk scanned again
+            var junkRulesBtn = new FlatButton("Правила");
+            filesRow = Row("Ненужные файлы", FilesSub, scanBtn, junkRulesBtn, deleteBtn);
             deleteBtn.Enabled = false;
             scanBtn.Click += (o, e) => ScanFiles();
             deleteBtn.Click += (o, e) => DeleteFiles();
-            foreach (var c in Junk.Categories())
-            {
-                var t = new Toggle(); t.Set(c.DefaultOn && !c.InfoOnly); t.Enabled = false;
-                var size = new Pill(); size.Set("…", PillKind.Muted); sizes[c] = size;
-                var row = Row(c.Name, c.Sub, size, t);
-                if (c.InfoOnly) t.Visible = false;
-                t.CheckedChanged += (o, e) => UpdateTotal();
-                cats.Add(Tuple.Create(c, row, t));
-            }
+            junkRulesBtn.Click += (o, e) => { if (!scanning && JunkRulesDialog.Edit(FindForm())) RebuildCats(); };
+            foreach (var c in Junk.Categories()) MakeCat(c, null);
             Group(1, first); first = Controls.Count;
 
             // removing programs: the uninstaller, then what it left; leftovers of programs removed earlier
@@ -60,6 +56,34 @@ namespace RedTune
 
             ShowTab(tab);
             VisibleChanged += (o, e) => { if (Visible) Load(tab); };
+        }
+
+        // a category's row: the size found and its switch (before: where it goes when the rows are made again, null at the start)
+        void MakeCat(JunkCategory c, Control before)
+        {
+            var t = new Toggle(); t.Set(c.DefaultOn && !c.InfoOnly); t.Enabled = false;
+            var size = new Pill(); size.Set("…", PillKind.Muted); sizes[c] = size;
+            var row = before == null ? Row(c.Name, c.Sub, size, t) : InsertBefore(before, new Row(c.Name, c.Sub, size, t));
+            if (c.InfoOnly) t.Visible = false;
+            t.CheckedChanged += (o, e) => UpdateTotal();
+            cats.Add(Tuple.Create(c, row, t));
+            if (before != null) { groups[1].Add(row); row.Visible = tab == 1; }
+        }
+
+        // the rules changed: the rows of the categories made again (the switches keep what they were, by key), then a new scan
+        void RebuildCats()
+        {
+            var was = cats.ToDictionary(x => x.Item1.Key, x => x.Item3.Checked);
+            foreach (var x in cats) { groups[1].Remove(x.Item2); Remove(x.Item2); }
+            cats.Clear(); sizes.Clear();
+            foreach (var c in Junk.Categories())
+            {
+                MakeCat(c, appsRow);
+                bool on; if (was.TryGetValue(c.Key, out on)) cats[cats.Count - 1].Item3.Set(on);
+            }
+            scanned = false; deleteBtn.Enabled = false;
+            Relayout();
+            ScanFiles();
         }
 
         // ---------- tabs: «Оперативная память» | «Файлы на диске» | «Удаление программ» ----------

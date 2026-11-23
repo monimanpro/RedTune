@@ -25,7 +25,7 @@ body:
     id: report
     attributes:
       label: System report
-      description: Settings → Components → «Copy report».
+      description: About → «Copy report».
       render: text
     validations:
       required: true

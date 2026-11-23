@@ -8,8 +8,8 @@ using System.Windows.Forms;
 [assembly: AssemblyTitle("Red Tune")]
 [assembly: AssemblyDescription("Питание, кривая и настройки ноутбуков на AMD Ryzen")]
 [assembly: AssemblyProduct("Red Tune")]
-[assembly: AssemblyVersion("0.4.9.0")]
-[assembly: AssemblyFileVersion("0.4.9.0")]
+[assembly: AssemblyVersion("0.5.0.0")]
+[assembly: AssemblyFileVersion("0.5.0.0")]
 
 namespace RedTune
 {
@@ -84,6 +84,14 @@ namespace RedTune
                 var o = new System.Text.StringBuilder("files " + n + " · manifest: " + string.Join(" | ", Backup.ManifestOf(args[i + 1]) ?? new string[0]) + " · same machine " + Backup.SameMachine(Backup.ManifestOf(args[i + 1])) + "\r\n");
                 using (var z = System.IO.Compression.ZipFile.OpenRead(args[i + 1])) foreach (var e in z.Entries) o.AppendLine(e.FullName + "  " + e.Length);
                 System.IO.File.WriteAllText(args[i + 1] + ".txt", o.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
+            // --rules-undo-check <file>: Ctrl+Z / Ctrl+Y and the sliders of the two rules dialogs (23.11), nothing saved
+            i = at("--rules-undo-check");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                Theme.Init(100); L.Set("ru"); string res;
+                try { res = JunkRulesDialog.Check() + UninstRulesDialog.Check(); } catch (Exception ex) { res = "FAIL " + ex; }
+                System.IO.File.WriteAllText(args[i + 1], res, new System.Text.UTF8Encoding(true)); return 0;
             }
             // --crash-check <file>: a made-up exception with a real stack through Crash.Build and Crash.BugUrl, nothing written
             // to the data folder: the record (names taken out) and how long the filled-in Bug form's address gets
@@ -511,6 +519,18 @@ namespace RedTune
                 if (i + 2 < args.Length) { var one = all.FirstOrDefault(a => a.Name.Equals(args[i + 2], StringComparison.OrdinalIgnoreCase)); sb.AppendLine(); sb.AppendLine("leftovers of " + args[i + 2] + ":"); if (one != null) foreach (var l in Uninst.Leftovers(one, false)) sb.AppendLine("  " + l.Kind + " · " + l.What); else sb.AppendLine("  (not in the list)"); }
                 System.IO.File.WriteAllText(args[i + 1], sb.ToString(), new System.Text.UTF8Encoding(true)); return 0;
             }
+            // --junk-scan <file>: «Файлы на диске» measured with the saved rules, every category with its size; deletes nothing (23.11)
+            i = at("--junk-scan");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                var o = new System.Text.StringBuilder(); var jr = JunkRules.Current;
+                o.AppendLine("rules: temp " + jr.TempHours + " h, logs " + jr.LogDays + " d, never [" + string.Join("; ", jr.Never) + "], extra [" + string.Join("; ", jr.Extra) + "]");
+                foreach (var c in Junk.Categories()) { try { Junk.Scan(c); } catch (Exception ex) { o.AppendLine("  error " + ex.Message); } o.AppendLine(c.Key + " · " + c.Name + " · " + c.Sub + " · age " + c.MinAgeHours + " h · " + c.Count + " files · " + Junk.Size(c.Bytes)); }
+                System.IO.File.WriteAllText(args[i + 1], o.ToString(), new System.Text.UTF8Encoding(true)); return 0;
+            }
+            // --junk-rules-png <file> [scale]: the dialog of the file clean-up rules drawn off screen (23.11), a check
+            i = at("--junk-rules-png");
+            if (i >= 0 && i + 1 < args.Length) { int z = 100; if (i + 2 < args.Length) int.TryParse(args[i + 2], out z); Theme.Init(z >= 75 && z <= 300 ? z : 100); int lg = at("--lang"); L.Set(lg >= 0 && lg + 1 < args.Length ? args[lg + 1] : "ru"); JunkRulesDialog.Render(args[i + 1]); return 0; }
             // --uninst-rules-png <file> [scale]: the dialog of the search rules drawn off screen (RT_SCROLL: scrolled), a check
             i = at("--uninst-rules-png");
             if (i >= 0 && i + 1 < args.Length) { int z = 100; if (i + 2 < args.Length) int.TryParse(args[i + 2], out z); Theme.Init(z >= 75 && z <= 300 ? z : 100); int lg = at("--lang"); L.Set(lg >= 0 && lg + 1 < args.Length ? args[lg + 1] : "ru"); UninstRulesDialog.Render(args[i + 1]); return 0; }

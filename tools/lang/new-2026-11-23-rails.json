@@ -1,0 +1,38 @@
+{
+ "w300a55da": {
+  "es": "Rango de voltaje del núcleo (NVVDD)",
+  "pt": "Faixa de tensão do núcleo (NVVDD)",
+  "zh": "核心电压范围（NVVDD）",
+  "ko": "코어 전압 범위 (NVVDD)",
+  "th": "ช่วงแรงดันคอร์ (NVVDD)",
+  "vi": "Dải điện áp nhân (NVVDD)",
+  "id": "Rentang tegangan inti (NVVDD)"
+ },
+ "w76a711f9": {
+  "es": "Funciona entre",
+  "pt": "Funciona entre",
+  "zh": "工作范围",
+  "ko": "작동 범위",
+  "th": "ทำงานในช่วง",
+  "vi": "Hoạt động trong",
+  "id": "Bekerja dalam"
+ },
+ "w61b69d46": {
+  "es": "límite de sobrevoltaje",
+  "pt": "limite de sobretensão",
+  "zh": "过压上限",
+  "ko": "과전압 한계",
+  "th": "ขีดจำกัดแรงดันเกิน",
+  "vi": "giới hạn quá áp",
+  "id": "batas tegangan lebih"
+ },
+ "w26851e1a": {
+  "es": "XBAR, SYS y Video están en la misma línea",
+  "pt": "XBAR, SYS e Video estão na mesma linha",
+  "zh": "XBAR、SYS 和 Video 在同一供电轨上",
+  "ko": "XBAR, SYS, Video도 같은 전원 레일",
+  "th": "XBAR, SYS และ Video อยู่บนรางไฟเดียวกัน",
+  "vi": "XBAR, SYS và Video dùng chung đường cấp này",
+  "id": "XBAR, SYS, dan Video di jalur yang sama"
+ }
+}

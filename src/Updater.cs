@@ -73,16 +73,27 @@ namespace RedTune
             return i;
         }
 
-        // once a day, a minute after the start, if the switch is on; quiet on any error (no network is normal)
+        // once a day if the switch is on: a minute after the start, then looked at every hour while the program runs (23.11: it
+        // used to be the start only, so a laptop left on for a week in the tray never heard of a new version); a check is due 20 h
+        // after the last good one, a failed one (no network is normal) is tried again an hour later; quiet on any error.
+        // found: once per version per run, so the tray note does not come back every day for the same release
+        static System.Threading.Timer daily;
+        static string told;
         public static void StartDaily(Settings s, Action<Info> found)
         {
-            if (!s.UpdateCheck) return;
-            DateTime last; if (DateTime.TryParse(s.UpdateLast, out last) && (DateTime.Now - last).TotalHours < 20) return;
-            System.Threading.Tasks.Task.Delay(60000).ContinueWith(_ =>
+            if (daily != null) return;
+            System.Threading.TimerCallback tick = _ =>
             {
-                try { if (!s.UpdateCheck) return; var i = Check(s); if (Newer(i) && found != null) found(i); }
+                try
+                {
+                    if (!s.UpdateCheck) return;
+                    DateTime last; if (DateTime.TryParse(s.UpdateLast, out last) && (DateTime.Now - last).TotalHours < 20) return;
+                    var i = Check(s);
+                    if (Newer(i) && found != null && i.Version.ToString() != told) { told = i.Version.ToString(); found(i); }
+                }
                 catch (Exception ex) { Store.Log("update check: " + ex.Message); }
-            });
+            };
+            daily = new System.Threading.Timer(tick, null, 60000, 3600000);
         }
 
         // installed by the setup (Program Files) rather than run from a build folder: only then can the setup update it

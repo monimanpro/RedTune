@@ -202,8 +202,8 @@ namespace RedTune
             { "Закрытие окна сворачивает в трей", "Closing the window hides it to the tray" },
             { "Иначе крестик закрывает программу и автоприменение кривой перестаёт работать", "Otherwise the close button quits and the automatic curve stops" },
             { "Папка с настройками", "Settings folder" }, { "Инициатор", "Initiator" }, { "Исполнитель", "Executor" },
-            { "Кожаный — идеи, тесты, перезагрузки и терпение", "The human — ideas, tests, reboots and patience" },
-            { "Claude — код, кривые и 40+ раундов Prime95", "Claude — code, curves and 40+ rounds of Prime95" },
+            { "Кожаный — идеи, тесты, сотни перезагрузок и терпение", "The human — ideas, tests, hundreds of reboots and patience" },
+            { "Claude — код, кривые и 400+ раундов Prime95", "Claude — code, curves and 400+ rounds of Prime95" },
             { "Ни одно ядро не пострадало. Ну, почти.", "No core was harmed. Well, almost." },
             { "Выход", "Exit" }, { "Применить кривую", "Apply curve" },
             // settings, notifications, other programs

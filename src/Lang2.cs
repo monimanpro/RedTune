@@ -362,6 +362,39 @@ namespace RedTune
             { "Сдвиг запроса напряжения видеоблока", "Voltage-demand offset of the video engine" },
             { "драйвер не отдаёт сдвиг напряжения", "the driver does not expose the voltage offset" },
             { "драйвер не сохранил сдвиг напряжения", "the driver did not keep the voltage offset" },
+            // 23.11: «Очистка → Файлы на диске → Правила» (JunkRules.cs)
+            { "суток", "a day" },
+            { "ч", "h" },
+            { "не путь к папке", "not a folder path" },
+            { "целый диск", "a whole drive" },
+            { "защищённая папка", "a protected folder" },
+            { "Личные папки — Рабочий стол, Документы, Загрузки, Изображения, Музыка, Видео, OneDrive — не просматриваются", "Personal folders — Desktop, Documents, Downloads, Pictures, Music, Videos, OneDrive — are not looked at" },
+            { "Файлы, открытые сейчас программами, пропускаются", "Files open in programs right now are skipped" },
+            { "Сами папки остаются: удаляется только то, что в них, и пустые папки внутри", "The folders themselves stay: only what is in them goes, and empty folders inside" },
+            { "Ссылки на другие папки (junction, symlink) не проходятся", "Links to other folders (junctions, symlinks) are not followed" },
+            { "Данные Red Tune и рабочие файлы Claude", "Red Tune's data and Claude's working files" },
+            { "Своей папкой для очистки нельзя сделать диск целиком, папку пользователя, личную папку, Windows, Program Files, ProgramData и AppData", "A whole drive, the user folder, a personal folder, Windows, Program Files, ProgramData and AppData cannot be made a folder to clean" },
+            { "Правила очистки файлов", "File clean-up rules" },
+            { "Возраст файлов", "Age of files" },
+            { "Папки Temp и свои папки ниже: удаляются файлы, не менявшиеся дольше этого", "The Temp folders and your own folders below: files not changed for longer than this are deleted" },
+            { "Отчёты Windows об ошибках и журналы установки старше этого", "Windows error reports and setup logs older than this" },
+            { "Свои папки для очистки", "Your own folders to clean" },
+            { "По одному на строку. Путь (C:\\Work\\cache, %TEMP%\\build) — ничего в этой папке. Маска (*.iso, *.blend) — файлы и папки с таким именем где угодно. Слово (Steam) — всё, где оно есть в пути.", "One per line. A path (C:\\Work\\cache, %TEMP%\\build): nothing in that folder. A mask (*.iso, *.blend): files and folders of that name anywhere. A word (Steam): everything with it in the path." },
+            { "Папки, которые тоже можно чистить, — по одной на строку (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). В них удаляются файлы старше возраста временных файлов, сама папка остаётся. Каждая папка — своя строка с переключателем.", "Folders that may be cleaned too, one per line (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). Files in them older than the age of temporary files are deleted, the folder itself stays. Each folder is a row of its own with a switch." },
+            { "Не добавлены:", "Not added:" },
+            { "Пусто — очищается всё, что подходит по возрасту", "Empty: everything old enough is cleaned" },
+            { "Пусто — только папки из списка на странице", "Empty: only the folders listed on the page" },
+            { " · и ещё ", " · and " },
+            // 23.11: the device and its report moved to «О программе»
+            { "Разделы на этом устройстве", "Sections on this device" },
+            // 23.11: one «Применять автоматически» per page (curve, graphics card)
+            { "При запуске и после сна: если драйвер забыл пресет, Red Tune поставит его снова", "At start and after sleep: if the driver forgot the preset, Red Tune puts it back" },
+            { "Возвращать выбранную кривую", "Bring the chosen curve back" },
+            { "При запуске Windows, после сна и смене питания: если кривая слетела, Red Tune вернёт её. Нужен автозапуск", "At Windows start, after sleep and on a power source change: if the curve was reset, Red Tune puts it back. Needs autostart" },
+            // 23.11: the rails' working voltage range (GpuVolt.Rails)
+            { "Диапазон напряжения ядра (NVVDD)", "Core voltage range (NVVDD)" },
+            { "Работает в", "Works within" }, { "предел перенапряжения", "overvoltage ceiling" },
+            { "XBAR, SYS и Video на этой же шине", "XBAR, SYS and Video are on the same rail" },
             { "Режим работы видеокарты", "Graphics mode" }, { "Гибридный бережёт батарею, дискретный — всё через RTX", "Hybrid saves battery, discrete runs everything on the RTX" },
             { "Гибридный режим", "Hybrid" }, { "Гибридный iGPU", "Hybrid iGPU only" }, { "Дискретная видеокарта", "Discrete GPU" },
             { "Режим видеокарты", "Graphics mode" }, { "Переключить", "Switch" }, { "Перезагрузка", "Restart" },
@@ -719,7 +752,7 @@ namespace RedTune
             { "Сейчас слышны не все полосы: включено прослушивание (S или M на мониторе «По частотам»)", "Not all bands are heard now: listening is on (S or M in the “By frequency” monitor)" },
             { "05 Новый", "05 New" }, { "01 Мой", "01 Mine" },
             { "Функции ASUS ещё не проверены на настоящем ноутбуке", "The ASUS functions have not been tried on a real laptop yet" },
-            { "Написаны по отчёту одной модели. Если переключатель не сработал, пришлите отчёт из «Компонентов»: ответ прошивки записан в журнал", "They are written from the report of one model. If a switch did not work, send the report from “Components”: the firmware’s answer is in the journal" },
+            { "Написаны по отчёту одной модели. Если переключатель не сработал, пришлите отчёт из «О программе»: ответ прошивки записан в журнал", "They are written from the report of one model. If a switch did not work, send the report from “About”: the firmware’s answer is in the journal" },
             { "Режим производительности", "Performance mode" }, { "Производительный", "Performance" },
             { "Тихий — меньше шума, производительный — больше мощности", "Quiet: less noise; performance: more power" },
             { "Предел заряда", "Charge limit" }, { "Батарея заряжается до этого уровня и дольше живёт. 100 % — без предела", "The battery charges up to this level and lives longer. 100 % means no limit" },
@@ -776,6 +809,9 @@ namespace RedTune
 
         static readonly Dictionary<string, string> MoreFragments = new Dictionary<string, string>
         {
+            // 23.11: the clean-up's age of temporary files in a sub (JunkRules.Age follows)
+            { "Ваша папка Temp — файлы старше ", "Your Temp folder — files older than " },
+            { " — файлы старше ", " — files older than " },
             // 23.11: GpuDrs errors (the code number follows)
             { "NVAPI: нет функции ", "NVAPI: no function " }, { "NVAPI не запустился (код ", "NVAPI did not start (code " },
             { "профили драйвера недоступны (код ", "driver profiles unavailable (code " }, { "профили драйвера не прочитались (код ", "driver profiles could not be read (code " },
@@ -1021,7 +1057,7 @@ namespace RedTune
             { "» применён", "» applied" }, { "» открыт, не применён", "» opened, not applied" }, { "» уже стоит на видеокарте", "» is already on the card" },
             { "пресет", "preset" },
             { "драйвер ответил «принято», но кривая не изменилась", "the driver answered «accepted» but the curve did not change" },
-            { "\n\nВключено «Применять при запуске»: после перезагрузки снова применится пресет «", "\n\n«Apply at start» is on: after a reboot the preset «" },
+            { "\n\nВключено «Применять автоматически»: после перезагрузки снова применится пресет «", "\n\n«Apply automatically» is on: after a reboot the preset «" },
             { "драйвер NVIDIA не ответил", "the NVIDIA driver did not answer" },
             { "видеокарта NVIDIA не найдена", "no NVIDIA card found" },
             { "драйвер не отдаёт кривую частот (функция Afterburner)", "the driver does not give the V/F curve (the Afterburner function)" },

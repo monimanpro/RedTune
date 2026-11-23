@@ -36,7 +36,7 @@ namespace RedTune
     class Settings
     {
         public string ActivePreset = "";
-        public bool ApplyOnStart = true, ApplyOnAc = true, ApplyOnBattery = true, ApplyOnResume = true;
+        public bool ApplyOnStart = true; // 23.11: the curve page's one «Применять автоматически» (start, after sleep, another power source)
         public bool CloseToTray = true;
         public int UiScale = 100;
         public string Language = "ru";
@@ -148,9 +148,6 @@ namespace RedTune
                 {
                     case "ActivePreset": s.ActivePreset = v; break;
                     case "ApplyOnStart": s.ApplyOnStart = b; break;
-                    case "ApplyOnAc": s.ApplyOnAc = b; break;
-                    case "ApplyOnBattery": s.ApplyOnBattery = b; break;
-                    case "ApplyOnResume": s.ApplyOnResume = b; break;
                     case "CloseToTray": s.CloseToTray = b; break;
                     case "UiScale": int z; if (int.TryParse(v, out z) && z >= 75 && z <= 200) s.UiScale = z; break;
                     case "P95Path": s.P95Path = v; break;
@@ -229,8 +226,7 @@ namespace RedTune
             Func<bool, string> b = x => x ? "1" : "0";
             File.WriteAllLines(P("settings.ini"), new[]
             {
-                "ActivePreset=" + s.ActivePreset, "ApplyOnStart=" + b(s.ApplyOnStart), "ApplyOnAc=" + b(s.ApplyOnAc),
-                "ApplyOnBattery=" + b(s.ApplyOnBattery), "ApplyOnResume=" + b(s.ApplyOnResume), "CloseToTray=" + b(s.CloseToTray),
+                "ActivePreset=" + s.ActivePreset, "ApplyOnStart=" + b(s.ApplyOnStart), "CloseToTray=" + b(s.CloseToTray),
                 "UiScale=" + s.UiScale, "Language=" + s.Language, "P95Path=" + s.P95Path, "TuneLoad=" + s.TuneLoad, "TuneMode=" + s.TuneMode, "TunePlan=" + s.TunePlan,
                 "FanSafety=" + b(s.FanSafety), "FanCritical=" + b(s.FanCritical), "FanHyst=" + b(s.FanHyst), "FanEma=" + b(s.FanEma),
                 "FanGlide=" + b(s.FanGlide), "FanBoost=" + b(s.FanBoost), "FanSync=" + b(s.FanSync), "FanPredict=" + b(s.FanPredict), "SyncBrightness=" + b(s.SyncBrightness), "HzAuto=" + b(s.HzAuto), "AcmOff=" + s.AcmOff, "HzAc=" + s.HzAc, "HzDc=" + s.HzDc,

@@ -390,6 +390,8 @@ namespace RedTune
         // such control, the row is hidden), voltShown = the value before the change in hand
         readonly Slider volt = new Slider(GpuVolt.MinMv, GpuVolt.MaxMv, 0, L.T("мВ")) { ResetTo = 0, Width = Theme.S(330), WarpToKnob = true };
         Row voltRow;
+        Row railRow;
+        GpuVolt.Rail[] rails; // null: the driver gives no rail limits, the rows are hidden
         int? voltOnCard;
         int voltShown;
         // footer: «Сбросить» = the factory curve on the card now; «Отменить» = the editor back to what is on the card
@@ -439,7 +441,7 @@ namespace RedTune
             if (GpuModeRow.Available) GpuModeRow.Add(this);
             // 23.11 (the user): the presets right after the graphics mode, above the overclocking; still an expert part (added to oc below)
             var presetBlock = new Control[] { Section("Пресеты"), presetRow = Row("Пресет", "", presetBtn, saveBtn, delBtn),
-                Row("Применять при запуске", "Драйвер забывает кривую после перезагрузки: Red Tune вернёт выбранный пресет", onStart) };
+                Row("Применять автоматически", "При запуске и после сна: если драйвер забыл пресет, Red Tune поставит его снова", onStart) };
             Section("Разгон");
             expertHint = Row("Разгон видеокарты", "Кривая частоты и пресеты — в экспертных функциях: Настройки → Основное");
             int ocFrom = Controls.Count;
@@ -460,6 +462,10 @@ namespace RedTune
             memRow = Row("Частота памяти", "Сдвиг частоты видеопамяти", memory);
             holdRow = Row("Держать частоты под нагрузкой", "Драйвер не опускает карту на ступень ниже посреди игры: память держит верхнюю частоту. В простое частоты всё равно падают", hold);
             holdRow.Visible = false;
+            // 23.11: the rails' working voltage range, information only (GpuVolt.Rails), «сейчас» refreshed with the clocks; under
+            // the hold toggle (the user)
+            railRow = Row("Диапазон напряжения ядра (NVVDD)", "Читаю…");
+            railRow.Visible = false;
             hold.CheckedChanged += (o, e) => { if (loading || curve == null) { holdShown = hold.Checked; return; } Remember("hold"); holdShown = hold.Checked; Edited(); };
             Section("Домены частоты");
             domHead = Row("Кривые XBAR, SYS и Video", "Читаю…");
@@ -527,7 +533,8 @@ namespace RedTune
         {
             bool ex = s.Expert;
             domTimer.Enabled = ex && Visible;
-            foreach (var c in oc) if (c != warnRow && c != holdRow && c != voltRow && Array.IndexOf(dvRows, c) < 0) c.Visible = ex;
+            foreach (var c in oc) if (c != warnRow && c != holdRow && c != voltRow && Array.IndexOf(dvRows, c) < 0 && c != railRow) c.Visible = ex;
+            railRow.Visible = ex && rails != null;
             foreach (var r in dvRows) r.Visible = ex && dvOnCard != null;
             holdRow.Visible = ex && holdOnCard != null;
             voltRow.Visible = ex && voltOnCard != null;
@@ -550,8 +557,8 @@ namespace RedTune
             if (keepEdits && undo.Enabled) return; // something is changed and not applied: keep it on screen
             Task.Run(() =>
             {
-                var c = Gpu.Read(); var mem = Gpu.ReadMemory(); var hd = GpuDrs.TryIsOn(); var vd = GpuVolt.Read(); var dvd = GpuVolt.ReadDomains();
-                try { BeginInvoke((Action)(() => { holdOnCard = hd; voltOnCard = vd; dvOnCard = dvd; Show(c, mem); })); } catch { }
+                var c = Gpu.Read(); var mem = Gpu.ReadMemory(); var hd = GpuDrs.TryIsOn(); var vd = GpuVolt.Read(); var dvd = GpuVolt.ReadDomains(); var rl = GpuVolt.Rails();
+                try { BeginInvoke((Action)(() => { ShowRails(rl); holdOnCard = hd; voltOnCard = vd; dvOnCard = dvd; Show(c, mem); })); } catch { }
             });
         }
 
@@ -623,11 +630,13 @@ namespace RedTune
             {
                 var keys = new[] { 0, 1, 2, 21, 4 };
                 var v = keys.Select(k => GpuDomains.Measured(k)).ToArray();
+                var rl = GpuVolt.Rails();
                 try
                 {
                     BeginInvoke((Action)(() =>
                     {
                         domBusy = false;
+                        ShowRails(rl);
                         var parts = new System.Collections.Generic.List<string>();
                         for (int k = 0; k < keys.Length; k++)
                             if (v[k] > 0) parts.Add((keys[k] == 0 ? L.T("Ядро") : keys[k] == 4 ? L.T("Память") : GpuDomains.NameOf(keys[k])) + " " + (v[k] / 1000) + " " + L.T("МГц"));
@@ -636,6 +645,25 @@ namespace RedTune
                 }
                 catch { domBusy = false; }
             });
+        }
+
+        // the working range VMIN…REL (the driver never asks more than REL), what the rail runs at now and the overvoltage ceiling;
+        // 23.11 (the user): one row for both rails; MSVDD gets its own numbers only where the card has it as a separate rail,
+        // otherwise the row says the domains share the core's
+        void ShowRails(GpuVolt.Rail[] rl)
+        {
+            rails = rl != null && rl[0] != null ? rl : null;
+            if (rails != null)
+            {
+                string mv = " " + L.T("мВ");
+                var r = rl[0]; var m = rl[1];
+                railRow.SetSub(L.T("Работает в") + " " + r.Vmin + "–" + r.Rel + mv + " · " + L.T("сейчас") + " " + r.Now + mv
+                    + (r.Ov > r.Rel ? " · " + L.T("предел перенапряжения") + " " + r.Ov + mv : "")
+                    + (m != null ? " · MSVDD " + m.Vmin + "–" + m.Rel + mv + ", " + L.T("сейчас") + " " + m.Now + mv
+                                 : " · " + L.T("XBAR, SYS и Video на этой же шине")));
+            }
+            bool v = rails != null && s.Expert;
+            if (railRow.Visible != v) { railRow.Visible = v; Relayout(); }
         }
 
         void ShowDomains(System.Collections.Generic.List<GpuDomains.Curve> dc)
@@ -825,7 +853,7 @@ namespace RedTune
         {
             if (!s.Expert || curve == null) return;
             if (!ConfirmDialog.Ask(FindForm(), "Сбросить видеокарту", "Вернуть заводскую кривую и частоту памяти? Сдвиги снимаются с видеокарты сразу, сохранённые пресеты остаются." +
-                (GpuStore.ApplyOnStart ? "\n\nВключено «Применять при запуске»: после перезагрузки снова применится пресет «" + GpuStore.Active + "»." : ""), "Сбросить", "Отмена")) return;
+                (GpuStore.ApplyOnStart ? "\n\nВключено «Применять автоматически»: после перезагрузки снова применится пресет «" + GpuStore.Active + "»." : ""), "Сбросить", "Отмена")) return;
             reset.Enabled = apply.Enabled = undo.Enabled = false; bar.SetStatus("Возвращаю заводскую…");
             var zero = new int[curve.Count];
             Task.Run(() =>

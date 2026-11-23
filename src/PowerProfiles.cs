@@ -154,8 +154,10 @@ namespace RedTune
         public string LastError;
         public event Action Changed;
         public event Action<int> ModeChanged; // after the start: Fn+Q, the home page, other programs
-        public event Action<string> CurveWanted; // a curve preset the mode or the preset asks for (on the UI thread)
-        public event Action<string> GpuWanted;   // a «Видеокарта» preset the mode or the preset asks for (on the UI thread)
+        // a curve / «Видеокарта» preset the mode or the preset asks for (on the UI thread); the bool is true for the mode found at
+        // the program's start (23.11: then the pages' «Применять автоматически» decide, like for the rest of the start)
+        public event Action<string, bool> CurveWanted;
+        public event Action<string, bool> GpuWanted;
         readonly SynchronizationContext ui;
         ManagementEventWatcher watcher;
         static readonly string FilePath = Path.Combine(Store.DataDir, "power.json");
@@ -342,18 +344,18 @@ namespace RedTune
             return new PowerStore { Active = p.Name, Presets = { p } };
         }
 
-        void WantGpu(string name)
+        void WantGpu(string name, bool atStart = false)
         {
             if (string.IsNullOrEmpty(name)) return;
-            var h = GpuWanted; if (h != null) ui.Post(_ => h(name), null);
+            var h = GpuWanted; if (h != null) ui.Post(_ => h(name, atStart), null);
         }
 
         public string ModeGpu(int m) { return m == Lenovo.Quiet ? Data.GpuQuiet : m == Lenovo.Balance ? Data.GpuBalance : m == Lenovo.Performance ? Data.GpuPerformance : m == Lenovo.Custom && Active != null ? Active.GpuPreset : ""; }
 
-        void WantCurve(string name)
+        void WantCurve(string name, bool atStart = false)
         {
             if (string.IsNullOrEmpty(name)) return;
-            var h = CurveWanted; if (h != null) ui.Post(_ => h(name), null);
+            var h = CurveWanted; if (h != null) ui.Post(_ => h(name, atStart), null);
         }
 
         public string ModeCurve(int m) { return m == Lenovo.Quiet ? Data.CurveQuiet : m == Lenovo.Balance ? Data.CurveBalance : m == Lenovo.Performance ? Data.CurvePerformance : m == Lenovo.Custom && Active != null ? Active.Curve : ""; }
@@ -471,12 +473,31 @@ namespace RedTune
         // a mode set by a program, this one's home page included, raises none, and Notify passes announce = false.
         public static Func<bool> FnQCustom = () => false;
 
+        static string ModeLog(int m) { return m == Lenovo.Quiet ? "«Тихий»" : m == Lenovo.Balance ? "«Баланс»" : m == Lenovo.Performance ? "«Макс»" : m == Lenovo.Extreme ? "«Экстрим»" : m == Lenovo.Custom ? "«Свой»" : m.ToString(); }
+
         void ModeNow(bool announce)
         {
             {
                 int m = Lenovo.GetPowerMode();
                 if (m == lastMode) return;
-                if (announce && m == Lenovo.Quiet && (lastMode == Lenovo.Performance || lastMode == Lenovo.Extreme) && FnQCustom())
+                if (announce && lastMode != -1) Store.Log("Fn+Q: прошивка " + ModeLog(lastMode) + " → " + ModeLog(m));
+                // 23.11 (the user: «кнопкой Fn+Q режим тихий не применяется»): from «Свой» the firmware's next step is not «Тихий»
+                // (the log of 16:39: three presses from «Свой» to «Свой», Тихий never reached), so the circle closes here too:
+                // the press after «Свой» gives «Тихий», whatever the firmware picked (it goes to «Баланс»). 23.11 later (the user):
+                // also with «Fn+Q включает «Свой»» off — that switch only decides whether «Свой» is in the circle
+                if (announce && lastMode == Lenovo.Custom && m != Lenovo.Quiet && m != Lenovo.Custom)
+                {
+                    try
+                    {
+                        Lenovo.SetPowerMode(Lenovo.Quiet);
+                        Thread.Sleep(150);
+                        int now = Lenovo.GetPowerMode();
+                        if (now == Lenovo.Quiet) { Store.Log("Fn+Q: «Тихий» после «Своего» вместо " + ModeLog(m)); m = now; }
+                        else Store.Log("Fn+Q: «Тихий» не встал, режим " + now);
+                    }
+                    catch (Exception ex) { Store.Log("Fn+Q: «Тихий» не включился: " + ex.Message); }
+                }
+                else if (announce && m == Lenovo.Quiet && (lastMode == Lenovo.Performance || lastMode == Lenovo.Extreme) && FnQCustom())
                 {
                     try
                     {
@@ -494,14 +515,14 @@ namespace RedTune
                 if (m == Lenovo.Custom)
                 {
                     var p = Active;
-                    if (p != null && !(first && Safety.SafeStart)) { Write(p.Clone()); Store.Log("режим «Свой»: пресет «" + p.Name + "»"); WantCurve(p.Curve); WantGpu(p.GpuPreset); } // safe start: not at the start itself
+                    if (p != null && !(first && Safety.SafeStart)) { Write(p.Clone()); Store.Log("режим «Свой»: пресет «" + p.Name + "»"); WantCurve(p.Curve, first); WantGpu(p.GpuPreset, first); } // safe start: not at the start itself
                 }
                 else
                 {
                     var plan = m == Lenovo.Quiet ? Data.PlanQuiet : m == Lenovo.Balance ? Data.PlanBalance : m == Lenovo.Performance ? Data.PlanPerformance : m == Lenovo.Extreme ? Data.PlanExtreme : "";
                     Guid g;
                     if (Guid.TryParse(plan, out g)) WinPower.SetActive(g);
-                    WantCurve(ModeCurve(m)); WantGpu(ModeGpu(m));
+                    WantCurve(ModeCurve(m), first); WantGpu(ModeGpu(m), first);
                 }
                 Post(() => { });
             }

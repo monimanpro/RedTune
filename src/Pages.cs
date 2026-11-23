@@ -69,88 +69,8 @@ namespace RedTune
         {
             this.s = s;
             PageGroups.AddTabs(this, "comp");
-            // this computer and which sections fit it (Hw); the report goes to whoever adds support for another laptop
-            Section("Это устройство");
-            var copy = new FlatButton("Скопировать отчёт");
-            // 16.11: the full report into a file on the desktop (Diag): for a laptop the program was never tried on, to send
-            // to whoever adds support for it. It only reads, and carries no names.
-            var full = new FlatButton("Полный отчёт в файл");
-            // 21.11: the report straight into the GitHub form (the browser opens it filled in; Red Tune itself sends nothing)
-            var send = new FlatButton("Отправить на GitHub", true);
-            var hwRow = Row(Hw.Short(), Hw.Details(), send, copy, full);
-            full.Click += (o, e) =>
-            {
-                full.Enabled = false;
-                hwRow.SetSub("Собираю полный отчёт: это только чтение, около полуминуты…");
-                System.Threading.Tasks.Task.Run(() =>
-                {
-                    string path = null, err = null;
-                    try { path = Diag.DefaultPath(); System.IO.File.WriteAllText(path, Diag.Full(s), new System.Text.UTF8Encoding(true)); }
-                    catch (Exception ex) { err = ex.Message; }
-                    try
-                    {
-                        BeginInvoke((Action)(() =>
-                        {
-                            full.Enabled = true;
-                            if (err != null) { hwRow.SetSub("Отчёт не сохранился: " + err); return; }
-                            hwRow.SetSub("Отчёт на рабочем столе: " + System.IO.Path.GetFileName(path) + " — его можно отправить");
-                            try { System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + path + "\""); } catch { }
-                        }));
-                    }
-                    catch { }
-                });
-            };
-            // the report, with what the processor's SMU says (AMD limits: family, mailbox, limits now), read off the UI thread
-            Func<string> report = () =>
-            {
-                var text = Hw.Report();
-                if (Hw.Amd)
-                    try
-                    {
-                        var i = AmdPower.Check();
-                        text += Environment.NewLine + "SMU: " + (i.Error ?? (i.Codename + " · " + (i.Apu ? "MP1 (STAPM/fast/slow)" : "RSMU (PPT/TDC/EDC)") + " · " + i.Path
-                            + (i.Limits != null ? " · сейчас " + string.Join("/", i.Limits) + " W" : " · лимиты не прочитались"))) + Environment.NewLine;
-                    }
-                    catch { }
-                return text;
-            };
-            copy.Click += (o, e) =>
-            {
-                hwRow.SetSub("Собираю отчёт…");
-                System.Threading.Tasks.Task.Run(() =>
-                {
-                    var text = report();
-                    try { BeginInvoke((Action)(() => { try { Clipboard.SetText(text); hwRow.SetSub("Отчёт о системе скопирован — его можно вставить в сообщение"); } catch { hwRow.SetSub("Не удалось скопировать отчёт"); } })); } catch { }
-                });
-            };
-            // the form «Hardware report» of the issue templates, its fields filled from the address (ids: report, version);
-            // a report too long for an address goes to the clipboard and the form opens without it
-            send.Click += (o, e) =>
-            {
-                hwRow.SetSub("Собираю отчёт…");
-                System.Threading.Tasks.Task.Run(() =>
-                {
-                    var text = report();
-                    var url = "https://github.com/" + Updater.Repo + "/issues/new?template=hardware-report.yml&title=" + Uri.EscapeDataString("[Hardware] " + Hw.Short())
-                        + "&version=" + Uri.EscapeDataString(Updater.Current.ToString());
-                    var withReport = url + "&report=" + Uri.EscapeDataString(text);
-                    bool fits = withReport.Length <= 7500;
-                    try
-                    {
-                        BeginInvoke((Action)(() =>
-                        {
-                            try { Clipboard.SetText(text); } catch { }
-                            try { Process.Start(fits ? withReport : url); }
-                            catch (Exception ex) { hwRow.SetSub(L.T("Браузер не открылся: ") + ex.Message); return; }
-                            hwRow.SetSub(fits ? "Форма открылась в браузере с отчётом внутри: отметь, что работает, и нажми «Create»" : "Форма открылась в браузере, отчёт скопирован: вставь его в поле «System report»");
-                        }));
-                    }
-                    catch { }
-                });
-            };
-            Row(Hw.VerifiedModel ? "Эта модель проверена" : "Эта модель ещё не проверена",
-                Hw.VerifiedModel ? "Всё, что есть в программе, проверялось на этом ноутбуке"
-                : "Red Tune проверялся на Legion R7000P. Здесь он работает по тем же правилам, но части с пометкой «не проверено» на такой модели ещё не видели в работе. Отчёт выше поможет добавить её");;
+            // which sections fit this computer (Hw); the computer itself and its report are on «О программе» (23.11)
+            Section("Разделы на этом устройстве");
             foreach (var p in new[] { Tuple.Create("power", "Питание"), Tuple.Create("curve", "Кривая"), Tuple.Create("gpu", "Видеокарта"), Tuple.Create("ram", "Память"), Tuple.Create("dist", "Распределение"), Tuple.Create("device", "Устройство") })
             {
                 var st = Hw.Status(p.Item1);
@@ -277,6 +197,90 @@ namespace RedTune
             data.Click += (o, e) => { Directory.CreateDirectory(Store.DataDir); Process.Start("explorer.exe", "\"" + Store.DataDir + "\""); };
             Row("Папка с настройками", Store.DataDir, data);
 
+            // this computer and its report (23.11: moved here from «Компоненты», next to the errors and the updates: the user);
+            // the report goes to whoever adds support for another laptop
+            Section("Это устройство");
+            var copy = new FlatButton("Скопировать отчёт");
+            // 16.11: the full report into a file on the desktop (Diag): for a laptop the program was never tried on, to send
+            // to whoever adds support for it. It only reads, and carries no names.
+            var full = new FlatButton("Полный отчёт в файл");
+            // 21.11: the report straight into the GitHub form (the browser opens it filled in; Red Tune itself sends nothing)
+            var hwSend = new FlatButton("Отправить на GitHub", true);
+            var hwRow = Row(Hw.Short(), Hw.Details(), hwSend, copy, full);
+            full.Click += (o, e) =>
+            {
+                full.Enabled = false;
+                hwRow.SetSub("Собираю полный отчёт: это только чтение, около полуминуты…");
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    string path = null, err = null;
+                    try { path = Diag.DefaultPath(); System.IO.File.WriteAllText(path, Diag.Full(s), new System.Text.UTF8Encoding(true)); }
+                    catch (Exception ex) { err = ex.Message; }
+                    try
+                    {
+                        BeginInvoke((Action)(() =>
+                        {
+                            full.Enabled = true;
+                            if (err != null) { hwRow.SetSub("Отчёт не сохранился: " + err); return; }
+                            hwRow.SetSub("Отчёт на рабочем столе: " + System.IO.Path.GetFileName(path) + " — его можно отправить");
+                            try { System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + path + "\""); } catch { }
+                        }));
+                    }
+                    catch { }
+                });
+            };
+            // the report, with what the processor's SMU says (AMD limits: family, mailbox, limits now), read off the UI thread
+            Func<string> report = () =>
+            {
+                var text = Hw.Report();
+                if (Hw.Amd)
+                    try
+                    {
+                        var i = AmdPower.Check();
+                        text += Environment.NewLine + "SMU: " + (i.Error ?? (i.Codename + " · " + (i.Apu ? "MP1 (STAPM/fast/slow)" : "RSMU (PPT/TDC/EDC)") + " · " + i.Path
+                            + (i.Limits != null ? " · сейчас " + string.Join("/", i.Limits) + " W" : " · лимиты не прочитались"))) + Environment.NewLine;
+                    }
+                    catch { }
+                return text;
+            };
+            copy.Click += (o, e) =>
+            {
+                hwRow.SetSub("Собираю отчёт…");
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    var text = report();
+                    try { BeginInvoke((Action)(() => { try { Clipboard.SetText(text); hwRow.SetSub("Отчёт о системе скопирован — его можно вставить в сообщение"); } catch { hwRow.SetSub("Не удалось скопировать отчёт"); } })); } catch { }
+                });
+            };
+            // the form «Hardware report» of the issue templates, its fields filled from the address (ids: report, version);
+            // a report too long for an address goes to the clipboard and the form opens without it
+            hwSend.Click += (o, e) =>
+            {
+                hwRow.SetSub("Собираю отчёт…");
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    var text = report();
+                    var url = "https://github.com/" + Updater.Repo + "/issues/new?template=hardware-report.yml&title=" + Uri.EscapeDataString("[Hardware] " + Hw.Short())
+                        + "&version=" + Uri.EscapeDataString(Updater.Current.ToString());
+                    var withReport = url + "&report=" + Uri.EscapeDataString(text);
+                    bool fits = withReport.Length <= 7500;
+                    try
+                    {
+                        BeginInvoke((Action)(() =>
+                        {
+                            try { Clipboard.SetText(text); } catch { }
+                            try { Process.Start(fits ? withReport : url); }
+                            catch (Exception ex) { hwRow.SetSub(L.T("Браузер не открылся: ") + ex.Message); return; }
+                            hwRow.SetSub(fits ? "Форма открылась в браузере с отчётом внутри: отметь, что работает, и нажми «Create»" : "Форма открылась в браузере, отчёт скопирован: вставь его в поле «System report»");
+                        }));
+                    }
+                    catch { }
+                });
+            };
+            Row(Hw.VerifiedModel ? "Эта модель проверена" : "Эта модель ещё не проверена",
+                Hw.VerifiedModel ? "Всё, что есть в программе, проверялось на этом ноутбуке"
+                : "Red Tune проверялся на Legion R7000P. Здесь он работает по тем же правилам, но части с пометкой «не проверено» на такой модели ещё не видели в работе. Отчёт выше поможет добавить её");
+
             // 21.11: the last error nothing caught (Crash), with the Bug form filled in; shown only when there is one
             var crash = Crash.Last();
             if (crash != null)
@@ -323,6 +327,10 @@ namespace RedTune
                 else row.SetSub(string.IsNullOrEmpty(s.UpdateLast) ? "Ещё не проверялось" : L.T("Последняя проверка: ") + s.UpdateLast);
             };
             show();
+            // 23.11: the daily check runs while the program does now: a version it finds shows here without reopening the page
+            Action changed = () => { try { if (IsHandleCreated && check.Enabled) BeginInvoke(show); } catch { } };
+            Updater.Changed += changed;
+            Disposed += (o, e) => Updater.Changed -= changed;
             web.Click += (o, e) => { try { Process.Start(Updater.Found != null && Updater.Found.Page != null ? Updater.Found.Page : Updater.Releases); } catch { } };
             check.Click += (o, e) =>
             {
@@ -400,12 +408,13 @@ namespace RedTune
                 int y = Theme.S(20) + k + Theme.S(10);
                 var center = TextFormatFlags.HorizontalCenter;
                 Theme.Text1(g, "Red Tune", Theme.Big, new Rectangle(0, y, Width, Theme.S(30)), Theme.Text, center);
-                Theme.Text1(g, "Версия " + Application.ProductVersion + " · " + Hw.Short(), Theme.Small, new Rectangle(0, y + Theme.S(30), Width, Theme.S(20)), Theme.Text2, center);
-                int ly = y + Theme.S(62), lx = Width / 2 - Theme.S(190);
+                // 23.11 (the user): the model only in «Это устройство» below, not twice on one page
+                Theme.Text1(g, "Версия " + Updater.Current, Theme.Small, new Rectangle(0, y + Theme.S(30), Width, Theme.S(20)), Theme.Text2, center);
+                int ly = y + Theme.S(62), lx = Width / 2 - Theme.S(215);
                 Theme.Text1(g, "Инициатор", Theme.Body, new Rectangle(lx, ly, Theme.S(100), Theme.S(22)), Theme.Text2);
-                Theme.Text1(g, "Кожаный — идеи, тесты, перезагрузки и терпение", Theme.Body, new Rectangle(lx + Theme.S(100), ly, Theme.S(330), Theme.S(22)), Theme.Text);
+                Theme.Text1(g, "Кожаный — идеи, тесты, сотни перезагрузок и терпение", Theme.Body, new Rectangle(lx + Theme.S(100), ly, Theme.S(380), Theme.S(22)), Theme.Text);
                 Theme.Text1(g, "Исполнитель", Theme.Body, new Rectangle(lx, ly + Theme.S(26), Theme.S(100), Theme.S(22)), Theme.Text2);
-                Theme.Text1(g, "Claude — код, кривые и 40+ раундов Prime95", Theme.Body, new Rectangle(lx + Theme.S(100), ly + Theme.S(26), Theme.S(330), Theme.S(22)), Theme.Text);
+                Theme.Text1(g, "Claude — код, кривые и 400+ раундов Prime95", Theme.Body, new Rectangle(lx + Theme.S(100), ly + Theme.S(26), Theme.S(380), Theme.S(22)), Theme.Text);
                 Theme.Text1(g, "Ни одно ядро не пострадало. Ну, почти.", Theme.Small, new Rectangle(0, ly + Theme.S(62), Width, Theme.S(20)), Theme.Muted, center);
             }
         }

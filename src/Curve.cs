@@ -73,6 +73,26 @@ namespace RedTune
             Apply(p.Values, p.Name, source, done);
         }
 
+        // 23.11 (the user: «настроенная кривая и условие включать автоматически или нет»): the active preset again only when
+        // the CPU does not have it (start, after sleep, another power source); written: called only after an actual write
+        public void EnsureActive(string source, Action<bool> written = null)
+        {
+            var p = Active;
+            Interlocked.Increment(ref busy);
+            Task.Run(() =>
+            {
+                int[] v = null;
+                try { v = Smu.Read(); } catch { }
+                Interlocked.Decrement(ref busy);
+                Post(() =>
+                {
+                    if (v != null) Live = v;
+                    if (v != null && v.SequenceEqual(p.Values)) { Store.Log("кривая (" + source + ", " + p.Name + "): уже стоит"); return; }
+                    Apply(p.Values, p.Name, source, written);
+                });
+            });
+        }
+
         public void SavePresets() { Store.SavePresets(Presets); }
 
         // first start: the values on the CPU become the first preset, so nothing changes until the user wants it

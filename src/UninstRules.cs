@@ -158,12 +158,89 @@ namespace RedTune
         };
     }
 
+    // 23.11 (the user: «должны работать ctrl z»): the steps of a rules dialog. The whole dialog is one text (Snap) and goes back
+    // whole (Load). A slider pushes the state on Grabbed, before it moves (a drag is one step; wheel steps on the same slider within
+    // 0.7 s are one step too); anything else calls Before() before it changes, or Changed() after (with the state kept from last time).
+    class DialogUndo
+    {
+        readonly Func<string> snap; readonly Action<string> load;
+        readonly Stack<string> back = new Stack<string>(), fwd = new Stack<string>();
+        string last; object lastSrc; DateTime lastAt;
+        public bool Loading { get; private set; }
+
+        public DialogUndo(Func<string> snap, Action<string> load) { this.snap = snap; this.load = load; last = snap(); }
+
+        public void Before(object src = null)
+        {
+            if (Loading) return;
+            var now = DateTime.Now;
+            if (src != null && src == lastSrc && (now - lastAt).TotalMilliseconds < 700) { lastAt = now; return; }
+            var s = snap(); if (back.Count == 0 || back.Peek() != s) back.Push(s);
+            fwd.Clear(); lastSrc = src; lastAt = now;
+        }
+
+        // after a change made without Before (a control that tells only afterwards): the state from before is the one kept
+        public void Changed()
+        {
+            if (Loading) return;
+            var s = snap(); if (s == last) return;
+            if (back.Count == 0 || back.Peek() != last) back.Push(last);
+            fwd.Clear(); lastSrc = null; last = s;
+        }
+
+        public void Settled() { if (!Loading) last = snap(); }
+
+        // several changes as one step («Как было сначала»)
+        public void Batch(Action a)
+        {
+            Before();
+            Loading = true; try { a(); } finally { Loading = false; }
+            last = snap(); lastSrc = null;
+        }
+
+        public void Slider(Slider sl) { sl.Grabbed += (o, e) => Before(sl); sl.Changed += (o, e) => Settled(); }
+
+        void Go(Stack<string> from, Stack<string> to)
+        {
+            if (from.Count == 0) return;
+            to.Push(snap());
+            Loading = true; try { load(from.Pop()); } finally { Loading = false; }
+            last = snap(); lastSrc = null;
+        }
+
+        // Ctrl+Z back, Ctrl+Y or Ctrl+Shift+Z forward; a typed value in a box keeps the box's own Ctrl+Z
+        public bool Key(KeyEventArgs e, Form f)
+        {
+            if (!e.Control || f.ActiveControl is TextBox) return false;
+            if (e.KeyCode == Keys.Z && !e.Shift) { Go(back, fwd); return true; }
+            if (e.KeyCode == Keys.Y || e.KeyCode == Keys.Z && e.Shift) { Go(fwd, back); return true; }
+            return false;
+        }
+
+        public static string Join(IEnumerable<string> parts) { return string.Join("\u0001", parts); }
+        public static string[] Split(string s) { return s.Split('\u0001'); }
+        public static string List(List<string> l) { return string.Join("\u0002", l); }
+        public static List<string> List(string s) { return s.Length == 0 ? new List<string>() : s.Split('\u0002').ToList(); }
+    }
+
     // the dialog of the rules (a page of rows inside a window, the buttons under it)
     class UninstRulesDialog : DarkForm
     {
         readonly UninstRules r;
         readonly Dictionary<string, Segmented> modes = new Dictionary<string, Segmented>();
         Slider days, mb; Row neverRow, extraRow;
+        DialogUndo undo;
+
+        string Snap() { return DialogUndo.Join(UninstRules.Kinds.Select(k => modes[k].Selected.ToString()).Concat(new[] { days.Value.ToString(), mb.Value.ToString(), DialogUndo.List(r.Never), DialogUndo.List(r.Extra) })); }
+
+        void LoadSnap(string s)
+        {
+            var p = DialogUndo.Split(s); int i = 0;
+            foreach (var k in UninstRules.Kinds) modes[k].Selected = int.Parse(p[i++]);
+            days.Value = int.Parse(p[i++]); mb.Value = int.Parse(p[i++]);
+            r.Never = DialogUndo.List(p[i++]); r.Extra = DialogUndo.List(p[i++]);
+            ShowLists();
+        }
 
         UninstRulesDialog(UninstRules rules)
         {
@@ -186,7 +263,7 @@ namespace RedTune
             };
             ok.Click += (s, e) => { Take(); DialogResult = DialogResult.OK; Close(); };
             cancel.Click += (s, e) => { DialogResult = DialogResult.Cancel; Close(); };
-            reset.Click += (s, e) => { var d = new UninstRules(); foreach (var k in UninstRules.Kinds) modes[k].Selected = d.Mode[k]; days.Value = d.OrphanDays; mb.Value = d.OrphanMinMb; r.Never.Clear(); r.Extra.Clear(); ShowLists(); };
+            reset.Click += (s, e) => undo.Batch(() => { var d = new UninstRules(); foreach (var k in UninstRules.Kinds) modes[k].Selected = d.Mode[k]; days.Value = d.OrphanDays; mb.Value = d.OrphanMinMb; r.Never = new List<string>(); r.Extra = new List<string>(); ShowLists(); });
 
             var page = new Page { Dock = DockStyle.Fill };
             page.Section("Что искать после удаления программы");
@@ -199,9 +276,10 @@ namespace RedTune
             page.Row("Галочки", "«С галочкой» — найденное после удаления отмечено сразу, «Искать» — без галочки. У давно удалённых галочек нет");
 
             page.Section("Хвосты давно удалённых программ");
-            days = new Slider(7, 365, r.OrphanDays, L.T("дн")) { Width = Theme.S(260) };
+            // 23.11 (the user, as the equalizer): a press puts the pointer onto the knob, the middle button the default back
+            days = new Slider(7, 365, r.OrphanDays, L.T("дн")) { Width = Theme.S(260), WarpToKnob = true, ResetTo = new UninstRules().OrphanDays };
             page.Row("Папка не менялась", "Папка без своей программы (AppData, ProgramData, Program Files) показывается, если её не трогали столько дней; пустые — всегда", days);
-            mb = new Slider(0, 500, r.OrphanMinMb, L.T("МБ")) { Width = Theme.S(260) };
+            mb = new Slider(0, 500, r.OrphanMinMb, L.T("МБ")) { Width = Theme.S(260), WarpToKnob = true, ResetTo = new UninstRules().OrphanMinMb };
             page.Row("Не меньше", "Папки меньше этого размера не показываются", mb);
 
             page.Section("Свои списки");
@@ -211,21 +289,24 @@ namespace RedTune
             editNever.Click += (s, e) =>
             {
                 var v = ListDialog.Edit(this, "Никогда не трогать", "По одному на строку. Путь (C:\\Games\\…) — не трогать ничего в этой папке. Имя (Steam) — не трогать ничего, где оно встречается.", r.Never);
-                if (v != null) { r.Never = v; ShowLists(); }
+                if (v != null) { undo.Before(); r.Never = v; ShowLists(); undo.Settled(); }
             };
             editExtra.Click += (s, e) =>
             {
                 var v = ListDialog.Edit(this, "Искать ещё здесь", "Папки, куда ты тоже ставишь программы (D:\\Games, D:\\Programs) — по одной на строку. В них ищутся папки удалённых программ так же, как в Program Files.", r.Extra);
-                if (v != null) { r.Extra = v.Where(x => x.Length > 3 && x[1] == ':').ToList(); ShowLists(); }
+                if (v != null) { undo.Before(); r.Extra = v.Where(x => x.Length > 3 && x[1] == ':').ToList(); ShowLists(); undo.Settled(); }
             };
             ShowLists();
+            undo = new DialogUndo(Snap, LoadSnap);
+            undo.Slider(days); undo.Slider(mb);
+            foreach (var seg in modes.Values) seg.Changed += (s, e) => undo.Changed();
 
             page.Section("Всегда защищено — не меняется");
             foreach (var a in UninstRules.Always) page.Row(a, null);
 
             Controls.Add(page); Controls.Add(bar);
             KeyPreview = true;
-            KeyDown += (s, e) => { if (e.KeyCode == Keys.Escape) Close(); };
+            KeyDown += (s, e) => { if (e.KeyCode == Keys.Escape) Close(); else if (undo.Key(e, this)) e.Handled = e.SuppressKeyPress = true; };
         }
 
         void ShowLists()
@@ -253,6 +334,23 @@ namespace RedTune
                 using (var bmp = new Bitmap(d.Width, d.Height)) { d.DrawToBitmap(bmp, new Rectangle(Point.Empty, d.Size)); bmp.Save(file); }
                 d.Close();
             }
+        }
+
+        public static string Check()
+        {
+            var o = new StringBuilder();
+            using (var d = new UninstRulesDialog(new UninstRules()))
+            {
+                var seg = d.modes[UninstRules.Kinds[0]]; int s0 = seg.Selected;
+                seg.Selected = s0 == 2 ? 1 : 2; d.undo.Changed();
+                d.undo.Batch(() => { d.days.Value = 200; d.mb.Value = 50; });
+                d.undo.Key(new KeyEventArgs(Keys.Control | Keys.Z), d);
+                o.AppendLine((d.days.Value == new UninstRules().OrphanDays && d.mb.Value == new UninstRules().OrphanMinMb && seg.Selected != s0 ? "ok" : "FAIL") + " uninst: Ctrl+Z takes a batch back as one step");
+                d.undo.Key(new KeyEventArgs(Keys.Control | Keys.Z), d);
+                o.AppendLine((seg.Selected == s0 ? "ok" : "FAIL") + " uninst: then the mode switch");
+                o.AppendLine((d.days.WarpToKnob && d.days.ResetTo == 60 && d.mb.ResetTo == 1 ? "ok" : "FAIL") + " uninst: sliders warp to the knob, middle button resets");
+            }
+            return o.ToString();
         }
 
         public static bool Edit(IWin32Window owner)

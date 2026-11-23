@@ -13,7 +13,7 @@ namespace RedTune
     //   (+0 type, the same as D's: 10 or 15); four rail slots of int µV at k*0x304 + 0x23C (type 15) or + 0x234 (types 1, 3..10),
     //   slot 0 = NVVDD, the core's rail. Written like mVolt+: the buffer as read with one slot changed, read back, and the old
     //   value written again when the driver did not keep the new one.
-    // The value lives in the driver until a reboot, so the preset brings it back at start (GpuStore.ApplySaved).
+    // The value lives in the driver until a reboot, so the preset brings it back at start (MainForm.GpuAuto).
     static class GpuVolt
     {
         public const int MinMv = -100, MaxMv = 50; // the driver reports no bounds (mVolt+ shows «unknown» too); our own frame
@@ -82,6 +82,50 @@ namespace RedTune
             }
             Error = L.T("драйвер не отдаёт сдвиг напряжения");
             return null;
+        }
+
+        // 23.11 (the user: «как информацию, для ядра и MSVDD диапазон работы вольтажа»): the rails' voltage limits, read only.
+        // As mVolt+ 0.50.13 reads them (FUN_140207800 → FUN_140206c60): rails topology 0x2C73AFDC (v2, 0x184C), mask at +4
+        // (bit 0 NVVDD, bit 1 MSVDD); voltage status 0x5D0634EE (v2, 0x1620) asked with that mask; rail i's entry is at
+        // 0xA0 + n*0xAC, n = rails below i in the mask: +4 default, +8 REL (reliability = the working ceiling), +0x10 OV, +0x14
+        // MAX, +0x18 VMIN, +0x6C sensed (checked on NVVDD only: 730 mV idle = default). All µV. On the RTX 5070 Laptop the mask
+        // is 0x1 and a status call with mask 0x3 fails: no MSVDD of its own there.
+        public class Rail { public int Vmin, Rel, Max, Ov, Now; }
+
+        // [0] NVVDD, [1] MSVDD (null where the card has no such rail); null when the driver gives no rail data
+        public static Rail[] Rails()
+        {
+            lock (gate)
+            {
+                try
+                {
+                    var g = Gpu();
+                    if (g == IntPtr.Zero) return null;
+                    var t = new byte[0x184C + 0x1000];
+                    BitConverter.GetBytes(0x184C | (2 << 16)).CopyTo(t, 0);
+                    if (Call(0x2C73AFDC, g, t) != 0) return null;
+                    uint mask = BitConverter.ToUInt32(t, 4) & 3;
+                    if (mask == 0) return null;
+                    var b = new byte[0x1620 + 0x1000];
+                    BitConverter.GetBytes(0x1620 | (2 << 16)).CopyTo(b, 0);
+                    BitConverter.GetBytes(mask).CopyTo(b, 4);
+                    if (Call(0x5D0634EE, g, b) != 0 || BitConverter.ToUInt32(b, 4) != mask) return null;
+                    var r = new Rail[2];
+                    int n = 0;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if ((mask >> i & 1) == 0) continue;
+                        int e = 0xA0 + n++ * 0xAC;
+                        Func<int, int> mv = o => (int)Math.Round(BitConverter.ToInt32(b, e + o) / 1000.0);
+                        var x = new Rail { Rel = mv(8), Ov = mv(0x10), Max = mv(0x14), Vmin = mv(0x18), Now = mv(0x6C) };
+                        if (x.Now < 300 || x.Now > 1500) x.Now = mv(4);
+                        if (x.Vmin <= 0 || x.Max <= 0) continue; // nothing believable in the entry
+                        r[i] = x;
+                    }
+                    return r[0] == null && r[1] == null ? null : r;
+                }
+                catch { return null; }
+            }
         }
 
         static string NameOf(int key) { return key == 0 ? "ядра" : key == 1 ? "XBAR" : key == 2 ? "SYS" : key == 21 ? "Video" : key.ToString(); }

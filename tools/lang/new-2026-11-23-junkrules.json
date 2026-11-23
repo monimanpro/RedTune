@@ -1,0 +1,218 @@
+{
+ "wc57f8b89": {
+  "es": "un día",
+  "pt": "um dia",
+  "zh": "一天",
+  "ko": "하루",
+  "th": "หนึ่งวัน",
+  "vi": "một ngày",
+  "id": "sehari"
+ },
+ "wc205a7a6": {
+  "es": "h",
+  "pt": "h",
+  "zh": "小时",
+  "ko": "시간",
+  "th": "ชม.",
+  "vi": "giờ",
+  "id": "jam"
+ },
+ "wc08a89c2": {
+  "es": "no es la ruta de una carpeta",
+  "pt": "não é o caminho de uma pasta",
+  "zh": "不是文件夹路径",
+  "ko": "폴더 경로가 아님",
+  "th": "ไม่ใช่พาธของโฟลเดอร์",
+  "vi": "không phải đường dẫn thư mục",
+  "id": "bukan jalur folder"
+ },
+ "w95d1bc68": {
+  "es": "una unidad entera",
+  "pt": "uma unidade inteira",
+  "zh": "整个磁盘",
+  "ko": "드라이브 전체",
+  "th": "ทั้งไดรฟ์",
+  "vi": "cả một ổ đĩa",
+  "id": "seluruh drive"
+ },
+ "wdf4e9864": {
+  "es": "una carpeta protegida",
+  "pt": "uma pasta protegida",
+  "zh": "受保护的文件夹",
+  "ko": "보호된 폴더",
+  "th": "โฟลเดอร์ที่ได้รับการป้องกัน",
+  "vi": "thư mục được bảo vệ",
+  "id": "folder yang dilindungi"
+ },
+ "w7d681608": {
+  "es": "Las carpetas personales (Escritorio, Documentos, Descargas, Imágenes, Música, Vídeos, OneDrive) no se examinan",
+  "pt": "As pastas pessoais (Área de Trabalho, Documentos, Downloads, Imagens, Músicas, Vídeos, OneDrive) não são examinadas",
+  "zh": "个人文件夹（桌面、文档、下载、图片、音乐、视频、OneDrive）不会被查看",
+  "ko": "개인 폴더(바탕 화면, 문서, 다운로드, 사진, 음악, 동영상, OneDrive)는 살펴보지 않습니다",
+  "th": "โฟลเดอร์ส่วนตัว (เดสก์ท็อป เอกสาร ดาวน์โหลด รูปภาพ เพลง วิดีโอ OneDrive) จะไม่ถูกตรวจดู",
+  "vi": "Các thư mục cá nhân (Desktop, Tài liệu, Tải xuống, Ảnh, Nhạc, Video, OneDrive) không bị xem tới",
+  "id": "Folder pribadi (Desktop, Dokumen, Unduhan, Gambar, Musik, Video, OneDrive) tidak diperiksa"
+ },
+ "w22652644": {
+  "es": "Se omiten los archivos que los programas tienen abiertos ahora",
+  "pt": "Arquivos abertos por programas agora são ignorados",
+  "zh": "程序当前打开的文件会被跳过",
+  "ko": "지금 프로그램이 열고 있는 파일은 건너뜁니다",
+  "th": "ไฟล์ที่โปรแกรมเปิดอยู่ตอนนี้จะถูกข้าม",
+  "vi": "Các tệp đang được chương trình mở sẽ được bỏ qua",
+  "id": "File yang sedang dibuka program dilewati"
+ },
+ "w4e9256c0": {
+  "es": "Las carpetas se quedan: solo se borra su contenido y las carpetas vacías de dentro",
+  "pt": "As pastas permanecem: só o conteúdo delas e as pastas vazias dentro são excluídos",
+  "zh": "文件夹本身保留：只删除其中的内容和内部的空文件夹",
+  "ko": "폴더 자체는 남습니다. 안의 내용과 안쪽의 빈 폴더만 삭제됩니다",
+  "th": "ตัวโฟลเดอร์ยังอยู่: ลบเฉพาะสิ่งที่อยู่ข้างในและโฟลเดอร์ว่างภายใน",
+  "vi": "Bản thân thư mục được giữ lại: chỉ xóa nội dung bên trong và các thư mục trống",
+  "id": "Folder itu sendiri tetap: hanya isinya dan folder kosong di dalamnya yang dihapus"
+ },
+ "w3dfaad26": {
+  "es": "No se siguen los enlaces a otras carpetas (junction, symlink)",
+  "pt": "Links para outras pastas (junction, symlink) não são seguidos",
+  "zh": "不会进入指向其他文件夹的链接（junction、symlink）",
+  "ko": "다른 폴더로 가는 링크(junction, symlink)는 따라가지 않습니다",
+  "th": "ไม่ตามลิงก์ไปยังโฟลเดอร์อื่น (junction, symlink)",
+  "vi": "Không đi theo liên kết tới thư mục khác (junction, symlink)",
+  "id": "Tautan ke folder lain (junction, symlink) tidak diikuti"
+ },
+ "w14260092": {
+  "es": "Los datos de Red Tune y los archivos de trabajo de Claude",
+  "pt": "Os dados do Red Tune e os arquivos de trabalho do Claude",
+  "zh": "Red Tune 的数据和 Claude 的工作文件",
+  "ko": "Red Tune 데이터와 Claude 작업 파일",
+  "th": "ข้อมูลของ Red Tune และไฟล์งานของ Claude",
+  "vi": "Dữ liệu của Red Tune và tệp làm việc của Claude",
+  "id": "Data Red Tune dan file kerja Claude"
+ },
+ "w47ef6b15": {
+  "es": "No se puede elegir como carpeta propia una unidad entera, la carpeta del usuario, una carpeta personal, Windows, Program Files, ProgramData ni AppData",
+  "pt": "Não é possível escolher como pasta própria uma unidade inteira, a pasta do usuário, uma pasta pessoal, Windows, Program Files, ProgramData ou AppData",
+  "zh": "不能把整个磁盘、用户文件夹、个人文件夹、Windows、Program Files、ProgramData 和 AppData 设为要清理的文件夹",
+  "ko": "드라이브 전체, 사용자 폴더, 개인 폴더, Windows, Program Files, ProgramData, AppData는 정리할 폴더로 지정할 수 없습니다",
+  "th": "ไม่สามารถตั้งทั้งไดรฟ์ โฟลเดอร์ผู้ใช้ โฟลเดอร์ส่วนตัว Windows, Program Files, ProgramData และ AppData เป็นโฟลเดอร์ที่จะล้างได้",
+  "vi": "Không thể đặt cả ổ đĩa, thư mục người dùng, thư mục cá nhân, Windows, Program Files, ProgramData và AppData làm thư mục để dọn",
+  "id": "Seluruh drive, folder pengguna, folder pribadi, Windows, Program Files, ProgramData, dan AppData tidak dapat dijadikan folder untuk dibersihkan"
+ },
+ "w6d59100d": {
+  "es": "Reglas de limpieza de archivos",
+  "pt": "Regras de limpeza de arquivos",
+  "zh": "文件清理规则",
+  "ko": "파일 정리 규칙",
+  "th": "กฎการล้างไฟล์",
+  "vi": "Quy tắc dọn tệp",
+  "id": "Aturan pembersihan file"
+ },
+ "w740accb7": {
+  "es": "Antigüedad de los archivos",
+  "pt": "Idade dos arquivos",
+  "zh": "文件存在时间",
+  "ko": "파일 기간",
+  "th": "อายุของไฟล์",
+  "vi": "Tuổi của tệp",
+  "id": "Usia file"
+ },
+ "w17720117": {
+  "es": "Informes de errores de Windows y registros de instalación más antiguos que esto",
+  "pt": "Relatórios de erros do Windows e logs de instalação mais antigos que isso",
+  "zh": "早于这个时间的 Windows 错误报告和安装日志",
+  "ko": "이보다 오래된 Windows 오류 보고서와 설치 로그",
+  "th": "รายงานข้อผิดพลาดของ Windows และบันทึกการติดตั้งที่เก่ากว่านี้",
+  "vi": "Báo cáo lỗi Windows và nhật ký cài đặt cũ hơn mức này",
+  "id": "Laporan kesalahan Windows dan log pemasangan yang lebih tua dari ini"
+ },
+ "w55f7fc4c": {
+  "es": "Carpetas propias para limpiar",
+  "pt": "Pastas próprias para limpar",
+  "zh": "自定义清理文件夹",
+  "ko": "정리할 내 폴더",
+  "th": "โฟลเดอร์ของคุณที่จะล้าง",
+  "vi": "Thư mục riêng để dọn",
+  "id": "Folder sendiri untuk dibersihkan"
+ },
+ "w19db9167": {
+  "es": "Uno por línea. Una ruta (C:\\Work\\cache, %TEMP%\\build): nada de esa carpeta. Una máscara (*.iso, *.blend): archivos y carpetas con ese nombre en cualquier sitio. Una palabra (Steam): todo lo que la tenga en la ruta.",
+  "pt": "Um por linha. Um caminho (C:\\Work\\cache, %TEMP%\\build): nada nessa pasta. Uma máscara (*.iso, *.blend): arquivos e pastas com esse nome em qualquer lugar. Uma palavra (Steam): tudo que a tenha no caminho.",
+  "zh": "每行一个。路径（C:\\Work\\cache, %TEMP%\\build）：不碰该文件夹中的任何内容。掩码（*.iso、*.blend）：任何位置同名的文件和文件夹。词语（Steam）：路径中含有它的一切。",
+  "ko": "한 줄에 하나씩. 경로(C:\\Work\\cache, %TEMP%\\build): 그 폴더 안의 모든 것. 마스크(*.iso, *.blend): 어디에 있든 그 이름의 파일과 폴더. 단어(Steam): 경로에 그 단어가 들어간 모든 것.",
+  "th": "บรรทัดละหนึ่งรายการ พาธ (C:\\Work\\cache, %TEMP%\\build): ไม่แตะอะไรในโฟลเดอร์นั้น มาสก์ (*.iso, *.blend): ไฟล์และโฟลเดอร์ชื่อนั้นทุกที่ คำ (Steam): ทุกอย่างที่มีคำนั้นในพาธ",
+  "vi": "Mỗi dòng một mục. Đường dẫn (C:\\Work\\cache, %TEMP%\\build): không gì trong thư mục đó. Mặt nạ (*.iso, *.blend): tệp và thư mục có tên đó ở bất cứ đâu. Từ (Steam): mọi thứ có từ đó trong đường dẫn.",
+  "id": "Satu per baris. Jalur (C:\\Work\\cache, %TEMP%\\build): tidak ada di folder itu. Mask (*.iso, *.blend): file dan folder bernama itu di mana saja. Kata (Steam): semua yang memuatnya di jalur."
+ },
+ "waaccc14d": {
+  "es": "Carpetas que también se pueden limpiar, una por línea (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). Se borran los archivos más antiguos que la edad de los temporales; la carpeta se queda. Cada carpeta es una fila propia con su interruptor.",
+  "pt": "Pastas que também podem ser limpas, uma por linha (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). São excluídos os arquivos mais antigos que a idade dos temporários; a pasta permanece. Cada pasta é uma linha própria com seu interruptor.",
+  "zh": "也可以清理的文件夹，每行一个（D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache）。删除其中早于临时文件期限的文件，文件夹本身保留。每个文件夹单独一行并带有开关。",
+  "ko": "함께 정리해도 되는 폴더, 한 줄에 하나씩 (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). 임시 파일 기간보다 오래된 파일이 삭제되고 폴더 자체는 남습니다. 폴더마다 스위치가 있는 줄이 따로 생깁니다.",
+  "th": "โฟลเดอร์ที่ล้างได้ด้วย บรรทัดละหนึ่ง (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache) ลบไฟล์ที่เก่ากว่าอายุของไฟล์ชั่วคราว ตัวโฟลเดอร์ยังอยู่ แต่ละโฟลเดอร์เป็นแถวของตัวเองพร้อมสวิตช์",
+  "vi": "Các thư mục cũng có thể dọn, mỗi dòng một thư mục (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). Xóa các tệp cũ hơn tuổi của tệp tạm, bản thân thư mục được giữ lại. Mỗi thư mục là một dòng riêng có công tắc.",
+  "id": "Folder yang juga boleh dibersihkan, satu per baris (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). File yang lebih tua dari usia file sementara dihapus, foldernya tetap. Setiap folder menjadi baris sendiri dengan sakelar."
+ },
+ "wa2762f1a": {
+  "es": "No añadidas:",
+  "pt": "Não adicionadas:",
+  "zh": "未添加：",
+  "ko": "추가되지 않음:",
+  "th": "ไม่ได้เพิ่ม:",
+  "vi": "Chưa thêm:",
+  "id": "Tidak ditambahkan:"
+ },
+ "w01243880": {
+  "es": "Vacío: se limpia todo lo que tenga la antigüedad suficiente",
+  "pt": "Vazio: tudo que for antigo o bastante é limpo",
+  "zh": "空：所有达到期限的文件都会被清理",
+  "ko": "비어 있음: 기간이 지난 것은 모두 정리됩니다",
+  "th": "ว่าง: ล้างทุกอย่างที่เก่าพอ",
+  "vi": "Trống: mọi thứ đủ cũ đều được dọn",
+  "id": "Kosong: semua yang cukup lama dibersihkan"
+ },
+ "w62700b89": {
+  "es": "Vacío: solo las carpetas de la lista de la página",
+  "pt": "Vazio: só as pastas da lista da página",
+  "zh": "空：仅页面列表中的文件夹",
+  "ko": "비어 있음: 페이지 목록의 폴더만",
+  "th": "ว่าง: เฉพาะโฟลเดอร์ในรายการบนหน้า",
+  "vi": "Trống: chỉ các thư mục trong danh sách trên trang",
+  "id": "Kosong: hanya folder dalam daftar di halaman"
+ },
+ "we822e6cb": {
+  "es": " · y ",
+  "pt": " · e mais ",
+  "zh": " · 另有 ",
+  "ko": " · 외 ",
+  "th": " · และอีก ",
+  "vi": " · và thêm ",
+  "id": " · dan "
+ },
+ "f7cb355d8": {
+  "es": "Tu carpeta Temp: archivos de más de ",
+  "pt": "Sua pasta Temp: arquivos com mais de ",
+  "zh": "你的 Temp 文件夹 — 早于 ",
+  "ko": "내 Temp 폴더 — 이 기간보다 오래된 파일: ",
+  "th": "โฟลเดอร์ Temp ของคุณ — ไฟล์ที่เก่ากว่า ",
+  "vi": "Thư mục Temp của bạn — tệp cũ hơn ",
+  "id": "Folder Temp Anda — file lebih tua dari "
+ },
+ "fc911db3c": {
+  "es": ": archivos de más de ",
+  "pt": ": arquivos com mais de ",
+  "zh": " — 早于 ",
+  "ko": " — 이 기간보다 오래된 파일: ",
+  "th": " — ไฟล์ที่เก่ากว่า ",
+  "vi": " — tệp cũ hơn ",
+  "id": " — file lebih tua dari "
+ },
+ "wa679f398": {
+  "es": "Las carpetas Temp y tus carpetas de abajo: se borran los archivos que no han cambiado durante más tiempo que esto",
+  "pt": "As pastas Temp e suas pastas abaixo: são excluídos os arquivos que não mudaram por mais tempo que isso",
+  "zh": "Temp 文件夹和下方你自己的文件夹：删除超过这个时间未修改的文件",
+  "ko": "Temp 폴더와 아래의 내 폴더: 이 기간보다 오래 바뀌지 않은 파일이 삭제됩니다",
+  "th": "โฟลเดอร์ Temp และโฟลเดอร์ของคุณด้านล่าง: ลบไฟล์ที่ไม่ได้เปลี่ยนนานกว่านี้",
+  "vi": "Thư mục Temp và các thư mục của bạn bên dưới: xóa các tệp không thay đổi lâu hơn mức này",
+  "id": "Folder Temp dan folder Anda di bawah: file yang tidak berubah lebih lama dari ini dihapus"
+ }
+}

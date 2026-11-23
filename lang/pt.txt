@@ -187,8 +187,8 @@ w	ce91dc4b	Caso contrário, o botão de fechar encerra o programa e a curva auto
 w	18a014bb	Pasta de configurações
 w	8dc7408c	Iniciador
 w	4f5a185f	Executor
-w	0240eda2	O humano: ideias, testes, reinicializações e paciência
-w	a86c7417	Claude: código, curvas e mais de 40 rodadas de Prime95
+w	3d906c82	O humano: ideias, testes, centenas de reinicializações e paciência
+w	71756099	Claude: código, curvas e mais de 400 rodadas de Prime95
 w	dfc4f89b	Nenhum núcleo foi ferido. Bem, quase.
 w	aa134bc7	Sair
 w	bc6797f7	Aplicar curva
@@ -803,6 +803,36 @@ w	c2f30b91	Deslocamento da demanda de tensão do domínio SYS
 w	4b00aafb	Deslocamento da demanda de tensão do bloco de vídeo
 w	f96f8e64	o driver não expõe o deslocamento de tensão
 w	8a507571	o driver não manteve o deslocamento de tensão
+w	c57f8b89	um dia
+w	c205a7a6	h
+w	c08a89c2	não é o caminho de uma pasta
+w	95d1bc68	uma unidade inteira
+w	df4e9864	uma pasta protegida
+w	7d681608	As pastas pessoais (Área de Trabalho, Documentos, Downloads, Imagens, Músicas, Vídeos, OneDrive) não são examinadas
+w	22652644	Arquivos abertos por programas agora são ignorados
+w	4e9256c0	As pastas permanecem: só o conteúdo delas e as pastas vazias dentro são excluídos
+w	3dfaad26	Links para outras pastas (junction, symlink) não são seguidos
+w	14260092	Os dados do Red Tune e os arquivos de trabalho do Claude
+w	47ef6b15	Não é possível escolher como pasta própria uma unidade inteira, a pasta do usuário, uma pasta pessoal, Windows, Program Files, ProgramData ou AppData
+w	6d59100d	Regras de limpeza de arquivos
+w	740accb7	Idade dos arquivos
+w	a679f398	As pastas Temp e suas pastas abaixo: são excluídos os arquivos que não mudaram por mais tempo que isso
+w	17720117	Relatórios de erros do Windows e logs de instalação mais antigos que isso
+w	55f7fc4c	Pastas próprias para limpar
+w	19db9167	Um por linha. Um caminho (C:\\Work\\cache, %TEMP%\\build): nada nessa pasta. Uma máscara (*.iso, *.blend): arquivos e pastas com esse nome em qualquer lugar. Uma palavra (Steam): tudo que a tenha no caminho.
+w	aaccc14d	Pastas que também podem ser limpas, uma por linha (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). São excluídos os arquivos mais antigos que a idade dos temporários; a pasta permanece. Cada pasta é uma linha própria com seu interruptor.
+w	a2762f1a	Não adicionadas:
+w	01243880	Vazio: tudo que for antigo o bastante é limpo
+w	62700b89	Vazio: só as pastas da lista da página
+w	e822e6cb	 · e mais 
+w	3711d962	Seções neste dispositivo
+w	fbeab745	Ao iniciar e após a suspensão: se o driver esqueceu a predefinição, o Red Tune a coloca de novo
+w	6240665f	Restaurar a curva escolhida
+w	2290cd9c	Ao iniciar o Windows, após a suspensão e ao mudar a energia: se a curva se perdeu, o Red Tune a restaura. Requer início automático
+w	300a55da	Faixa de tensão do núcleo (NVVDD)
+w	76a711f9	Funciona entre
+w	61b69d46	limite de sobretensão
+w	26851e1a	XBAR, SYS e Video estão na mesma linha
 w	61afc5b6	Modo gráfico
 w	d959bb19	Híbrido economiza bateria; dedicado roda tudo na RTX
 w	0b911c29	Híbrido
@@ -1370,7 +1400,7 @@ w	03c9d5bd	Agora nem todas as bandas se ouvem: a escuta está ativada (S ou M no
 w	fad83bfd	05 Novo
 w	d9f878b3	01 Meu
 w	96ea2048	As funções da ASUS ainda não foram testadas num notebook real
-w	ade0bed6	Foram escritas a partir do relatório de um só modelo. Se um interruptor não funcionou, envie o relatório em “Componentes”: a resposta do firmware está no registro
+w	9a32f417	Foram escritas a partir do relatório de um só modelo. Se um interruptor não funcionou, envie o relatório em “Sobre”: a resposta do firmware está no registro
 w	cd7189bc	Modo de desempenho
 w	b4bbef0e	Desempenho
 w	b90efa8e	Silencioso: menos ruído; desempenho: mais potência
@@ -1435,6 +1465,8 @@ w	e9e50a14	o driver não fornece as curvas dos domínios
 w	38b959fb	esta placa não tem curvas XBAR, SYS e Video
 w	e0aaf867	Clocks agora
 w	11e0cacc	Núcleo
+f	7cb355d8	Sua pasta Temp: arquivos com mais de 
+f	c911db3c	 : arquivos com mais de 
 f	4f398e09	NVAPI: função inexistente 
 f	9179d8a6	NVAPI não iniciou (código 
 f	1443d8ec	perfis do driver indisponíveis (código 
@@ -1771,7 +1803,7 @@ f	76e93c22	» aberta, não aplicada
 f	9ac8e248	» já está na placa
 f	296223f3	predefinição
 f	2e21f1d9	o driver respondeu «aceito», mas a curva não mudou
-f	e61cad62	\n\n«Aplicar ao iniciar» está ligado: após reiniciar, a predefinição «
+f	be766e05	\n\n«Aplicar automaticamente» está ligado: após reiniciar, a predefinição «
 f	58bcba36	o driver NVIDIA não respondeu
 f	322ae317	nenhuma placa NVIDIA encontrada
 f	45e82377	o driver não fornece a curva V/F (a função do Afterburner)

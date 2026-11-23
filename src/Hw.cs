@@ -151,7 +151,7 @@ namespace RedTune
         // ---------- what was tried on a real machine ----------
         // 13.11: everything was tried on one laptop, a Lenovo Legion R7000P (machine type 83LT, Ryzen 9 8945HX). Elsewhere
         // the app works by the same rules, but the writes to the processor and the firmware were never seen working:
-        // those parts say so (Компоненты → «Это устройство», the report).
+        // those parts say so (О программе → «Это устройство», the report).
         public static bool VerifiedModel { get { return GameZone && MachineType.StartsWith("83LT", StringComparison.OrdinalIgnoreCase); } }
 
         // Dragon Range (7x45HX, 8x45HX): the processor family the SMU writes (curve, AMD limits) were tried on

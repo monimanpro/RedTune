@@ -12,7 +12,7 @@ body:
     id: report
     attributes:
       label: System report
-      description: In Red Tune open **Settings → Components** and press **«Copy report»**, then paste it here. It holds the model, BIOS, processor, graphics card and what Red Tune found; no names or serial numbers.
+      description: In Red Tune open **About** and press **«Copy report»**, then paste it here. It holds the model, BIOS, processor, graphics card and what Red Tune found; no names or serial numbers.
       render: text
     validations:
       required: true

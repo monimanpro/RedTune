@@ -44,7 +44,7 @@ Presets of your own power mode, each holding everything below, with step back an
 </table>
 
 ### Curve
-The Curve Optimizer value of every core, on any number of cores and chiplets: sliders, presets, history, and what to apply when Windows starts.
+The Curve Optimizer value of every core, on any number of cores and chiplets: sliders, presets, history, and «Bring the chosen curve back»: at Windows start, after sleep and on a power source change Red Tune reads the cores and writes the curve again only if it was lost.
 
 - **Auto-tune** finds values by itself. It loads the cores (its own load written for this, or Prime95 if you point to it), watches the hardware error records Windows keeps, steps back from the values that fail and leaves a margin. Two modes: *daily* (deeper, a value per core) and *strict* (holds whatever set of cores is busy, noticeably shallower). A run survives restarts: after a crash it goes on from where it stopped.
 - **Watchdog** reads the processor's corrected-error records once a minute and advises which core to raise; it never writes without your button.
@@ -57,11 +57,12 @@ The Curve Optimizer value of every core, on any number of cores and chiplets: sl
 </table>
 
 ### Graphics card (NVIDIA)
-The card's voltage/clock curve as points you drag, a memory clock offset, presets, step back and forward (Ctrl+Z / Ctrl+Y), and automatic apply with a power preset.
+The card's voltage/clock curve as points you drag, a memory clock offset, presets, step back and forward (Ctrl+Z / Ctrl+Y), and automatic apply with a power preset or, with «Apply automatically», at start and after sleep when the driver forgot it.
 - **Voltage offset** of the core: the graph shows the curve moved by it against the factory line.
 - **Clock domains** — the XBAR, SYS and Video curves with their live clocks, a clock offset and a voltage offset for each.
 - **Hold clocks under load** — the driver's «prefer maximum performance» mode, so the card stays in its top memory state instead of dropping to a lower one mid-game.
 - All of it is part of a graphics preset; a middle click puts a slider back to 0.
+- **Core voltage range** — what the driver lets the core rail do: its working range, the voltage now and the overvoltage ceiling (MSVDD too where the card has it as a rail of its own).
 
 <img src="docs/screenshots/graphics.png" alt="Graphics card: the voltage/clock curve">
 
@@ -101,7 +102,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 
 ### Clean-up
 - **Memory** — closes what was started after you signed in, as if the computer had just started: with a white list and a black list, a polite close first and a question before anything is forced.
-- **Files on disk** — measures, then deletes only what you tick: temporary files, the Recycle Bin, update and browser caches, error reports, thumbnail and shader caches, crash dumps. Personal folders are never looked at.
+- **Files on disk** — measures, then deletes only what you tick: temporary files, the Recycle Bin, update and browser caches, error reports, thumbnail and shader caches, crash dumps. Personal folders are never looked at. «Rules» sets how old temporary files and logs must be, a «never touch» list (paths, masks such as `*.iso`, words) and folders of your own to clean the same way; a drive, your user folder, personal folders, Windows, Program Files and AppData cannot be added.
 - **Removing programs** — lists classic programs and Microsoft Store apps, runs the program's own uninstaller (Store apps are removed by Windows), then finds what it left behind: folders, registry keys, shortcuts, startup entries and tasks, firewall rules, Windows accounts and groups it made, services and drivers, context menu entries, PATH entries. «Leftovers of removed» does the same for programs removed long ago, Program Files included. Only what is tied to the program by evidence is offered (its file is in the program's folder, or the file is gone); Windows' own things, device filter drivers, certificates, folders Explorer loads an extension from and anything found only through a publisher's folder are never offered. «Rules» shows what is looked for and lets you switch kinds off, keep your own «never touch» list and add your own program folders. Folders go to the Recycle Bin, the rest is removed at once.
 
 ### Apps
@@ -111,7 +112,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 ### Settings
 - **General** — language, interface scale, start with Windows, close to the tray, update check, expert functions; a backup of all settings into one zip and back (from another computer the curve, memory timings and graphics card tuning stay out: they were found for that hardware); what the mini panel shows; notifications; the overlay.
 - **Device** (laptops with a supported firmware interface) — **Lenovo**: keyboard backlight, charging mode, USB power while asleep, the graphics card's working mode and the Fn keys. **ASUS**: the performance mode (quiet, balanced, performance), the battery's charge limit, the keyboard backlight, the Fn lock and the fan speeds, each only where the laptop's firmware has it. Written from the report of one model (Vivobook Pro 14 OLED M3401) and not yet tried on a real ASUS laptop.
-- **Components** — what Red Tune found on this machine, what each part needs, and a system report you can copy when asking for a model to be supported.
+- **Components** — which sections work on this machine and what each part needs (PawnIO, the auto-tune's load).
 
 <img src="docs/screenshots/settings.png" alt="Settings">
 
@@ -129,14 +130,14 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 - **The graphics card** is tuned through NVIDIA's own driver interfaces.
 - **Sound** is an audio processing object: the kind of plug-in Windows' audio engine loads for a device. Red Tune registers it, places it in the device's chain of effects, and talks to it through a small shared file (settings in, meters and a spectrum back). The processing takes about one to two percent of a single processor core for the output and two to six percent for a full microphone chain (DeepFilterNet being the heavy part). The page's live pictures repaint only what the sound moves, and nothing that is scrolled out of view.
 - **Memory timings** are read from the processor's registers and written through AMD's overclocking interface in the BIOS, where it exists.
-- **Network: only for updates.** Once a day Red Tune asks GitHub for this repository's latest release (`api.github.com`); nothing about the computer is sent, and Settings → «Check for updates» switches it off. A new version is downloaded only when you press «Install» in «About»: the installer is checked against the SHA-256 GitHub keeps for the release file, then updates Red Tune and starts it again, keeping the settings; after an update «Bring back …» returns the version that was there before, the same way. «Send to GitHub» on «Components» opens the report form in your browser with the report filled in; Red Tune itself sends nothing. Other links (PawnIO, Prime95) open in your browser when you click them.
+- **Network: only for updates.** Once a day Red Tune asks GitHub for this repository's latest release (`api.github.com`); nothing about the computer is sent, and Settings → «Check for updates» switches it off. A new version is downloaded only when you press «Install» in «About»: the installer is checked against the SHA-256 GitHub keeps for the release file, then updates Red Tune and starts it again, keeping the settings; after an update «Bring back …» returns the version that was there before, the same way. «Send to GitHub» on «About» opens the report form in your browser with the report filled in; Red Tune itself sends nothing. Other links (PawnIO, Prime95) open in your browser when you click them.
 
 ### Safety nets
 - **Safe start.** Hold **Shift** at start, or run with `--safe`: nothing is applied. If the previous start broke off within three minutes of applying (a freeze, a blue screen), the next one applies nothing either. Home then shows a banner with «Apply now».
 - **Expert functions.** The curve, memory timings and direct processor limits are hidden until you switch them on in Settings and confirm.
 - **Values the hardware did not report are never written** just because a slider stood somewhere: such sliders read «do not change».
 - **Other tuning programs.** Red Tune warns when a program that changes the same settings starts with Windows: two of them would fight.
-- **Errors are kept for a report.** An error nothing caught is written to `crash.txt` in the settings folder (the version, Windows, the exception and the end of the journal, with the user's and the computer's names taken out). «About» shows the last one with «Send to GitHub», which opens the bug form filled in; after a crash the next start says so.
+- **Errors are kept for a report.** An error nothing caught is written to `crash.txt` in the settings folder (the version, Windows, the exception and the end of the journal, with the user's and the computer's names taken out). «About» shows the last one with «Send to GitHub», which opens the bug form filled in (the same page has the system report and its own «Send to GitHub» for the hardware report form); after a crash the next start says so.
 
 ## Requirements
 
@@ -164,7 +165,7 @@ English, Spanish, Portuguese (Brazil), Russian, Simplified Chinese, Korean, Thai
 
 ## Status
 
-Red Tune is developed and tested on one laptop: a Lenovo Legion R7000P with a Ryzen 9 8945HX and an RTX 5070 Laptop. On other machines it works out what is available and hides the rest, but writing the curve and the limits on other Ryzen families, the generic mode for other brands and for desktop PCs, and the sound effect on other audio drivers have not been verified on real hardware. The system report (Settings → Components → «Copy report») is what helps to add a model.
+Red Tune is developed and tested on one laptop: a Lenovo Legion R7000P with a Ryzen 9 8945HX and an RTX 5070 Laptop. On other machines it works out what is available and hides the rest, but writing the curve and the limits on other Ryzen families, the generic mode for other brands and for desktop PCs, and the sound effect on other audio drivers have not been verified on real hardware. The system report (About → «Copy report») is what helps to add a model.
 
 ### Help test it
 
@@ -172,7 +173,7 @@ Red Tune is in beta. A report from your machine is the most useful thing you can
 
 1. **Start with what changes nothing risky:** Home, power modes, fan curves, Sound, Display, Clean-up. Check that the readings match what you know (another monitoring tool, the laptop's own app).
 2. **Expert functions** (curve, auto-tune, memory, direct processor limits) are off until you switch them on in Settings. The auto-tune looks for the edge on purpose, so a freeze or a blue screen during a run is expected: Windows records the hardware error, and after the restart the run steps back and goes on. If anything else goes wrong, hold **Shift** while Red Tune starts: it then applies nothing.
-3. **Send a report:** Settings → Components → «Send to GitHub» opens the [Hardware report](../../issues/new?template=hardware-report.yml) form with the system report already in it; tick what worked. For anything broken: [Bug](../../issues/new?template=bug.yml). Russian is fine as well as English.
+3. **Send a report:** About → «Send to GitHub» opens the [Hardware report](../../issues/new?template=hardware-report.yml) form with the system report already in it; tick what worked. For anything broken: [Bug](../../issues/new?template=bug.yml). Russian is fine as well as English.
 
 ## Build from source
 

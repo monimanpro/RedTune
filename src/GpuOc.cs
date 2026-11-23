@@ -15,7 +15,7 @@ namespace RedTune
     //    +20. The layout was read off the driver while Afterburner applied a curve: +356 MHz up to 935 mV, −1602 MHz above
     //    (a flat top — the driver keeps the curve from falling, so a point pushed low just follows the one before it).
     //  • the memory clock: NVML's nvmlDeviceSetClockOffsets (type 2 = memory, P0), official since driver R555.
-    // The driver forgets both on a reboot, so Red Tune applies the saved preset at start (GpuStore.ApplyOnStart).
+    // The driver forgets both on a reboot, so Red Tune applies the saved preset at start (GpuStore.ApplyOnStart, MainForm.GpuAuto).
     static class Gpu
     {
         [DllImport("nvapi64.dll", EntryPoint = "nvapi_QueryInterface")] static extern IntPtr Q(uint id);
@@ -316,26 +316,6 @@ namespace RedTune
             int last = Array.FindLastIndex(kn, x => x);
             for (int k = 0; k < c.Count; k++) if (!kn[k]) b[k] = last >= 0 ? (int)Math.Round(b[last] + 1.4 * (c.Mv[k] - c.Mv[last])) : c.Mhz[k];
             return b;
-        }
-
-        // the saved preset again (start, after sleep): only with the expert switch and not on a safe start
-        public static void ApplySaved(Settings s, string why)
-        {
-            if (!ApplyOnStart || !s.Expert || Safety.SafeStart || Hw.Simulated) return;
-            var p = Presets.FirstOrDefault(x => x.Name == Active);
-            if (p == null) return;
-            System.Threading.Tasks.Task.Run(() =>
-            {
-                var c = Gpu.Read();
-                KeepStock(c); // right after a reboot the curve is the factory one: the moment to keep it
-                if (c == null || p.Delta.Length != c.Count) { Store.Log("видеокарта (" + why + "): кривая не подходит к этой карте"); return; }
-                var e = Gpu.WriteAll(p.Delta, p.Memory);
-                if (e == null && p.Domain.Any(x => x != 0)) e = GpuDomains.Apply(p.Domain); // XBAR / SYS / Video (22.11)
-                if (e == null) e = GpuDrs.Ensure(p.Hold); // 23.11: hold the clocks under load, as the preset says
-                if (e == null) e = GpuVolt.EnsureDomains(p.VoltDom); // 23.11: XBAR / SYS / Video voltage
-                if (e == null) e = GpuVolt.Ensure(p.Volt); // 23.11: the core voltage offset, last
-                Store.Log("видеокарта (" + why + "): «" + p.Name + "» " + (e ?? "применён"));
-            });
         }
     }
 }

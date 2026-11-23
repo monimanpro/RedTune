@@ -167,8 +167,13 @@ namespace RedTune
                 {
                     var exe = Startup.ExePath(o["PathName"] as string);
                     if (string.IsNullOrEmpty(exe)) continue;
-                    var dir = Path.GetDirectoryName(Norm(exe));
-                    if (!string.IsNullOrEmpty(dir)) { dirs.Add(dir); var up = Path.GetDirectoryName(dir); if (!string.IsNullOrEmpty(up)) dirs.Add(up); }
+                    // 23.11: one service with a path Path does not take must not end the whole upgrade
+                    try
+                    {
+                        var dir = Path.GetDirectoryName(Norm(exe));
+                        if (!string.IsNullOrEmpty(dir)) { dirs.Add(dir); var up = Path.GetDirectoryName(dir); if (!string.IsNullOrEmpty(up)) dirs.Add(up); }
+                    }
+                    catch { }
                 }
             var list = Names(s.CleanClose).ToList();
             foreach (var e in exes)

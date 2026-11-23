@@ -187,8 +187,8 @@ w	ce91dc4b	Jika tidak, tombol tutup akan keluar dari program dan kurva otomatis 
 w	18a014bb	Folder pengaturan
 w	8dc7408c	Pemrakarsa
 w	4f5a185f	Pelaksana
-w	0240eda2	Manusia — ide, pengujian, mulai ulang, dan kesabaran
-w	a86c7417	Claude — kode, kurva, dan 40+ putaran Prime95
+w	3d906c82	Manusia — ide, pengujian, ratusan kali mulai ulang, dan kesabaran
+w	71756099	Claude — kode, kurva, dan 400+ putaran Prime95
 w	dfc4f89b	Tidak ada inti yang terluka. Yah, hampir.
 w	aa134bc7	Keluar
 w	bc6797f7	Terapkan kurva
@@ -803,6 +803,36 @@ w	c2f30b91	Offset permintaan tegangan domain SYS
 w	4b00aafb	Offset permintaan tegangan blok video
 w	f96f8e64	driver tidak menyediakan offset tegangan
 w	8a507571	driver tidak mempertahankan offset tegangan
+w	c57f8b89	sehari
+w	c205a7a6	jam
+w	c08a89c2	bukan jalur folder
+w	95d1bc68	seluruh drive
+w	df4e9864	folder yang dilindungi
+w	7d681608	Folder pribadi (Desktop, Dokumen, Unduhan, Gambar, Musik, Video, OneDrive) tidak diperiksa
+w	22652644	File yang sedang dibuka program dilewati
+w	4e9256c0	Folder itu sendiri tetap: hanya isinya dan folder kosong di dalamnya yang dihapus
+w	3dfaad26	Tautan ke folder lain (junction, symlink) tidak diikuti
+w	14260092	Data Red Tune dan file kerja Claude
+w	47ef6b15	Seluruh drive, folder pengguna, folder pribadi, Windows, Program Files, ProgramData, dan AppData tidak dapat dijadikan folder untuk dibersihkan
+w	6d59100d	Aturan pembersihan file
+w	740accb7	Usia file
+w	a679f398	Folder Temp dan folder Anda di bawah: file yang tidak berubah lebih lama dari ini dihapus
+w	17720117	Laporan kesalahan Windows dan log pemasangan yang lebih tua dari ini
+w	55f7fc4c	Folder sendiri untuk dibersihkan
+w	19db9167	Satu per baris. Jalur (C:\\Work\\cache, %TEMP%\\build): tidak ada di folder itu. Mask (*.iso, *.blend): file dan folder bernama itu di mana saja. Kata (Steam): semua yang memuatnya di jalur.
+w	aaccc14d	Folder yang juga boleh dibersihkan, satu per baris (D:\\Downloads\\tmp, %LOCALAPPDATA%\\SomeApp\\cache). File yang lebih tua dari usia file sementara dihapus, foldernya tetap. Setiap folder menjadi baris sendiri dengan sakelar.
+w	a2762f1a	Tidak ditambahkan:
+w	01243880	Kosong: semua yang cukup lama dibersihkan
+w	62700b89	Kosong: hanya folder dalam daftar di halaman
+w	e822e6cb	 · dan 
+w	3711d962	Bagian di perangkat ini
+w	fbeab745	Saat mulai dan setelah tidur: jika driver melupakan preset, Red Tune memasangnya lagi
+w	6240665f	Kembalikan kurva yang dipilih
+w	2290cd9c	Saat Windows mulai, setelah tidur, dan saat daya berganti: jika kurva hilang, Red Tune mengembalikannya. Perlu mulai otomatis
+w	300a55da	Rentang tegangan inti (NVVDD)
+w	76a711f9	Bekerja dalam
+w	61b69d46	batas tegangan lebih
+w	26851e1a	XBAR, SYS, dan Video di jalur yang sama
 w	61afc5b6	Mode grafis
 w	d959bb19	Hibrida menghemat baterai, diskret menjalankan semuanya di RTX
 w	0b911c29	Hibrida
@@ -1370,7 +1400,7 @@ w	03c9d5bd	Sekarang tidak semua pita terdengar: mode mendengarkan aktif (S atau 
 w	fad83bfd	05 Baru
 w	d9f878b3	01 Milik saya
 w	96ea2048	Fungsi ASUS belum dicoba di laptop sungguhan
-w	ade0bed6	Ditulis dari laporan satu model. Jika sakelar tidak bekerja, kirim laporan dari “Komponen”: jawaban firmware ada di jurnal
+w	9a32f417	Ditulis dari laporan satu model. Jika sakelar tidak bekerja, kirim laporan dari “Tentang”: jawaban firmware ada di jurnal
 w	cd7189bc	Mode kinerja
 w	b4bbef0e	Kinerja
 w	b90efa8e	Senyap: lebih sedikit bising; kinerja: daya lebih besar
@@ -1435,6 +1465,8 @@ w	e9e50a14	driver tidak memberikan kurva domain
 w	38b959fb	kartu ini tidak punya kurva XBAR, SYS, dan Video
 w	e0aaf867	Clock saat ini
 w	11e0cacc	Core
+f	7cb355d8	Folder Temp Anda — file lebih tua dari 
+f	c911db3c	 — file lebih tua dari 
 f	4f398e09	NVAPI: tidak ada fungsi 
 f	9179d8a6	NVAPI tidak berjalan (kode 
 f	1443d8ec	profil driver tidak tersedia (kode 
@@ -1771,7 +1803,7 @@ f	76e93c22	» dibuka, belum diterapkan
 f	9ac8e248	» sudah ada di kartu
 f	296223f3	preset
 f	2e21f1d9	driver menjawab «diterima» tetapi kurva tidak berubah
-f	e61cad62	\n\n«Terapkan saat mulai» menyala: setelah mulai ulang, preset «
+f	be766e05	\n\n«Terapkan otomatis» menyala: setelah mulai ulang, preset «
 f	58bcba36	driver NVIDIA tidak menjawab
 f	322ae317	kartu NVIDIA tidak ditemukan
 f	45e82377	driver tidak menyediakan kurva V/F (fungsi Afterburner)

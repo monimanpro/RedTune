@@ -1,0 +1,38 @@
+{
+ "fbe766e05": {
+  "es": "\n\n«Aplicar automáticamente» está activado: tras un reinicio, el preajuste «",
+  "pt": "\n\n«Aplicar automaticamente» está ligado: após reiniciar, a predefinição «",
+  "zh": "\n\n«自动应用»已开启：重启后预设«",
+  "ko": "\n\n«자동 적용»이 켜져 있습니다. 재부팅 후 프리셋 «",
+  "th": "\n\n«ใช้โดยอัตโนมัติ» เปิดอยู่: หลังรีบูต พรีเซ็ต «",
+  "vi": "\n\n«Tự động áp dụng» đang bật: sau khi khởi động lại, preset «",
+  "id": "\n\n«Terapkan otomatis» menyala: setelah mulai ulang, preset «"
+ },
+ "wfbeab745": {
+  "es": "Al iniciar y tras la suspensión: si el controlador olvidó el preajuste, Red Tune lo vuelve a poner",
+  "pt": "Ao iniciar e após a suspensão: se o driver esqueceu a predefinição, o Red Tune a coloca de novo",
+  "zh": "启动时和睡眠后：如果驱动忘记了预设，Red Tune 会重新应用",
+  "ko": "시작 시와 절전 후: 드라이버가 프리셋을 잊었다면 Red Tune이 다시 적용합니다",
+  "th": "ตอนเริ่มและหลังพักเครื่อง: ถ้าไดรเวอร์ลืมพรีเซ็ต Red Tune จะใส่กลับให้",
+  "vi": "Khi khởi động và sau khi ngủ: nếu driver quên preset, Red Tune sẽ đặt lại",
+  "id": "Saat mulai dan setelah tidur: jika driver melupakan preset, Red Tune memasangnya lagi"
+ },
+ "w6240665f": {
+  "es": "Restaurar la curva elegida",
+  "pt": "Restaurar a curva escolhida",
+  "zh": "恢复所选曲线",
+  "ko": "선택한 커브 복원",
+  "th": "คืนค่าเคิร์ฟที่เลือก",
+  "vi": "Khôi phục đường cong đã chọn",
+  "id": "Kembalikan kurva yang dipilih"
+ },
+ "w2290cd9c": {
+  "es": "Al iniciar Windows, tras la suspensión y al cambiar la energía: si la curva se perdió, Red Tune la restaura. Requiere inicio automático",
+  "pt": "Ao iniciar o Windows, após a suspensão e ao mudar a energia: se a curva se perdeu, o Red Tune a restaura. Requer início automático",
+  "zh": "Windows 启动、睡眠后和电源切换时：如果曲线丢失，Red Tune 会恢复。需要开机自启",
+  "ko": "Windows 시작, 절전 후, 전원 변경 시: 커브가 풀렸다면 Red Tune이 복원합니다. 자동 시작 필요",
+  "th": "ตอนเริ่ม Windows หลังพักเครื่อง และเมื่อเปลี่ยนแหล่งไฟ: ถ้าเคิร์ฟหลุด Red Tune จะคืนค่าให้ ต้องเปิดเริ่มอัตโนมัติ",
+  "vi": "Khi khởi động Windows, sau khi ngủ và khi đổi nguồn: nếu đường cong bị mất, Red Tune sẽ khôi phục. Cần tự khởi động",
+  "id": "Saat Windows mulai, setelah tidur, dan saat daya berganti: jika kurva hilang, Red Tune mengembalikannya. Perlu mulai otomatis"
+ }
+}
