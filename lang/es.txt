@@ -1236,6 +1236,11 @@ w	ecf9e1a9	Archivos en disco
 w	05ee5f52	Desinstalar programas
 w	3a4b763f	Restos de programas eliminados
 w	bfd4e69e	Por nombre
+w	62d1f684	Qué plan se activa
+w	f6e38364	Qué curva se activa
+w	22c79b6b	Qué preajuste de la tarjeta gráfica se activa
+w	a9d43979	Con este preajuste
+w	dcb924a2	Se activa con este preajuste en el modo Personalizado
 w	be783c16	Más recientes primero
 w	1b9dde9c	Más antiguos primero
 w	5081fcfd	Programas instalados

@@ -1236,6 +1236,11 @@ w	ecf9e1a9	Berkas di disk
 w	05ee5f52	Menghapus program
 w	3a4b763f	Sisa program yang dihapus
 w	bfd4e69e	Menurut nama
+w	62d1f684	Paket daya yang dinyalakan
+w	f6e38364	Kurva yang dinyalakan
+w	22c79b6b	Preset kartu grafis yang dinyalakan
+w	a9d43979	Dengan preset ini
+w	dcb924a2	Dinyalakan bersama preset ini di mode Kustom
 w	be783c16	Terbaru dulu
 w	1b9dde9c	Terlama dulu
 w	5081fcfd	Program terpasang

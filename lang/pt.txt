@@ -1236,6 +1236,11 @@ w	ecf9e1a9	Arquivos em disco
 w	05ee5f52	Remover programas
 w	3a4b763f	Restos de programas removidos
 w	bfd4e69e	Por nome
+w	62d1f684	Qual plano é ativado
+w	f6e38364	Qual curva é ativada
+w	22c79b6b	Qual predefinição da placa de vídeo é ativada
+w	a9d43979	Com esta predefinição
+w	dcb924a2	É ativado com esta predefinição no modo Personalizado
 w	be783c16	Mais recentes primeiro
 w	1b9dde9c	Mais antigos primeiro
 w	5081fcfd	Programas instalados

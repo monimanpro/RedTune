@@ -191,10 +191,6 @@ namespace RedTune
             FanOption("Упреждение", "Температура растёт быстрее 5 °C/с — раскрутить заранее, как через 2 с", () => settings.FanPredict, v => settings.FanPredict = v);
 
             EndTab(2);
-            Row("Схема для этого пресета", "Включается вместе с пресетом", planBtn);
-            Section("Схемы для других режимов");
-            var names = new[] { "Тихий", "Баланс", "Макс" };
-            for (int i = 0; i < 3; i++) { Row(names[i], null, modePlans[i]); int k = i; modePlans[i].Changed += (s, e) => SaveModePlan(k); }
             Section("Настройки процессора в схеме");
             cfgSrc.Selected = SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Offline ? 0 : 1;
             cfgPlanRow = Row("Схема", CfgSub, cfgSrc, cfgPlan); // the plan on the right, under the buttons of the rows above (the user's order)
@@ -212,13 +208,16 @@ namespace RedTune
             cfgParkRow = Row("Запретить парковку ядер", CfgNone, cfgPark);
             cfgWriteRow = Row("Запись в схему", CfgWriteSub, cfgUndo, cfgWrite);
             cfgWrite.Enabled = cfgUndo.Enabled = false;
-            // the two rows about plans as a whole stand under the settings of a plan (the user's order, 18.11)
+            // the two rows about plans as a whole stand right under the settings of a plan (the user's order, 18.11 and 23.11)
             var open = new FlatButton("Открыть «Электропитание»");
             Row("Схемы Windows", "Создать или настроить схемы — в панели управления Windows", open);
             // 17.11: a plan for the auto-tune and for checks of the curve, made by the program on this button (WinPower.MakeTuningPlan)
             tuneBtn = new FlatButton("Создать «Тюнинг»");
             tuneRow = Row("Схема для автотюна", TuneRowSub, tuneBtn);
             tuneBtn.Click += (s, e) => { if (HaveTunePlan()) RestoreTuningPlan(); else MakeTuningPlan(); };
+            // 23.11 (the user's order): which plan the preset and the modes switch on — last, a step of its own. The same
+            // block on «Схемы питания», «Кривые» and «Видеокарта» (ModeBlock): «С этим пресетом», then Тихий / Баланс / Макс
+            ModeBlock("Какая схема включается", planBtn, modePlans, SaveModePlan);
             cfgBoost.Set(BoostNames, -1);
             cfgPlan.Changed += (s, e) => { if (cfgPlan.Index >= 0 && cfgPlan.Index < plans.Count) cfgId = plans[cfgPlan.Index].Id; LoadCfg(); };
             cfgSrc.Changed += (s, e) => LoadCfg();
@@ -241,18 +240,13 @@ namespace RedTune
             planBtn.Changed += (s, e) => FollowCfg();
 
             EndTab(3);
-            Row("Кривая для этого пресета", "Включается вместе с пресетом и становится активной (вкладка «Кривая»)", curveBtn);
-            Section("Кривые для других режимов");
-            for (int i = 0; i < 3; i++) { Row(names[i], "Включается при переходе в этот режим (Fn+Q, главная)", modeCurves[i]); int k = i; modeCurves[i].Changed += (s, e) => SaveModeCurve(k); }
+            ModeBlock("Какая кривая включается", curveBtn, modeCurves, SaveModeCurve);
 
             // the «Видеокарта» presets (13.11): a GPU curve and memory clock per power preset and per mode
             EndTab(4);
             if (Hw.Nvidia)
             {
-                Section("Пресет видеокарты");
-                Row("Пресет видеокарты для этого пресета", "Кривая и частота памяти из раздела «Видеокарта» — применяются вместе с пресетом", gpuPresetBtn);
-                Section("Пресеты видеокарты для других режимов");
-                for (int i = 0; i < 3; i++) { Row(names[i], "Применяется при переходе в этот режим (Fn+Q, главная)", modeGpu[i]); int k = i; modeGpu[i].Changed += (s, e) => SaveModeGpu(k); }
+                ModeBlock("Какой пресет видеокарты включается", gpuPresetBtn, modeGpu, SaveModeGpu);
             }
 
             EndTab(1); // the GPU presets, made last, belong to «Видеокарта»
@@ -310,6 +304,16 @@ namespace RedTune
         void Want(Control c, bool on) { wish[c] = on; int t; c.Visible = on && (!tabOf.TryGetValue(c, out t) || t == tab); }
 
         // the off-screen render (RT_FAN_ON=1): the custom fan curve switched on in the editor, as if clicked; nothing is saved
+        // 23.11 (the user: «Пресет видеокарты для этого пресета» read funny): one block for what the preset and the three
+        // firmware modes switch on — the plan, the curve, the GPU preset — worded alike on every tab
+        void ModeBlock(string header, DropButton mine, DropButton[] modes, Action<int> save)
+        {
+            Section(header);
+            Row("С этим пресетом", "Включается вместе с пресетом в режиме «Свой»", mine);
+            var names = new[] { "Тихий", "Баланс", "Макс" };
+            for (int i = 0; i < 3; i++) { Row(names[i], "Включается при переходе в этот режим (Fn+Q, главная)", modes[i]); int k = i; modes[i].Changed += (s, e) => save(k); }
+        }
+
         internal void PretendFanCurveOn() { fanOn.Checked = true; }
 
         public void ShowTab(int i)

@@ -1,0 +1,7 @@
+{
+"w62d1f684": {"es":"Qué plan se activa","pt":"Qual plano é ativado","zh":"启用哪个电源计划","ko":"켜지는 전원 관리 옵션","th":"แผนพลังงานที่จะเปิด","vi":"Gói nguồn được bật","id":"Paket daya yang dinyalakan"},
+"wf6e38364": {"es":"Qué curva se activa","pt":"Qual curva é ativada","zh":"启用哪条曲线","ko":"켜지는 커브","th":"เคิร์ฟที่จะเปิด","vi":"Đường cong được bật","id":"Kurva yang dinyalakan"},
+"w22c79b6b": {"es":"Qué preajuste de la tarjeta gráfica se activa","pt":"Qual predefinição da placa de vídeo é ativada","zh":"启用哪个显卡预设","ko":"켜지는 그래픽 카드 프리셋","th":"พรีเซ็ตการ์ดจอที่จะเปิด","vi":"Preset card đồ họa được bật","id":"Preset kartu grafis yang dinyalakan"},
+"wa9d43979": {"es":"Con este preajuste","pt":"Com esta predefinição","zh":"随此预设","ko":"이 프리셋과 함께","th":"กับพรีเซ็ตนี้","vi":"Cùng preset này","id":"Dengan preset ini"},
+"wdcb924a2": {"es":"Se activa con este preajuste en el modo Personalizado","pt":"É ativado com esta predefinição no modo Personalizado","zh":"在自定义模式下随此预设启用","ko":"사용자 모드에서 이 프리셋과 함께 켜집니다","th":"เปิดพร้อมพรีเซ็ตนี้ในโหมดกำหนดเอง","vi":"Bật cùng preset này ở chế độ Tùy chỉnh","id":"Dinyalakan bersama preset ini di mode Kustom"}
+}
