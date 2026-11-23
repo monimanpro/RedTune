@@ -608,7 +608,7 @@ namespace RedTune
             { "Свой тест недоступен: нет RedTuneStress.dll или процессор без AVX2", "The own test is not available: RedTuneStress.dll is missing or the processor has no AVX2" },
             { "Кривая этого процессора программе не известна", "The app does not know this processor's curve" },
             // removing programs
-            { "Оперативная память", "Memory (RAM)" }, { "Файлы на диске", "Files on disk" }, { "Удаление программ", "Removing programs" }, { "Хвосты удалённых", "Leftovers of removed" }, { "Установленные программы", "Installed programs" },
+            { "Оперативная память", "Memory (RAM)" }, { "Файлы на диске", "Files on disk" }, { "Удаление программ", "Removing programs" }, { "Хвосты удалённых", "Leftovers of removed" }, { "По имени", "By name" }, { "Сначала новые", "Newest first" }, { "Сначала старые", "Oldest first" }, { "Установленные программы", "Installed programs" },
             { "Загружаю список…", "Loading the list…" }, { "Удалить…", "Remove…" }, { "Удаление программы", "Removing a program" },
             { "Идёт удаление — пройдите окно деинсталлятора…", "Removing: go through the uninstaller window…" },
             { "Прошло — искать хвосты", "It went through: find leftovers" }, { "Отменили", "It was cancelled" }, { "Ищу хвосты…", "Looking for leftovers…" },

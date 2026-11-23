@@ -39,6 +39,7 @@ namespace RedTune
         public bool ApplyOnStart = true; // 23.11: the curve page's one «Применять автоматически» (start, after sleep, another power source)
         public bool CloseToTray = true;
         public int UiScale = 100;
+        public int AppsSort;                    // 23.11: «Удаление программ» order: 0 by name, 1 newest first, 2 oldest first
         public string Language = "ru";
         public string P95Path = "";
         public string TunePlan = "";            // the id of the Windows power plan made for tuning (WinPower.MakeTuningPlan), to find it again
@@ -148,6 +149,7 @@ namespace RedTune
                 {
                     case "ActivePreset": s.ActivePreset = v; break;
                     case "ApplyOnStart": s.ApplyOnStart = b; break;
+                    case "AppsSort": int.TryParse(v, out s.AppsSort); break;
                     case "CloseToTray": s.CloseToTray = b; break;
                     case "UiScale": int z; if (int.TryParse(v, out z) && z >= 75 && z <= 200) s.UiScale = z; break;
                     case "P95Path": s.P95Path = v; break;
@@ -227,7 +229,7 @@ namespace RedTune
             File.WriteAllLines(P("settings.ini"), new[]
             {
                 "ActivePreset=" + s.ActivePreset, "ApplyOnStart=" + b(s.ApplyOnStart), "CloseToTray=" + b(s.CloseToTray),
-                "UiScale=" + s.UiScale, "Language=" + s.Language, "P95Path=" + s.P95Path, "TuneLoad=" + s.TuneLoad, "TuneMode=" + s.TuneMode, "TunePlan=" + s.TunePlan,
+                "UiScale=" + s.UiScale, "AppsSort=" + s.AppsSort, "Language=" + s.Language, "P95Path=" + s.P95Path, "TuneLoad=" + s.TuneLoad, "TuneMode=" + s.TuneMode, "TunePlan=" + s.TunePlan,
                 "FanSafety=" + b(s.FanSafety), "FanCritical=" + b(s.FanCritical), "FanHyst=" + b(s.FanHyst), "FanEma=" + b(s.FanEma),
                 "FanGlide=" + b(s.FanGlide), "FanBoost=" + b(s.FanBoost), "FanSync=" + b(s.FanSync), "FanPredict=" + b(s.FanPredict), "SyncBrightness=" + b(s.SyncBrightness), "HzAuto=" + b(s.HzAuto), "AcmOff=" + s.AcmOff, "HzAc=" + s.HzAc, "HzDc=" + s.HzDc,
                 "OsdOn=" + b(s.OsdOn), "OsdTopmost=" + b(s.OsdTopmost), "OsdAllMonitors=" + b(s.OsdAllMonitors), "OsdFollow=" + b(s.OsdFollow), "CompByFreq=" + b(s.CompByFreq), "AsusMode=" + s.AsusMode, "AsusCharge=" + s.AsusCharge, "AsusLight=" + s.AsusLight, "OverlayOn=" + b(s.OverlayOn), "OverlayAlways=" + b(s.OverlayAlways), "OverlayCorner=" + s.OverlayCorner, "OverlaySize=" + s.OverlaySize, "OsdPosition=" + s.OsdPosition, "OsdMs=" + s.OsdMs, "OsdOff=" + s.OsdOff, "MiniOff=" + s.MiniOff,

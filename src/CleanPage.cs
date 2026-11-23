@@ -48,7 +48,10 @@ namespace RedTune
             search.Width = Theme.S(260);
             var orphansBtn = new FlatButton("Хвосты удалённых");
             var rulesBtn = new FlatButton("Правила"); // 22.11: what the search looks for and what it never touches (UninstRules.cs)
-            appsRow = Row("Установленные программы", "Загружаю список…", search, orphansBtn, rulesBtn);
+            // 23.11: the order — by name, or by the install date (Uninst.InstallDate), kept in the settings
+            sortBtn.Set(new[] { "По имени", "Сначала новые", "Сначала старые" }, Math.Max(0, Math.Min(2, s.AppsSort)));
+            sortBtn.Changed += (o, e) => { s.AppsSort = sortBtn.Index; Store.SaveSettings(s); if (apps != null && !busyApps) ShowApps(apps); };
+            appsRow = Row("Установленные программы", "Загружаю список…", search, sortBtn, orphansBtn, rulesBtn);
             search.Box.TextChanged += (o, e) => Filter();
             orphansBtn.Click += (o, e) => FindOrphans(orphansBtn);
             rulesBtn.Click += (o, e) => UninstRulesDialog.Edit(FindForm());
@@ -117,6 +120,7 @@ namespace RedTune
 
         readonly Dist.SearchBox search = new Dist.SearchBox("Найти программу");
         readonly Row appsRow;
+        readonly DropButton sortBtn = new DropButton();
         List<InstalledApp> apps;
         readonly List<Tuple<InstalledApp, Row>> appRows = new List<Tuple<InstalledApp, Row>>();
         bool busyApps;
@@ -140,12 +144,20 @@ namespace RedTune
 
         void ShowApps(List<InstalledApp> list)
         {
+            list = Sorted(list);
             apps = list;
+            // 23.11: the rows of programs still there are kept and only put in the new order (the list comes twice at the
+            // start — the registry, then with the Store apps — and once more for every sort: 262 windows made each time,
+            // ~0.17 s); a row's text is set again, a removal may have left its own words in it
+            var old = appRows.ToDictionary(t => AppKey(t.Item1), t => t.Item2, StringComparer.OrdinalIgnoreCase);
+            var keep = new HashSet<string>(list.Select(AppKey), StringComparer.OrdinalIgnoreCase);
             SuspendLayout();
-            foreach (var t in appRows) Remove(t.Item2);
+            foreach (var kv in old.Where(kv => !keep.Contains(kv.Key)).ToList()) { Remove(kv.Value); old.Remove(kv.Key); }
             appRows.Clear();
             foreach (var a in list)
             {
+                Row was;
+                if (old.TryGetValue(AppKey(a), out was)) { if (!busyApps) was.SetSub(AppSub(a)); appRows.Add(Tuple.Create(a, was)); continue; }
                 var btn = new FlatButton("Удалить…");
                 var app = a;
                 var where = AppFolder(a);
@@ -161,9 +173,22 @@ namespace RedTune
                 appRows.Add(Tuple.Create(a, row));
             }
             ResumeLayout();
+            Reorder(appRows.Select(t => (Control)t.Item2).ToList());
             appsRow.SetSub(list.Count + " " + Plural(list.Count, "программа", "программы", "программ") + " · удаляются вместе с хвостами");
             Filter();
         }
+
+        // by name (Uninst.Tidy already gives that), or by the date; programs without one go last either way
+        List<InstalledApp> Sorted(List<InstalledApp> list)
+        {
+            var byName = list.OrderBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase);
+            if (s.AppsSort == 1) return byName.OrderBy(a => a.Date.Length == 8 ? 0 : 1).ThenByDescending(a => a.Date, StringComparer.Ordinal).ToList();
+            if (s.AppsSort == 2) return byName.OrderBy(a => a.Date.Length == 8 ? 0 : 1).ThenBy(a => a.Date, StringComparer.Ordinal).ToList();
+            return byName.ToList();
+        }
+
+        // one program across reloads: its uninstall key, or its package for a Store app
+        static string AppKey(InstalledApp a) { return a.IsStore ? "pkg|" + a.Package : a.KeyPath; }
 
         static string AppSub(InstalledApp a)
         {
@@ -179,9 +204,11 @@ namespace RedTune
         void Filter()
         {
             var q = search.Box.Text.Trim();
-            foreach (var t in appRows)
-                t.Item2.Visible = tab == 2 && (q.Length == 0 || t.Item1.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 || t.Item1.Publisher.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0);
-            Relayout();
+            Batch(() =>
+            {
+                foreach (var t in appRows)
+                    t.Item2.Visible = tab == 2 && (q.Length == 0 || t.Item1.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 || t.Item1.Publisher.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0);
+            });
         }
 
         void UninstallApp(InstalledApp a, Row row, FlatButton btn)

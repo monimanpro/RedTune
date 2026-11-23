@@ -49,6 +49,7 @@ namespace RedTune
             AutoScroll = true; BackColor = Theme.Window; Dock = DockStyle.Fill;
             motion.Tick += (s, e) => MotionTick();
             HandleCreated += (s, e) => Native.DarkScrollBars(Handle);
+            ResizeDone += AfterLiveResize;
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
         }
 
@@ -80,6 +81,27 @@ namespace RedTune
             spots.Remove(c);
             Controls.Remove(c);
             c.Dispose();
+        }
+
+        // 23.11 («Удаление программ» was slow): many rows shown or hidden at once are placed once, after all of them —
+        // each change used to place the whole page anew (74 programs: 100–140 placings, 0.3–0.5 s per letter typed in the search)
+        public void Batch(Action change)
+        {
+            bool was = inLayout; inLayout = true; SuspendLayout();
+            try { change(); } finally { ResumeLayout(false); inLayout = was; }
+            Relayout();
+        }
+
+        // 23.11: these controls, already on the page, take the places they hold among themselves in this order (a list sorted
+        // anew without making its rows again)
+        public void Reorder(IList<Control> order)
+        {
+            var mine = new HashSet<Control>(order);
+            var at = new List<int>();
+            for (int i = 0; i < items.Count; i++) if (mine.Contains(items[i].Key)) at.Add(i);
+            var gap = at.ToDictionary(i => items[i].Key, i => items[i].Value);
+            for (int k = 0; k < at.Count && k < order.Count; k++) items[at[k]] = new KeyValuePair<Control, int>(order[k], gap[order[k]]);
+            Relayout();
         }
 
         public Row Row(string title, string sub = null, params Control[] right) { return Add(new Row(title, sub, right)); }
@@ -232,11 +254,20 @@ namespace RedTune
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) { motion.Dispose(); DropGhosts(); DropEarly(); }
+            if (disposing) { ResizeDone -= AfterLiveResize; motion.Dispose(); DropGhosts(); DropEarly(); }
             base.Dispose(disposing);
         }
 
         bool inLayout;
+
+        // 23.11 («Удаление программ» was slow while the window was dragged wider or narrower: 66 rows and their buttons got
+        // the new width on every step, 40 ms a step before painting, though 8–10 of them were in sight): while the main
+        // window is being resized by hand, the rows out of sight keep their width; they get it once, when the drag ends.
+        // MainForm says when (ResizeBegin / ResizeEnd); a maximize or a snap is one step and places everything at once.
+        public static bool LiveResize;
+        static event Action ResizeDone;
+        public static void EndLiveResize() { LiveResize = false; var h = ResizeDone; if (h != null) h(); }
+        void AfterLiveResize() { if (Visible && IsHandleCreated) Relayout(); }
         // 16.11, for the mini panel: a page that is as tall as its rows and never scrolls, and its margins (the gap at
         // the sides and over the first row, in the units of Theme.S)
         public bool NoScroll;
@@ -344,7 +375,10 @@ namespace RedTune
                 }
                 else if (sp.To != cy) { sp.To = cy; start = true; }
                 sp.Was = true; sp.Placed = true;
-                kv.Key.Bounds = new Rectangle(Theme.S(Side), AutoScrollPosition.Y + (int)Math.Round(sp.Y), wide, kv.Key.Height);
+                int rowY = AutoScrollPosition.Y + (int)Math.Round(sp.Y);
+                if (LiveResize && kv.Key.Width != wide && (rowY + kv.Key.Height < -Theme.S(60) || rowY > ClientSize.Height + Theme.S(60)))
+                    { if (kv.Key.Top != rowY) kv.Key.Top = rowY; } // out of sight: the width comes when the drag ends
+                else kv.Key.Bounds = new Rectangle(Theme.S(Side), rowY, wide, kv.Key.Height);
                 cy += kv.Key.Height;
             }
             if (start)

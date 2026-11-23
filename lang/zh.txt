@@ -1235,6 +1235,9 @@ w	551e26d9	内存 (RAM)
 w	ecf9e1a9	磁盘上的文件
 w	05ee5f52	卸载程序
 w	3a4b763f	已卸载程序的残留
+w	bfd4e69e	按名称
+w	be783c16	最新优先
+w	1b9dde9c	最早优先
 w	5081fcfd	已安装的程序
 w	fbfc11d1	正在加载列表…
 w	e0e417df	卸载…

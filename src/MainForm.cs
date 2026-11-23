@@ -30,6 +30,8 @@ namespace RedTune
         public MainForm(Settings settings)
         {
             this.settings = settings;
+            ResizeBegin += (s, e) => Page.LiveResize = true; // 23.11: see Page.LiveResize
+            ResizeEnd += (s, e) => Page.EndLiveResize();
             curve = new CurveService(settings);
             power = new PowerService();
             Osd.Init(settings);

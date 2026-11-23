@@ -1235,6 +1235,9 @@ w	551e26d9	Bộ nhớ (RAM)
 w	ecf9e1a9	Tệp trên đĩa
 w	05ee5f52	Gỡ chương trình
 w	3a4b763f	Phần còn sót của chương trình đã gỡ
+w	bfd4e69e	Theo tên
+w	be783c16	Mới nhất trước
+w	1b9dde9c	Cũ nhất trước
 w	5081fcfd	Chương trình đã cài
 w	fbfc11d1	Đang tải danh sách…
 w	e0e417df	Gỡ…

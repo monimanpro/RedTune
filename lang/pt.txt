@@ -1235,6 +1235,9 @@ w	551e26d9	Memória (RAM)
 w	ecf9e1a9	Arquivos em disco
 w	05ee5f52	Remover programas
 w	3a4b763f	Restos de programas removidos
+w	bfd4e69e	Por nome
+w	be783c16	Mais recentes primeiro
+w	1b9dde9c	Mais antigos primeiro
 w	5081fcfd	Programas instalados
 w	fbfc11d1	Carregando a lista…
 w	e0e417df	Remover…

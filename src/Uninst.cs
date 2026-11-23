@@ -72,13 +72,29 @@ namespace RedTune
                                 Name = name.Trim(), Publisher = (e.GetValue("Publisher") as string ?? "").Trim(), Version = e.GetValue("DisplayVersion") as string ?? "",
                                 Location = (e.GetValue("InstallLocation") as string ?? "").Trim().Trim('"'), Uninstall = un.Trim(),
                                 Icon = e.GetValue("DisplayIcon") as string ?? "", KeyPath = hive + "|" + Key + "\\" + sub,
-                                SizeKb = Convert.ToInt64(e.GetValue("EstimatedSize") ?? 0L), Date = e.GetValue("InstallDate") as string ?? "",
+                                SizeKb = Convert.ToInt64(e.GetValue("EstimatedSize") ?? 0L), Date = InstallDate(e),
                             });
                         }
                 }
             if (store) try { list.AddRange(StoreApps()); } catch (Exception ex) { Store.Log("удаление программ: приложения Store: " + ex.Message); }
             return Tidy(list);
         }
+
+        // 23.11 (sorting by the install date): «InstallDate» as yyyyMMdd; many installers do not write it (7-Zip, 3DMark), then the
+        // time the entry's key was last written, as «Программы и компоненты» does it (an update may move it to the update's day)
+        static string InstallDate(RegistryKey e)
+        {
+            var d = (e.GetValue("InstallDate") as string ?? "").Trim();
+            DateTime t;
+            if (d.Length == 8 && DateTime.TryParseExact(d, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out t)) return d;
+            long ft;
+            try { if (RegQueryInfoKey(e.Handle, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, out ft) == 0 && ft > 0) return DateTime.FromFileTime(ft).ToString("yyyyMMdd"); }
+            catch { }
+            return "";
+        }
+        [System.Runtime.InteropServices.DllImport("advapi32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        static extern int RegQueryInfoKey(Microsoft.Win32.SafeHandles.SafeRegistryHandle key, IntPtr cls, IntPtr clsLen, IntPtr reserved, IntPtr subKeys, IntPtr maxSubKey, IntPtr maxClass,
+            IntPtr values, IntPtr maxValueName, IntPtr maxValue, IntPtr securityDescriptor, out long lastWrite);
 
         // the same program registered twice (32+64 bit keys, or a package beside its own entry): one row
         public static List<InstalledApp> Tidy(List<InstalledApp> list)
