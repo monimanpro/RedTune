@@ -58,6 +58,10 @@ The Curve Optimizer value of every core, on any number of cores and chiplets: sl
 
 ### Graphics card (NVIDIA)
 The card's voltage/clock curve as points you drag, a memory clock offset, presets, step back and forward (Ctrl+Z / Ctrl+Y), and automatic apply with a power preset.
+- **Voltage offset** of the core: the graph shows the curve moved by it against the factory line.
+- **Clock domains** — the XBAR, SYS and Video curves with their live clocks, a clock offset and a voltage offset for each.
+- **Hold clocks under load** — the driver's «prefer maximum performance» mode, so the card stays in its top memory state instead of dropping to a lower one mid-game.
+- All of it is part of a graphics preset; a middle click puts a slider back to 0.
 
 <img src="docs/screenshots/graphics.png" alt="Graphics card: the voltage/clock curve">
 
