@@ -2345,5 +2345,21 @@
 "wa9d43979":"Con este preajuste",
 "wdcb924a2":"Se activa con este preajuste en el modo Personalizado",
 "w53a1b102":"Velocidades por debajo del mínimo de fábrica",
-"w53fba822":"La curva lleva los ventiladores desde 1000 rpm. Por debajo de ~800 el motor se detiene, y a baja velocidad el portátil se calienta más"
+"w53fba822":"La curva lleva los ventiladores desde 1000 rpm. Por debajo de ~800 el motor se detiene, y a baja velocidad el portátil se calienta más",
+"wd0266ec3":"Avanzado…",
+"wa93634b3":"Abarca",
+"w2bf76454":"Elige un programa de la lista, un exe o una carpeta",
+"wb67fe8b8":"Elige la carpeta de un programa o juego",
+"w869fc52e":"Solo el proceso",
+"wfa607658":"Todo programa cuya ruta contenga",
+"wedd14211":"Todos los programas de la carpeta",
+"w70c38d31":"Contando archivos exe…",
+"wa606eec3":"archivos exe ahora:",
+"w463b7f6b":"aún no hay archivos exe: la regla funcionará cuando aparezcan",
+"w1ff0cf3c":"Esta carpeta no sirve",
+"w58f7f0cf":"Una unidad entera es demasiado. Elige la carpeta de un solo programa o juego",
+"wbc940640":"Las carpetas de Windows no se distribuyen",
+"w1042abd5":"Es una carpeta compartida con muchos programas distintos. Elige la carpeta de un solo programa o juego",
+"w156e136b":"todos",
+"wc759a1ee":"no tocar"
 }

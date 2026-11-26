@@ -602,6 +602,20 @@ namespace RedTune
 
         public static void Render(string what, string file, Settings s)
         {
+            // 27.11: the distribution's «Добавить программу» dialog; RT_ADD_FOLDER=<path> as if that folder was picked,
+            // RT_ADD_MORE=1 with the pattern shown. Only drawn and closed: no rule is made, nothing is saved
+            if (what == "distadd")
+            {
+                using (var d = new Dist.AddForm(new Dist.Engine()) { StartPosition = FormStartPosition.Manual, Location = new Point(-4000, -4000) })
+                {
+                    d.Show();
+                    var folder = Environment.GetEnvironmentVariable("RT_ADD_FOLDER");
+                    d.Pretend(string.IsNullOrEmpty(folder) ? null : folder, Environment.GetEnvironmentVariable("RT_ADD_MORE") == "1");
+                    var till = DateTime.Now.AddSeconds(3); while (DateTime.Now < till) { Application.DoEvents(); System.Threading.Thread.Sleep(30); }
+                    using (var bmp = new Bitmap(d.Width, d.Height)) { d.DrawToBitmap(bmp, new Rectangle(Point.Empty, d.Size)); bmp.Save(file, System.Drawing.Imaging.ImageFormat.Png); }
+                }
+                return;
+            }
             int tall = 620; int.TryParse(Environment.GetEnvironmentVariable("RT_PNG_H") ?? "", out tall); if (tall < 200) tall = 620; // RT_PNG_H: a taller picture, for a page longer than the window
             int wide = 900; int.TryParse(Environment.GetEnvironmentVariable("RT_PNG_W") ?? "", out wide); if (wide < 300) wide = 900; // RT_PNG_W: another width, for how a page looks in a narrow window
             using (var f = new Form { FormBorderStyle = FormBorderStyle.None, ShowInTaskbar = false, StartPosition = FormStartPosition.Manual, Location = new Point(-4000, -4000), ClientSize = new Size(Theme.S(wide), Theme.S(tall)), BackColor = Theme.Window })

@@ -2345,5 +2345,21 @@
 "wa9d43979":"Com esta predefinição",
 "wdcb924a2":"É ativado com esta predefinição no modo Personalizado",
 "w53a1b102":"Velocidades abaixo do mínimo de fábrica",
-"w53fba822":"A curva conduz as ventoinhas a partir de 1000 rpm. Abaixo de ~800 o motor para, e em baixa velocidade o notebook esquenta mais"
+"w53fba822":"A curva conduz as ventoinhas a partir de 1000 rpm. Abaixo de ~800 o motor para, e em baixa velocidade o notebook esquenta mais",
+"wd0266ec3":"Avançado…",
+"wa93634b3":"Abrange",
+"w2bf76454":"Escolha um programa da lista, um exe ou uma pasta",
+"wb67fe8b8":"Escolha a pasta de um programa ou jogo",
+"w869fc52e":"Só o processo",
+"wfa607658":"Todo programa cujo caminho contenha",
+"wedd14211":"Todos os programas da pasta",
+"w70c38d31":"Contando arquivos exe…",
+"wa606eec3":"arquivos exe agora:",
+"w463b7f6b":"ainda não há arquivos exe: a regra funciona quando eles aparecerem",
+"w1ff0cf3c":"Esta pasta não pode ser usada",
+"w58f7f0cf":"Uma unidade inteira é demais. Escolha a pasta de um único programa ou jogo",
+"wbc940640":"As pastas do Windows não são distribuídas",
+"w1042abd5":"É uma pasta compartilhada com muitos programas diferentes. Escolha a pasta de um único programa ou jogo",
+"w156e136b":"todos",
+"wc759a1ee":"não mexer"
 }
