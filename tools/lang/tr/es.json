@@ -2343,5 +2343,7 @@
 "wf6e38364":"Qué curva se activa",
 "w22c79b6b":"Qué preajuste de la tarjeta gráfica se activa",
 "wa9d43979":"Con este preajuste",
-"wdcb924a2":"Se activa con este preajuste en el modo Personalizado"
+"wdcb924a2":"Se activa con este preajuste en el modo Personalizado",
+"w53a1b102":"Velocidades por debajo del mínimo de fábrica",
+"w53fba822":"La curva lleva los ventiladores desde 1000 rpm. Por debajo de ~800 el motor se detiene, y a baja velocidad el portátil se calienta más"
 }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace RedTune
@@ -424,6 +424,8 @@ namespace RedTune
             { "Разгон при старте", "Spin-up kick" }, { "Короткий толчок 3000 об/мин, когда вентилятор трогается с места", "A short 3000 rpm kick when a fan starts from standstill" },
             { "Синхронизация", "Sync" }, { "Оба вентилятора на обороты того, кому нужнее", "Both fans at the speed of the one that needs more" },
             { "Упреждение", "Look-ahead" }, { "Температура растёт быстрее 5 °C/с — раскрутить заранее, как через 2 с", "Temperature rising faster than 5 °C/s: spin up early, as for 2 s ahead" },
+            { "Обороты ниже заводского минимума", "Speeds below the factory minimum" },
+            { "Кривая ведёт вентиляторы от 1000 об/мин. Ниже ~800 мотор глохнет, а на малых оборотах ноутбук греется сильнее", "The curve leads the fans from 1000 rpm. Below ~800 the motor stalls, and at low speeds the laptop runs hotter" },
             { "Расширенные параметры разгона", "Advanced overclocking" },
             { "Неверные значения могут привести к нестабильности, сбоям или к тому, что ноутбук не загрузится", "Wrong values can cause instability, crashes or a laptop that won't boot" },
             { "Множитель Precision Boost Overdrive", "Precision Boost Overdrive scalar" }, { "Насколько PBO может выйти за заводские пределы, 1–10", "How far PBO may go beyond the factory limits, 1–10" },

@@ -2343,5 +2343,7 @@
 "wf6e38364":"Qual curva é ativada",
 "w22c79b6b":"Qual predefinição da placa de vídeo é ativada",
 "wa9d43979":"Com esta predefinição",
-"wdcb924a2":"É ativado com esta predefinição no modo Personalizado"
+"wdcb924a2":"É ativado com esta predefinição no modo Personalizado",
+"w53a1b102":"Velocidades abaixo do mínimo de fábrica",
+"w53fba822":"A curva conduz as ventoinhas a partir de 1000 rpm. Abaixo de ~800 o motor para, e em baixa velocidade o notebook esquenta mais"
 }

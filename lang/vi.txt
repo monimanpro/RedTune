@@ -880,6 +880,8 @@ w	8088a3e9	Đồng bộ
 w	d753bc22	Cả hai quạt chạy theo tốc độ của quạt cần nhiều hơn
 w	7058f92f	Dự đoán trước
 w	a4d96ad9	Nhiệt độ tăng nhanh hơn 5 °C/giây: tăng tốc sớm, như cho 2 giây sau
+w	53a1b102	Tốc độ thấp hơn mức tối thiểu gốc
+w	53fba822	Đường cong điều khiển quạt từ 1000 rpm. Dưới ~800 động cơ sẽ dừng, và ở tốc độ thấp laptop nóng hơn
 w	597b01db	Ép xung nâng cao
 w	0fb1e43d	Giá trị sai có thể gây mất ổn định, treo máy hoặc laptop không khởi động được
 w	b8bb95f5	Hệ số Precision Boost Overdrive

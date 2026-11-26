@@ -658,6 +658,7 @@ namespace RedTune
                     // RT_NO_TUNE_PLAN=1: as on a computer without the plan «Тюнинг»; RT_PRESET=<name>: that preset on the page
                     PowerPage.PretendNoTunePlan = Environment.GetEnvironmentVariable("RT_NO_TUNE_PLAN") == "1";
                     PowerPage.PretendTuneDrift = Environment.GetEnvironmentVariable("RT_TUNE_DRIFT") == "1"; // as if the plan «Тюнинг» had been changed outside
+                    if (Environment.GetEnvironmentVariable("RT_FAN_LOWMIN") == "1") s.FanLowMin = true; // 27.11: the expert low minimum, in memory only (nothing is saved)
                     var ps = new PowerService(); var pp = new PowerPage(ps, new CurveService(s), new FanControl(ps, s), s);
                     var pre = Environment.GetEnvironmentVariable("RT_PRESET"); if (!string.IsNullOrEmpty(pre)) pp.ShowPreset(pre);
                     // RT_TAB_LATE=1: the tab is switched after the page has its size, as a click in the window does
@@ -667,6 +668,7 @@ namespace RedTune
                     if (lateTab && !string.IsNullOrEmpty(pre)) { var first = late; late = () => { pp.ShowPreset(pre); if (first != null) first(); }; }
                     if (Environment.GetEnvironmentVariable("RT_DC") == "1") pp.ShowCfgSource(true); // the plan block on its battery side
                     if (Environment.GetEnvironmentVariable("RT_FAN_ON") == "1") { var before0 = late; late = () => { if (before0 != null) before0(); pp.PretendFanCurveOn(); }; } // the fan curve switched on in the editor (not saved)
+                    if (Environment.GetEnvironmentVariable("RT_FAN_OPTIONS") == "1") { var before1 = late; late = () => { if (before1 != null) before1(); pp.PretendFanOptions(); }; } // the fan card on «Дополнительно»
                     var cfgPlanName = Environment.GetEnvironmentVariable("RT_CFG_PLAN"); // RT_CFG_PLAN=<name>: the plan block shows that plan (picked late: the page follows its preset when it shows)
                     if (!string.IsNullOrEmpty(cfgPlanName)) { var before = late; late = () => { if (before != null) before(); pp.ShowCfgPlan(cfgPlanName); }; }
                     page = pp;

@@ -880,6 +880,8 @@ w	8088a3e9	Sincronizar
 w	d753bc22	Ambos ventiladores a la velocidad del que necesita más
 w	7058f92f	Anticipación
 w	a4d96ad9	Si la temperatura sube más de 5 °C/s: acelerar antes, como para 2 s por delante
+w	53a1b102	Velocidades por debajo del mínimo de fábrica
+w	53fba822	La curva lleva los ventiladores desde 1000 rpm. Por debajo de ~800 el motor se detiene, y a baja velocidad el portátil se calienta más
 w	597b01db	Overclocking avanzado
 w	0fb1e43d	Valores incorrectos pueden causar inestabilidad, cuelgues o un portátil que no arranca
 w	b8bb95f5	Escalar de Precision Boost Overdrive

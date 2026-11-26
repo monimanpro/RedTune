@@ -189,6 +189,10 @@ namespace RedTune
             FanOption("Разгон при старте", "Короткий толчок 3000 об/мин, когда вентилятор трогается с места", () => settings.FanBoost, v => settings.FanBoost = v);
             FanOption("Синхронизация", "Оба вентилятора на обороты того, кому нужнее", () => settings.FanSync, v => settings.FanSync = v);
             FanOption("Упреждение", "Температура растёт быстрее 5 °C/с — раскрутить заранее, как через 2 с", () => settings.FanPredict, v => settings.FanPredict = v);
+            // 27.11 (a user on the forum asked to lower the dashed line): expert only, the line moves with it
+            FanOption("Обороты ниже заводского минимума", LowMinSub, () => settings.FanLowMin, v => { settings.FanLowMin = v; fan.MinRpm = fans.MinRpm; fan.Invalidate(); }, () => settings.Expert);
+            Hw.ExpertChanged += OnFanExpert;
+            Disposed += (s, e) => Hw.ExpertChanged -= OnFanExpert;
 
             EndTab(2);
             Section("Настройки процессора в схеме");
@@ -315,6 +319,7 @@ namespace RedTune
         }
 
         internal void PretendFanCurveOn() { fanOn.Checked = true; }
+        internal void PretendFanOptions() { fanSeg.Selected = tabsShared ? 1 : 2; fanCard.ShowOptions(OptionsTab); ShowFanCurve(); Relayout(); }
 
         public void ShowTab(int i)
         {
@@ -390,10 +395,19 @@ namespace RedTune
             return ConfirmDialog.AskSecond(FindForm(), "Кривая уже настроена", text, "Оставить мою кривую", "Всё равно включить");
         }
 
-        void FanOption(string title, string sub, Func<bool> get, Action<bool> set)
+        // FanControl.LowMinRpm in words: one whole text, so the languages take it as it is
+        const string LowMinSub = "Кривая ведёт вентиляторы от 1000 об/мин. Ниже ~800 мотор глохнет, а на малых оборотах ноутбук греется сильнее";
+
+        // the expert switch was flipped: the expert-only extra shows or hides, the dashed line follows
+        void OnFanExpert()
+        {
+            try { BeginInvoke((Action)(() => { fanCard.RefreshOptions(); fan.MinRpm = fans.MinRpm; fan.Invalidate(); Relayout(); })); } catch { }
+        }
+
+        void FanOption(string title, string sub, Func<bool> get, Action<bool> set, Func<bool> when = null)
         {
             var t = new Toggle();
-            fanCard.AddOption(new Row(title, sub, t) { BackColor = Theme.Card });
+            fanCard.AddOption(new Row(title, sub, t) { BackColor = Theme.Card }, when);
             t.Set(get());
             t.CheckedChanged += (s, e) => { set(t.Checked); Store.SaveSettings(settings); };
         }
@@ -1322,7 +1336,14 @@ namespace RedTune
             bool showOptions, shared, active = true;
             public readonly FlatButton Default = new FlatButton("По умолчанию");
 
-            public void AddOption(Row r) { r.Visible = showOptions; options.Add(r); Controls.Add(r); Fit(); }
+            // when: an extra shown only under a condition (the expert switch); RefreshOptions asks again
+            readonly System.Collections.Generic.Dictionary<Row, Func<bool>> onlyIf = new System.Collections.Generic.Dictionary<Row, Func<bool>>();
+            bool Fits(Row r) { Func<bool> w; return !onlyIf.TryGetValue(r, out w) || w(); }
+            System.Collections.Generic.IEnumerable<Row> Shown { get { return options.Where(Fits); } }
+
+            public void AddOption(Row r, Func<bool> when = null) { if (when != null) onlyIf[r] = when; r.Visible = showOptions && Fits(r); options.Add(r); Controls.Add(r); Fit(); }
+
+            public void RefreshOptions() { ShowOptions(showOptions); }
 
             // the extras only act while Red Tune drives the fans: grey and locked otherwise
             string optionsNote = "Для всех пресетов, меняется сразу";
@@ -1349,17 +1370,17 @@ namespace RedTune
                 showOptions = on;
                 curve.Visible = Default.Visible = !on;
                 source.Visible = shared && !on;
-                foreach (var r in options) r.Visible = on;
+                foreach (var r in options) r.Visible = on && Fits(r);
                 // a row places its toggle only while visible: lay them out again now that they are shown
                 Fit(); PerformLayout();
-                foreach (var r in options) { r.PerformLayout(); r.Invalidate(true); }
+                foreach (var r in Shown) { r.PerformLayout(); r.Invalidate(true); }
                 Fit(); PerformLayout(); Invalidate();
             }
 
             // the curve with its button, or the option rows and a note
             void Fit()
             {
-                int body = showOptions ? options.Sum(r => r.Height + Theme.S(8)) + Theme.S(36) : curve.Height + Theme.S(48);
+                int body = showOptions ? Shown.Sum(r => r.Height + Theme.S(8)) + Theme.S(36) : curve.Height + Theme.S(48);
                 Height = Theme.S(16) + tabs.Height + Theme.S(8) + body;
             }
 
@@ -1380,7 +1401,7 @@ namespace RedTune
                 curve.Bounds = new Rectangle(Theme.S(8), tabs.Bottom + Theme.S(8), Width - Theme.S(16), curve.Height);
                 Default.Location = new Point(Width - Theme.S(16) - Default.Width, curve.Bottom + Theme.S(8));
                 int y = tabs.Bottom + Theme.S(36);
-                foreach (var r in options) { r.Bounds = new Rectangle(Theme.S(16), y, Width - Theme.S(32), r.Height); y += r.Height + Theme.S(8); }
+                foreach (var r in Shown) { r.Bounds = new Rectangle(Theme.S(16), y, Width - Theme.S(32), r.Height); y += r.Height + Theme.S(8); }
             }
 
             protected override void OnPaint(PaintEventArgs e)

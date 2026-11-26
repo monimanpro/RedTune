@@ -880,6 +880,8 @@ w	8088a3e9	Sinkron
 w	d753bc22	Kedua kipas pada kecepatan kipas yang butuh lebih banyak
 w	7058f92f	Antisipasi
 w	a4d96ad9	Suhu naik lebih cepat dari 5 °C/dtk: percepat lebih awal, seperti untuk 2 dtk ke depan
+w	53a1b102	Kecepatan di bawah minimum pabrik
+w	53fba822	Kurva mengatur kipas mulai dari 1000 rpm. Di bawah ~800 motor berhenti, dan pada kecepatan rendah laptop lebih panas
 w	597b01db	Overclock lanjutan
 w	0fb1e43d	Nilai yang salah dapat menyebabkan ketidakstabilan, macet, atau laptop yang tidak mau menyala
 w	b8bb95f5	Skalar Precision Boost Overdrive

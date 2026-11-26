@@ -225,8 +225,14 @@ namespace RedTune
         static readonly uint[] Ids = { CpuFanId, GpuFanId };
         public static readonly int[] DefaultCurve = { 0, 0, 0, 0, 0, 35, 42, 50, 65, 85, 100 }; // % at 0,10..100 °C; under the minimum = the firmware's own table
         const int EveryMs = 500;
+        // 27.11: the firmware says 1700, but the fans of the R7000P hold any speed the app gives down to ~800 RPM
+        // (probe: 1400, 1100, 800 held steady on both fans; at 500 the motor stalls to 0 and restarts in a loop).
+        // An expert switch lets the curve go down to 1000, with room above where the motor gives up.
+        public const int LowMinRpm = 1000;
 
-        public int MaxRpm = 5100, MinRpm = 1700;
+        public int MaxRpm = 5100, FirmwareMin = 1700;
+        // the lowest speed the app gives: the firmware's, or LowMinRpm with the expert switch (never above the firmware's)
+        public int MinRpm { get { return s.Expert && s.FanLowMin ? Math.Min(FirmwareMin, LowMinRpm) : FirmwareMin; } }
         readonly Func<PowerPreset> presetNow;  // the active preset and the firmware's mode: PowerService's, or the live test's own
         readonly Func<int> modeNow;
         readonly Settings s;
@@ -271,7 +277,7 @@ namespace RedTune
         // the fans' own limits from LENOVO_FAN_TEST_DATA (here 1700..5100 for both fans)
         void ReadLimits()
         {
-            int max = MaxRpm, min = MinRpm;
+            int max = MaxRpm, min = FirmwareMin;
             try
             {
                 using (var q = new ManagementObjectSearcher(@"root\WMI", "SELECT * FROM LENOVO_FAN_TEST_DATA"))
@@ -284,7 +290,7 @@ namespace RedTune
             }
             catch (Exception ex) { Store.Log("вентиляторы: нет LENOVO_FAN_TEST_DATA (" + ex.Message + "), беру 1700..5100"); }
             if (min >= max) { Store.Log("вентиляторы: пределы из прошивки не годятся (" + min + ".." + max + "), беру 1700..5100"); min = 1700; max = 5100; }
-            MaxRpm = brain.MaxRpm = max; MinRpm = brain.MinRpm = min;
+            MaxRpm = brain.MaxRpm = max; FirmwareMin = min; brain.MinRpm = MinRpm;
         }
 
         void OnPowerMode(object sender, PowerModeChangedEventArgs e)
@@ -344,6 +350,7 @@ namespace RedTune
                     Store.Log("вентиляторы: своя кривая (пресет «" + p.Name + "»)");
                 }
 
+                brain.MinRpm = MinRpm; // the expert switch acts at once
                 var order = p.FanShared
                     ? brain.Step(clock.Elapsed.TotalSeconds, cpu, gpu, Rpm, p.FanBoth ?? DefaultCurve, p.FanBoth ?? DefaultCurve, true, p.FanSource, FanOptions.From(s))
                     : brain.Step(clock.Elapsed.TotalSeconds, cpu, gpu, Rpm, p.FanCpu ?? DefaultCurve, p.FanGpu ?? DefaultCurve, false, 0, FanOptions.From(s));
