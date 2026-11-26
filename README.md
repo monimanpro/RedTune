@@ -32,7 +32,7 @@ Presets of your own power mode, each holding everything below, with step back an
 
 - **Processor** — power limits (sustained, short, peak), temperature limit, current limits. On laptops whose firmware offers a tuning interface the limits go through it; elsewhere they are written straight to the processor's management unit (PPT, TDC, EDC, or STAPM / fast / slow on mobile chips).
 - **Graphics card** — the card's power and temperature limits where the firmware exposes them, and which graphics preset goes with the power preset.
-- **Fans** — your own fan curves by temperature: one per fan or one for both, with a safety net (a critical temperature always wins), hysteresis and smoothing.
+- **Fans** — your own fan curves by temperature: one per fan or one for both, with a safety net (a critical temperature always wins), hysteresis and smoothing. In expert mode the curve can lead the fans below the firmware's stated minimum, from 1000 rpm (tried on a Legion R7000P: its fans hold down to ~800 rpm).
 - **Power plans** — which Windows power plan belongs to each mode, and the plan's processor settings in one place: clock ceiling, boost mode, energy preference, minimum state, core parking, the plan's kind, and the Windows power mode laid over balanced plans.
 - **Curves** — which voltage curve belongs to each mode.
 
