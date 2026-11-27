@@ -1099,6 +1099,7 @@ w	3ddfea34	FPS, suhu, dan frekuensi prosesor serta kartu grafis di sudut layar
 w	be2c51fd	Kapan dan di mana ditampilkan
 w	c72f0621	Tidak terlihat dalam layar penuh eksklusif
 w	97b2534c	Di atas program layar penuh
+w	e215c77f	Tengah bawah
 w	5c3eceb1	Satu baris
 w	a6f89338	Kolom
 w	1b7a7765	Ukuran dan tata letak

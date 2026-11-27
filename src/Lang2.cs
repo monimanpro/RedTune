@@ -550,7 +550,7 @@ namespace RedTune
             { "Когда и где показывать", "When and where to show" }, { "Не виден в монопольном полном экране", "Not visible in exclusive full screen" },
             { "В полноэкранных программах", "Over full-screen programs" },
             // 27.11: the overlay's values are picked, and it can stand as a column
-            { "В строку", "In a line" }, { "Столбиком", "In a column" }, { "Размер и вид", "Size and layout" }, { "Столбиком удобнее, когда показателей много", "A column reads better when many values are shown" },
+            { "Снизу по центру", "Bottom centre" }, { "В строку", "In a line" }, { "Столбиком", "In a column" }, { "Размер и вид", "Size and layout" }, { "Столбиком удобнее, когда показателей много", "A column reads better when many values are shown" },
             { "FPS, температуры, загрузка и другие показатели в углу экрана", "FPS, temperatures, load and other readings in a corner of the screen" },
             { "Кадров в секунду у программы на экране", "Frames per second of the program on screen" },
             { "Просадки FPS (1% low)", "FPS dips (1% low)" }, { "Частота кадров в худшем 1 % кадров за последние 30 секунд", "The frame rate of the slowest 1 % of frames over the last 30 seconds" },

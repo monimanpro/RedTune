@@ -29,8 +29,8 @@ namespace RedTune
 
         // the places in the order of the list; CornerValues: what is kept in the settings for each (0..3 the corners as
         // before, 4 the middle of the top edge, added 16.11)
-        public static readonly string[] CornerNames = { "Слева сверху", "Сверху по центру", "Справа сверху", "Слева снизу", "Справа снизу" };
-        public static readonly int[] CornerValues = { 0, 4, 1, 2, 3 };
+        public static readonly string[] CornerNames = { "Слева сверху", "Сверху по центру", "Справа сверху", "Слева снизу", "Снизу по центру", "Справа снизу" };
+        public static readonly int[] CornerValues = { 0, 4, 1, 2, 5, 3 }; // 5: the middle of the bottom edge (27.11, the user's wish)
         public static readonly string[] WhenNames = { "В полноэкранных программах", "Всегда" };
         public static readonly string[] SizeNames = { "Мелкий", "Средний", "Крупный", "Очень крупный", "Огромный" };
         static readonly float[] SizePx = { 12f, 15f, 19f, 24f, 30f }; // the text height at 100 % scaling
@@ -553,6 +553,7 @@ namespace RedTune
                     // top edge (asked for after the first game: the plate sat too close to the top; Render gives that
                     // distance). At the bottom places it is kept from the bottom edge the same way.
                     var at = s.OverlayCorner == 4 ? new Point(area.Left + (area.Width - w) / 2, area.Top + edge)
+                        : s.OverlayCorner == 5 ? new Point(area.Left + (area.Width - w) / 2, area.Bottom - edge - h)
                         : new Point(s.OverlayCorner % 2 == 0 ? area.Left + margin : area.Right - margin - w, s.OverlayCorner < 2 ? area.Top + edge : area.Bottom - edge - h);
                     Push(bmp, at);
                 }

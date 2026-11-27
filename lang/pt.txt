@@ -1099,6 +1099,7 @@ w	3ddfea34	FPS, temperatura e frequência do processador e da placa de vídeo em
 w	be2c51fd	Quando e onde mostrar
 w	c72f0621	Não aparece em tela cheia exclusiva
 w	97b2534c	Sobre programas em tela cheia
+w	e215c77f	Embaixo, no centro
 w	5c3eceb1	Em linha
 w	a6f89338	Em coluna
 w	1b7a7765	Tamanho e disposição

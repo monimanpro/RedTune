@@ -54,7 +54,7 @@ namespace RedTune
         public bool OsdOn = true, OsdTopmost = false, OsdAllMonitors = false;
         // 16.11: the overlay over games (Overlay): on, over every program or only full-screen ones, the corner (0..3)
         public bool OverlayOn = false, OverlayAlways = false;
-        public int OverlayCorner = 0, OverlaySize = 1; // the place: 0..3 the corners, 4 top centre; the size: 0 small .. 4 huge
+        public int OverlayCorner = 0, OverlaySize = 1; // the place: 0..3 the corners, 4 top centre, 5 bottom centre; the size: 0 small .. 4 huge
         public string OverlayItems = Overlay.DefaultItems; // 27.11: what it shows, comma-separated keys of Overlay.Items
         public bool OverlayColumn = false;                 // a row per group instead of one line
         public int AsusMode = -1, AsusCharge = 0, AsusLight = -1; // ASUS laptops (19.11): the performance mode (0 quiet, 1 balanced, 2 performance), the charge limit in percent and the keyboard light picked here; -1 / 0 = not picked
@@ -185,7 +185,7 @@ namespace RedTune
                     case "OverlayAlways": s.OverlayAlways = b; break;
                     case "OverlayItems": s.OverlayItems = v; break;
                     case "OverlayColumn": s.OverlayColumn = b; break;
-                    case "OverlayCorner": int oc; if (int.TryParse(v, out oc) && oc >= 0 && oc <= 4) s.OverlayCorner = oc; break;
+                    case "OverlayCorner": int oc; if (int.TryParse(v, out oc) && oc >= 0 && oc <= 5) s.OverlayCorner = oc; break;
                     case "OsdPosition": s.OsdPosition = v; break;
                     case "OsdMs": int ms; if (int.TryParse(v, out ms) && ms >= 500 && ms <= 10000) s.OsdMs = ms; break;
                     case "OsdOff": s.OsdOff = v; break;

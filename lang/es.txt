@@ -1099,6 +1099,7 @@ w	3ddfea34	FPS, temperatura y frecuencia del procesador y la tarjeta gráfica en
 w	be2c51fd	Cuándo y dónde mostrar
 w	c72f0621	No visible en pantalla completa exclusiva
 w	97b2534c	Sobre programas a pantalla completa
+w	e215c77f	Abajo al centro
 w	5c3eceb1	En línea
 w	a6f89338	En columna
 w	1b7a7765	Tamaño y disposición

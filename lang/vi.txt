@@ -1099,6 +1099,7 @@ w	3ddfea34	FPS, nhiệt độ và xung nhịp của bộ xử lý và card đồ
 w	be2c51fd	Hiện khi nào và ở đâu
 w	c72f0621	Không hiện ở chế độ toàn màn hình độc quyền
 w	97b2534c	Hiện trên chương trình toàn màn hình
+w	e215c77f	Giữa dưới
 w	5c3eceb1	Một dòng
 w	a6f89338	Dạng cột
 w	1b7a7765	Kích thước và bố cục
