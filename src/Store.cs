@@ -55,6 +55,8 @@ namespace RedTune
         // 16.11: the overlay over games (Overlay): on, over every program or only full-screen ones, the corner (0..3)
         public bool OverlayOn = false, OverlayAlways = false;
         public int OverlayCorner = 0, OverlaySize = 1; // the place: 0..3 the corners, 4 top centre; the size: 0 small .. 4 huge
+        public string OverlayItems = Overlay.DefaultItems; // 27.11: what it shows, comma-separated keys of Overlay.Items
+        public bool OverlayColumn = false;                 // a row per group instead of one line
         public int AsusMode = -1, AsusCharge = 0, AsusLight = -1; // ASUS laptops (19.11): the performance mode (0 quiet, 1 balanced, 2 performance), the charge limit in percent and the keyboard light picked here; -1 / 0 = not picked
         public bool CompByFreq = false;         // «Звук»: the compressor's picture shows the bands across the frequencies instead of the last seconds (19.11)
         public bool OsdFollow = false;          // on the monitor of the window in front instead of the main one (16.11)
@@ -181,6 +183,8 @@ namespace RedTune
                     case "OverlayOn": s.OverlayOn = b; break;
                     case "OverlaySize": int os; if (int.TryParse(v, out os) && os >= 0 && os <= 4) s.OverlaySize = os; break;
                     case "OverlayAlways": s.OverlayAlways = b; break;
+                    case "OverlayItems": s.OverlayItems = v; break;
+                    case "OverlayColumn": s.OverlayColumn = b; break;
                     case "OverlayCorner": int oc; if (int.TryParse(v, out oc) && oc >= 0 && oc <= 4) s.OverlayCorner = oc; break;
                     case "OsdPosition": s.OsdPosition = v; break;
                     case "OsdMs": int ms; if (int.TryParse(v, out ms) && ms >= 500 && ms <= 10000) s.OsdMs = ms; break;
@@ -233,7 +237,7 @@ namespace RedTune
                 "UiScale=" + s.UiScale, "AppsSort=" + s.AppsSort, "Language=" + s.Language, "P95Path=" + s.P95Path, "TuneLoad=" + s.TuneLoad, "TuneMode=" + s.TuneMode, "TunePlan=" + s.TunePlan,
                 "FanSafety=" + b(s.FanSafety), "FanCritical=" + b(s.FanCritical), "FanHyst=" + b(s.FanHyst), "FanEma=" + b(s.FanEma),
                 "FanGlide=" + b(s.FanGlide), "FanBoost=" + b(s.FanBoost), "FanSync=" + b(s.FanSync), "FanPredict=" + b(s.FanPredict), "FanLowMin=" + b(s.FanLowMin),"SyncBrightness=" + b(s.SyncBrightness), "HzAuto=" + b(s.HzAuto), "AcmOff=" + s.AcmOff, "HzAc=" + s.HzAc, "HzDc=" + s.HzDc,
-                "OsdOn=" + b(s.OsdOn), "OsdTopmost=" + b(s.OsdTopmost), "OsdAllMonitors=" + b(s.OsdAllMonitors), "OsdFollow=" + b(s.OsdFollow), "CompByFreq=" + b(s.CompByFreq), "AsusMode=" + s.AsusMode, "AsusCharge=" + s.AsusCharge, "AsusLight=" + s.AsusLight, "OverlayOn=" + b(s.OverlayOn), "OverlayAlways=" + b(s.OverlayAlways), "OverlayCorner=" + s.OverlayCorner, "OverlaySize=" + s.OverlaySize, "OsdPosition=" + s.OsdPosition, "OsdMs=" + s.OsdMs, "OsdOff=" + s.OsdOff, "MiniOff=" + s.MiniOff,
+                "OsdOn=" + b(s.OsdOn), "OsdTopmost=" + b(s.OsdTopmost), "OsdAllMonitors=" + b(s.OsdAllMonitors), "OsdFollow=" + b(s.OsdFollow), "CompByFreq=" + b(s.CompByFreq), "AsusMode=" + s.AsusMode, "AsusCharge=" + s.AsusCharge, "AsusLight=" + s.AsusLight, "OverlayOn=" + b(s.OverlayOn), "OverlayAlways=" + b(s.OverlayAlways), "OverlayCorner=" + s.OverlayCorner, "OverlaySize=" + s.OverlaySize, "OverlayItems=" + s.OverlayItems, "OverlayColumn=" + b(s.OverlayColumn),"OsdPosition=" + s.OsdPosition, "OsdMs=" + s.OsdMs, "OsdOff=" + s.OsdOff, "MiniOff=" + s.MiniOff,
                 "OsdGlass=" + b(s.OsdGlass), "OsdShine=" + b(s.OsdShine), "OsdLive=" + b(s.OsdLive), "CleanKeep=" + s.CleanKeep, "CleanClose=" + s.CleanClose, "CleanVer=" + s.CleanVer, "OsdBlur=" + s.OsdBlur, "OsdTint=" + s.OsdTint, "OsdLook=" + s.OsdLook, "AmdPowerOn=" + b(s.AmdPowerOn), "AmdPowerAsked=" + b(s.AmdPowerAsked), "Expert=" + b(s.Expert), "UnverifiedSeen=" + b(s.UnverifiedSeen), "UpdateCheck=" + b(s.UpdateCheck), "UpdateLast=" + s.UpdateLast, "CrashSeen=" + s.CrashSeen, "UpdatePrev=" + s.UpdatePrev,"WatchOn=" + b(s.WatchOn), "FnQCustom=" + b(s.FnQCustom), "WatchDeepen=" + b(s.WatchDeepen), "WatchDays=" + s.WatchDays, "BlackBoxMode=" + s.BlackBoxMode, "GpuAsked=" + b(s.GpuAsked), "NavCompact=" + b(s.NavCompact), "AmdPpt=" + s.AmdPpt, "AmdTdc=" + s.AmdTdc, "AmdEdc=" + s.AmdEdc, "AmdStapm=" + s.AmdStapm, "AmdFast=" + s.AmdFast, "AmdSlow=" + s.AmdSlow,
             }, Utf8Bom);
         }

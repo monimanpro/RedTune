@@ -147,6 +147,8 @@ namespace RedTune
                     }
             });
 
+            part("Lenovo: вентиляторы и датчики у прошивки (только чтение)", () => LenovoFw(sb));
+
             part("ASUS: что есть у прошивки (только чтение)", () => Asus(sb));
 
             part("Журнал Red Tune (конец)", () =>
@@ -199,6 +201,133 @@ namespace RedTune
                 }
             }
             catch (Exception ex) { sb.AppendLine(cls + ": " + ex.Message.Trim()); }
+        }
+
+        // ---------- Lenovo ----------
+        // 27.11: what the firmware of a Lenovo says about its fans and sensors. Red Tune drives two fans (processor,
+        // graphics card: FanControl); a Legion with a third, small one (R9000P) was asked about on the forum, and nothing
+        // in the report told whether the firmware gives that fan out. Everything here is a read: the data classes as
+        // they are, the «get» methods that take nothing, the two that take a fan's or a sensor's number tried over the
+        // first numbers, and GetFeatureValue for the fan and temperature ids. No «Set» method is called.
+        static readonly string[] LenovoData = { "LENOVO_FAN_TEST_DATA", "LENOVO_FAN_TABLE_DATA", "LENOVO_CAPABILITY_DATA_00", "LENOVO_CAPABILITY_DATA_01", "LENOVO_CAPABILITY_DATA_02", "LENOVO_DISCRETE_DATA" };
+
+        static void LenovoFw(StringBuilder sb)
+        {
+            if (!Hw.GameZone && !Hw.Features) { sb.AppendLine("интерфейса прошивки Lenovo нет"); return; }
+            var scope = new ManagementScope(@"root\WMI");
+
+            var capIds = new SortedSet<uint>();
+            foreach (var cls in LenovoData)
+                try
+                {
+                    int n = 0;
+                    using (var q = new ManagementObjectSearcher(scope, new ObjectQuery("SELECT * FROM " + cls)))
+                        foreach (ManagementBaseObject o in q.Get())
+                        {
+                            if (n == 0) sb.AppendLine(cls + ":");
+                            if (++n > 400) { sb.AppendLine("  … (дальше не показано)"); break; }
+                            var vals = new List<string>();
+                            foreach (PropertyData p in o.Properties)
+                            {
+                                if (p.Value == null || p.Name == "InstanceName" || p.Name == "Active") continue;
+                                if (p.Name == "IDs") try { capIds.Add(Convert.ToUInt32(p.Value)); } catch { }
+                                vals.Add(p.Name + "=" + Val(p.Name, p.Value));
+                            }
+                            sb.AppendLine("  " + string.Join(" · ", vals));
+                        }
+                    if (n == 0) sb.AppendLine(cls + ": пусто");
+                }
+                catch (Exception ex) { sb.AppendLine(cls + ": нет (" + ex.Message.Trim() + ")"); }
+
+            // the methods that only read: nothing to pass in, or one number (which fan, which sensor)
+            foreach (var cls in new[] { "LENOVO_GAMEZONE_DATA", "LENOVO_FAN_METHOD" })
+                try
+                {
+                    ManagementObject inst;
+                    using (var q = new ManagementObjectSearcher(scope, new ObjectQuery("SELECT * FROM " + cls))) inst = q.Get().Cast<ManagementObject>().FirstOrDefault();
+                    if (inst == null) { sb.AppendLine(cls + ": нет"); continue; }
+                    sb.AppendLine(cls + ", чтение:");
+                    using (var mc = new ManagementClass(scope, new ManagementPath(cls), null))
+                        foreach (var m in mc.Methods.Cast<MethodData>().OrderBy(x => x.Name))
+                        {
+                            string name = m.Name;
+                            if (!System.Text.RegularExpressions.Regex.IsMatch(name, "^(Get|IsSupport|Fan_Get)") || System.Text.RegularExpressions.Regex.IsMatch(name, "Set|Serial|Product|UUID|Name|Macrokey", System.Text.RegularExpressions.RegexOptions.IgnoreCase)) continue;
+                            var ins = m.InParameters == null ? new PropertyData[0] : m.InParameters.Properties.Cast<PropertyData>().ToArray();
+                            if (ins.Any(p => !IsNumber(p.Type))) continue;
+                            if (ins.Length == 0) sb.AppendLine("  " + name + " = " + Call(inst, name, ins));
+                            else if (ins.Length == 1)
+                                sb.AppendLine("  " + name + "(" + ins[0].Name + " 0…7) = " + Same(Enumerable.Range(0, 8).Select(k => Call(inst, name, ins, k))));
+                            else if (ins.Length == 2) // the fan's table: which fan, by which sensor
+                                for (int a = 0; a < 4; a++)
+                                    sb.AppendLine("  " + name + "(" + ins[0].Name + " " + a + ", " + ins[1].Name + " 0…5) = " + Same(Enumerable.Range(0, 6).Select(k => Call(inst, name, ins, a, k))));
+                        }
+                }
+                catch (Exception ex) { sb.AppendLine(cls + ": " + ex.Message.Trim()); }
+
+            // the features by number: the fans' speeds (…01 processor, …02 graphics card; a third one would be the next)
+            // and the temperatures, plus every fan or temperature id the firmware lists itself
+            if (!Hw.Features) return;
+            var ids = new SortedSet<uint>(capIds.Where(id => (id >> 24) == 0x04 || (id >> 24) == 0x05).Select(id => id & 0xFFFF00FF));
+            for (uint k = 1; k <= 6; k++) ids.Add(0x04030000 + k);
+            for (uint k = 1; k <= 8; k++) ids.Add(0x05000000 + (k << 16));
+            ids.Add(Lenovo.FanFullSpeed);
+            sb.AppendLine("GetFeatureValue:");
+            foreach (var id in ids)
+            {
+                int v = Lenovo.GetFeature(id);
+                sb.AppendLine("  0x" + id.ToString("X8") + " = " + (v == int.MinValue ? "отказ" : v.ToString()));
+            }
+        }
+
+        // the answers for the numbers tried, one after another; the same answer for every number is written once
+        static string Same(IEnumerable<string> answers)
+        {
+            var a = answers.ToArray();
+            return a.Distinct().Count() == 1 ? a[0] + "  (одно и то же для всех)" : string.Join(" | ", a);
+        }
+
+        static bool IsNumber(CimType t)
+        {
+            return t == CimType.UInt8 || t == CimType.UInt16 || t == CimType.UInt32 || t == CimType.SInt8 || t == CimType.SInt16 || t == CimType.SInt32;
+        }
+
+        // ids as hex, lists in one line (a long one cut)
+        static string Val(string name, object v)
+        {
+            if (v is Array)
+            {
+                var a = ((Array)v).Cast<object>().Select(x => Convert.ToString(x, System.Globalization.CultureInfo.InvariantCulture)).ToArray();
+                return "[" + string.Join(" ", a.Take(128)) + (a.Length > 128 ? " … всего " + a.Length : "") + "]";
+            }
+            if (name == "IDs") try { return "0x" + Convert.ToUInt32(v).ToString("X8"); } catch { }
+            return Convert.ToString(v, System.Globalization.CultureInfo.InvariantCulture).Trim();
+        }
+
+        static string Call(ManagementObject inst, string method, PropertyData[] args, params int[] values)
+        {
+            try
+            {
+                ManagementBaseObject inp = null;
+                if (args.Length > 0) inp = inst.GetMethodParameters(method);
+                for (int i = 0; i < args.Length; i++)
+                {
+                    var arg = args[i]; int value = values[i];
+                    switch (arg.Type)
+                    {
+                        case CimType.UInt8: inp[arg.Name] = (byte)value; break;
+                        case CimType.UInt16: inp[arg.Name] = (ushort)value; break;
+                        case CimType.UInt32: inp[arg.Name] = (uint)value; break;
+                        case CimType.SInt8: inp[arg.Name] = (sbyte)value; break;
+                        case CimType.SInt16: inp[arg.Name] = (short)value; break;
+                        default: inp[arg.Name] = value; break;
+                    }
+                }
+                var res = inst.InvokeMethod(method, inp, null);
+                if (res == null) return "—";
+                var outs = res.Properties.Cast<PropertyData>().Where(p => p.Value != null).ToArray();
+                return outs.Length == 0 ? "—" : outs.Length == 1 ? Val(outs[0].Name, outs[0].Value) : string.Join(", ", outs.Select(p => p.Name + "=" + Val(p.Name, p.Value)));
+            }
+            catch (Exception ex) { return "отказ (" + ex.Message.Trim() + ")"; }
         }
 
         // ---------- ASUS ----------

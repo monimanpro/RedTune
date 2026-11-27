@@ -1099,6 +1099,28 @@ w	3ddfea34	FPS, suhu, dan frekuensi prosesor serta kartu grafis di sudut layar
 w	be2c51fd	Kapan dan di mana ditampilkan
 w	c72f0621	Tidak terlihat dalam layar penuh eksklusif
 w	97b2534c	Di atas program layar penuh
+w	5c3eceb1	Satu baris
+w	a6f89338	Kolom
+w	1b7a7765	Ukuran dan tata letak
+w	b206cb2e	Kolom lebih mudah dibaca saat banyak nilai ditampilkan
+w	6b436ce8	FPS, suhu, beban, dan nilai lainnya di sudut layar
+w	801c184e	Frame per detik dari program di layar
+w	c905405d	Penurunan FPS (1% low)
+w	c901c5ea	Laju frame dari 1 % frame paling lambat selama 30 detik terakhir
+w	76d9b739	Prosesor: suhu
+w	463b7e8d	Prosesor: frekuensi
+w	1cc4d20f	Prosesor: beban
+w	5e875b54	Prosesor: daya
+w	bb74839b	Prosesor: kipas
+w	42de6890	Kartu grafis: suhu
+w	85b8b9bc	Kartu grafis: frekuensi
+w	17f659a8	Kartu grafis: beban
+w	f1288983	Kartu grafis: daya
+w	78b888e1	Kartu grafis: memori video
+w	e68a3634	Kartu grafis: kipas
+w	79f7b15e	Berapa yang terpakai
+w	24865641	Daya baterai dalam persen
+w	919912db	Waktu
 w	8406f8c4	Kiri atas
 w	ce2eb0bb	Kanan atas
 w	afef0082	Kiri bawah

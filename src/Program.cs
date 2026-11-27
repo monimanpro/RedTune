@@ -8,8 +8,8 @@ using System.Windows.Forms;
 [assembly: AssemblyTitle("Red Tune")]
 [assembly: AssemblyDescription("Питание, кривая и настройки ноутбуков на AMD Ryzen")]
 [assembly: AssemblyProduct("Red Tune")]
-[assembly: AssemblyVersion("0.5.1.0")]
-[assembly: AssemblyFileVersion("0.5.1.0")]
+[assembly: AssemblyVersion("0.5.2.0")]
+[assembly: AssemblyFileVersion("0.5.2.0")]
 
 namespace RedTune
 {
@@ -587,6 +587,19 @@ namespace RedTune
             // --osd-png <out.png> <backdrop.png> [--all] [--noglass]: the notification drawn over a picture (a check; the live one is not in screenshots)
             i = at("--osd-png");
             if (i >= 0 && i + 2 < args.Length) { Theme.Init(100); Osd.RenderTo(args[i + 1], args[i + 2], args.Contains("--all"), !args.Contains("--noglass")); return 0; }
+
+            // --overlay-png <out.png> [--items a,b,c] [--column] [--size 0..4]: the overlay over games drawn with made-up
+            // numbers (a check; the live one is a window of its own). --overlay-low <file>: the slow-frames count on made-up frames
+            i = at("--overlay-png");
+            if (i >= 0 && i + 1 < args.Length)
+            {
+                int it = at("--items"), sz = at("--size"), size = 1;
+                if (sz >= 0 && sz + 1 < args.Length) int.TryParse(args[sz + 1], out size);
+                Overlay.RenderTo(args[i + 1], it >= 0 && it + 1 < args.Length ? args[it + 1] : null, args.Contains("--column"), size);
+                return 0;
+            }
+            i = at("--overlay-low");
+            if (i >= 0 && i + 1 < args.Length) { System.IO.File.WriteAllText(args[i + 1], Fps.LowCheck(), new System.Text.UTF8Encoding(true)); return 0; }
 
             // --gpu-rewrite <out.txt>: a test of the GPU write path that changes nothing — the curve is read, the same offsets
             // are written back, read again and compared (13.11: run only with the user's OK)

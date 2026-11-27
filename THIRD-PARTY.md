@@ -7,7 +7,8 @@ that is not Red Tune's own, and the projects Red Tune learned the hardware's int
 
 Four files, unchanged, next to the executable: three modules for the PawnIO driver (small programs the driver runs to
 reach the hardware) and the driver's own installer. Two libraries are built into Red Tune's sound effect: RNNoise and DeepFilterNet (with the Rust crates it needs). Their
-licenses apply to them. Everything else in the build is Red Tune's own code.
+licenses apply to them. Everything else in the build is Red Tune's own code; the third model of the denoiser («Red Tune»)
+is Red Tune's own network, and the open recordings it was trained on are named after the table.
 
 | Component | Where in the build | What it is used for | Author | License | Source |
 |---|---|---|---|---|---|
@@ -19,6 +20,27 @@ licenses apply to them. Everything else in the build is Red Tune's own code.
 | RNNoise 0.2 | built into `audio\RedTuneApo.dll` (sources unchanged in `native\apo\rnnoise`) | The denoiser of «Sound → Microphone»: a small neural network that removes noise from a voice, with its trained weights | Jean-Marc Valin, Xiph.Org Foundation, Mozilla, Amazon and contributors | BSD-3-Clause (text below) | https://github.com/xiph/rnnoise (release v0.2) |
 | Inno Setup 6 and its translations | the setup program itself (`RedTune-Setup-<version>.exe`); the Chinese (Simplified), Vietnamese and Indonesian texts of its pages kept unchanged in `installer\lang\` | The installer and uninstaller, in nine languages | Jordan Russell and Martijn Laan; the translations by their contributors (named in each file) | Inno Setup License (free, also for commercial use) | https://jrsoftware.org/isinfo.php, https://github.com/jrsoftware/issrc |
 | PawnIO 2.2.0 installer | `pawnio\PawnIO_setup.exe` | Installs the PawnIO driver (signed by Microsoft) when it is missing: by the Red Tune setup (a task, on by default) and by «Install» on the «Components» page, both with its own `-install -silent`. The official release file, unchanged: SHA-256 `1f519a22e47187f70a1379a48ca604981c4fcf694f4e65b734aaa74a9fba3032`, signed by namazso.eu | namazso | GPL-2.0 with an exception for programs using its IOCTL interface (the driver) | https://github.com/namazso/PawnIO (source), https://github.com/namazso/PawnIO.Setup/releases/tag/2.2.0 (this file) |
+
+### Recordings Red Tune's own denoiser was trained on
+
+The model «Red Tune» of «Sound → Microphone» is a network of Red Tune's own (the code in `native\apo\rtnet.h`, the
+trained weights in `native\apo\rtnet_weights.h`, built into `audio\RedTuneApo.dll`). No recording is part of the
+build; the weights were trained on mixes of clean voices, noises and rooms from these open collections, with thanks
+to their authors:
+
+- **Microsoft Deep Noise Suppression Challenge, the fullband data of the ICASSP 2022 challenge** (Dubey et al.,
+  «ICASSP 2022 Deep Noise Suppression Challenge») — https://github.com/microsoft/DNS-Challenge. Used from it: the
+  voices of VCTK (CSTR, University of Edinburgh), read speech from LibriVox (public domain), Russian read speech,
+  CREMA-D; the noises taken from AudioSet (CC BY 4.0) and Freesound (CC0 files); the room responses of OpenSLR 26 and
+  28 (Apache-2.0). Each part comes under the terms of its own source, listed in that repository.
+- **KazakhTTS2** — Institute of Smart Systems and Artificial Intelligence (ISSAI), Nazarbayev University; CC BY 4.0 —
+  https://huggingface.co/datasets/issai/KazakhTTS
+- **Mozilla Common Voice 27.0, Sakha (Yakut)** — the Common Voice contributors; CC0 —
+  https://commonvoice.mozilla.org
+- the fan noise of the laptop Red Tune is developed on, recorded for this.
+
+`native\apo\testvoice.f32` (in the sources only; the effect's test bench checks on it that a real voice passes) is
+five seconds cut from the VCTK corpus (CC BY 4.0).
 
 Not shipped, installed by you if you want them:
 

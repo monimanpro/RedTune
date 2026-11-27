@@ -157,17 +157,32 @@ namespace RedTune
 
             // 16.11: the overlay over games
             Section("Оверлей");
+            // 27.11: two tabs like the notifications: how it looks, and which values it shows (Overlay.Items); a change
+            // shows the overlay for a few seconds over whatever is on screen (Overlay.Preview)
+            var ovlTabs = Add(new TabbedRows("Основное", "Что показывать"));
+            ovlTabs.Resized += Relayout;
             var ovl = new Toggle(); ovl.Set(s.OverlayOn);
-            Row("Оверлей поверх игр", "FPS, температура и частота процессора и видеокарты в углу экрана", ovl);
+            ovlTabs.Add(0, new Row("Оверлей поверх игр", "FPS, температуры, загрузка и другие показатели в углу экрана", ovl));
             var ovlWhen = new DropButton(); ovlWhen.Set(Overlay.WhenNames, s.OverlayAlways ? 1 : 0);
             var ovlCorner = new DropButton(); ovlCorner.Set(Overlay.CornerNames, Math.Max(0, Array.IndexOf(Overlay.CornerValues, s.OverlayCorner)));
-            Row("Когда и где показывать", "Не виден в монопольном полном экране", ovlWhen, ovlCorner);
+            ovlTabs.Add(0, new Row("Когда и где показывать", "Не виден в монопольном полном экране", ovlWhen, ovlCorner));
             var ovlSize = new DropButton(); ovlSize.Set(Overlay.SizeNames, s.OverlaySize);
-            Row("Размер", null, ovlSize);
-            ovlSize.Changed += (o, e) => { s.OverlaySize = Math.Max(0, ovlSize.Index); Store.SaveSettings(s); Overlay.Apply(); };
-            ovl.CheckedChanged += (o, e) => { s.OverlayOn = ovl.Checked; Store.SaveSettings(s); Overlay.Apply(); };
+            var ovlLayout = new DropButton(); ovlLayout.Set(Overlay.LayoutNames, s.OverlayColumn ? 1 : 0);
+            ovlTabs.Add(0, new Row("Размер и вид", "Столбиком удобнее, когда показателей много", ovlSize, ovlLayout));
+            ovlSize.Changed += (o, e) => { s.OverlaySize = Math.Max(0, ovlSize.Index); Store.SaveSettings(s); Overlay.Preview(); Overlay.Apply(); };
+            ovlLayout.Changed += (o, e) => { s.OverlayColumn = ovlLayout.Index == 1; Store.SaveSettings(s); Overlay.Preview(); Overlay.Apply(); };
+            ovl.CheckedChanged += (o, e) => { s.OverlayOn = ovl.Checked; Store.SaveSettings(s); Overlay.Preview(); Overlay.Apply(); };
             ovlWhen.Changed += (o, e) => { s.OverlayAlways = ovlWhen.Index == 1; Store.SaveSettings(s); Overlay.Apply(); };
-            ovlCorner.Changed += (o, e) => { s.OverlayCorner = Overlay.CornerValues[Math.Max(0, Math.Min(Overlay.CornerValues.Length - 1, ovlCorner.Index))]; Store.SaveSettings(s); Overlay.Apply(); };
+            ovlCorner.Changed += (o, e) => { s.OverlayCorner = Overlay.CornerValues[Math.Max(0, Math.Min(Overlay.CornerValues.Length - 1, ovlCorner.Index))]; Store.SaveSettings(s); Overlay.Preview(); Overlay.Apply(); };
+            foreach (var it in Overlay.Items.Where(x => x.Fits())) // only what this computer has
+            {
+                var t = new Toggle(); t.Set(Overlay.Has(s, it.Key));
+                var key = it.Key;
+                t.CheckedChanged += (o, e) => Overlay.SetItem(s, key, t.Checked);
+                ovlTabs.Add(1, new Row(it.Name, it.Sub, t));
+            }
+            int ovlTab; // page pictures: RT_OVL_TAB=1 shows the second tab
+            if (int.TryParse(Environment.GetEnvironmentVariable("RT_OVL_TAB") ?? "", out ovlTab)) ovlTabs.Show(ovlTab);
 
             appsSection = Section("Другие программы");
             Row("Программы, которые меняют те же настройки", "Если они запускаются вместе с Windows, они будут спорить с Red Tune");

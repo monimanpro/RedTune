@@ -34,6 +34,53 @@ namespace RedTune
         public static readonly string[] WhenNames = { "В полноэкранных программах", "Всегда" };
         public static readonly string[] SizeNames = { "Мелкий", "Средний", "Крупный", "Очень крупный", "Огромный" };
         static readonly float[] SizePx = { 12f, 15f, 19f, 24f, 30f }; // the text height at 100 % scaling
+        public static readonly string[] LayoutNames = { "В строку", "Столбиком" };
+
+        // 27.11: what the overlay shows is picked in the settings (asked for on the forum: «больше параметров для
+        // контроля»). Each value has a key kept in Settings.OverlayItems; the ones a new install shows are the five the
+        // overlay always had. Everything but the two frame values and the battery was read every second already (Sensors).
+        public class Item { public string Key, Name, Sub; public Func<bool> Fits; }
+        static readonly Func<bool> HasFans = () => Hw.Features || Hw.AsusFw, Always = () => true;
+        public static readonly Item[] Items =
+        {
+            new Item { Key = "fps", Name = "FPS", Sub = "Кадров в секунду у программы на экране", Fits = Always },
+            new Item { Key = "low", Name = "Просадки FPS (1% low)", Sub = "Частота кадров в худшем 1 % кадров за последние 30 секунд", Fits = Always },
+            new Item { Key = "ct", Name = "Процессор: температура", Fits = Always },
+            new Item { Key = "cc", Name = "Процессор: частота", Fits = Always },
+            new Item { Key = "cl", Name = "Процессор: загрузка", Fits = Always },
+            new Item { Key = "cw", Name = "Процессор: мощность", Fits = Always },
+            new Item { Key = "cf", Name = "Процессор: вентилятор", Fits = HasFans },
+            new Item { Key = "gt", Name = "Видеокарта: температура", Fits = () => Hw.Nvidia },
+            new Item { Key = "gc", Name = "Видеокарта: частота", Fits = () => Hw.Nvidia },
+            new Item { Key = "gl", Name = "Видеокарта: загрузка", Fits = () => Hw.Nvidia },
+            new Item { Key = "gw", Name = "Видеокарта: мощность", Fits = () => Hw.Nvidia },
+            new Item { Key = "gv", Name = "Видеокарта: видеопамять", Sub = "Сколько занято", Fits = () => Hw.Nvidia },
+            new Item { Key = "gf", Name = "Видеокарта: вентилятор", Fits = () => Hw.Nvidia && HasFans() },
+            new Item { Key = "ram", Name = "Оперативная память", Sub = "Сколько занято", Fits = Always },
+            new Item { Key = "bat", Name = "Батарея", Sub = "Заряд в процентах", Fits = () => Hw.Battery },
+            new Item { Key = "time", Name = "Время", Fits = Always },
+        };
+        public const string DefaultItems = "fps,ct,cc,gt,gc";
+
+        public static bool Has(Settings s, string key) { return (s.OverlayItems ?? DefaultItems).Split(',').Contains(key); }
+
+        public static void SetItem(Settings s, string key, bool on)
+        {
+            var have = new HashSet<string>((s.OverlayItems ?? DefaultItems).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+            if (on) have.Add(key); else have.Remove(key);
+            s.OverlayItems = string.Join(",", Items.Select(i => i.Key).Where(have.Contains)); // kept in the order of the list
+            Store.SaveSettings(s);
+            Preview();
+        }
+
+        // a change in the settings shows the overlay for a few seconds whatever is on screen, so the change is seen
+        static DateTime previewUntil = DateTime.MinValue;
+        public static void Preview()
+        {
+            if (settings == null || !settings.OverlayOn) return;
+            previewUntil = DateTime.Now.AddSeconds(6);
+            Apply();
+        }
 
         [DllImport("user32.dll")] static extern IntPtr SetThreadDpiAwarenessContext(IntPtr ctx);
 
@@ -75,8 +122,214 @@ namespace RedTune
                     ready.WaitOne(3000);
                 }
             }
+            Fps.KeepLong = Has(settings, "low");
             Task.Run(() => { var why = Fps.Start(); if (why != null) Store.Log("оверлей: FPS не считается: " + why); });
             Post(f => f.On());
+        }
+
+        // ---------- the picture ----------
+        // what is shown now; NaN or a negative number = not known
+        public class Vals
+        {
+            public double Fps = double.NaN, Low = double.NaN, CpuMhz = double.NaN, CpuLoad = double.NaN, CpuW = double.NaN, GpuW = double.NaN, RamGb = double.NaN, VramGb = double.NaN;
+            public int CpuTemp = -1, GpuTemp = -1, GpuMhz = -1, GpuLoad = -1, CpuFan = -1, GpuFan = -1, Battery = -1;
+            public bool Gpu;
+            public string Time = "";
+        }
+
+        static readonly Color Label = Color.FromArgb(0xff, 0x6e, 0x73), Value = Color.White, Unit = Color.FromArgb(0xc4, 0xc0, 0xbc), Hot = Color.FromArgb(0xff, 0xa2, 0x40);
+
+        // a piece of the overlay's text. Glued: it belongs to the piece before it (a unit after its number, the first
+        // value after a row's name) and stands close to it; a piece that is not glued starts a new reading and keeps
+        // a wider gap, so a long row still reads as separate numbers
+        sealed class Piece
+        {
+            public readonly string Text; public readonly Color Color; public bool Glued;
+            public Piece(string text, Color color, bool glued) { Text = text; Color = color; Glued = glued; }
+        }
+
+        // the groups of the line (frames, processor, graphics card, memory, battery, time), each a list of pieces.
+        // In a line the frame rate reads «144 FPS» as it always did; in a column every row starts with its name
+        static List<List<Piece>> Groups(Vals v, Func<string, bool> on, bool column)
+        {
+            var ru = CultureInfo.GetCultureInfo("ru-RU");
+            bool en = L.En;
+            var num = en ? CultureInfo.InvariantCulture : ru;
+            var all = new List<List<Piece>>();
+            Func<List<Piece>> open = () => new List<Piece>();
+            Action<List<Piece>, string, Color> add = (l, t, c) => l.Add(new Piece(t, c, false));
+            Action<List<Piece>, string, Color> glue = (l, t, c) => l.Add(new Piece(t, c, true));
+            Action<List<Piece>, string> close = (l, name) => { if (l.Count == 0) return; if (name != null) { l[0].Glued = true; l.Insert(0, new Piece(name, Label, false)); } all.Add(l); };
+            string rpm = en ? "RPM" : "об/мин", watt = en ? "W" : "Вт", gb = en ? "GB" : "ГБ";
+
+            var g = open();
+            if (on("fps"))
+            {
+                string f = double.IsNaN(v.Fps) ? "—" : Math.Round(v.Fps).ToString("0");
+                if (column) { add(g, "FPS", Label); glue(g, f, Value); } else { add(g, f, Value); glue(g, "FPS", Label); }
+            }
+            if (on("low")) { if (column && !on("fps")) { add(g, "FPS", Label); glue(g, "1%", Label); } else add(g, "1%", Label); glue(g, double.IsNaN(v.Low) ? "—" : Math.Round(v.Low).ToString("0"), Value); }
+            close(g, null);
+
+            g = open();
+            if (on("ct")) add(g, v.CpuTemp > 0 ? v.CpuTemp + "°" : "—", v.CpuTemp >= 90 ? Hot : Value);
+            if (on("cc") && !double.IsNaN(v.CpuMhz) && v.CpuMhz > 0) { add(g, (v.CpuMhz / 1000).ToString("0.0", num), Value); glue(g, en ? "GHz" : "ГГц", Unit); }
+            if (on("cl") && !double.IsNaN(v.CpuLoad)) add(g, Math.Round(Math.Max(0, Math.Min(100, v.CpuLoad))).ToString("0") + "%", Value);
+            if (on("cw") && !double.IsNaN(v.CpuW) && v.CpuW > 0) { add(g, Math.Round(v.CpuW).ToString("0"), Value); glue(g, watt, Unit); }
+            if (on("cf") && v.CpuFan >= 0) { add(g, v.CpuFan.ToString(), Value); glue(g, rpm, Unit); }
+            close(g, "CPU");
+
+            if (v.Gpu)
+            {
+                g = open();
+                if (on("gt")) add(g, v.GpuTemp > 0 ? v.GpuTemp + "°" : "—", v.GpuTemp >= 85 ? Hot : Value);
+                if (on("gc") && v.GpuMhz > 0) { add(g, v.GpuMhz.ToString(), Value); glue(g, en ? "MHz" : "МГц", Unit); }
+                if (on("gl") && v.GpuLoad >= 0) add(g, v.GpuLoad + "%", Value);
+                if (on("gw") && !double.IsNaN(v.GpuW) && v.GpuW > 0) { add(g, Math.Round(v.GpuW).ToString("0"), Value); glue(g, watt, Unit); }
+                if (on("gv") && !double.IsNaN(v.VramGb)) { add(g, v.VramGb.ToString("0.0", num), Value); glue(g, gb, Unit); }
+                if (on("gf") && v.GpuFan >= 0) { add(g, v.GpuFan.ToString(), Value); glue(g, rpm, Unit); }
+                close(g, "GPU");
+            }
+
+            g = open();
+            if (on("ram") && !double.IsNaN(v.RamGb)) { add(g, v.RamGb.ToString("0.0", num), Value); glue(g, gb, Unit); }
+            close(g, "RAM");
+
+            g = open();
+            if (on("bat") && v.Battery >= 0) add(g, v.Battery + "%", v.Battery <= 15 ? Hot : Value);
+            close(g, "BAT");
+
+            g = open();
+            if (on("time") && v.Time.Length > 0) add(g, v.Time, Value);
+            close(g, null);
+            return all;
+        }
+
+        // the plate with the groups on it: a pill with one line, or a rounded card with a row per group. px: the text's
+        // height in pixels, k: the monitor's scaling. edge: how far the plate keeps from the edge of the screen
+        static Bitmap Render(List<List<Piece>> groups, bool column, Font font, float px, float k, out int edge)
+        {
+            int padX = (int)Math.Round(10 * k), padY = (int)Math.Round(5 * k), gap = (int)Math.Round(5 * k), group = (int)Math.Round(14 * k);
+            var fmt = StringFormat.GenericTypographic;
+            var fam = font.FontFamily;
+            float ascent = fam.GetCellAscent(font.Style) * px / fam.GetEmHeight(font.Style);
+            var widths = groups.Select(l => new float[l.Count]).ToArray();
+            int textH;
+            using (var probe = new Bitmap(1, 1))
+            using (var g = Graphics.FromImage(probe))
+            {
+                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                for (int a = 0; a < groups.Count; a++)
+                    for (int i = 0; i < groups[a].Count; i++) widths[a][i] = g.MeasureString(groups[a][i].Text, font, 10000, fmt).Width;
+                textH = (int)Math.Ceiling(font.GetHeight(g));
+            }
+            int wide = (int)Math.Round(gap * 1.9f); // between two readings; a glued piece keeps the small gap
+            Func<int, int, int> before = (a, i) => groups[a][i].Glued ? gap : wide;
+            Func<int, int, float> rowWidth = (a, from) => { float t = 0; for (int i = from; i < groups[a].Count; i++) t += widths[a][i] + (i > from ? before(a, i) : 0); return t; };
+
+            if (!column)
+            {
+                // 16.11: the plate is half as tall again as the text with its margins needs (the user asked for a bigger
+                // plate around the same text); the text stands in the middle of it. The plate is a pill, its ends are
+                // half circles; the text keeps clear of the round ends
+                int h = (int)Math.Round((textH + 2 * padY) * 1.5f);
+                padX = Math.Max(padX, (int)Math.Round(h * 0.5f));
+                float total = 0;
+                for (int a = 0; a < groups.Count; a++) total += rowWidth(a, 0) + (a > 0 ? group : 0);
+                int w = (int)Math.Ceiling(total) + 2 * padX;
+                float ty = (h - textH) / 2f - textH * 0.05f; // a line of this font has more room under the letters than over them
+                // 16.11: the plate stands from the edge of the screen by the distance its letters keep from its own top
+                // edge: where the line of text starts, down to its baseline, back up by the height of a capital letter
+                // (0.70 of the size in Segoe UI)
+                edge = Math.Max(0, (int)Math.Round(ty + ascent - 0.70f * px));
+                var bmp = new Bitmap(Math.Max(1, w), h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    g.SmoothingMode = SmoothingMode.AntiAlias; g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                    g.Clear(Color.Transparent);
+                    using (var path = new GraphicsPath())
+                    {
+                        float d = h - 1;
+                        path.AddArc(0, 0, d, d, 90, 180); path.AddArc(w - 1 - d, 0, d, d, 270, 180);
+                        path.CloseFigure();
+                        using (var b = new SolidBrush(Color.FromArgb(165, 12, 12, 12))) g.FillPath(b, path);
+                    }
+                    float x = padX;
+                    for (int a = 0; a < groups.Count; a++)
+                    {
+                        if (a > 0) x += group;
+                        for (int i = 0; i < groups[a].Count; i++)
+                        {
+                            if (i > 0) x += before(a, i);
+                            using (var b = new SolidBrush(groups[a][i].Color)) g.DrawString(groups[a][i].Text, font, b, x, ty, fmt);
+                            x += widths[a][i];
+                        }
+                    }
+                }
+                return bmp;
+            }
+            else
+            {
+                // a row per group; the rows' names (the first piece of a row that has one) stand in a column of their
+                // own, the values start on one vertical
+                Func<int, bool> named = a => groups[a].Count > 1 && groups[a][0].Color == Label;
+                float nameW = 0;
+                for (int a = 0; a < groups.Count; a++) if (named(a)) nameW = Math.Max(nameW, widths[a][0]);
+                int nameGap = (int)Math.Round(9 * k), rowH = textH + (int)Math.Round(3 * k), padV = (int)Math.Round(8 * k);
+                padX = (int)Math.Round(13 * k);
+                float widest = 0;
+                for (int a = 0; a < groups.Count; a++) widest = Math.Max(widest, named(a) ? nameW + nameGap + rowWidth(a, 1) : rowWidth(a, 0));
+                int w = (int)Math.Ceiling(widest) + 2 * padX, h = groups.Count * rowH + 2 * padV;
+                edge = (int)Math.Round(12 * k);
+                var bmp = new Bitmap(Math.Max(1, w), Math.Max(1, h), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    g.SmoothingMode = SmoothingMode.AntiAlias; g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                    g.Clear(Color.Transparent);
+                    using (var path = new GraphicsPath())
+                    {
+                        float d = Math.Min(h - 1, Math.Min(w - 1, (int)Math.Round(rowH * 0.9f)));
+                        path.AddArc(0, 0, d, d, 180, 90); path.AddArc(w - 1 - d, 0, d, d, 270, 90);
+                        path.AddArc(w - 1 - d, h - 1 - d, d, d, 0, 90); path.AddArc(0, h - 1 - d, d, d, 90, 90);
+                        path.CloseFigure();
+                        using (var b = new SolidBrush(Color.FromArgb(165, 12, 12, 12))) g.FillPath(b, path);
+                    }
+                    for (int a = 0; a < groups.Count; a++)
+                    {
+                        float x = padX, y = padV + a * rowH + (rowH - textH) / 2f - textH * 0.05f;
+                        for (int i = 0; i < groups[a].Count; i++)
+                        {
+                            if (i == 1 && named(a)) x = padX + nameW + nameGap; else if (i > 0) x += before(a, i);
+                            using (var b = new SolidBrush(groups[a][i].Color)) g.DrawString(groups[a][i].Text, font, b, x, y, fmt);
+                            x += widths[a][i];
+                        }
+                    }
+                }
+                return bmp;
+            }
+        }
+
+        static Font MakeFont(float px) { return new Font("Segoe UI Semibold", px, FontStyle.Regular, GraphicsUnit.Pixel); }
+
+        // --overlay-png <out.png> [items] [--column] [--size n]: the overlay with made-up numbers over a grey picture (a check)
+        public static void RenderTo(string file, string items, bool column, int size)
+        {
+            var v = new Vals { Fps = 143.6, Low = 97.2, CpuTemp = 68, CpuMhz = 4310, CpuLoad = 34.6, CpuW = 54.2, CpuFan = 2600, Gpu = true, GpuTemp = 61, GpuMhz = 2310, GpuLoad = 98, GpuW = 79.6, VramGb = 5.13, GpuFan = 2400, RamGb = 14.24, Battery = 87, Time = "21:47" };
+            var keys = (items ?? DefaultItems).Split(',');
+            float px = SizePx[Math.Max(0, Math.Min(SizePx.Length - 1, size))];
+            int edge;
+            using (var font = MakeFont(px))
+            using (var plate = Render(Groups(v, k => keys.Contains(k), column), column, font, px, 1f, out edge))
+            using (var pic = new Bitmap(plate.Width + 2 * (12 + edge), plate.Height + 2 * (12 + edge)))
+            {
+                using (var g = Graphics.FromImage(pic))
+                using (var b = new LinearGradientBrush(new Rectangle(0, 0, pic.Width, pic.Height), Color.FromArgb(70, 96, 120), Color.FromArgb(150, 130, 100), 20f))
+                {
+                    g.FillRectangle(b, 0, 0, pic.Width, pic.Height);
+                    g.DrawImage(plate, 12 + edge, 12 + edge);
+                }
+                pic.Save(file, System.Drawing.Imaging.ImageFormat.Png);
+            }
         }
 
         static void Post(Action<OverlayForm> a)
@@ -106,9 +359,9 @@ namespace RedTune
             Sensors sensors;
             volatile bool reading;
             DateTime read = DateTime.MinValue;
-            // the last readings, written by the worker
-            volatile int cpuTemp = -1, gpuTemp = -1, gpuMhz = -1;
-            double cpuMhz = double.NaN;
+            // the last readings, written by the worker (a new object each time, so the picture never sees half of one)
+            volatile Vals vals = new Vals();
+            double low = double.NaN; DateTime lowAt = DateTime.MinValue;
             Font font; float fontPx;
             string shownKey = "";
 
@@ -137,7 +390,7 @@ namespace RedTune
                 var active = Osd.ActiveMonitor();
                 var m = mons.FirstOrDefault(x => x.Handle == active) ?? mons.FirstOrDefault(x => x.Primary) ?? mons.FirstOrDefault();
                 if (m == null) return null;
-                return s.OverlayAlways || Osd.FullscreenOn(m) ? m : null;
+                return s.OverlayAlways || Osd.FullscreenOn(m) || DateTime.Now < previewUntil ? m : null;
             }
 
             void Tick()
@@ -149,15 +402,21 @@ namespace RedTune
                 Poll();
                 uint pid = 0;
                 try { GetWindowThreadProcessId(GetForegroundWindow(), out pid); } catch { }
-                Draw(m, FpsOf(pid));
+                int drawer;
+                double fps = FpsOf(pid, out drawer);
+                // the slow frames are counted once a second (a sort of the last half minute of frames)
+                if (Fps.KeepLong && (DateTime.Now - lowAt).TotalMilliseconds >= 950) { lowAt = DateTime.Now; low = double.IsNaN(fps) ? double.NaN : Fps.Low(drawer); }
+                Draw(m, fps);
             }
 
-            // the frame rate of the program in front. A game draws from the process its window belongs to; a program
-            // built on a browser engine (Chrome, Electron) draws from a helper process of the same name, so when the
-            // window's own process draws nothing, its namesakes are looked at (their list is kept for 5 s)
+            // the frame rate of the program in front, and the process it draws from. A game draws from the process its
+            // window belongs to; a program built on a browser engine (Chrome, Electron) draws from a helper process of
+            // the same name, so when the window's own process draws nothing, its namesakes are looked at (their list is
+            // kept for 5 s)
             uint famPid; DateTime famAt = DateTime.MinValue; int[] famIds = new int[0];
-            double FpsOf(uint pid)
+            double FpsOf(uint pid, out int drawer)
             {
+                drawer = (int)pid;
                 double f = Fps.Of((int)pid);
                 if (!double.IsNaN(f) || pid == 0) return f;
                 try
@@ -168,7 +427,7 @@ namespace RedTune
                         string name; using (var p = System.Diagnostics.Process.GetProcessById((int)pid)) name = p.ProcessName;
                         famIds = System.Diagnostics.Process.GetProcessesByName(name).Select(x => { int id = x.Id; x.Dispose(); return id; }).Where(id => id != pid).ToArray();
                     }
-                    foreach (var id in famIds) { double v = Fps.Of(id); if (!double.IsNaN(v) && (double.IsNaN(f) || v > f)) f = v; }
+                    foreach (var id in famIds) { double v = Fps.Of(id); if (!double.IsNaN(v) && (double.IsNaN(f) || v > f)) { f = v; drawer = id; } }
                 }
                 catch { }
                 return f;
@@ -185,35 +444,32 @@ namespace RedTune
                     {
                         if (sensors == null) sensors = new Sensors { SkipRam = true };
                         sensors.Update(true);
-                        cpuTemp = sensors.Cpu.TempC; cpuMhz = sensors.Cpu.ClockMHz;
-                        var g = sensors.Gpu;
-                        gpuTemp = g.Ok && g.TempC > 0 ? (int)g.TempC : -1; gpuMhz = g.Ok ? (int)g.ClockMHz : -1;
+                        var c = sensors.Cpu; var g = sensors.Gpu; var r = sensors.Ram;
+                        vals = new Vals
+                        {
+                            CpuTemp = c.TempC, CpuMhz = c.ClockMHz, CpuLoad = c.LoadPct, CpuW = c.PowerW, CpuFan = c.FanRpm,
+                            Gpu = Hw.Nvidia, GpuTemp = g.Ok && g.TempC > 0 ? (int)g.TempC : -1, GpuMhz = g.Ok ? (int)g.ClockMHz : -1, GpuLoad = g.Ok ? (int)g.LoadPct : -1,
+                            GpuW = g.Ok ? g.PowerW : double.NaN, VramGb = g.Ok && g.VramTotal > 0 ? g.VramUsed / 1073741824.0 : double.NaN, GpuFan = g.FanRpm,
+                            RamGb = r.Total > 0 ? r.Used / 1073741824.0 : double.NaN,
+                        };
                     }
                     catch { }
                     finally { reading = false; }
                 });
             }
 
-            static readonly Color Label = Color.FromArgb(0xff, 0x6e, 0x73), Value = Color.White, Unit = Color.FromArgb(0xc4, 0xc0, 0xbc), Hot = Color.FromArgb(0xff, 0xa2, 0x40);
-
             void Draw(Osd.Mon m, double fps)
             {
-                var ru = CultureInfo.GetCultureInfo("ru-RU");
-                bool en = L.En;
-                // the pieces of the line: text and colour; an empty text is a wider gap between the groups
-                var parts = new List<Tuple<string, Color>>();
-                parts.Add(Tuple.Create(double.IsNaN(fps) ? "—" : Math.Round(fps).ToString("0"), Value)); parts.Add(Tuple.Create("FPS", Label));
-                parts.Add(Tuple.Create("", Value));
-                parts.Add(Tuple.Create("CPU", Label));
-                parts.Add(Tuple.Create(cpuTemp > 0 ? cpuTemp + "°" : "—", cpuTemp >= 90 ? Hot : Value));
-                if (!double.IsNaN(cpuMhz) && cpuMhz > 0) { parts.Add(Tuple.Create((cpuMhz / 1000).ToString("0.0", en ? CultureInfo.InvariantCulture : ru), Value)); parts.Add(Tuple.Create(en ? "GHz" : "ГГц", Unit)); }
-                if (Hw.Nvidia)
+                // the readings of the worker, with what is known at once: the frames, the battery, the clock
+                var r = vals;
+                var v = new Vals
                 {
-                    parts.Add(Tuple.Create("", Value));
-                    parts.Add(Tuple.Create("GPU", Label));
-                    parts.Add(Tuple.Create(gpuTemp > 0 ? gpuTemp + "°" : "—", gpuTemp >= 85 ? Hot : Value));
-                    if (gpuMhz > 0) { parts.Add(Tuple.Create(gpuMhz.ToString(), Value)); parts.Add(Tuple.Create(en ? "MHz" : "МГц", Unit)); }
-                }
+                    Fps = fps, Low = low, CpuTemp = r.CpuTemp, CpuMhz = r.CpuMhz, CpuLoad = r.CpuLoad, CpuW = r.CpuW, CpuFan = r.CpuFan, Gpu = r.Gpu, GpuTemp = r.GpuTemp, GpuMhz = r.GpuMhz,
+                    GpuLoad = r.GpuLoad, GpuW = r.GpuW, VramGb = r.VramGb, GpuFan = r.GpuFan, RamGb = r.RamGb, Time = DateTime.Now.ToString("HH:mm"),
+                };
+                try { float b = SystemInformation.PowerStatus.BatteryLifePercent; v.Battery = b >= 0 && b <= 1 ? (int)Math.Round(b * 100) : -1; } catch { }
+                var groups = Groups(v, key => Has(s, key), s.OverlayColumn);
+                if (groups.Count == 0) { if (Visible) Hide(); return; } // everything is switched off in the settings
 
                 // 16.11: the size follows Windows' scaling of the monitor it is shown on (150 % on the laptop's own screen,
                 // 100 % on the monitor beside it), like everything else on that screen. For an hour it followed the
@@ -222,67 +478,21 @@ namespace RedTune
                 // It never follows the scale of Red Tune's own window (set to 150 % here, that came on top at first).
                 float k = 1f;
                 try { uint dx, dy; if (m.Handle != IntPtr.Zero && GetDpiForMonitor(m.Handle, 0, out dx, out dy) == 0 && dx >= 96) k = dx / 96f; } catch { }
-                string key = string.Join("|", parts.Select(p => p.Item1)) + "|" + m.Bounds + "|" + s.OverlayCorner + "|" + s.OverlaySize + "|" + k + "|" + Osd.FullscreenOn(m);
+                string key = string.Join("|", groups.Select(l => string.Join(" ", l.Select(p => p.Text)))) + "|" + m.Bounds + "|" + s.OverlayCorner + "|" + s.OverlaySize + "|" + s.OverlayColumn + "|" + k + "|" + Osd.FullscreenOn(m);
                 if (key == shownKey && Visible) { OnTop(); return; } // nothing changed: the picture stays
                 shownKey = key;
 
                 float px = SizePx[Math.Max(0, Math.Min(SizePx.Length - 1, s.OverlaySize))] * k;
-                if (font == null || Math.Abs(fontPx - px) > 0.1f) { if (font != null) font.Dispose(); font = new Font("Segoe UI Semibold", px, FontStyle.Regular, GraphicsUnit.Pixel); fontPx = px; }
-                int padX = (int)Math.Round(10 * k), padY = (int)Math.Round(5 * k), gap = (int)Math.Round(5 * k), group = (int)Math.Round(14 * k), margin = (int)Math.Round(12 * k);
-                var fmt = StringFormat.GenericTypographic;
-                var widths = new float[parts.Count];
-                float total = 0; int h, textH;
-                using (var probe = new Bitmap(1, 1))
-                using (var g = Graphics.FromImage(probe))
+                if (font == null || Math.Abs(fontPx - px) > 0.1f) { if (font != null) font.Dispose(); font = MakeFont(px); fontPx = px; }
+                int margin = (int)Math.Round(12 * k), edge;
+                using (var bmp = Render(groups, s.OverlayColumn, font, px, k, out edge))
                 {
-                    g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-                    for (int i = 0; i < parts.Count; i++)
-                    {
-                        widths[i] = parts[i].Item1.Length == 0 ? group : g.MeasureString(parts[i].Item1, font, 10000, fmt).Width;
-                        total += widths[i] + (i > 0 && parts[i].Item1.Length > 0 && parts[i - 1].Item1.Length > 0 ? gap : 0);
-                    }
-                    // 16.11: the plate is half as tall again as the text with its margins needs (the user asked for a
-                    // bigger plate around the same text); the text stands in the middle of it
-                    textH = (int)Math.Ceiling(font.GetHeight(g));
-                    h = (int)Math.Round((textH + 2 * padY) * 1.5f);
-                }
-                // 16.11: the plate is a pill, its ends are half circles; the text keeps clear of the round ends
-                padX = Math.Max(padX, (int)Math.Round(h * 0.5f));
-                int w = (int)Math.Ceiling(total) + 2 * padX;
-
-                using (var bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
-                {
-                    using (var g = Graphics.FromImage(bmp))
-                    {
-                        g.SmoothingMode = SmoothingMode.AntiAlias; g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-                        g.Clear(Color.Transparent);
-                        using (var path = new GraphicsPath())
-                        {
-                            float d = h - 1;
-                            path.AddArc(0, 0, d, d, 90, 180); path.AddArc(w - 1 - d, 0, d, d, 270, 180);
-                            path.CloseFigure();
-                            using (var b = new SolidBrush(Color.FromArgb(165, 12, 12, 12))) g.FillPath(b, path);
-                        }
-                        float x = padX;
-                        for (int i = 0; i < parts.Count; i++)
-                        {
-                            if (i > 0 && parts[i].Item1.Length > 0 && parts[i - 1].Item1.Length > 0) x += gap;
-                            if (parts[i].Item1.Length > 0) using (var b = new SolidBrush(parts[i].Item2)) g.DrawString(parts[i].Item1, font, b, x, (h - textH) / 2f - textH * 0.05f, fmt); // a line of this font has more room under the letters than over them
-                            x += widths[i];
-                        }
-                    }
+                    int w = bmp.Width, h = bmp.Height;
                     // over a full-screen program the corner of the screen; over the desktop («Всегда») the corner of the work area, clear of the taskbar
                     var area = Osd.FullscreenOn(m) ? m.Bounds : m.Work;
-                    // 16.11: the plate stands further from the edge of the screen by the distance its letters keep from
-                    // its own top edge (asked for after the first game: the plate sat too close to the top). That distance:
-                    // where the line of text starts, down to its baseline, back up by the height of a capital letter
-                    // (0.70 of the size in Segoe UI). At the bottom places it is kept from the bottom edge the same way.
-                    var fam = font.FontFamily;
-                    float ascent = fam.GetCellAscent(font.Style) * fontPx / fam.GetEmHeight(font.Style);
-                    int inner = Math.Max(0, (int)Math.Round((h - textH) / 2f - textH * 0.05f + ascent - 0.70f * fontPx));
-                    // the gap to the edge of the screen equals the gap from the plate's top to its letters (the first try added
-                    // the two: 39 px at the biggest size, a quarter too far down; this gives 27)
-                    int edge = inner;
+                    // 16.11: the plate stands from the edge of the screen by the distance its letters keep from its own
+                    // top edge (asked for after the first game: the plate sat too close to the top; Render gives that
+                    // distance). At the bottom places it is kept from the bottom edge the same way.
                     var at = s.OverlayCorner == 4 ? new Point(area.Left + (area.Width - w) / 2, area.Top + edge)
                         : new Point(s.OverlayCorner % 2 == 0 ? area.Left + margin : area.Right - margin - w, s.OverlayCorner < 2 ? area.Top + edge : area.Bottom - edge - h);
                     Push(bmp, at);

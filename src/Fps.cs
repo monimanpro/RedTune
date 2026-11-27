@@ -41,7 +41,10 @@ namespace RedTune
         public static string Error { get; private set; }
 
         // the times (QPC ticks) of a program's frames in its last second: by the runtime (DXGI, D3D9) and by the kernel
-        class Stat { public readonly Queue<long> Api = new Queue<long>(), Kernel = new Queue<long>(); }
+        // 27.11: with KeepLong (the overlay shows the slow frames) also the frames of the last half minute, for Low()
+        class Stat { public readonly Queue<long> Api = new Queue<long>(), Kernel = new Queue<long>(), ApiLong = new Queue<long>(), KernelLong = new Queue<long>(); }
+        public static volatile bool KeepLong;
+        const int LongSeconds = 30, LongMost = 30000;
         static readonly Dictionary<int, Stat> stats = new Dictionary<int, Stat>();
         // --fps-probe: how many events of each kind came from each process
         public static Dictionary<string, int> Histogram;
@@ -179,6 +182,13 @@ namespace RedTune
                     var q = api ? s.Api : s.Kernel;
                     q.Enqueue(t);
                     while (q.Count > 2 && t - q.Peek() > Second) q.Dequeue();
+                    var lq = api ? s.ApiLong : s.KernelLong;
+                    if (KeepLong)
+                    {
+                        lq.Enqueue(t);
+                        while (lq.Count > 2 && (t - lq.Peek() > LongSeconds * Second || lq.Count > LongMost)) lq.Dequeue();
+                    }
+                    else if (lq.Count > 0) lq.Clear();
                 }
             }
             catch { }
@@ -205,6 +215,50 @@ namespace RedTune
                 double r = Rate(s.Api, now);
                 return double.IsNaN(r) ? Rate(s.Kernel, now) : r;
             }
+        }
+
+        // «1% low» of a process: the frame rate its slowest frames run at — the frame time that 99 of 100 frames of the
+        // last half minute stay under, as a rate. NaN until two seconds' worth of frames is there. A gap of more than
+        // two seconds is a pause (a menu, another window in front), not a frame.
+        public static double Low(int pid)
+        {
+            if (!Running || !KeepLong) return double.NaN;
+            long now = System.Diagnostics.Stopwatch.GetTimestamp();
+            long[] t;
+            lock (stats)
+            {
+                Stat s;
+                if (!stats.TryGetValue(pid, out s)) return double.NaN;
+                t = (double.IsNaN(Rate(s.Api, now)) ? s.KernelLong : s.ApiLong).ToArray();
+            }
+            return LowOf(t);
+        }
+
+        internal static double LowOf(long[] t)
+        {
+            if (t.Length < 3 || t[t.Length - 1] - t[0] < 2 * Second) return double.NaN;
+            var d = new List<long>(t.Length);
+            for (int i = 1; i < t.Length; i++) { long dt = t[i] - t[i - 1]; if (dt > 0 && dt <= 2 * Second) d.Add(dt); }
+            if (d.Count < 20) return double.NaN;
+            d.Sort();
+            long slow = d[Math.Min(d.Count - 1, (int)Math.Ceiling(d.Count * 0.99) - 1)];
+            return (double)Second / slow;
+        }
+
+        // --overlay-low: LowOf on frames made up here — an even 100 a second; the same with one frame in fifty taking
+        // 40 ms; a pause of five seconds in the middle; too little to tell
+        public static string LowCheck()
+        {
+            var sb = new System.Text.StringBuilder();
+            Func<Func<int, double>, int, long[]> make = (ms, n) => { var t = new long[n]; double at = 0; for (int i = 0; i < n; i++) { t[i] = (long)(at / 1000 * Second); at += ms(i); } return t; };
+            Action<string, double, double, double> say = (name, got, lo, hi) =>
+                sb.AppendLine((double.IsNaN(lo) ? double.IsNaN(got) : got >= lo && got <= hi) ? "ok   " + name + ": " + got.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)
+                    : "FAIL " + name + ": " + got.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + ", expected " + lo + ".." + hi);
+            say("even 100 a second", LowOf(make(i => 10, 2000)), 99, 101);
+            say("one frame in fifty takes 40 ms", LowOf(make(i => i % 50 == 49 ? 40 : 10, 2000)), 24, 26);
+            say("a pause of 5 s is not a frame", LowOf(make(i => i == 1000 ? 5000 : 10, 2000)), 99, 101);
+            say("half a second of frames says nothing", LowOf(make(i => 10, 50)), double.NaN, double.NaN);
+            return sb.ToString();
         }
 
         // every process that draws now, for the probe: pid, by the runtime, by the kernel

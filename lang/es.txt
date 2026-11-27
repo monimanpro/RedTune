@@ -1099,6 +1099,28 @@ w	3ddfea34	FPS, temperatura y frecuencia del procesador y la tarjeta gráfica en
 w	be2c51fd	Cuándo y dónde mostrar
 w	c72f0621	No visible en pantalla completa exclusiva
 w	97b2534c	Sobre programas a pantalla completa
+w	5c3eceb1	En línea
+w	a6f89338	En columna
+w	1b7a7765	Tamaño y disposición
+w	b206cb2e	En columna se lee mejor cuando se muestran muchos valores
+w	6b436ce8	FPS, temperaturas, carga y otros valores en una esquina de la pantalla
+w	801c184e	Fotogramas por segundo del programa en pantalla
+w	c905405d	Caídas de FPS (1% low)
+w	c901c5ea	La tasa de fotogramas del 1 % de fotogramas más lentos en los últimos 30 segundos
+w	76d9b739	Procesador: temperatura
+w	463b7e8d	Procesador: frecuencia
+w	1cc4d20f	Procesador: carga
+w	5e875b54	Procesador: potencia
+w	bb74839b	Procesador: ventilador
+w	42de6890	Tarjeta gráfica: temperatura
+w	85b8b9bc	Tarjeta gráfica: frecuencia
+w	17f659a8	Tarjeta gráfica: carga
+w	f1288983	Tarjeta gráfica: potencia
+w	78b888e1	Tarjeta gráfica: memoria de vídeo
+w	e68a3634	Tarjeta gráfica: ventilador
+w	79f7b15e	Cuánto está en uso
+w	24865641	Carga en porcentaje
+w	919912db	Hora
 w	8406f8c4	Arriba a la izquierda
 w	ce2eb0bb	Arriba a la derecha
 w	afef0082	Abajo a la izquierda

@@ -1099,6 +1099,28 @@ w	3ddfea34	FPS, nhiệt độ và xung nhịp của bộ xử lý và card đồ
 w	be2c51fd	Hiện khi nào và ở đâu
 w	c72f0621	Không hiện ở chế độ toàn màn hình độc quyền
 w	97b2534c	Hiện trên chương trình toàn màn hình
+w	5c3eceb1	Một dòng
+w	a6f89338	Dạng cột
+w	1b7a7765	Kích thước và bố cục
+w	b206cb2e	Dạng cột dễ đọc hơn khi hiển thị nhiều giá trị
+w	6b436ce8	FPS, nhiệt độ, tải và các chỉ số khác ở một góc màn hình
+w	801c184e	Số khung hình mỗi giây của chương trình trên màn hình
+w	c905405d	FPS tụt (1% low)
+w	c901c5ea	Tốc độ khung hình của 1 % khung hình chậm nhất trong 30 giây gần nhất
+w	76d9b739	Bộ xử lý: nhiệt độ
+w	463b7e8d	Bộ xử lý: xung nhịp
+w	1cc4d20f	Bộ xử lý: tải
+w	5e875b54	Bộ xử lý: công suất
+w	bb74839b	Bộ xử lý: quạt
+w	42de6890	Card đồ họa: nhiệt độ
+w	85b8b9bc	Card đồ họa: xung nhịp
+w	17f659a8	Card đồ họa: tải
+w	f1288983	Card đồ họa: công suất
+w	78b888e1	Card đồ họa: bộ nhớ video
+w	e68a3634	Card đồ họa: quạt
+w	79f7b15e	Đang dùng bao nhiêu
+w	24865641	Mức sạc theo phần trăm
+w	919912db	Thời gian
 w	8406f8c4	Trên trái
 w	ce2eb0bb	Trên phải
 w	afef0082	Dưới trái

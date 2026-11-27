@@ -72,7 +72,7 @@ A sound effect of Red Tune's own that Windows runs for every program on the outp
 - **Equalizer** — 12 bands (bell, shelves, cuts, notch) drawn as a curve over the live spectrum; points are dragged, strips beside the plot give the same bands as faders and dials, with a slope dial for each: cuts from 12 to 48 dB per octave, steeper shelves, a bell that flattens into a plateau.
 - **Compressor** — in one, two or three frequency bands, each with its own threshold, ratio, knee, attack, release and make-up gain. A picture shows the transfer curve with draggable points, eight dials, and a monitor that is either the last ten seconds or the bands across the frequencies with their live levels. Bands can be soloed and muted for listening. Four characters (clean, FET, optical, tube) change how it reacts; an optional colour (tube, transistor, tape, transformer) adds harmonics, oversampled four times; a mix control gives parallel compression.
 - **Limiter** — a look-ahead limiter that measures the true peak of the wave, so the output never passes the ceiling and does not rasp.
-- **Microphone** — a chain for the input: a pre-compressor, a gate, noise suppression (RNNoise or DeepFilterNet 3), a reverb remover, the equalizer, a de-esser, the compressor and the limiter. Every program that records from that microphone (calls, streaming, recording) gets the processed sound; a switch lets you hear yourself.
+- **Microphone** — a chain for the input: a pre-compressor, a gate, noise suppression (RNNoise, DeepFilterNet 3 or Red Tune's own network, trained for this program), a reverb remover, the equalizer, a de-esser, the compressor and the limiter. Every program that records from that microphone (calls, streaming, recording) gets the processed sound; a switch lets you hear yourself.
 - Presets, settings per device, step back and forward, a level meter, and a switch for a laptop maker's own sound effects that would otherwise add to Red Tune's.
 
 <img src="docs/screenshots/sound-eq.png" alt="Sound: the equalizer over the live spectrum">
@@ -119,7 +119,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 ### Around the window
 - **Mini panel** — a click on the tray icon opens small glass blocks: power mode, power preset, curve, graphics preset, output device, overlay, memory clean-up, displays off.
 - **Notifications** — an on-screen note when the power mode, a Fn key, Caps Lock and the like change; position, duration and look are yours to set.
-- **Overlay** — frame rate, temperatures and clocks of the processor and the graphics card in a corner of the screen over games.
+- **Overlay** — a line or a column in a corner of the screen over games, with the values you pick: frame rate and its 1% low, temperature, clock, load, power and fan speed of the processor and the graphics card, video memory, RAM, battery, the time.
 
 ## How it works
 

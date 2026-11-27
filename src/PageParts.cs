@@ -169,6 +169,9 @@ namespace RedTune
         // after Add/Clear: new height, rows placed again, the page stacks again
         public void Relist() { Switch(); }
 
+        // a tab picked from code (page pictures: RT_OVL_TAB)
+        public void Show(int tab) { if (tab >= 0 && tab < rows.Length && tab != Sel) { tabs.Selected = tab; Switch(); } }
+
         void Switch()
         {
             for (int i = 0; i < rows.Length; i++) foreach (var r in rows[i]) r.Visible = i == Sel;

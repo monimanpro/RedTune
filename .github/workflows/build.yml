@@ -62,7 +62,7 @@ jobs:
             if ($fails) { $fails | ForEach-Object { Write-Host "::error::${name}: $_" }; return 1 }
             Write-Host "$name ok ($((Select-String -Path $out -Pattern '^ok').Count) ok lines)"; return 0
           }
-          foreach ($c in 'fan-check', 'comp-graph-check', 'sound-undo-check', 'motion-check', 'eq-strips-check', 'ui-edit-check', 'crash-check', 'rules-undo-check', 'lang-check') { $bad += Run-Check $c @("--$c") }
+          foreach ($c in 'fan-check', 'comp-graph-check', 'sound-undo-check', 'motion-check', 'eq-strips-check', 'ui-edit-check', 'crash-check', 'rules-undo-check', 'overlay-low', 'lang-check') { $bad += Run-Check $c @("--$c") }
           foreach ($pg in 'about', 'settings', 'comp') {
             $p = Start-Process bin\RedTune.exe -ArgumentList '--page-png', $pg, "checks\page-$pg.png" -PassThru
             if (-not $p.WaitForExit(120000) -or -not (Test-Path "checks\page-$pg.png")) { Write-Host "::error::page $pg was not drawn"; $bad++ } else { Write-Host "page $pg drawn" }

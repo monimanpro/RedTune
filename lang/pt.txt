@@ -1099,6 +1099,28 @@ w	3ddfea34	FPS, temperatura e frequência do processador e da placa de vídeo em
 w	be2c51fd	Quando e onde mostrar
 w	c72f0621	Não aparece em tela cheia exclusiva
 w	97b2534c	Sobre programas em tela cheia
+w	5c3eceb1	Em linha
+w	a6f89338	Em coluna
+w	1b7a7765	Tamanho e disposição
+w	b206cb2e	Em coluna fica mais fácil de ler quando há muitos valores
+w	6b436ce8	FPS, temperaturas, carga e outros valores em um canto da tela
+w	801c184e	Quadros por segundo do programa na tela
+w	c905405d	Quedas de FPS (1% low)
+w	c901c5ea	A taxa de quadros do 1 % de quadros mais lentos nos últimos 30 segundos
+w	76d9b739	Processador: temperatura
+w	463b7e8d	Processador: frequência
+w	1cc4d20f	Processador: carga
+w	5e875b54	Processador: potência
+w	bb74839b	Processador: ventoinha
+w	42de6890	Placa de vídeo: temperatura
+w	85b8b9bc	Placa de vídeo: frequência
+w	17f659a8	Placa de vídeo: carga
+w	f1288983	Placa de vídeo: potência
+w	78b888e1	Placa de vídeo: memória de vídeo
+w	e68a3634	Placa de vídeo: ventoinha
+w	79f7b15e	Quanto está em uso
+w	24865641	Carga em porcentagem
+w	919912db	Hora
 w	8406f8c4	Em cima, à esquerda
 w	ce2eb0bb	Em cima, à direita
 w	afef0082	Embaixo, à esquerda
