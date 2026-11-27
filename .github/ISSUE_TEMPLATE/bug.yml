@@ -32,6 +32,6 @@ body:
   - type: textarea
     id: log
     attributes:
-      label: Journal (optional)
-      description: The end of `%APPDATA%\RedTune\redtune.log`, around the time it happened. It can show folder paths with your Windows user name; edit them out if you like.
+      label: Error record or journal (optional)
+      description: After a crash, «Send to GitHub» in **About** fills this with the error and where it happened; the journal is not sent. You can add the end of `%APPDATA%\RedTune\redtune.log` yourself, around the time it happened — it names your presets and may name programs and folders with your Windows user name, so edit out what you like.
       render: text

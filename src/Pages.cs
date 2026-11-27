@@ -311,7 +311,7 @@ namespace RedTune
                         {
                             BeginInvoke((Action)(() =>
                             {
-                                try { Clipboard.SetText(crash.Text); } catch { }
+                                try { Clipboard.SetText(Crash.ForForm(crash.Text)); } catch { }
                                 try { Process.Start(url); } catch (Exception ex) { crow.SetSub(L.T("Браузер не открылся: ") + ex.Message); return; }
                                 crow.SetSub("Форма открылась в браузере: допиши, что ты делал перед ошибкой, и нажми «Create». Вся запись ещё и в буфере");
                             }));

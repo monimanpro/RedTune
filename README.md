@@ -137,7 +137,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 - **Expert functions.** The curve, memory timings and direct processor limits are hidden until you switch them on in Settings and confirm.
 - **Values the hardware did not report are never written** just because a slider stood somewhere: such sliders read «do not change».
 - **Other tuning programs.** Red Tune warns when a program that changes the same settings starts with Windows: two of them would fight.
-- **Errors are kept for a report.** An error nothing caught is written to `crash.txt` in the settings folder (the version, Windows, the exception and the end of the journal, with the user's and the computer's names taken out). «About» shows the last one with «Send to GitHub», which opens the bug form filled in (the same page has the system report and its own «Send to GitHub» for the hardware report form); after a crash the next start says so.
+- **Errors are kept for a report.** An error nothing caught is written to `crash.txt` in the settings folder (the version, Windows, the exception and the end of the journal, with the user's and the computer's names taken out). «About» shows the last one with «Send to GitHub», which opens the bug form filled in — with the error and where it happened, without the journal, which stays on the computer (the same page has the system report and its own «Send to GitHub» for the hardware report form); after a crash the next start says so.
 
 ## Requirements
 

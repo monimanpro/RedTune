@@ -8,7 +8,8 @@ namespace RedTune
     // 21.11 (beta): what went wrong, kept for a report. An exception nothing caught is written to crash.txt in the data
     // folder: the version, Windows, the machine in short, the exception with its stack and the end of the journal, with
     // the user's and the computer's names taken out (Diag.Clean). «О программе» shows the last one with «Отправить на
-    // GitHub» (the Bug form filled in); after a crash that ended the program the next start says so from the tray.
+    // GitHub» (the Bug form filled in, without the journal: ForForm); after a crash that ended the program the next
+    // start says so from the tray.
     static class Crash
     {
         public static string FilePath { get { return Path.Combine(Store.DataDir, "crash.txt"); } }
@@ -74,7 +75,7 @@ namespace RedTune
                 + "&version=" + Uri.EscapeDataString(Updater.Current.ToString())
                 + "&what=" + Uri.EscapeDataString((c.Fatal ? "Red Tune crashed" : "Red Tune caught an error") + " (" + c.Time.ToString("yyyy-MM-dd HH:mm") + "): " + c.Kind + "\n\nWhat I was doing: ")
                 + "&report=" + Uri.EscapeDataString(report ?? "");
-            var log = c.Text;
+            var log = ForForm(c.Text);
             for (int i = 0; i < 12; i++)
             {
                 var url = head + "&log=" + Uri.EscapeDataString(log);
@@ -82,6 +83,16 @@ namespace RedTune
                 log = log.Substring(0, log.Length * 3 / 4) + "\n… (cut; the whole record is in crash.txt)";
             }
             return head;
+        }
+
+        // 27.11: the record as it goes to GitHub (the form's field and the clipboard): without the journal. An issue is
+        // public, and the journal's lines name the user's presets and may name programs (the user: «убрать из формы»).
+        // The version, the machine in short, the error and where it happened stay; crash.txt keeps everything.
+        public static string ForForm(string text)
+        {
+            text = text ?? "";
+            int j = text.IndexOf("--- journal ---", StringComparison.Ordinal);
+            return j < 0 ? text : text.Substring(0, j).TrimEnd() + "\n\n(the journal is not sent; it stays in crash.txt on the computer)\n";
         }
 
         static string Short(string s, int n) { s = s ?? ""; return s.Length <= n ? s : s.Substring(0, n) + "…"; }
