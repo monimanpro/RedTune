@@ -1107,6 +1107,10 @@ w	6b436ce8	FPS, temperaturas, carga e outros valores em um canto da tela
 w	801c184e	Quadros por segundo do programa na tela
 w	c905405d	Quedas de FPS (1% low)
 w	c901c5ea	A taxa de quadros do 1 % de quadros mais lentos nos últimos 30 segundos
+w	dddb9bdb	Quedas raras de FPS (0.1% low)
+w	6876c2a3	O mesmo com o 0,1 % de quadros mais lentos: travadas isoladas
+w	56597bc5	Gráfico do tempo de quadro
+w	c45b96e7	Os últimos 10 segundos: linha reta é fluidez, picos são travadas
 w	76d9b739	Processador: temperatura
 w	463b7e8d	Processador: frequência
 w	1cc4d20f	Processador: carga

@@ -119,7 +119,7 @@ Live timings and clocks, profiles, a memory test, and writing the memory speed a
 ### Around the window
 - **Mini panel** — a click on the tray icon opens small glass blocks: power mode, power preset, curve, graphics preset, output device, overlay, memory clean-up, displays off.
 - **Notifications** — an on-screen note when the power mode, a Fn key, Caps Lock and the like change; position, duration and look are yours to set.
-- **Overlay** — a line or a column in a corner of the screen over games, with the values you pick: frame rate and its 1% low, temperature, clock, load, power and fan speed of the processor and the graphics card, video memory, RAM, battery, the time.
+- **Overlay** — a line or a column in a corner of the screen over games, with the values you pick: frame rate, its 1% and 0.1% lows and a frame time graph, temperature, clock, load, power and fan speed of the processor and the graphics card, video memory, RAM, battery, the time.
 
 ## How it works
 

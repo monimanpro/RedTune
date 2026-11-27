@@ -1,0 +1,6 @@
+{
+"wdddb9bdb": {"es":"Caídas raras de FPS (0.1% low)","pt":"Quedas raras de FPS (0.1% low)","zh":"FPS 偶发低点 (0.1% low)","ko":"드문 FPS 저점 (0.1% low)","th":"FPS ตกนาน ๆ ครั้ง (0.1% low)","vi":"FPS tụt hiếm gặp (0.1% low)","id":"Penurunan FPS yang jarang (0.1% low)"},
+"w6876c2a3": {"es":"Lo mismo con el 0,1 % de fotogramas más lentos: tirones aislados","pt":"O mesmo com o 0,1 % de quadros mais lentos: travadas isoladas","zh":"同样的算法，取最慢的 0.1 % 帧：个别卡顿","ko":"가장 느린 0.1 % 프레임 기준의 같은 값: 한 번씩 생기는 끊김","th":"แบบเดียวกันจากเฟรมที่ช้าที่สุด 0.1 %: อาการกระตุกเป็นครั้งคราว","vi":"Tương tự với 0,1 % khung hình chậm nhất: các cú giật đơn lẻ","id":"Sama, untuk 0,1 % frame paling lambat: sendatan sesekali"},
+"w56597bc5": {"es":"Gráfico del tiempo de fotograma","pt":"Gráfico do tempo de quadro","zh":"帧时间曲线","ko":"프레임 시간 그래프","th":"กราฟเวลาเฟรม","vi":"Đồ thị thời gian khung hình","id":"Grafik waktu frame"},
+"wc45b96e7": {"es":"Los últimos 10 segundos: una línea plana es fluidez, los picos son tirones","pt":"Os últimos 10 segundos: linha reta é fluidez, picos são travadas","zh":"最近 10 秒：平直的线表示流畅，尖峰表示卡顿","ko":"최근 10초: 평평한 선은 부드러움, 뾰족한 부분은 끊김","th":"10 วินาทีล่าสุด: เส้นเรียบคือลื่นไหล ยอดแหลมคืออาการกระตุก","vi":"10 giây gần nhất: đường phẳng là mượt, các đỉnh nhọn là giật","id":"10 detik terakhir: garis rata berarti mulus, lonjakan berarti sendatan"}
+}

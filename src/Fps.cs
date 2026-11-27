@@ -220,29 +220,54 @@ namespace RedTune
         // «1% low» of a process: the frame rate its slowest frames run at — the frame time that 99 of 100 frames of the
         // last half minute stay under, as a rate. NaN until two seconds' worth of frames is there. A gap of more than
         // two seconds is a pause (a menu, another window in front), not a frame.
-        public static double Low(int pid)
+        // «0.1% low» the same way with 999 of 1000 frames; it needs a thousand frames to mean anything.
+        public static double Low(int pid, bool rare = false)
         {
-            if (!Running || !KeepLong) return double.NaN;
+            return LowOf(Long(pid), rare ? 0.999 : 0.99);
+        }
+
+        // the times of a process's frames in the last half minute (QPC ticks), by the source the frame rate is taken from
+        static long[] Long(int pid)
+        {
+            if (!Running || !KeepLong) return new long[0];
             long now = System.Diagnostics.Stopwatch.GetTimestamp();
-            long[] t;
             lock (stats)
             {
                 Stat s;
-                if (!stats.TryGetValue(pid, out s)) return double.NaN;
-                t = (double.IsNaN(Rate(s.Api, now)) ? s.KernelLong : s.ApiLong).ToArray();
+                if (!stats.TryGetValue(pid, out s)) return new long[0];
+                return (double.IsNaN(Rate(s.Api, now)) ? s.KernelLong : s.ApiLong).ToArray();
             }
-            return LowOf(t);
         }
 
-        internal static double LowOf(long[] t)
+        internal static double LowOf(long[] t, double part = 0.99)
         {
             if (t.Length < 3 || t[t.Length - 1] - t[0] < 2 * Second) return double.NaN;
             var d = new List<long>(t.Length);
             for (int i = 1; i < t.Length; i++) { long dt = t[i] - t[i - 1]; if (dt > 0 && dt <= 2 * Second) d.Add(dt); }
-            if (d.Count < 20) return double.NaN;
+            if (d.Count < (part > 0.99 ? 1000 : 20)) return double.NaN;
             d.Sort();
-            long slow = d[Math.Min(d.Count - 1, (int)Math.Ceiling(d.Count * 0.99) - 1)];
+            long slow = d[Math.Min(d.Count - 1, (int)Math.Ceiling(d.Count * part) - 1)];
             return (double)Second / slow;
+        }
+
+        // how long each frame of the last seconds took, in milliseconds, oldest first: the overlay's graph. A pause
+        // (over two seconds without a frame) is left out
+        public static float[] FrameTimes(int pid, int seconds)
+        {
+            return FrameTimesOf(Long(pid), seconds);
+        }
+
+        internal static float[] FrameTimesOf(long[] t, int seconds)
+        {
+            if (t.Length < 3) return new float[0];
+            long from = t[t.Length - 1] - seconds * Second;
+            var ms = new List<float>();
+            for (int i = 1; i < t.Length; i++)
+            {
+                long dt = t[i] - t[i - 1];
+                if (t[i] >= from && dt > 0 && dt <= 2 * Second) ms.Add((float)(dt * 1000.0 / Second));
+            }
+            return ms.ToArray();
         }
 
         // --overlay-low: LowOf on frames made up here — an even 100 a second; the same with one frame in fifty taking
@@ -258,6 +283,11 @@ namespace RedTune
             say("one frame in fifty takes 40 ms", LowOf(make(i => i % 50 == 49 ? 40 : 10, 2000)), 24, 26);
             say("a pause of 5 s is not a frame", LowOf(make(i => i == 1000 ? 5000 : 10, 2000)), 99, 101);
             say("half a second of frames says nothing", LowOf(make(i => 10, 50)), double.NaN, double.NaN);
+            say("0.1% low: one frame in five hundred takes 50 ms", LowOf(make(i => i % 500 == 499 ? 50 : 10, 3000), 0.999), 19, 21);
+            say("0.1% low: too few frames", LowOf(make(i => 10, 600), 0.999), double.NaN, double.NaN);
+            var ft = FrameTimesOf(make(i => i == 1000 ? 5000 : 10, 2000), 4);
+            say("graph: the last 4 s of frames, the pause left out", ft.Length, 395, 401);
+            say("graph: frames of 10 ms", ft.Length > 0 ? ft.Max() : double.NaN, 9.9, 10.1);
             return sb.ToString();
         }
 

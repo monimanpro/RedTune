@@ -554,6 +554,8 @@ namespace RedTune
             { "FPS, температуры, загрузка и другие показатели в углу экрана", "FPS, temperatures, load and other readings in a corner of the screen" },
             { "Кадров в секунду у программы на экране", "Frames per second of the program on screen" },
             { "Просадки FPS (1% low)", "FPS dips (1% low)" }, { "Частота кадров в худшем 1 % кадров за последние 30 секунд", "The frame rate of the slowest 1 % of frames over the last 30 seconds" },
+            { "Редкие просадки FPS (0.1% low)", "Rare FPS dips (0.1% low)" }, { "То же по худшему 0,1 % кадров: одиночные рывки", "The same over the slowest 0.1 % of frames: single stutters" },
+            { "График времени кадра", "Frame time graph" }, { "Последние 10 секунд: ровная линия — плавно, зубцы — рывки", "The last 10 seconds: a flat line is smooth, teeth are stutters" },
             { "Процессор: температура", "Processor: temperature" }, { "Процессор: частота", "Processor: clock" }, { "Процессор: загрузка", "Processor: load" }, { "Процессор: мощность", "Processor: power" }, { "Процессор: вентилятор", "Processor: fan" },
             { "Видеокарта: температура", "Graphics card: temperature" }, { "Видеокарта: частота", "Graphics card: clock" }, { "Видеокарта: загрузка", "Graphics card: load" }, { "Видеокарта: мощность", "Graphics card: power" },
             { "Видеокарта: видеопамять", "Graphics card: video memory" }, { "Видеокарта: вентилятор", "Graphics card: fan" },

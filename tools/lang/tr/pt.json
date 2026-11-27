@@ -2389,5 +2389,9 @@
 "we68a3634":"Placa de vídeo: ventoinha",
 "w79f7b15e":"Quanto está em uso",
 "w24865641":"Carga em porcentagem",
-"w919912db":"Hora"
+"w919912db":"Hora",
+"wdddb9bdb":"Quedas raras de FPS (0.1% low)",
+"w6876c2a3":"O mesmo com o 0,1 % de quadros mais lentos: travadas isoladas",
+"w56597bc5":"Gráfico do tempo de quadro",
+"wc45b96e7":"Os últimos 10 segundos: linha reta é fluidez, picos são travadas"
 }

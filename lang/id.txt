@@ -1107,6 +1107,10 @@ w	6b436ce8	FPS, suhu, beban, dan nilai lainnya di sudut layar
 w	801c184e	Frame per detik dari program di layar
 w	c905405d	Penurunan FPS (1% low)
 w	c901c5ea	Laju frame dari 1 % frame paling lambat selama 30 detik terakhir
+w	dddb9bdb	Penurunan FPS yang jarang (0.1% low)
+w	6876c2a3	Sama, untuk 0,1 % frame paling lambat: sendatan sesekali
+w	56597bc5	Grafik waktu frame
+w	c45b96e7	10 detik terakhir: garis rata berarti mulus, lonjakan berarti sendatan
 w	76d9b739	Prosesor: suhu
 w	463b7e8d	Prosesor: frekuensi
 w	1cc4d20f	Prosesor: beban

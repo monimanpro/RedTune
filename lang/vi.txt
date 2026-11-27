@@ -1107,6 +1107,10 @@ w	6b436ce8	FPS, nhiệt độ, tải và các chỉ số khác ở một góc m�
 w	801c184e	Số khung hình mỗi giây của chương trình trên màn hình
 w	c905405d	FPS tụt (1% low)
 w	c901c5ea	Tốc độ khung hình của 1 % khung hình chậm nhất trong 30 giây gần nhất
+w	dddb9bdb	FPS tụt hiếm gặp (0.1% low)
+w	6876c2a3	Tương tự với 0,1 % khung hình chậm nhất: các cú giật đơn lẻ
+w	56597bc5	Đồ thị thời gian khung hình
+w	c45b96e7	10 giây gần nhất: đường phẳng là mượt, các đỉnh nhọn là giật
 w	76d9b739	Bộ xử lý: nhiệt độ
 w	463b7e8d	Bộ xử lý: xung nhịp
 w	1cc4d20f	Bộ xử lý: tải

@@ -45,6 +45,8 @@ namespace RedTune
         {
             new Item { Key = "fps", Name = "FPS", Sub = "Кадров в секунду у программы на экране", Fits = Always },
             new Item { Key = "low", Name = "Просадки FPS (1% low)", Sub = "Частота кадров в худшем 1 % кадров за последние 30 секунд", Fits = Always },
+            new Item { Key = "low01", Name = "Редкие просадки FPS (0.1% low)", Sub = "То же по худшему 0,1 % кадров: одиночные рывки", Fits = Always },
+            new Item { Key = "ftg", Name = "График времени кадра", Sub = "Последние 10 секунд: ровная линия — плавно, зубцы — рывки", Fits = Always },
             new Item { Key = "ct", Name = "Процессор: температура", Fits = Always },
             new Item { Key = "cc", Name = "Процессор: частота", Fits = Always },
             new Item { Key = "cl", Name = "Процессор: загрузка", Fits = Always },
@@ -122,7 +124,7 @@ namespace RedTune
                     ready.WaitOne(3000);
                 }
             }
-            Fps.KeepLong = Has(settings, "low");
+            Fps.KeepLong = Has(settings, "low") || Has(settings, "low01") || Has(settings, "ftg");
             Task.Run(() => { var why = Fps.Start(); if (why != null) Store.Log("оверлей: FPS не считается: " + why); });
             Post(f => f.On());
         }
@@ -131,7 +133,8 @@ namespace RedTune
         // what is shown now; NaN or a negative number = not known
         public class Vals
         {
-            public double Fps = double.NaN, Low = double.NaN, CpuMhz = double.NaN, CpuLoad = double.NaN, CpuW = double.NaN, GpuW = double.NaN, RamGb = double.NaN, VramGb = double.NaN;
+            public float[] Frames = new float[0]; // how long each frame of the last seconds took, ms (the graph)
+            public double Fps = double.NaN, Low = double.NaN, Low01 = double.NaN, CpuMhz = double.NaN, CpuLoad = double.NaN, CpuW = double.NaN, GpuW = double.NaN, RamGb = double.NaN, VramGb = double.NaN;
             public int CpuTemp = -1, GpuTemp = -1, GpuMhz = -1, GpuLoad = -1, CpuFan = -1, GpuFan = -1, Battery = -1;
             public bool Gpu;
             public string Time = "";
@@ -142,9 +145,10 @@ namespace RedTune
         // a piece of the overlay's text. Glued: it belongs to the piece before it (a unit after its number, the first
         // value after a row's name) and stands close to it; a piece that is not glued starts a new reading and keeps
         // a wider gap, so a long row still reads as separate numbers
+        // Graph: the piece is a small graph of these numbers instead of text (its Text only tells one picture from the next)
         sealed class Piece
         {
-            public readonly string Text; public readonly Color Color; public bool Glued;
+            public readonly string Text; public readonly Color Color; public bool Glued; public float[] Graph;
             public Piece(string text, Color color, bool glued) { Text = text; Color = color; Glued = glued; }
         }
 
@@ -168,8 +172,23 @@ namespace RedTune
                 string f = double.IsNaN(v.Fps) ? "—" : Math.Round(v.Fps).ToString("0");
                 if (column) { add(g, "FPS", Label); glue(g, f, Value); } else { add(g, f, Value); glue(g, "FPS", Label); }
             }
-            if (on("low")) { if (column && !on("fps")) { add(g, "FPS", Label); glue(g, "1%", Label); } else add(g, "1%", Label); glue(g, double.IsNaN(v.Low) ? "—" : Math.Round(v.Low).ToString("0"), Value); }
+            Action<string, double> lowPart = (name, val) =>
+            {
+                if (column && g.Count == 0) { add(g, "FPS", Label); glue(g, name, Label); } else add(g, name, Label);
+                glue(g, double.IsNaN(val) ? "—" : Math.Round(val).ToString("0"), Value);
+            };
+            if (on("low")) lowPart("1%", v.Low);
+            if (on("low01")) lowPart("0.1%", v.Low01);
+            // the frame-time graph: in a line a piece of the frames' group, in a column a row of its own under it
+            Piece graph = null;
+            if (on("ftg"))
+            {
+                var f = v.Frames ?? new float[0];
+                graph = new Piece("~" + f.Length + ":" + f.Sum().ToString("0", CultureInfo.InvariantCulture), Value, false) { Graph = f };
+                if (!column) g.Add(graph);
+            }
             close(g, null);
+            if (graph != null && column) all.Add(new List<Piece> { graph });
 
             g = open();
             if (on("ct")) add(g, v.CpuTemp > 0 ? v.CpuTemp + "°" : "—", v.CpuTemp >= 90 ? Hot : Value);
@@ -220,7 +239,7 @@ namespace RedTune
             {
                 g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
                 for (int a = 0; a < groups.Count; a++)
-                    for (int i = 0; i < groups[a].Count; i++) widths[a][i] = g.MeasureString(groups[a][i].Text, font, 10000, fmt).Width;
+                    for (int i = 0; i < groups[a].Count; i++) widths[a][i] = groups[a][i].Graph != null ? (float)Math.Round(px * 8) : g.MeasureString(groups[a][i].Text, font, 10000, fmt).Width;
                 textH = (int)Math.Ceiling(font.GetHeight(g));
             }
             int wide = (int)Math.Round(gap * 1.9f); // between two readings; a glued piece keeps the small gap
@@ -261,7 +280,8 @@ namespace RedTune
                         for (int i = 0; i < groups[a].Count; i++)
                         {
                             if (i > 0) x += before(a, i);
-                            using (var b = new SolidBrush(groups[a][i].Color)) g.DrawString(groups[a][i].Text, font, b, x, ty, fmt);
+                            if (groups[a][i].Graph != null) DrawGraph(g, groups[a][i].Graph, new RectangleF(x, (h - textH * 0.95f) / 2f, widths[a][i], textH * 0.95f), k);
+                            else using (var b = new SolidBrush(groups[a][i].Color)) g.DrawString(groups[a][i].Text, font, b, x, ty, fmt);
                             x += widths[a][i];
                         }
                     }
@@ -279,7 +299,11 @@ namespace RedTune
                 padX = (int)Math.Round(13 * k);
                 float widest = 0;
                 for (int a = 0; a < groups.Count; a++) widest = Math.Max(widest, named(a) ? nameW + nameGap + rowWidth(a, 1) : rowWidth(a, 0));
-                int w = (int)Math.Ceiling(widest) + 2 * padX, h = groups.Count * rowH + 2 * padV;
+                // the graph is a row of its own, half as tall again, as wide as the card
+                Func<int, bool> graphRow = a => groups[a].Count == 1 && groups[a][0].Graph != null;
+                var top = new int[groups.Count + 1]; top[0] = padV;
+                for (int a = 0; a < groups.Count; a++) top[a + 1] = top[a] + (graphRow(a) ? (int)Math.Round(rowH * 1.5f) : rowH);
+                int w = (int)Math.Ceiling(widest) + 2 * padX, h = top[groups.Count] + padV;
                 edge = (int)Math.Round(12 * k);
                 var bmp = new Bitmap(Math.Max(1, w), Math.Max(1, h), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 using (var g = Graphics.FromImage(bmp))
@@ -296,7 +320,8 @@ namespace RedTune
                     }
                     for (int a = 0; a < groups.Count; a++)
                     {
-                        float x = padX, y = padV + a * rowH + (rowH - textH) / 2f - textH * 0.05f;
+                        if (graphRow(a)) { int gh = top[a + 1] - top[a]; DrawGraph(g, groups[a][0].Graph, new RectangleF(padX, top[a] + gh * 0.12f, w - 2 * padX, gh * 0.76f), k); continue; }
+                        float x = padX, y = top[a] + (rowH - textH) / 2f - textH * 0.05f;
                         for (int i = 0; i < groups[a].Count; i++)
                         {
                             if (i == 1 && named(a)) x = padX + nameW + nameGap; else if (i > 0) x += before(a, i);
@@ -309,12 +334,39 @@ namespace RedTune
             }
         }
 
+        // the frame times as a line, oldest on the left: the bottom is 0 ms, a typical frame (the middle one by length)
+        // stands at two fifths of the height, the top is two and a half typical frames. Where a frame took more than two
+        // typical ones the tooth is in the warning colour. More frames than pixels: each pixel shows its slowest frame
+        static void DrawGraph(Graphics g, float[] ms, RectangleF r, float k)
+        {
+            using (var floor = new Pen(Color.FromArgb(70, 255, 255, 255), Math.Max(1f, k))) g.DrawLine(floor, r.Left, r.Bottom - 0.5f, r.Right, r.Bottom - 0.5f);
+            if (ms == null || ms.Length < 2 || r.Width < 4) return;
+            var sorted = (float[])ms.Clone(); Array.Sort(sorted);
+            float typical = Math.Max(0.1f, sorted[sorted.Length / 2]), most = typical * 2.5f;
+            int cols = Math.Max(2, Math.Min(ms.Length, (int)r.Width));
+            var pts = new PointF[cols]; var worst = new float[cols];
+            for (int c = 0; c < cols; c++)
+            {
+                int from = (int)((long)c * ms.Length / cols), to = Math.Max(from + 1, (int)((long)(c + 1) * ms.Length / cols));
+                float m = 0; for (int i = from; i < to && i < ms.Length; i++) m = Math.Max(m, ms[i]);
+                worst[c] = m;
+                pts[c] = new PointF(r.Left + c * (r.Width - 1) / (cols - 1), r.Bottom - 1 - Math.Min(m, most) / most * (r.Height - 2));
+            }
+            float width = Math.Max(1f, 1.2f * k), usual = r.Bottom - 1 - typical / most * (r.Height - 2);
+            using (var pen = new Pen(Color.FromArgb(235, 255, 255, 255), width) { LineJoin = LineJoin.Round }) g.DrawLines(pen, pts);
+            using (var hot = new Pen(Hot, width))
+                for (int c = 0; c < cols; c++) if (worst[c] > typical * 2) g.DrawLine(hot, pts[c].X, usual, pts[c].X, pts[c].Y);
+        }
+
         static Font MakeFont(float px) { return new Font("Segoe UI Semibold", px, FontStyle.Regular, GraphicsUnit.Pixel); }
 
         // --overlay-png <out.png> [items] [--column] [--size n]: the overlay with made-up numbers over a grey picture (a check)
         public static void RenderTo(string file, string items, bool column, int size)
         {
-            var v = new Vals { Fps = 143.6, Low = 97.2, CpuTemp = 68, CpuMhz = 4310, CpuLoad = 34.6, CpuW = 54.2, CpuFan = 2600, Gpu = true, GpuTemp = 61, GpuMhz = 2310, GpuLoad = 98, GpuW = 79.6, VramGb = 5.13, GpuFan = 2400, RamGb = 14.24, Battery = 87, Time = "21:47" };
+            // made-up frames: about 7 ms with a little unrest, a few slow ones
+            var rnd = new Random(7);
+            var frames = Enumerable.Range(0, 1400).Select(i => (float)(6.9 + rnd.NextDouble() * 1.2 + (i % 233 == 232 ? 9 + rnd.NextDouble() * 14 : 0) + (i > 900 && i < 940 ? 2.5 : 0))).ToArray();
+            var v = new Vals { Frames = frames, Low01 = 61.4, Fps = 143.6, Low = 97.2, CpuTemp = 68, CpuMhz = 4310, CpuLoad = 34.6, CpuW = 54.2, CpuFan = 2600, Gpu = true, GpuTemp = 61, GpuMhz = 2310, GpuLoad = 98, GpuW = 79.6, VramGb = 5.13, GpuFan = 2400, RamGb = 14.24, Battery = 87, Time = "21:47" };
             var keys = (items ?? DefaultItems).Split(',');
             float px = SizePx[Math.Max(0, Math.Min(SizePx.Length - 1, size))];
             int edge;
@@ -361,7 +413,7 @@ namespace RedTune
             DateTime read = DateTime.MinValue;
             // the last readings, written by the worker (a new object each time, so the picture never sees half of one)
             volatile Vals vals = new Vals();
-            double low = double.NaN; DateTime lowAt = DateTime.MinValue;
+            double low = double.NaN, low01 = double.NaN; float[] frames = new float[0]; DateTime lowAt = DateTime.MinValue;
             Font font; float fontPx;
             string shownKey = "";
 
@@ -405,7 +457,14 @@ namespace RedTune
                 int drawer;
                 double fps = FpsOf(pid, out drawer);
                 // the slow frames are counted once a second (a sort of the last half minute of frames)
-                if (Fps.KeepLong && (DateTime.Now - lowAt).TotalMilliseconds >= 950) { lowAt = DateTime.Now; low = double.IsNaN(fps) ? double.NaN : Fps.Low(drawer); }
+                if (Fps.KeepLong && (DateTime.Now - lowAt).TotalMilliseconds >= 950)
+                {
+                    lowAt = DateTime.Now;
+                    bool draws = !double.IsNaN(fps);
+                    low = draws && Has(s, "low") ? Fps.Low(drawer) : double.NaN;
+                    low01 = draws && Has(s, "low01") ? Fps.Low(drawer, true) : double.NaN;
+                    frames = draws && Has(s, "ftg") ? Fps.FrameTimes(drawer, 10) : new float[0];
+                }
                 Draw(m, fps);
             }
 
@@ -464,7 +523,7 @@ namespace RedTune
                 var r = vals;
                 var v = new Vals
                 {
-                    Fps = fps, Low = low, CpuTemp = r.CpuTemp, CpuMhz = r.CpuMhz, CpuLoad = r.CpuLoad, CpuW = r.CpuW, CpuFan = r.CpuFan, Gpu = r.Gpu, GpuTemp = r.GpuTemp, GpuMhz = r.GpuMhz,
+                    Fps = fps, Low = low, Low01 = low01, Frames = frames, CpuTemp = r.CpuTemp, CpuMhz = r.CpuMhz, CpuLoad = r.CpuLoad, CpuW = r.CpuW, CpuFan = r.CpuFan, Gpu = r.Gpu, GpuTemp = r.GpuTemp, GpuMhz = r.GpuMhz,
                     GpuLoad = r.GpuLoad, GpuW = r.GpuW, VramGb = r.VramGb, GpuFan = r.GpuFan, RamGb = r.RamGb, Time = DateTime.Now.ToString("HH:mm"),
                 };
                 try { float b = SystemInformation.PowerStatus.BatteryLifePercent; v.Battery = b >= 0 && b <= 1 ? (int)Math.Round(b * 100) : -1; } catch { }

@@ -2389,5 +2389,9 @@
 "we68a3634":"Tarjeta gráfica: ventilador",
 "w79f7b15e":"Cuánto está en uso",
 "w24865641":"Carga en porcentaje",
-"w919912db":"Hora"
+"w919912db":"Hora",
+"wdddb9bdb":"Caídas raras de FPS (0.1% low)",
+"w6876c2a3":"Lo mismo con el 0,1 % de fotogramas más lentos: tirones aislados",
+"w56597bc5":"Gráfico del tiempo de fotograma",
+"wc45b96e7":"Los últimos 10 segundos: una línea plana es fluidez, los picos son tirones"
 }
