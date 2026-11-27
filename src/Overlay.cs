@@ -146,9 +146,11 @@ namespace RedTune
         // value after a row's name) and stands close to it; a piece that is not glued starts a new reading and keeps
         // a wider gap, so a long row still reads as separate numbers
         // Graph: the piece is a small graph of these numbers instead of text (its Text only tells one picture from the next)
+        // Kind: the piece starts a reading of this kind (t temperature, c clock, l load, w power, m memory, f fan); in a
+        // column the readings of one kind stand under each other (the user, 27.11: «не искать их глазами»)
         sealed class Piece
         {
-            public readonly string Text; public readonly Color Color; public bool Glued; public float[] Graph;
+            public readonly string Text; public readonly Color Color; public bool Glued; public float[] Graph; public string Kind;
             public Piece(string text, Color color, bool glued) { Text = text; Color = color; Glued = glued; }
         }
 
@@ -164,8 +166,12 @@ namespace RedTune
             Action<List<Piece>, string, Color> add = (l, t, c) => l.Add(new Piece(t, c, false));
             Action<List<Piece>, string, Color> glue = (l, t, c) => l.Add(new Piece(t, c, true));
             Action<List<Piece>, string> close = (l, name) => { if (l.Count == 0) return; if (name != null) { l[0].Glued = true; l.Insert(0, new Piece(name, Label, false)); } all.Add(l); };
+            Action<List<Piece>, string, string, Color> cell = (l, kind, t, c) => l.Add(new Piece(t, c, false) { Kind = kind });
             string rpm = en ? "RPM" : "об/мин", watt = en ? "W" : "Вт", gb = en ? "GB" : "ГБ";
 
+            // the frames: first in a line, as it always was; in a column they go last, with the graph under them (the
+            // user, 27.11: «сначала цпу потом гпу рам и фпс», «фпс с его графиком снизу»)
+            var frames = new List<List<Piece>>();
             var g = open();
             if (on("fps"))
             {
@@ -179,39 +185,41 @@ namespace RedTune
             };
             if (on("low")) lowPart("1%", v.Low);
             if (on("low01")) lowPart("0.1%", v.Low01);
-            // the frame-time graph: in a line a piece of the frames' group, in a column a row of its own under it
+            // the frame-time graph: in a line a piece of the frames' group, in a column a row of its own under it.
+            // Without frames (the desktop, a program that draws nothing) there is no graph, not an empty place for it
             Piece graph = null;
-            if (on("ftg"))
+            if (on("ftg") && v.Frames != null && v.Frames.Length >= 2)
             {
-                var f = v.Frames ?? new float[0];
+                var f = v.Frames;
                 graph = new Piece("~" + f.Length + ":" + f.Sum().ToString("0", CultureInfo.InvariantCulture), Value, false) { Graph = f };
                 if (!column) g.Add(graph);
             }
-            close(g, null);
-            if (graph != null && column) all.Add(new List<Piece> { graph });
+            if (g.Count > 0) frames.Add(g);
+            if (graph != null && column) frames.Add(new List<Piece> { graph });
+            if (!column) all.AddRange(frames);
 
             g = open();
-            if (on("ct")) add(g, v.CpuTemp > 0 ? v.CpuTemp + "°" : "—", v.CpuTemp >= 90 ? Hot : Value);
-            if (on("cc") && !double.IsNaN(v.CpuMhz) && v.CpuMhz > 0) { add(g, (v.CpuMhz / 1000).ToString("0.0", num), Value); glue(g, en ? "GHz" : "ГГц", Unit); }
-            if (on("cl") && !double.IsNaN(v.CpuLoad)) add(g, Math.Round(Math.Max(0, Math.Min(100, v.CpuLoad))).ToString("0") + "%", Value);
-            if (on("cw") && !double.IsNaN(v.CpuW) && v.CpuW > 0) { add(g, Math.Round(v.CpuW).ToString("0"), Value); glue(g, watt, Unit); }
-            if (on("cf") && v.CpuFan >= 0) { add(g, v.CpuFan.ToString(), Value); glue(g, rpm, Unit); }
+            if (on("ct")) cell(g, "t", v.CpuTemp > 0 ? v.CpuTemp + "°" : "—", v.CpuTemp >= 90 ? Hot : Value);
+            if (on("cc") && !double.IsNaN(v.CpuMhz) && v.CpuMhz > 0) { cell(g, "c", (v.CpuMhz / 1000).ToString("0.0", num), Value); glue(g, en ? "GHz" : "ГГц", Unit); }
+            if (on("cl") && !double.IsNaN(v.CpuLoad)) cell(g, "l", Math.Round(Math.Max(0, Math.Min(100, v.CpuLoad))).ToString("0") + "%", Value);
+            if (on("cw") && !double.IsNaN(v.CpuW) && v.CpuW > 0) { cell(g, "w", Math.Round(v.CpuW).ToString("0"), Value); glue(g, watt, Unit); }
+            if (on("cf") && v.CpuFan >= 0) { cell(g, "f", v.CpuFan.ToString(), Value); glue(g, rpm, Unit); }
             close(g, "CPU");
 
             if (v.Gpu)
             {
                 g = open();
-                if (on("gt")) add(g, v.GpuTemp > 0 ? v.GpuTemp + "°" : "—", v.GpuTemp >= 85 ? Hot : Value);
-                if (on("gc") && v.GpuMhz > 0) { add(g, v.GpuMhz.ToString(), Value); glue(g, en ? "MHz" : "МГц", Unit); }
-                if (on("gl") && v.GpuLoad >= 0) add(g, v.GpuLoad + "%", Value);
-                if (on("gw") && !double.IsNaN(v.GpuW) && v.GpuW > 0) { add(g, Math.Round(v.GpuW).ToString("0"), Value); glue(g, watt, Unit); }
-                if (on("gv") && !double.IsNaN(v.VramGb)) { add(g, v.VramGb.ToString("0.0", num), Value); glue(g, gb, Unit); }
-                if (on("gf") && v.GpuFan >= 0) { add(g, v.GpuFan.ToString(), Value); glue(g, rpm, Unit); }
+                if (on("gt")) cell(g, "t", v.GpuTemp > 0 ? v.GpuTemp + "°" : "—", v.GpuTemp >= 85 ? Hot : Value);
+                if (on("gc") && v.GpuMhz > 0) { cell(g, "c", v.GpuMhz.ToString(), Value); glue(g, en ? "MHz" : "МГц", Unit); }
+                if (on("gl") && v.GpuLoad >= 0) cell(g, "l", v.GpuLoad + "%", Value);
+                if (on("gw") && !double.IsNaN(v.GpuW) && v.GpuW > 0) { cell(g, "w", Math.Round(v.GpuW).ToString("0"), Value); glue(g, watt, Unit); }
+                if (on("gv") && !double.IsNaN(v.VramGb)) { cell(g, "m", v.VramGb.ToString("0.0", num), Value); glue(g, gb, Unit); }
+                if (on("gf") && v.GpuFan >= 0) { cell(g, "f", v.GpuFan.ToString(), Value); glue(g, rpm, Unit); }
                 close(g, "GPU");
             }
 
             g = open();
-            if (on("ram") && !double.IsNaN(v.RamGb)) { add(g, v.RamGb.ToString("0.0", num), Value); glue(g, gb, Unit); }
+            if (on("ram") && !double.IsNaN(v.RamGb)) { cell(g, "m", v.RamGb.ToString("0.0", num), Value); glue(g, gb, Unit); }
             close(g, "RAM");
 
             g = open();
@@ -221,6 +229,7 @@ namespace RedTune
             g = open();
             if (on("time") && v.Time.Length > 0) add(g, v.Time, Value);
             close(g, null);
+            if (column) all.AddRange(frames);
             return all;
         }
 
@@ -297,8 +306,27 @@ namespace RedTune
                 for (int a = 0; a < groups.Count; a++) if (named(a)) nameW = Math.Max(nameW, widths[a][0]);
                 int nameGap = (int)Math.Round(9 * k), rowH = textH + (int)Math.Round(3 * k), padV = (int)Math.Round(8 * k);
                 padX = (int)Math.Round(13 * k);
+                // 27.11: the rows with readings by kind (processor, graphics card, memory) make a table: a column per
+                // kind, in one order, as wide as its widest reading; a reading stands right-aligned in its column, so
+                // numbers stand under numbers and units under units, and a kind a row lacks leaves its place empty.
+                // A row whose only reading is of a kind no other row has (memory without the card's memory) is not
+                // part of the table: its value stands right after its name
+                const string kinds = "tclwmf";
+                Func<int, List<int>> starts = a => Enumerable.Range(0, groups[a].Count).Where(i => groups[a][i].Kind != null).ToList();
+                Func<int, int, int> cellEnd = (a, i) => { int j = i + 1; while (j < groups[a].Count && groups[a][j].Kind == null && groups[a][j].Glued) j++; return j; };
+                Func<int, int, float> cellWidth = (a, i) => { float t = 0; for (int j = i, e = cellEnd(a, i); j < e; j++) t += widths[a][j] + (j > i ? gap : 0); return t; };
+                var kindRows = new Dictionary<string, int>();
+                for (int a = 0; a < groups.Count; a++) foreach (int i in starts(a)) { int n; kindRows.TryGetValue(groups[a][i].Kind, out n); kindRows[groups[a][i].Kind] = n + 1; }
+                Func<int, bool> tabled = a => { var st = starts(a); return st.Count > 1 || st.Count == 1 && kindRows[groups[a][st[0]].Kind] > 1; };
+                var colW = new Dictionary<string, float>(); var colX = new Dictionary<string, float>();
+                for (int a = 0; a < groups.Count; a++)
+                    if (tabled(a)) foreach (int i in starts(a)) { float was; colW.TryGetValue(groups[a][i].Kind, out was); colW[groups[a][i].Kind] = Math.Max(was, cellWidth(a, i)); }
+                int colGap = (int)Math.Round(gap * 2.8f);
+                float cx = nameW + nameGap;
+                foreach (char c in kinds) { string kd = c.ToString(); if (!colW.ContainsKey(kd)) continue; colX[kd] = cx; cx += colW[kd] + colGap; }
+                float tableW = colX.Count > 0 ? cx - colGap : 0;
                 float widest = 0;
-                for (int a = 0; a < groups.Count; a++) widest = Math.Max(widest, named(a) ? nameW + nameGap + rowWidth(a, 1) : rowWidth(a, 0));
+                for (int a = 0; a < groups.Count; a++) widest = Math.Max(widest, tabled(a) ? tableW : named(a) ? nameW + nameGap + rowWidth(a, 1) : rowWidth(a, 0));
                 // the graph is a row of its own, half as tall again, as wide as the card
                 Func<int, bool> graphRow = a => groups[a].Count == 1 && groups[a][0].Graph != null;
                 var top = new int[groups.Count + 1]; top[0] = padV;
@@ -322,6 +350,22 @@ namespace RedTune
                     {
                         if (graphRow(a)) { int gh = top[a + 1] - top[a]; DrawGraph(g, groups[a][0].Graph, new RectangleF(padX, top[a] + gh * 0.12f, w - 2 * padX, gh * 0.76f), k); continue; }
                         float x = padX, y = top[a] + (rowH - textH) / 2f - textH * 0.05f;
+                        if (tabled(a))
+                        {
+                            using (var b = new SolidBrush(groups[a][0].Color)) g.DrawString(groups[a][0].Text, font, b, x, y, fmt); // the row's name
+                            foreach (int i in starts(a))
+                            {
+                                string kd = groups[a][i].Kind;
+                                x = padX + colX[kd] + colW[kd] - cellWidth(a, i);
+                                for (int j = i, e = cellEnd(a, i); j < e; j++)
+                                {
+                                    if (j > i) x += gap;
+                                    using (var b = new SolidBrush(groups[a][j].Color)) g.DrawString(groups[a][j].Text, font, b, x, y, fmt);
+                                    x += widths[a][j];
+                                }
+                            }
+                            continue;
+                        }
                         for (int i = 0; i < groups[a].Count; i++)
                         {
                             if (i == 1 && named(a)) x = padX + nameW + nameGap; else if (i > 0) x += before(a, i);
