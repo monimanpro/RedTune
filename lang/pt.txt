@@ -392,6 +392,8 @@ w	37ba3d5d	Uma vez por dia o Red Tune pergunta ao GitHub se saiu uma versão nov
 w	d1db1d66	a versão não tem instalador
 w	f3a5c9be	o GitHub não forneceu a soma de verificação do instalador
 w	8572c324	a soma de verificação não confere, o arquivo foi excluído
+w	213cb88d	O formulário abriu no navegador. O relatório completo foi copiado: clique no campo «Full report» e pressione Ctrl+V, marque o que funciona e clique em «Create»
+w	1980c6fa	O formulário abriu no navegador. O relatório completo foi copiado: cole-o (Ctrl+V) nos campos «System report» e «Full report»
 w	7a7c9332	Enviar ao GitHub
 w	7da23cd5	O formulário abriu no navegador com o relatório dentro: marque o que funciona e clique em «Create»
 w	bcba5bdb	O formulário abriu no navegador e o relatório foi copiado: cole-o em «System report»

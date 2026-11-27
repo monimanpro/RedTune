@@ -112,7 +112,7 @@ namespace RedTune
 
             part("Интерфейсы прошивки (классы WMI в root\\WMI)", () =>
             {
-                var rx = new System.Text.RegularExpressions.Regex("asus|atk|lenovo|^amd|^msi|acer|^hp|dell|huawei|xiaomi|gigabyte|razer|thermal|fan|battery|wmiacpi|^acpi", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                var rx = new System.Text.RegularExpressions.Regex("asus|atk|lenovo|^amd|^msi(?!scsi)|acer|^hp|dell|huawei|xiaomi|gigabyte|razer|thermal|fan|battery|wmiacpi|^acpi", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                 using (var q = new ManagementObjectSearcher(new ManagementScope(@"root\WMI"), new ObjectQuery("SELECT * FROM meta_class")))
                     foreach (ManagementClass c in q.Get())
                     {
@@ -159,6 +159,20 @@ namespace RedTune
             });
 
             return Clean(sb.ToString());
+        }
+
+        // 27.11: the full report for the GitHub form («О программе → Отправить на GitHub» puts it on the clipboard, the
+        // user: «давай полный отчёт в гит»). An issue takes 65536 characters with everything else in it, so a report
+        // longer than 58 thousand loses its journal, and after that its end, with a line that says so
+        public static string ForGitHub(Settings s)
+        {
+            const int most = 58000;
+            string t = Full(s);
+            if (t.Length <= most) return t;
+            int log = t.IndexOf("=== Журнал Red Tune", StringComparison.Ordinal);
+            if (log > 0) t = t.Substring(0, log) + "=== Журнал Red Tune ===\r\n(не поместился: он есть в «Полный отчёт в файл»)\r\n";
+            if (t.Length > most) t = t.Substring(0, most) + "\r\n… (отчёт обрезан: целиком он в «Полный отчёт в файл»)\r\n";
+            return t;
         }
 
         // no names in the report: the Windows user, the computer, the profile folder
@@ -216,6 +230,8 @@ namespace RedTune
             if (!Hw.GameZone && !Hw.Features) { sb.AppendLine("интерфейса прошивки Lenovo нет"); return; }
             var scope = new ManagementScope(@"root\WMI");
 
+            // a table per class: the names of its values once, then a row per entry (the report has to fit into a
+            // GitHub issue, 65 thousand characters, and these tables are most of it)
             var capIds = new SortedSet<uint>();
             foreach (var cls in LenovoData)
                 try
@@ -224,16 +240,11 @@ namespace RedTune
                     using (var q = new ManagementObjectSearcher(scope, new ObjectQuery("SELECT * FROM " + cls)))
                         foreach (ManagementBaseObject o in q.Get())
                         {
-                            if (n == 0) sb.AppendLine(cls + ":");
+                            var props = o.Properties.Cast<PropertyData>().Where(p => p.Name != "InstanceName" && p.Name != "Active").ToArray();
+                            if (n == 0) sb.AppendLine(cls + ": " + string.Join(" · ", props.Select(p => p.Name)));
                             if (++n > 400) { sb.AppendLine("  … (дальше не показано)"); break; }
-                            var vals = new List<string>();
-                            foreach (PropertyData p in o.Properties)
-                            {
-                                if (p.Value == null || p.Name == "InstanceName" || p.Name == "Active") continue;
-                                if (p.Name == "IDs") try { capIds.Add(Convert.ToUInt32(p.Value)); } catch { }
-                                vals.Add(p.Name + "=" + Val(p.Name, p.Value));
-                            }
-                            sb.AppendLine("  " + string.Join(" · ", vals));
+                            foreach (var p in props) if (p.Name == "IDs" && p.Value != null) try { capIds.Add(Convert.ToUInt32(p.Value)); } catch { }
+                            sb.AppendLine("  " + string.Join(" · ", props.Select(p => p.Value == null ? "—" : Val(p.Name, p.Value))));
                         }
                     if (n == 0) sb.AppendLine(cls + ": пусто");
                 }

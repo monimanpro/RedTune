@@ -392,6 +392,8 @@ w	37ba3d5d	Red Tune 每天向 GitHub 询问一次是否有新版本。不会发�
 w	d1db1d66	该版本没有安装程序
 w	f3a5c9be	GitHub 未提供安装程序的校验和
 w	8572c324	校验和不匹配，文件已删除
+w	213cb88d	表单已在浏览器中打开。完整报告已复制：点击「Full report」字段并按 Ctrl+V，勾选能用的项目，然后点「Create」
+w	1980c6fa	表单已在浏览器中打开。完整报告已复制：请粘贴 (Ctrl+V) 到「System report」和「Full report」字段
 w	7a7c9332	发送到 GitHub
 w	7da23cd5	表单已在浏览器中打开，报告已填好：勾选能用的项目，然后点「Create」
 w	bcba5bdb	表单已在浏览器中打开，报告已复制：请粘贴到「System report」

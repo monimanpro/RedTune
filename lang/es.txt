@@ -392,6 +392,8 @@ w	37ba3d5d	Una vez al día Red Tune pregunta a GitHub si hay una versión nueva.
 w	d1db1d66	la versión no tiene instalador
 w	f3a5c9be	GitHub no dio la suma de comprobación del instalador
 w	8572c324	la suma de comprobación no coincide, el archivo se eliminó
+w	213cb88d	El formulario se abrió en el navegador. El informe completo está copiado: haz clic en el campo «Full report» y pulsa Ctrl+V, marca lo que funciona y pulsa «Create»
+w	1980c6fa	El formulario se abrió en el navegador. El informe completo está copiado: pégalo (Ctrl+V) en los campos «System report» y «Full report»
 w	7a7c9332	Enviar a GitHub
 w	7da23cd5	El formulario se abrió en el navegador con el informe dentro: marca lo que funciona y pulsa «Create»
 w	bcba5bdb	El formulario se abrió en el navegador y el informe está copiado: pégalo en «System report»

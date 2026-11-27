@@ -2394,5 +2394,7 @@
 "w6876c2a3":"O mesmo com o 0,1 % de quadros mais lentos: travadas isoladas",
 "w56597bc5":"Gráfico do tempo de quadro",
 "wc45b96e7":"Os últimos 10 segundos: linha reta é fluidez, picos são travadas",
-"we215c77f":"Embaixo, no centro"
+"we215c77f":"Embaixo, no centro",
+"w213cb88d":"O formulário abriu no navegador. O relatório completo foi copiado: clique no campo «Full report» e pressione Ctrl+V, marque o que funciona e clique em «Create»",
+"w1980c6fa":"O formulário abriu no navegador. O relatório completo foi copiado: cole-o (Ctrl+V) nos campos «System report» e «Full report»"
 }

@@ -392,6 +392,8 @@ w	37ba3d5d	Mỗi ngày một lần Red Tune hỏi GitHub xem có phiên bản m�
 w	d1db1d66	bản phát hành không có trình cài đặt
 w	f3a5c9be	GitHub không cung cấp mã kiểm tra của trình cài đặt
 w	8572c324	mã kiểm tra không khớp, tệp đã bị xóa
+w	213cb88d	Biểu mẫu đã mở trong trình duyệt. Báo cáo đầy đủ đã được sao chép: nhấp vào ô «Full report» rồi nhấn Ctrl+V, đánh dấu những gì hoạt động rồi nhấn «Create»
+w	1980c6fa	Biểu mẫu đã mở trong trình duyệt. Báo cáo đầy đủ đã được sao chép: dán (Ctrl+V) vào các ô «System report» và «Full report»
 w	7a7c9332	Gửi lên GitHub
 w	7da23cd5	Biểu mẫu đã mở trong trình duyệt kèm báo cáo: đánh dấu những gì hoạt động rồi nhấn «Create»
 w	bcba5bdb	Biểu mẫu đã mở trong trình duyệt và báo cáo đã được sao chép: dán vào «System report»

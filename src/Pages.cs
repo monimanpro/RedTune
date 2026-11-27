@@ -254,12 +254,17 @@ namespace RedTune
             };
             // the form «Hardware report» of the issue templates, its fields filled from the address (ids: report, version);
             // a report too long for an address goes to the clipboard and the form opens without it
+            // 27.11: the FULL report goes too (the fans and sensors of the firmware are only in it): too long for an
+            // address, so it is put on the clipboard and the form has a field to paste it into («Full report»)
             hwSend.Click += (o, e) =>
             {
-                hwRow.SetSub("Собираю отчёт…");
+                hwSend.Enabled = false;
+                hwRow.SetSub("Собираю полный отчёт: это только чтение, около полуминуты…");
                 System.Threading.Tasks.Task.Run(() =>
                 {
                     var text = report();
+                    string whole = null;
+                    try { whole = Diag.ForGitHub(s); } catch { }
                     var url = "https://github.com/" + Updater.Repo + "/issues/new?template=hardware-report.yml&title=" + Uri.EscapeDataString("[Hardware] " + Hw.Short())
                         + "&version=" + Uri.EscapeDataString(Updater.Current.ToString());
                     var withReport = url + "&report=" + Uri.EscapeDataString(text);
@@ -268,10 +273,13 @@ namespace RedTune
                     {
                         BeginInvoke((Action)(() =>
                         {
-                            try { Clipboard.SetText(text); } catch { }
+                            hwSend.Enabled = true;
+                            try { Clipboard.SetText(whole ?? text); } catch { whole = null; }
                             try { Process.Start(fits ? withReport : url); }
                             catch (Exception ex) { hwRow.SetSub(L.T("Браузер не открылся: ") + ex.Message); return; }
-                            hwRow.SetSub(fits ? "Форма открылась в браузере с отчётом внутри: отметь, что работает, и нажми «Create»" : "Форма открылась в браузере, отчёт скопирован: вставь его в поле «System report»");
+                            hwRow.SetSub(whole != null && fits ? "Форма открылась в браузере. Полный отчёт скопирован: щёлкни в поле «Full report» и нажми Ctrl+V, отметь, что работает, и нажми «Create»"
+                                : whole != null ? "Форма открылась в браузере. Полный отчёт скопирован: вставь его (Ctrl+V) в поля «System report» и «Full report»"
+                                : fits ? "Форма открылась в браузере с отчётом внутри: отметь, что работает, и нажми «Create»" : "Форма открылась в браузере, отчёт скопирован: вставь его в поле «System report»");
                         }));
                     }
                     catch { }

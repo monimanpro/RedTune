@@ -173,7 +173,7 @@ Red Tune is in beta. A report from your machine is the most useful thing you can
 
 1. **Start with what changes nothing risky:** Home, power modes, fan curves, Sound, Display, Clean-up. Check that the readings match what you know (another monitoring tool, the laptop's own app).
 2. **Expert functions** (curve, auto-tune, memory, direct processor limits) are off until you switch them on in Settings. The auto-tune looks for the edge on purpose, so a freeze or a blue screen during a run is expected: Windows records the hardware error, and after the restart the run steps back and goes on. If anything else goes wrong, hold **Shift** while Red Tune starts: it then applies nothing.
-3. **Send a report:** About → «Send to GitHub» opens the [Hardware report](../../issues/new?template=hardware-report.yml) form with the system report already in it; tick what worked. For anything broken: [Bug](../../issues/new?template=bug.yml). Russian is fine as well as English.
+3. **Send a report:** About → «Send to GitHub» opens the [Hardware report](../../issues/new?template=hardware-report.yml) form with the system report already in it and puts the full report on the clipboard: paste it into «Full report» (Ctrl+V), tick what worked. For anything broken: [Bug](../../issues/new?template=bug.yml). Russian is fine as well as English.
 
 ## Build from source
 

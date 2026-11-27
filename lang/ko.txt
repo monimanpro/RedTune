@@ -392,6 +392,8 @@ w	37ba3d5d	Red Tune은 하루에 한 번 GitHub에 새 버전이 나왔는지 �
 w	d1db1d66	릴리스에 설치 파일이 없습니다
 w	f3a5c9be	GitHub가 설치 파일의 체크섬을 주지 않았습니다
 w	8572c324	체크섬이 일치하지 않아 파일을 삭제했습니다
+w	213cb88d	양식이 브라우저에서 열렸습니다. 전체 보고서가 복사되었습니다. «Full report» 칸을 클릭하고 Ctrl+V를 누른 뒤, 작동하는 항목을 체크하고 «Create»를 누르세요
+w	1980c6fa	양식이 브라우저에서 열렸습니다. 전체 보고서가 복사되었습니다. «System report»와 «Full report» 칸에 붙여 넣으세요(Ctrl+V)
 w	7a7c9332	GitHub로 보내기
 w	7da23cd5	보고서가 들어간 양식이 브라우저에서 열렸습니다. 작동하는 항목을 체크하고 «Create»를 누르세요
 w	bcba5bdb	양식이 브라우저에서 열렸고 보고서가 복사되었습니다. «System report»에 붙여 넣으세요
