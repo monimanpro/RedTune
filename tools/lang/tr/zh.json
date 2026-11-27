@@ -2361,5 +2361,11 @@
 "wbc940640":"不分配 Windows 文件夹",
 "w1042abd5":"这是包含许多不同程序的公共文件夹。请选择单个程序或游戏的文件夹",
 "w156e136b":"全部",
-"wc759a1ee":"不处理"
+"wc759a1ee":"不处理",
+"w3de6e9d0":"RNNoise 很轻量（占一个核心的 1%）；DeepFilterNet 在噪声中更干净，但占 4% 并晚 30 毫秒；Red Tune 是我们自己的网络：和 DeepFilterNet 一样干净，和 RNNoise 一样轻量",
+"waf28ae6b":"Red Tune 自己的神经网络在说话时也能去除噪声：风扇、键盘、街道、嗡嗡声",
+"w82912b6a":"音效处理器是旧版本：重启 Windows 音频后 Red Tune 网络才会生效",
+"w35cd35c0":"RNNoise：轻量，占一个核心的 1%",
+"w23f01bb0":"DeepFilterNet：在噪声中更干净，但占一个核心的 4% 并晚 30 毫秒",
+"wf64e2ebf":"Red Tune：我们自己的网络——和 DeepFilterNet 一样干净，和 RNNoise 一样轻量"
 }

@@ -2361,5 +2361,11 @@
 "wbc940640":"Folder Windows tidak didistribusikan",
 "w1042abd5":"Ini folder bersama berisi banyak program berbeda. Pilih folder satu program atau game",
 "w156e136b":"semua",
-"wc759a1ee":"biarkan"
+"wc759a1ee":"biarkan",
+"w3de6e9d0":"RNNoise ringan (1 % satu inti); DeepFilterNet lebih bersih dalam derau, tetapi memakai 4 % satu inti dan 30 ms lebih lambat; Red Tune adalah jaringan kami sendiri: sebersih DeepFilterNet, seringan RNNoise",
+"waf28ae6b":"Jaringan saraf milik Red Tune sendiri menghapus derau bahkan saat Anda bicara: kipas, keyboard, jalan, dengung",
+"w82912b6a":"Efek masih versi lama: jaringan Red Tune bekerja setelah suara Windows dimulai ulang",
+"w35cd35c0":"RNNoise: ringan, 1 % satu inti",
+"w23f01bb0":"DeepFilterNet: lebih bersih dalam derau, tetapi memakai 4 % satu inti dan 30 ms lebih lambat",
+"wf64e2ebf":"Red Tune: jaringan kami sendiri — sebersih DeepFilterNet, seringan RNNoise"
 }

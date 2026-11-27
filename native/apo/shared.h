@@ -25,6 +25,8 @@
 #define RTA_DFN     128u        /* 21.11: the denoiser is DeepFilterNet 3 instead of RNNoise (its strength: how deep the noise may go) */
 #define RTA_DEESS   256u        /* 21.11: the de-esser, after the equalizer (dsHz, dsThrDb, dsRangeDb) */
 #define RTA_COMP2   512u        /* 21.11: the second compressor, first in the chain (before the equalizer), c2b/c2Split */
+#define RTA_OWN     1024u       /* 27.11: the denoiser is Red Tune's own network (rtnet.h); its strength is a mix as RNNoise's. An
+                                   effect without it (older, or built without the weights) runs RNNoise: no RTA_DFN goes with it */
 
 /* band types */
 enum { RTA_OFF = 0, RTA_BELL = 1, RTA_LOWSHELF = 2, RTA_HIGHSHELF = 3, RTA_HIGHPASS = 4, RTA_LOWPASS = 5, RTA_NOTCH = 6 };

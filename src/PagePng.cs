@@ -662,7 +662,7 @@ namespace RedTune
                     // 18.11: «Звук» (reads the devices and their effects, changes nothing). RT_COMP_DEMO=1: a made-up sound in the compressor's picture
                     var sound = new SoundPage(s); page = sound;
                     if (Environment.GetEnvironmentVariable("RT_COMP_DEMO") == "1") late = () => sound.DemoComp();
-                    if (Environment.GetEnvironmentVariable("RT_MIC") == "1") { var before = late; late = () => { if (before != null) before(); sound.ShowMic(); }; } // 21.11: the «Микрофон» tab
+                    if (Environment.GetEnvironmentVariable("RT_MIC") == "1") { var before = late; late = () => { if (before != null) before(); sound.ShowMic(); int dm; if (int.TryParse(Environment.GetEnvironmentVariable("RT_DN_DEMO") ?? "", out dm)) sound.DemoDenoise(dm); }; } // 21.11: the «Микрофон» tab
                     if (Environment.GetEnvironmentVariable("RT_C2") == "1") { var before2 = late; late = () => { if (before2 != null) before2(); sound.ShowComp2Demo(); }; } // the second compressor shown on
                 }
                 else if (what == "device") page = Hw.AsusFw ? (Page)new AsusDevicePage(s) : new DevicePage(s); // 18.11: «Устройство» (reads the laptop's settings when it shows, sets nothing)

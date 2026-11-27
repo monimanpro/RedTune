@@ -452,7 +452,11 @@ w	a8d54dc6	Cuánto deben sobresalir los agudos del sonido completo: más bajo ac
 w	29cd23dd	Cuánto se pueden bajar los siseos
 w	7db02619	El efecto es de una compilación anterior: el de-esser funcionará tras reiniciar el sonido de Windows
 w	399932bb	Modelo
-w	e45dcfcd	RNNoise es ligero (1 % de un núcleo); DeepFilterNet limpia mejor en ruido, pero usa 4 % de un núcleo y llega 30 ms más tarde
+w	35cd35c0	RNNoise: ligero, 1 % de un núcleo
+w	23f01bb0	DeepFilterNet: limpia mejor en ruido, pero usa 4 % de un núcleo y llega 30 ms más tarde
+w	f64e2ebf	Red Tune: nuestra propia red — limpia como DeepFilterNet, ligera como RNNoise
+w	af28ae6b	La red neuronal propia de Red Tune quita el ruido incluso mientras hablas: ventiladores, teclado, calle, zumbido
+w	82912b6a	El efecto es de una compilación anterior: la red de Red Tune funcionará tras reiniciar el sonido de Windows
 w	5339d6d2	La red neuronal DeepFilterNet quita el ruido incluso mientras hablas: ventiladores, teclado, calle, zumbido
 w	78527afd	Cuánto puede bajar el ruido: menos deja la voz más natural
 w	584c7c2e	El efecto es de una compilación anterior: DeepFilterNet funcionará tras reiniciar el sonido de Windows
@@ -970,7 +974,6 @@ w	f67ab0b9	\\Carpeta\\: todos los exe de la carpeta. Un nombre sin \\: un proces
 w	d9466145	Programas (*.exe)|*.exe
 w	a09b43b8	Elige el exe del programa
 w	7f9996fe	Elige un programa de la lista o escribe un patrón.
-w	81c5c496	Elegir una carpeta…
 w	d0266ec3	Avanzado…
 w	a93634b3	Abarca
 w	2bf76454	Elige un programa de la lista, un exe o una carpeta
@@ -1283,6 +1286,7 @@ w	9d166935	Detener
 w	8101082a	Exe: este programa con todo lo que inicia; carpeta: todo lo que se inicia desde ella
 w	e815f046	Exe: solo este programa; carpeta: todo lo que se inicia desde ella, y sus servicios hasta el reinicio · Windows y Red Tune nunca se cierran
 w	15113f9b	De los que están en ejecución, por exe o por carpeta
+w	81c5c496	Elegir una carpeta…
 w	2145aa7f	La carpeta del programa: todo lo que se inicia desde ella se cierra y sus servicios se detienen
 w	47a1b44c	La carpeta del programa: todo lo que se inicia desde ella se queda
 w	a96d48c7	Esto es la raíz de una unidad

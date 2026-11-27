@@ -452,7 +452,11 @@ w	a8d54dc6	Dải cao phải nổi hơn toàn bộ âm thanh bao nhiêu: thấp h
 w	29cd23dd	Có thể hạ âm xuýt bao nhiêu
 w	7db02619	Bộ xử lý là bản cũ: khử âm xuýt sẽ hoạt động sau khi khởi động lại âm thanh Windows
 w	399932bb	Mô hình
-w	e45dcfcd	RNNoise nhẹ (1 % một lõi); DeepFilterNet sạch hơn trong tiếng ồn, nhưng tốn 4 % một lõi và trễ hơn 30 ms
+w	35cd35c0	RNNoise: nhẹ, 1 % một lõi
+w	23f01bb0	DeepFilterNet: sạch hơn trong tiếng ồn, nhưng tốn 4 % một lõi và trễ hơn 30 ms
+w	f64e2ebf	Red Tune: mạng của riêng chúng tôi — sạch như DeepFilterNet, nhẹ như RNNoise
+w	af28ae6b	Mạng nơ-ron riêng của Red Tune loại bỏ tiếng ồn ngay cả khi bạn đang nói: quạt, bàn phím, đường phố, tiếng ù
+w	82912b6a	Bộ xử lý là bản cũ: mạng Red Tune sẽ hoạt động sau khi khởi động lại âm thanh Windows
 w	5339d6d2	Mạng nơ-ron DeepFilterNet loại bỏ tiếng ồn ngay cả khi bạn đang nói: quạt, bàn phím, đường phố, tiếng ù
 w	78527afd	Tiếng ồn có thể giảm sâu đến mức nào: ít hơn thì giọng tự nhiên hơn
 w	584c7c2e	Bộ xử lý là bản cũ: DeepFilterNet sẽ hoạt động sau khi khởi động lại âm thanh Windows
@@ -970,7 +974,6 @@ w	f67ab0b9	\\Thư mục\\: mọi exe trong thư mục. Tên không có \\: một
 w	d9466145	Chương trình (*.exe)|*.exe
 w	a09b43b8	Chọn tệp exe của chương trình
 w	7f9996fe	Chọn một chương trình trong danh sách hoặc nhập mẫu.
-w	81c5c496	Chọn thư mục…
 w	d0266ec3	Nâng cao…
 w	a93634b3	Áp dụng cho
 w	2bf76454	Chọn một chương trình trong danh sách, một file exe hoặc một thư mục
@@ -1283,6 +1286,7 @@ w	9d166935	Dừng
 w	8101082a	Exe: chương trình này cùng mọi thứ nó khởi chạy; thư mục: mọi thứ được chạy từ đó
 w	e815f046	Exe: chỉ chương trình này; thư mục: mọi thứ được chạy từ đó và các dịch vụ của nó cho đến khi khởi động lại · Windows và Red Tune không bao giờ bị đóng
 w	15113f9b	Từ các chương trình đang chạy, theo exe hoặc theo thư mục
+w	81c5c496	Chọn thư mục…
 w	2145aa7f	Thư mục của chương trình: mọi thứ chạy từ đó sẽ bị đóng và các dịch vụ của nó sẽ dừng
 w	47a1b44c	Thư mục của chương trình: mọi thứ chạy từ đó được giữ lại
 w	a96d48c7	Đây là thư mục gốc của ổ đĩa

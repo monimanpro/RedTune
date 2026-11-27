@@ -2361,5 +2361,11 @@
 "wbc940640":"As pastas do Windows não são distribuídas",
 "w1042abd5":"É uma pasta compartilhada com muitos programas diferentes. Escolha a pasta de um único programa ou jogo",
 "w156e136b":"todos",
-"wc759a1ee":"não mexer"
+"wc759a1ee":"não mexer",
+"w3de6e9d0":"RNNoise é leve (1 % de um núcleo); DeepFilterNet limpa melhor no ruído, mas usa 4 % de um núcleo e chega 30 ms depois; Red Tune é a nossa própria rede: limpa como o DeepFilterNet e é leve como o RNNoise",
+"waf28ae6b":"A rede neural própria do Red Tune remove o ruído mesmo enquanto você fala: ventiladores, teclado, rua, zumbido",
+"w82912b6a":"O efeito é de uma versão anterior: a rede do Red Tune funciona depois que o som do Windows reiniciar",
+"w35cd35c0":"RNNoise: leve, 1 % de um núcleo",
+"w23f01bb0":"DeepFilterNet: limpa melhor no ruído, mas usa 4 % de um núcleo e chega 30 ms depois",
+"wf64e2ebf":"Red Tune: nossa própria rede — limpa como o DeepFilterNet, leve como o RNNoise"
 }

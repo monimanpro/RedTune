@@ -17,7 +17,13 @@
 #include <new>
 #include "rtdsp.h"
 
-#define RTA_VERSION 8u /* 2 (21.11): the noise gate; 3: the denoiser (RNNoise); 4: the reverb remover; 5: DeepFilterNet; 6: the de-esser (layout 3); 7: the second compressor (layout 4); 8: it in parts, first in the chain (layout 5) */
+/* 27.11: 9 = the own network is in this build (RTD_OWN, see rtdsp.h); a build without its weights stays 8 */
+#ifdef RTD_OWN
+#define RTA_VERSION 9u
+#else
+#define RTA_VERSION 8u
+#endif
+/* the versions: 2 (21.11): the noise gate; 3: the denoiser (RNNoise); 4: the reverb remover; 5: DeepFilterNet; 6: the de-esser (layout 3); 7: the second compressor (layout 4); 8: it in parts, first in the chain (layout 5) */
 
 // {E4B6C2A1-7F3D-4C58-9B1E-5A2D8C6F0E37}
 static const GUID CLSID_RedTuneApo = { 0xe4b6c2a1, 0x7f3d, 0x4c58, { 0x9b, 0x1e, 0x5a, 0x2d, 0x8c, 0x6f, 0x0e, 0x37 } };

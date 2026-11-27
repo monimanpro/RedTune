@@ -48,12 +48,18 @@ namespace RedTune
         Row dnRow, dnAmtRow;
         const string DnSub = "Нейросеть RNNoise убирает шум и во время речи: вентилятор, клавиатуру, улицу, гул";
         // 21.11 (the user): the model of the denoiser, RNNoise or DeepFilterNet 3
-        readonly Segmented dnModel = new Segmented("RNNoise", "DeepFilterNet");
+        // 27.11: the third model, Red Tune's own trained network (RTA_OWN; RedTune-devtools\denoiser)
+        readonly Segmented dnModel = new Segmented("RNNoise", "DeepFilterNet", "Red Tune");
         Row dnModelRow;
         const string DnSubDfn = "Нейросеть DeepFilterNet убирает шум и во время речи: вентилятор, клавиатуру, улицу, гул";
+        const string DnSubOwn = "Собственная нейросеть Red Tune убирает шум и во время речи: вентилятор, клавиатуру, улицу, гул";
+        static readonly string[] DnModelSubs = {
+            "RNNoise: лёгкая, 1 % ядра",
+            "DeepFilterNet: чище в шуме, но 4 % ядра и на 30 мс позже",
+            "Red Tune: своя сеть — чистит как DeepFilterNet, лёгкая как RNNoise" };
         const string DnAmtRnn = "Сколько очищенного звука вместо исходного: меньше — голос естественнее";
         const string DnAmtDfn = "Насколько глубоко можно убрать шум: меньше — голос естественнее";
-        string DnSubNow { get { return p != null && p.DenoiseModel == 1 ? DnSubDfn : DnSub; } }
+        string DnSubNow { get { return p != null && p.DenoiseModel == 1 ? DnSubDfn : p != null && p.DenoiseModel == 2 ? DnSubOwn : DnSub; } }
         // 21.11 (the user, after Supertone Clear): the reverb remover, after the denoiser
         readonly Toggle drT = new Toggle();
         readonly Slider drAmt = new Slider(0, 100, 70, "%") { WarpToKnob = true, Step = 5 };
@@ -211,7 +217,7 @@ namespace RedTune
             presetRow = Row("Пресет", PresetSubOut, resetAll, dropPreset, savePreset, presetBtn);
             gateLabel = Section("Шум");
             dnRow = Row("Шумодав", DnSub, dnT);
-            dnModelRow = Row("Модель", "RNNoise лёгкая (1 % ядра); DeepFilterNet чище в шуме, но 4 % ядра и на 30 мс позже", dnModel);
+            dnModelRow = Row("Модель", DnModelSubs[0], dnModel);    // the words of the chosen model (ShowDenoise): all three in one line did not fit beside three buttons
             dnModel.Changed += (o, e) => { if (loading || dev == null || dnModel.Selected < 0) return; p.DenoiseModel = dnModel.Selected; Push(); ShowDenoise(); };
             dnAmtRow = Row("Сила", DnAmtRnn, dnAmt);
             dnT.CheckedChanged += (o, e) => { if (loading || dev == null) return; p.Denoise = dnT.Checked; Push(); ShowFlow(); };
@@ -456,6 +462,8 @@ namespace RedTune
             if (dnRow == null || p == null) return;
             if (dnAmtRow.Sub != (p.DenoiseModel == 1 ? DnAmtDfn : DnAmtRnn)) dnAmtRow.SetSub(p.DenoiseModel == 1 ? DnAmtDfn : DnAmtRnn);
             if (dnRow.Sub != DnSubNow) dnRow.SetSub(DnSubNow);
+            string ms = DnModelSubs[p.DenoiseModel < 0 || p.DenoiseModel > 2 ? 0 : p.DenoiseModel];
+            if (dnModelRow.Sub != ms) dnModelRow.SetSub(ms);
         }
 
         // off, and the switch shows it (another tab, the page left, another microphone)
@@ -640,6 +648,18 @@ namespace RedTune
         }
 
         // for the off-screen render: the compressor's picture with a sound in it, scrolled into view
+        // --page-png sound with RT_MIC=1 RT_DN_DEMO=<0..2>: the denoiser shown switched on with that model, for a look at
+        // its rows (27.11: the third model). On the off-screen page only: nothing is sent to the effect, nothing is saved.
+        public void DemoDenoise(int model)
+        {
+            if (dnRow == null || p == null) return;
+            bool was = loading; loading = true;
+            dnT.Set(true); dnModel.Selected = model; p.DenoiseModel = model;
+            loading = was;
+            ShowFlow(); ShowDenoise();
+            AutoScrollPosition = new Point(0, dnRow.Top - AutoScrollPosition.Y - Theme.S(60));
+        }
+
         public void DemoComp() { var v = Environment.GetEnvironmentVariable("RT_COMP_VIEW"); if (v != null) cgraph.ByFreq = v == "freq"; cgraph.Demo(); AutoScrollPosition = new Point(0, cgraph.Top - AutoScrollPosition.Y - Theme.S(150)); }
 
         static bool Same(SoundParams a, SoundParams b)
@@ -802,6 +822,7 @@ namespace RedTune
                 string dsub = !alive || !p.Denoise || !p.On || !state.Attached ? DnSubNow
                     : m.Version < 3 ? "Обработчик старой сборки: шумодав заработает после перезапуска звука Windows"
                     : p.DenoiseModel == 1 && m.Version < 5 ? "Обработчик старой сборки: DeepFilterNet заработает после перезапуска звука Windows"
+                    : p.DenoiseModel == 2 && m.Version < 9 ? "Обработчик старой сборки: сеть Red Tune заработает после перезапуска звука Windows"
                     : m.Vad > 0.5f ? L.T(DnSubNow) + L.T(" · сейчас: голос") : L.T(DnSubNow) + L.T(" · сейчас: только шум");
                 if (dnRow.Sub != dsub) dnRow.SetSub(dsub);
                 // the reverb remover: an older effect has none; otherwise the room's time once it has heard a few words

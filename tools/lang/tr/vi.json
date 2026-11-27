@@ -2361,5 +2361,11 @@
 "wbc940640":"Không phân bổ thư mục của Windows",
 "w1042abd5":"Đây là thư mục chung chứa nhiều chương trình khác nhau. Hãy chọn thư mục của một chương trình hoặc trò chơi",
 "w156e136b":"tất cả",
-"wc759a1ee":"không động đến"
+"wc759a1ee":"không động đến",
+"w3de6e9d0":"RNNoise nhẹ (1 % một lõi); DeepFilterNet sạch hơn trong tiếng ồn, nhưng tốn 4 % một lõi và trễ hơn 30 ms; Red Tune là mạng của riêng chúng tôi: sạch như DeepFilterNet, nhẹ như RNNoise",
+"waf28ae6b":"Mạng nơ-ron riêng của Red Tune loại bỏ tiếng ồn ngay cả khi bạn đang nói: quạt, bàn phím, đường phố, tiếng ù",
+"w82912b6a":"Bộ xử lý là bản cũ: mạng Red Tune sẽ hoạt động sau khi khởi động lại âm thanh Windows",
+"w35cd35c0":"RNNoise: nhẹ, 1 % một lõi",
+"w23f01bb0":"DeepFilterNet: sạch hơn trong tiếng ồn, nhưng tốn 4 % một lõi và trễ hơn 30 ms",
+"wf64e2ebf":"Red Tune: mạng của riêng chúng tôi — sạch như DeepFilterNet, nhẹ như RNNoise"
 }

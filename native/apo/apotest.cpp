@@ -781,10 +781,10 @@ static void TestGate()
 
 // 21.11, the denoiser (RNNoise): steady noise must go down a lot at full strength, pass as it is at strength 0 (only
 // late), work at 44.1 kHz through the resampling without running dry, and cost little (it runs in Windows' sound process)
-static double NsRun(double rate, int strength, double seconds, int kind, double* cpuShare, uint32_t* under, float* vadOut)
+static double NsRun(double rate, int strength, double seconds, int kind, double* cpuShare, uint32_t* under, float* vadOut, uint32_t extra = 0)
 {
     RtDsp d; d.Init(rate, 2); d.ns = rnnoise_create(NULL);
-    RtaParams p = Blank(); p.flags = RTA_ON | RTA_DENOISE; p.mute = (uint32_t)strength << 8; d.Set(&p);
+    RtaParams p = Blank(); p.flags = RTA_ON | RTA_DENOISE | extra; p.mute = (uint32_t)strength << 8; d.Set(&p);
     int N = (int)(rate * seconds), from = (int)(rate * 1.0);
     std::vector<float> buf(2 * 480);
     double si = 0, so = 0; g_rng = 4242;
@@ -831,6 +831,52 @@ static void TestDenoise()
     double gv = NsRun(48000, 100, 4, 1, NULL, NULL, &vad);
     Check(gv > -12, "denoise: a voice-like sound is kept (not taken for noise)", "%.1f dB, voice probability %.2f", gv, vad);
 }
+
+// 27.11, the own network as the denoiser's third model (RTA_OWN): the same demands as RNNoise's
+#ifdef RTD_OWN
+static void TestOwn()
+{
+    double cpu; uint32_t under; float vad;
+    double g48 = NsRun(48000, 100, 4, 0, &cpu, &under, &vad, RTA_OWN);
+    Check(g48 < -15, "own network: steady noise at full strength goes down a lot (48 kHz)", "%.1f dB", g48);
+    CheckCost(cpu < 0.10, "own network: it costs little", "%.1f %% of one core, the whole effect", cpu * 100);
+    double g0 = NsRun(48000, 0, 3, 0, NULL, NULL, NULL, RTA_OWN);
+    Check(fabs(g0) < 0.1, "own network: at strength 0 the noise passes as it is", "%.2f dB", g0);
+    double g44 = NsRun(44100, 100, 4, 0, NULL, &under, NULL, RTA_OWN);
+    Check(g44 < -15, "own network: works at 44.1 kHz through the resampling", "%.1f dB", g44);
+    Check(under == 0, "own network: at 44.1 kHz the cleaned sound never runs dry", "%u gaps", under);
+    /* The made-up «voice» of the RNNoise check (a buzz with two formants) is noise to this network, which was trained
+       on real speech (-24 dB). A real voice instead: testvoice.f32 beside this file (5 s, 48 kHz, mono floats; a
+       held-back speaker of the training's test), alone and in steady noise. Without the file the two checks are skipped. */
+    std::string path = __FILE__; path = path.substr(0, path.find_last_of("\\/") + 1) + "testvoice.f32";
+    std::vector<float> voice;
+    if (FILE* f = fopen(path.c_str(), "rb")) { voice.resize(5 * 48000); voice.resize(fread(voice.data(), 4, voice.size(), f)); fclose(f); }
+    if (voice.size() < 3 * 48000) { printf("skip  own network: a real voice is kept (no %s)\n", path.c_str()); return; }
+    for (int pass = 0; pass < 2; pass++)
+    {
+        RtDsp d; d.Init(48000, 2);
+        RtaParams p = Blank(); p.flags = RTA_ON | RTA_DENOISE | RTA_OWN; p.mute = 100u << 8; d.Set(&p);
+        const double noise = pass ? 0.02 : 0;       /* the second pass: steady noise under the voice */
+        std::vector<float> buf(2 * 480); double sv = 0, sm = 0, so = 0; float top = 0; g_rng = 99;
+        const int N = (int)voice.size() / 480 * 480, from = 48000;
+        for (int t = 0; t < N; t += 480)
+        {
+            for (int i = 0; i < 480; i++)
+            {
+                double v = voice[t + i], m = v + noise * Noise();
+                buf[2 * i] = buf[2 * i + 1] = (float)m;
+                if (t + i >= from) { sv += v * v; sm += m * m; }
+            }
+            d.Process(buf.data(), buf.data(), 480);
+            for (int i = 0; i < 480; i++) if (t + i >= from) so += (double)buf[2 * i] * buf[2 * i];
+            if (d.vadMeter > top) top = d.vadMeter;
+        }
+        const double kept = 10 * log10((so + 1e-20) / (sv + 1e-20)), mixed = 10 * log10((sm + 1e-20) / (sv + 1e-20));
+        if (!pass) Check(kept > -1.5 && kept < 0.5 && top > 0.5, "own network: a real voice alone is kept", "%.2f dB against what went in, the most it lets through %.2f", kept, top);
+        else Check(kept > -2.5 && kept < mixed * 0.5, "own network: a real voice in steady noise comes out near its own level", "out %.2f dB against the voice alone (the mix was %+.2f dB)", kept, mixed);
+    }
+}
+#endif
 
 // 21.11, the 48 kHz path and the reverb remover.
 // Something like a voice at 48 kHz: a 140 Hz buzz with two formants; in words of 150 ms with 300 ms of quiet between
@@ -1354,6 +1400,9 @@ static void CostRun()
         return q;
     };
     rows.push_back({ "mic: everything, RNNoise", mic(0), 44100, 448, false });
+#ifdef RTD_OWN
+    rows.push_back({ "mic: everything, the own network", mic(RTA_OWN), 44100, 448, false });
+#endif
 #ifdef RTD_DFN
     rows.push_back({ "mic: everything, DeepFilterNet 3", mic(RTA_DFN), 44100, 448, true });
 #endif
@@ -1368,6 +1417,11 @@ int wmain(int argc, wchar_t** argv)
     TestLimiterQuality();
     TestGate();
     TestDenoise();
+#ifdef RTD_OWN
+    TestOwn();
+#else
+    printf("skip  the own network: built without its weights (rtnet_weights.h)\n");
+#endif
     TestPath();
     TestDereverb();
     TestDeEss();

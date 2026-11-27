@@ -82,6 +82,15 @@
 #include <atomic>
 #include <chrono>
 #include <xmmintrin.h>
+/* 27.11: Red Tune's own trained network (rtnet.h), the third model of the denoiser. Its weights are a generated header
+   (RedTune-devtools\denoiser\export.py); without that file here the effect is built without the model and the flag
+   RTA_OWN falls back to RNNoise. */
+#if !defined(RTD_NO_OWN) && defined(__has_include)
+#if __has_include("rtnet_weights.h")
+#define RTD_OWN
+#include "rtnet.h"
+#endif
+#endif
 #ifdef RTD_DFN
 extern "C" {
     void* rtdf_create(float atten_lim_db);
@@ -418,7 +427,13 @@ struct RtDsp
     float nsDry[RTD_MAXCH][RTD_NSDRY]; int nsDPos;
     float vad, vadMeter; uint32_t nsUnder, nsBlocks;
     float nsHist[RTD_NSHIST][RTD_NSBLOCK]; int nsHi;   /* the untouched blocks, nsHi: where the current one goes */
-    int nsModel;                    /* the model the path runs: 0 RNNoise, 1 DeepFilterNet (the path restarts when it changes) */
+    int nsModel;                    /* the model the path runs: 0 RNNoise, 1 DeepFilterNet, 2 Red Tune's own (the path restarts when it changes) */
+#ifdef RTD_OWN
+    /* 27.11, the own network: it runs on the sound thread as RNNoise does and is as late (two blocks). ownWarm: blocks
+       it has been given since it started anew; its first two answers are not sound yet (the overlap and the look-ahead
+       fill up), the untouched sound goes out meanwhile */
+    RtNet own; int ownWarm;
+#endif
     /* DeepFilterNet's queue: the sound thread publishes block s in dfIn[s % RTD_DFQ] and dfHead = s + 1; the worker gives
        it back in dfOut with dfOutSeq = s. df: the model, made and freed by the owner's worker (Init clears the pointer). */
     void* df; float dfIn[RTD_DFQ][RTD_NSBLOCK], dfOut[RTD_DFQ][RTD_NSBLOCK], dfSnr[RTD_DFQ];
@@ -485,6 +500,9 @@ struct RtDsp
         for (int j = 0; j < RTD_FWIN; j++) drWin[j] = (float)sqrt(0.5 - 0.5 * cos(2 * 3.14159265358979323846 * j / RTD_FWIN));
         for (int j = 0; j < RTD_FFT / 2; j++) { drCos[j] = (float)cos(2 * 3.14159265358979323846 * j / RTD_FFT); drSin[j] = (float)sin(2 * 3.14159265358979323846 * j / RTD_FFT); }
         for (int i = 0; i < RTD_FFT; i++) { int r = 0; for (int b = 0; b < 10; b++) if (i & (1 << b)) r |= 1 << (9 - b); drRev[i] = (uint16_t)r; }
+#ifdef RTD_OWN
+        own.Init();     /* the own network's tables (the memset above cleared them) */
+#endif
         drT60 = 0.5;
         /* the colour's filter down: a windowed sinc at 0.45 of the rate (0.1125 at four times it), Kaiser beta 7, sum 1 */
         {
@@ -794,9 +812,12 @@ struct RtDsp
     /* blocks back the network's output stands for: RNNoise 2; DeepFilterNet 3, and two more for its thread (21.11: a
        microphone at 44.1 kHz came in calls of 448 frames, 487.6 samples at 48 kHz, so every ~0.64 s one call finished two
        blocks and the second had no time on the thread: a click. Two blocks back leaves it at least a whole call.) */
-    static int NetBack(int model) { return model ? 5 : 2; }
+    static int NetBack(int model) { return model == 1 ? 5 : 2; }   /* 27.11: the own network is as late as RNNoise */
     void NsStart(int model)
     {
+#ifdef RTD_OWN
+        own.Reset(); ownWarm = 0;
+#endif
         nsLive = true; nsMix = 0; nsPos = 0; nsOutN = 0; nsOutPos = 0; upPhase = dnPhase = 0; upLast = dnLast = 0;
         memset(nsOut, 0, sizeof(nsOut)); memset(nsDry, 0, sizeof(nsDry)); nsDPos = 0;
         memset(nsHist, 0, sizeof(nsHist)); nsHi = 0; dnMix = 0; drAmt = 0; nsModel = model;
@@ -1000,6 +1021,21 @@ struct RtDsp
             if (got) vad = (float)((snr + 5.0) / 15.0 < 0 ? 0 : (snr + 5.0) / 15.0 > 1 ? 1 : (snr + 5.0) / 15.0);
             else vad = 0;
         }
+#ifdef RTD_OWN
+        else if (nsModel == 2)
+        {
+            if (!nsNoNet && (dnMix > 0 || dnTo > 0))
+            {
+                own.Process(nsIn, nsNet);
+                if (ownWarm < 3) ownWarm++;
+                got = ownWarm >= 3;
+                /* no voice probability of its own: the most it lets through between 300 Hz and 3.4 kHz (nothing in noise, about 1 on a voice) */
+                float top = 0; for (int b = 0; b < RTN_NB; b++) if (RTN_CENTRE[b] >= 6 && RTN_CENTRE[b] <= 72 && own.gain[b] > top) top = own.gain[b];
+                vad = got ? top : 0;
+            }
+            else { if (ownWarm) { own.Reset(); ownWarm = 0; } vad = 0; }   /* at rest: the next time it starts from nothing, not from old sound */
+        }
+#endif
         else if (ns && !nsNoNet && (dnMix > 0 || dnTo > 0))
         {
             float s[RTD_NSBLOCK]; for (int i = 0; i < RTD_NSBLOCK; i++) s[i] = nsIn[i] * 32768.f;
@@ -1128,13 +1164,15 @@ struct RtDsp
             if (!settled) { if (!Glide(k)) settled = true; Recalc(k); }
             /* 21.11: the denoiser and the reverb remover first, into a chunk of their own (in and out may be the same buffer) */
             const bool on = (cur.flags & RTA_ON) != 0;
+            int model = 0;
 #ifdef RTD_DFN
-            const int model = (cur.flags & RTA_DFN) ? 1 : 0;
-#else
-            const int model = 0;
+            if (cur.flags & RTA_DFN) model = 1;
 #endif
-            /* RNNoise needs its state; DeepFilterNet its worker (the model comes from there) */
-            const bool nsOn = on && (cur.flags & RTA_DENOISE) && (model == 1 || ns), drOn = on && (cur.flags & RTA_DEREVERB);
+#ifdef RTD_OWN
+            if (cur.flags & RTA_OWN) model = 2;     /* 27.11: the own network; an effect built without it runs RNNoise instead */
+#endif
+            /* RNNoise needs its state; DeepFilterNet its worker (the model comes from there); the own network is part of this object */
+            const bool nsOn = on && (cur.flags & RTA_DENOISE) && (model != 0 || ns), drOn = on && (cur.flags & RTA_DEREVERB);
             /* the model counts only while the denoiser is on: switching it restarts the path (its delay changes) */
             if ((nsOn || drOn) && !nsLive) NsStart(nsOn ? model : 0);
             else if (nsLive && nsOn && model != nsModel) NsStart(model);

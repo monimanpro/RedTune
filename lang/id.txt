@@ -452,7 +452,11 @@ w	a8d54dc6	Seberapa banyak nada tinggi harus menonjol dari seluruh suara: lebih 
 w	29cd23dd	Seberapa jauh bunyi desis boleh diturunkan
 w	7db02619	Efek masih versi lama: de-esser bekerja setelah suara Windows dimulai ulang
 w	399932bb	Model
-w	e45dcfcd	RNNoise ringan (1 % satu inti); DeepFilterNet lebih bersih dalam derau, tetapi memakai 4 % satu inti dan 30 ms lebih lambat
+w	35cd35c0	RNNoise: ringan, 1 % satu inti
+w	23f01bb0	DeepFilterNet: lebih bersih dalam derau, tetapi memakai 4 % satu inti dan 30 ms lebih lambat
+w	f64e2ebf	Red Tune: jaringan kami sendiri — sebersih DeepFilterNet, seringan RNNoise
+w	af28ae6b	Jaringan saraf milik Red Tune sendiri menghapus derau bahkan saat Anda bicara: kipas, keyboard, jalan, dengung
+w	82912b6a	Efek masih versi lama: jaringan Red Tune bekerja setelah suara Windows dimulai ulang
 w	5339d6d2	Jaringan saraf DeepFilterNet menghapus derau bahkan saat Anda bicara: kipas, keyboard, jalan, dengung
 w	78527afd	Seberapa dalam derau boleh diturunkan: lebih sedikit membuat suara lebih alami
 w	584c7c2e	Efek masih versi lama: DeepFilterNet bekerja setelah suara Windows dimulai ulang
@@ -970,7 +974,6 @@ w	f67ab0b9	\\Folder\\: semua exe di folder itu. Nama tanpa \\: satu proses.
 w	d9466145	Program (*.exe)|*.exe
 w	a09b43b8	Pilih exe program
 w	7f9996fe	Pilih program di daftar atau masukkan pola.
-w	81c5c496	Pilih folder…
 w	d0266ec3	Lanjutan…
 w	a93634b3	Mencakup
 w	2bf76454	Pilih program di daftar, file exe, atau folder
@@ -1283,6 +1286,7 @@ w	9d166935	Hentikan
 w	8101082a	Exe: program ini dengan semua yang dijalankannya; folder: semua yang dijalankan dari sana
 w	e815f046	Exe: hanya program ini; folder: semua yang dijalankan dari sana, beserta layanannya sampai mulai ulang · Windows dan Red Tune tidak pernah ditutup
 w	15113f9b	Dari yang sedang berjalan, lewat exe atau folder
+w	81c5c496	Pilih folder…
 w	2145aa7f	Folder program: semua yang dijalankan dari sana ditutup dan layanannya berhenti
 w	47a1b44c	Folder program: semua yang dijalankan dari sana tetap ada
 w	a96d48c7	Ini akar drive

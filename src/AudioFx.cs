@@ -245,7 +245,7 @@ namespace RedTune
                     case "pre": p.Preamp = f; break; case "thr": p.Thr = f; break; case "ratio": p.Ratio = f; break; case "att": p.Attack = f; break; case "rel": p.Release = f; break;
                     case "knee": p.Knee = f; break; case "mk": p.Makeup = f; break; case "mix": p.Mix = f; break; case "ceil": p.Ceil = f; break; case "xo": p.Split = f; break; case "xo2": p.Split2 = f; break;
                     case "gate": p.Gate = f != 0; break; case "gthr": p.GateThr = f; break; case "grange": p.GateRange = f; break; case "grel": p.GateRelease = f; break;
-                    case "dn": p.Denoise = f != 0; break; case "dns": p.DenoiseAmount = f; break; case "dnm": p.DenoiseModel = f >= 1 ? 1 : 0; break;
+                    case "dn": p.Denoise = f != 0; break; case "dns": p.DenoiseAmount = f; break; case "dnm": p.DenoiseModel = f >= 2 ? 2 : f >= 1 ? 1 : 0; break;
                     case "dr": p.Dereverb = f != 0; break; case "drs": p.DereverbAmount = f; break;
                     case "ds": p.DeEss = f != 0; break; case "dshz": p.DeEssHz = f; break; case "dsthr": p.DeEssThr = f; break; case "dsrange": p.DeEssRange = f; break; case "dshz2": p.DeEssHz2 = f; break;
                     case "cch": p.CompChar = (int)f; break; case "cauto": p.ColorAuto = f != 0; break; case "ctype": p.ColorType = (int)f; break; case "camt": p.ColorAmt = f; break;
@@ -463,7 +463,7 @@ namespace RedTune
                 byte* s = Slot(id, create); if (s == null) return false;
                 Interlocked.Increment(ref *(int*)(s + OffSeq)); // odd: being written
                 byte* p = s + OffParams;
-                *(uint*)p = (sp.On ? 1u : 0) | (sp.Eq ? 2u : 0) | (sp.Comp ? 4u : 0) | (sp.Limit ? 8u : 0) | (sp.Gate ? 16u : 0) | (sp.Denoise ? 32u : 0) | (sp.Dereverb ? 64u : 0) | (sp.Denoise && sp.DenoiseModel == 1 ? 128u : 0) | (sp.DeEss && IsCapture(id) ? 256u : 0) | (sp.Comp2 && IsCapture(id) ? 512u : 0);   // 21.11 (the user): the de-esser is the microphone's only
+                *(uint*)p = (sp.On ? 1u : 0) | (sp.Eq ? 2u : 0) | (sp.Comp ? 4u : 0) | (sp.Limit ? 8u : 0) | (sp.Gate ? 16u : 0) | (sp.Denoise ? 32u : 0) | (sp.Dereverb ? 64u : 0) | (sp.Denoise && sp.DenoiseModel == 1 ? 128u : 0) | (sp.Denoise && sp.DenoiseModel == 2 ? 1024u : 0) | (sp.DeEss && IsCapture(id) ? 256u : 0) | (sp.Comp2 && IsCapture(id) ? 512u : 0);   // 21.11 (the user): the de-esser is the microphone's only
                 *(float*)(p + 4) = sp.Preamp;
                 for (int i = 0; i < MaxBands; i++)
                 {

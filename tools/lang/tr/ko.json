@@ -2361,5 +2361,11 @@
 "wbc940640":"Windows 폴더는 분배하지 않습니다",
 "w1042abd5":"여러 프로그램이 함께 있는 공용 폴더입니다. 프로그램이나 게임 하나의 폴더를 고르세요",
 "w156e136b":"전체",
-"wc759a1ee":"건드리지 않음"
+"wc759a1ee":"건드리지 않음",
+"w3de6e9d0":"RNNoise는 가볍습니다(코어의 1%). DeepFilterNet은 잡음 속에서 더 깨끗하지만 코어의 4%를 쓰고 30ms 늦습니다. Red Tune은 자체 신경망으로, DeepFilterNet만큼 깨끗하고 RNNoise만큼 가볍습니다",
+"waf28ae6b":"Red Tune 자체 신경망이 말하는 중에도 잡음을 없앱니다: 팬, 키보드, 거리, 웅웅거림",
+"w82912b6a":"이전 빌드의 효과입니다. Windows 사운드를 다시 시작하면 Red Tune 신경망이 작동합니다",
+"w35cd35c0":"RNNoise: 가벼움, 코어의 1%",
+"w23f01bb0":"DeepFilterNet: 잡음 속에서 더 깨끗하지만 코어의 4%를 쓰고 30ms 늦습니다",
+"wf64e2ebf":"Red Tune: 자체 신경망 — DeepFilterNet만큼 깨끗하고 RNNoise만큼 가볍습니다"
 }

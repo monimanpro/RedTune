@@ -452,7 +452,11 @@ w	a8d54dc6	Quanto os agudos precisam se destacar do som todo: mais baixo atua co
 w	29cd23dd	Quanto os chiados podem ser abaixados
 w	7db02619	O efeito é de uma versão anterior: o de-esser funciona depois que o som do Windows reiniciar
 w	399932bb	Modelo
-w	e45dcfcd	RNNoise é leve (1 % de um núcleo); DeepFilterNet limpa melhor no ruído, mas usa 4 % de um núcleo e chega 30 ms depois
+w	35cd35c0	RNNoise: leve, 1 % de um núcleo
+w	23f01bb0	DeepFilterNet: limpa melhor no ruído, mas usa 4 % de um núcleo e chega 30 ms depois
+w	f64e2ebf	Red Tune: nossa própria rede — limpa como o DeepFilterNet, leve como o RNNoise
+w	af28ae6b	A rede neural própria do Red Tune remove o ruído mesmo enquanto você fala: ventiladores, teclado, rua, zumbido
+w	82912b6a	O efeito é de uma versão anterior: a rede do Red Tune funciona depois que o som do Windows reiniciar
 w	5339d6d2	A rede neural DeepFilterNet remove o ruído mesmo enquanto você fala: ventiladores, teclado, rua, zumbido
 w	78527afd	Quanto o ruído pode ser reduzido: menos deixa a voz mais natural
 w	584c7c2e	O efeito é de uma versão anterior: o DeepFilterNet funciona depois que o som do Windows reiniciar
@@ -970,7 +974,6 @@ w	f67ab0b9	\\Pasta\\: todos os exe da pasta. Um nome sem \\: um processo.
 w	d9466145	Programas (*.exe)|*.exe
 w	a09b43b8	Escolha o exe do programa
 w	7f9996fe	Escolha um programa na lista ou digite um padrão.
-w	81c5c496	Escolher uma pasta…
 w	d0266ec3	Avançado…
 w	a93634b3	Abrange
 w	2bf76454	Escolha um programa da lista, um exe ou uma pasta
@@ -1283,6 +1286,7 @@ w	9d166935	Parar
 w	8101082a	Exe: este programa com tudo o que ele inicia; pasta: tudo o que é iniciado a partir dela
 w	e815f046	Exe: somente este programa; pasta: tudo o que é iniciado a partir dela, e seus serviços até reiniciar · o Windows e o Red Tune nunca são fechados
 w	15113f9b	Dos que estão em execução, por exe ou por pasta
+w	81c5c496	Escolher uma pasta…
 w	2145aa7f	A pasta do programa: tudo o que é iniciado a partir dela é fechado e seus serviços param
 w	47a1b44c	A pasta do programa: tudo o que é iniciado a partir dela permanece
 w	a96d48c7	Esta é a raiz de uma unidade
