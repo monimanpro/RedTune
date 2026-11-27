@@ -149,7 +149,8 @@ namespace RedTune
             }
             // --diag <file>: the full report of «Компоненты → Полный отчёт в файл» (reads only), for a check
             i = at("--diag");
-            if (i >= 0 && i + 1 < args.Length) { Hw.Detect(); System.IO.File.WriteAllText(args[i + 1], Diag.Full(Store.LoadSettings()), new System.Text.UTF8Encoding(true)); return 0; }
+            // --diag <file> --github: what «Отправить на GitHub» puts on the clipboard (no journal, cut to fit an issue)
+            if (i >= 0 && i + 1 < args.Length) { Hw.Detect(); var ds = Store.LoadSettings(); System.IO.File.WriteAllText(args[i + 1], args.Contains("--github") ? Diag.ForGitHub(ds) : Diag.Full(ds), new System.Text.UTF8Encoding(true)); return 0; }
             // --curve-read <file>: the Curve Optimizer values as the app's own SMU code reads them (reads only), a check
             i = at("--curve-read");
             if (i >= 0 && i + 1 < args.Length)

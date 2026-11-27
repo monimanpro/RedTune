@@ -56,7 +56,9 @@ namespace RedTune
             part("Диски", () => Wmi(sb, null, "Win32_DiskDrive", "Model", "InterfaceType", "Size", "MediaType"));
             part("Батарея и питание", () =>
             {
-                Wmi(sb, null, "Win32_Battery", "Name", "DeviceID", "Chemistry", "DesignVoltage", "EstimatedChargeRemaining", "BatteryStatus");
+                // 27.11: without DeviceID — on a Lenovo it is the battery's serial number, its maker and its name in one
+                // string, and the report promises no serial numbers
+                Wmi(sb, null, "Win32_Battery", "Name", "Chemistry", "DesignVoltage", "EstimatedChargeRemaining", "BatteryStatus");
                 Wmi(sb, @"root\WMI", "BatteryStaticData", "DesignedCapacity", "ManufactureName", "DeviceName");
                 Wmi(sb, @"root\WMI", "BatteryFullChargedCapacity", "FullChargedCapacity");
                 sb.AppendLine("От сети: " + System.Windows.Forms.SystemInformation.PowerStatus.PowerLineStatus);
@@ -162,15 +164,16 @@ namespace RedTune
         }
 
         // 27.11: the full report for the GitHub form («О программе → Отправить на GitHub» puts it on the clipboard, the
-        // user: «давай полный отчёт в гит»). An issue takes 65536 characters with everything else in it, so a report
-        // longer than 58 thousand loses its journal, and after that its end, with a line that says so
+        // user: «давай полный отчёт в гит»). An issue on GitHub is public, so the journal stays out of this one: its
+        // lines name the user's presets and may name the programs the distribution or the clean-up dealt with. The
+        // file («Полный отчёт в файл») keeps it. An issue takes 65536 characters with everything else in it: a report
+        // longer than 58 thousand loses its end, with a line that says so
         public static string ForGitHub(Settings s)
         {
             const int most = 58000;
             string t = Full(s);
-            if (t.Length <= most) return t;
             int log = t.IndexOf("=== Журнал Red Tune", StringComparison.Ordinal);
-            if (log > 0) t = t.Substring(0, log) + "=== Журнал Red Tune ===\r\n(не поместился: он есть в «Полный отчёт в файл»)\r\n";
+            if (log > 0) t = t.Substring(0, log) + "=== Журнал Red Tune ===\r\n(в отчёт для GitHub не входит; он есть в «Полный отчёт в файл»)\r\n";
             if (t.Length > most) t = t.Substring(0, most) + "\r\n… (отчёт обрезан: целиком он в «Полный отчёт в файл»)\r\n";
             return t;
         }
