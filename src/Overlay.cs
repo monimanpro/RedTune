@@ -224,10 +224,13 @@ namespace RedTune
 
             g = open();
             if (on("bat") && v.Battery >= 0) add(g, v.Battery + "%", v.Battery <= 15 ? Hot : Value);
+            // in a column the battery and the time share a row (the user, 27.11: one value each, no need for a row each)
+            bool timeOn = on("time") && v.Time.Length > 0;
+            if (column && g.Count > 0 && timeOn) { add(g, v.Time, Value); timeOn = false; }
             close(g, "BAT");
 
             g = open();
-            if (on("time") && v.Time.Length > 0) add(g, v.Time, Value);
+            if (timeOn) add(g, v.Time, Value);
             close(g, null);
             if (column) all.AddRange(frames);
             return all;
